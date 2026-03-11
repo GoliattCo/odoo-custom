@@ -388,10 +388,10 @@ Expected: build completes with no errors. This takes 5–15 minutes on first run
 - [ ] **Step 3: Verify image was created**
 
 ```bash
-docker compose config --images
+docker images | grep odoo
 ```
 
-Expected: shows the image name for the `odoo` service (e.g., `odoo-odoo` or similar based on your directory name).
+Expected: one or more lines showing the built Odoo image with a tag and size.
 
 ---
 
@@ -453,11 +453,11 @@ Click **Create database** and wait for initialization (~2–5 minutes).
 - [ ] **Step 5: Verify jorels modules are available**
 
 After DB creation and login:
-1. Go to **Settings** → scroll to bottom → click **Activate the developer mode**
-   > Developer Mode must be active — without it, "Update Apps List" is hidden from the Apps menu.
-2. Go to **Apps** menu
-3. Click **Update Apps List** → click **Update** in the confirmation dialog
-4. Search "jorels" or "l10n_co"
+1. Go to **Apps** menu
+2. Click **Update Apps List** → click **Update** in the confirmation dialog
+3. Search "jorels" or "l10n_co"
+
+> **Optional:** Enable Developer Mode (Settings → Activate the developer mode) for access to technical menus and advanced debugging — not required for this step.
 
 Expected: jorels modules appear (`l10n_co_edi_jorels`, `l10n_co_ciius`, `l10n_co_hr_payroll`, etc.)
 
