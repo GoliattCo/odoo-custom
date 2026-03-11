@@ -65,7 +65,13 @@ odoo-custom/
   libsasl2-dev libjpeg-dev curl gnupg nodejs npm
   ```
 - **less CSS compiler:** installed via `npm install -g less` (the `node-less` apt package is unavailable on Debian Bookworm)
-- **wkhtmltopdf:** Odoo-compatible patched build from `github.com/odoo/wkhtmltopdf/releases` — NOT the distro package and NOT `nightly.odoo.com` (which hosts Odoo installers, not wkhtmltopdf). Pin to a specific release tag compatible with Debian Bookworm amd64.
+- **wkhtmltopdf:** patched-Qt build `0.12.6.1-3` from `github.com/wkhtmltopdf/packaging/releases` — use the native **Bookworm amd64** package:
+  ```
+  https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-3/wkhtmltox_0.12.6.1-3.bookworm_amd64.deb
+  ```
+  Do NOT use the distro `wkhtmltopdf` apt package (unpatched, breaks headers/footers). The archived `odoo/wkhtmltopdf` repo is not used. This is the same source as the official `odoo:18` Docker image (which uses the `jammy` variant on Ubuntu Noble — we use the equivalent `bookworm` variant).
+
+  **Future:** Odoo's `paper-muncher` (C++ PDF engine) is in early alpha and targeted for Odoo 20/21. Not yet usable.
 - **Dockerfile RUN ordering:** All `apt-get install` calls must be in a single `RUN apt-get update && apt-get install -y ...` layer to avoid stale cache and broken package resolution.
 - **Python deps:** installed from `odoo/requirements.txt`
 - **Exposed port:** `8069`
@@ -147,10 +153,9 @@ docker compose up
 
 1. `gh repo create remcaro-rgb/odoo-custom --private` (repo name is lowercase)
 2. `git init` in `/Users/manuelcaro/Odoo`
-3. `git submodule add --depth=1 https://github.com/odoo/odoo odoo && git -C odoo fetch --depth=1`
-4. `git submodule add --depth=1 https://gitlab.com/jorels-community/jorels-odoo-addons addons/jorels-odoo-addons`
-5. Set `shallow = true` in `.gitmodules` for both submodules
-6. Initial commit + push to `main`
+3. `git submodule add -b 18.0 https://github.com/odoo/odoo odoo` (full depth — see shallow clone caveat above)
+4. `git submodule add -b 18.0 https://gitlab.com/jorels-community/jorels-odoo-addons addons/jorels-odoo-addons`
+5. Initial commit + push to `main`
 
 ---
 
