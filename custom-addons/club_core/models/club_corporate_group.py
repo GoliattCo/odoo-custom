@@ -38,6 +38,6 @@ class ClubCorporateGroup(models.Model):
         for group in self:
             if group.max_employees > 0 and len(group.employee_ids) > group.max_employees:
                 raise ValidationError(
-                    _('Corporate group "%s" has exceeded the maximum of %d authorized members.')
-                    % (group.name, group.max_employees)
+                    _('Corporate group "%(name)s" has exceeded the maximum of %(max)d authorized members.')
+                    % {'name': group.name, 'max': group.max_employees}
                 )

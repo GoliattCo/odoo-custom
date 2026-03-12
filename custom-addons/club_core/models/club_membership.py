@@ -82,10 +82,14 @@ class ClubMembership(models.Model):
 
     def action_suspend(self):
         for rec in self:
+            if rec.status not in ('active',):
+                raise UserError(_('Only active memberships can be suspended.'))
             rec.status = 'suspended'
 
     def action_cancel(self):
         for rec in self:
+            if rec.status in ('cancelled', 'expired'):
+                raise UserError(_('Cannot cancel an already cancelled or expired membership.'))
             rec.status = 'cancelled'
 
     def action_view_invoices(self):
@@ -100,7 +104,9 @@ class ClubMembership(models.Model):
     # ── Invoice generation ────────────────────────────────────────────────
 
     def _get_invoice_partner(self):
-        """Return the partner to invoice. For family groups, use billing_affiliate."""
+        """Return the partner to invoice. For family groups, use billing_affiliate.
+        For corporate groups, use admin if set, otherwise the company partner.
+        """
         self.ensure_one()
         if self.affiliate_id.family_group_id:
             billing = self.affiliate_id.family_group_id.billing_affiliate_id
@@ -110,6 +116,7 @@ class ClubMembership(models.Model):
             admin = self.affiliate_id.corporate_group_id.admin_id
             if admin:
                 return admin.partner_id
+            return self.affiliate_id.corporate_group_id.company_partner_id
         return self.affiliate_id.partner_id
 
     def _generate_membership_invoice(self):
@@ -159,9 +166,18 @@ class ClubMembership(models.Model):
             ('end_date', '>=', today),
         ])
         for membership in expiring:
-            # Avoid duplicate: skip if a renewal invoice was already created today
+            # Avoid duplicate: skip if a renewal invoice was already created today.
+            # Exclude late fee invoices (identified by late_fee_product_id) from this check.
+            late_fee_product = membership.plan_id.late_fee_product_id
             already_invoiced = membership.invoice_ids.filtered(
-                lambda inv: inv.create_date and inv.create_date.date() >= today
+                lambda inv: inv.create_date
+                and inv.create_date.date() >= today
+                and (
+                    not late_fee_product
+                    or not inv.invoice_line_ids.filtered(
+                        lambda l: l.product_id == late_fee_product
+                    )
+                )
             )
             if not already_invoiced:
                 membership._generate_membership_invoice()
@@ -170,9 +186,11 @@ class ClubMembership(models.Model):
     def _cron_apply_late_fees(self):
         """Suspend memberships past grace period with unpaid invoices."""
         today = fields.Date.today()
+        # Only consider memberships that have already passed their end_date
         candidates = self.search([
             ('status', 'in', ['active', 'suspended']),
             ('end_date', '!=', False),
+            ('end_date', '<=', today),
         ])
         for membership in candidates:
             grace_end = membership.end_date + relativedelta(
@@ -185,6 +203,20 @@ class ClubMembership(models.Model):
                 and inv.state == 'posted'
                 and inv.payment_state not in ('paid', 'in_payment', 'reversed')
             )
-            if unpaid and membership.status != 'suspended':
-                membership._generate_late_fee_invoice()
-                membership.status = 'suspended'
+            if not unpaid or membership.status == 'suspended':
+                continue
+            # Guard: skip if a late fee was already generated after end_date
+            late_fee_product = membership.plan_id.late_fee_product_id
+            if late_fee_product:
+                already_fined = membership.invoice_ids.filtered(
+                    lambda inv: inv.move_type == 'out_invoice'
+                    and inv.invoice_line_ids.filtered(
+                        lambda l: l.product_id == late_fee_product
+                    )
+                    and inv.create_date
+                    and inv.create_date.date() > membership.end_date
+                )
+                if already_fined:
+                    continue
+            membership._generate_late_fee_invoice()
+            membership.status = 'suspended'
