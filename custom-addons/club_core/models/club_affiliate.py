@@ -36,7 +36,7 @@ class ClubAffiliate(models.Model):
         'club.corporate.group', string='Corporate Group'
     )
     affiliate_number = fields.Char(
-        string='Affiliate Number', readonly=True, copy=False
+        string='Affiliate Number', readonly=True, copy=False, index=True
     )
     membership_status = fields.Selection(
         [
@@ -51,6 +51,11 @@ class ClubAffiliate(models.Model):
     )
     photo = fields.Binary(string='Photo', attachment=True)
 
+    _sql_constraints = [
+        ('affiliate_number_uniq', 'unique(affiliate_number)',
+         'Affiliate number must be unique.'),
+    ]
+
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
@@ -60,7 +65,7 @@ class ClubAffiliate(models.Model):
                 )
         return super().create(vals_list)
 
-    @api.depends('membership_ids.status')
+    @api.depends('membership_ids', 'membership_ids.status')
     def _compute_membership_status(self):
         for affiliate in self:
             statuses = affiliate.membership_ids.mapped('status')
