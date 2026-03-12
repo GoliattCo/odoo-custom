@@ -1,1 +1,154 @@
-<odoo/>
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Membership products -->
+        <record id="product_membership_individual_annual" model="product.product">
+            <field name="name">Individual Annual Membership</field>
+            <field name="type">service</field>
+            <field name="list_price">1200.00</field>
+        </record>
+
+        <record id="product_membership_family_annual" model="product.product">
+            <field name="name">Family Annual Membership</field>
+            <field name="type">service</field>
+            <field name="list_price">2000.00</field>
+        </record>
+
+        <record id="product_membership_monthly" model="product.product">
+            <field name="name">Monthly Membership</field>
+            <field name="type">service</field>
+            <field name="list_price">120.00</field>
+        </record>
+
+        <record id="product_late_fee" model="product.product">
+            <field name="name">Membership Late Fee</field>
+            <field name="type">service</field>
+            <field name="list_price">50.00</field>
+        </record>
+
+        <!-- Membership plans -->
+        <record id="plan_individual_annual" model="club.membership.plan">
+            <field name="name">Individual Annual</field>
+            <field name="fee">1200.00</field>
+            <field name="billing_period">annual</field>
+            <field name="grace_period_days">15</field>
+            <field name="late_fee_amount">50.00</field>
+            <field name="golf_access" eval="True"/>
+            <field name="tennis_access" eval="True"/>
+            <field name="product_id" ref="product_membership_individual_annual"/>
+            <field name="late_fee_product_id" ref="product_late_fee"/>
+        </record>
+
+        <record id="plan_family_annual" model="club.membership.plan">
+            <field name="name">Family Annual</field>
+            <field name="fee">2000.00</field>
+            <field name="billing_period">annual</field>
+            <field name="grace_period_days">15</field>
+            <field name="late_fee_amount">75.00</field>
+            <field name="golf_access" eval="True"/>
+            <field name="equestrian_access" eval="True"/>
+            <field name="tennis_access" eval="True"/>
+            <field name="product_id" ref="product_membership_family_annual"/>
+            <field name="late_fee_product_id" ref="product_late_fee"/>
+        </record>
+
+        <record id="plan_monthly" model="club.membership.plan">
+            <field name="name">Monthly</field>
+            <field name="fee">120.00</field>
+            <field name="billing_period">monthly</field>
+            <field name="grace_period_days">7</field>
+            <field name="late_fee_amount">20.00</field>
+            <field name="product_id" ref="product_membership_monthly"/>
+            <field name="late_fee_product_id" ref="product_late_fee"/>
+        </record>
+
+        <!-- Individual affiliates -->
+        <record id="affiliate_001" model="club.affiliate">
+            <field name="name">Carlos Rodríguez</field>
+            <field name="email">carlos@example.com</field>
+            <field name="phone">+57 300 0000001</field>
+            <field name="membership_type">individual</field>
+        </record>
+
+        <record id="affiliate_002" model="club.affiliate">
+            <field name="name">Ana Martínez</field>
+            <field name="email">ana@example.com</field>
+            <field name="phone">+57 300 0000002</field>
+            <field name="membership_type">individual</field>
+        </record>
+
+        <record id="affiliate_003" model="club.affiliate">
+            <field name="name">Jorge López</field>
+            <field name="email">jorge@example.com</field>
+            <field name="membership_type">family_primary</field>
+        </record>
+
+        <record id="affiliate_004" model="club.affiliate">
+            <field name="name">María López</field>
+            <field name="email">maria@example.com</field>
+            <field name="membership_type">family_dependent</field>
+        </record>
+
+        <record id="affiliate_005" model="club.affiliate">
+            <field name="name">Pedro Gómez</field>
+            <field name="email">pedro@example.com</field>
+            <field name="membership_type">individual</field>
+        </record>
+
+        <!-- Family group -->
+        <record id="family_group_lopez" model="club.family.group">
+            <field name="primary_member_id" ref="affiliate_003"/>
+            <field name="billing_affiliate_id" ref="affiliate_003"/>
+        </record>
+
+        <!-- Link dependent to family group -->
+        <record id="affiliate_004" model="club.affiliate">
+            <field name="family_group_id" ref="family_group_lopez"/>
+        </record>
+
+        <!-- Corporate group -->
+        <record id="partner_acme_corp" model="res.partner">
+            <field name="name">Acme Corporation</field>
+            <field name="is_company" eval="True"/>
+        </record>
+
+        <record id="affiliate_corp_admin" model="club.affiliate">
+            <field name="name">Roberto Silva</field>
+            <field name="email">roberto@acme.com</field>
+            <field name="membership_type">corporate_admin</field>
+        </record>
+
+        <record id="affiliate_corp_emp1" model="club.affiliate">
+            <field name="name">Laura Pérez</field>
+            <field name="email">laura@acme.com</field>
+            <field name="membership_type">corporate_employee</field>
+        </record>
+
+        <record id="corporate_group_acme" model="club.corporate.group">
+            <field name="company_partner_id" ref="partner_acme_corp"/>
+            <field name="admin_id" ref="affiliate_corp_admin"/>
+            <field name="max_employees">10</field>
+        </record>
+
+        <record id="affiliate_corp_emp1" model="club.affiliate">
+            <field name="corporate_group_id" ref="corporate_group_acme"/>
+        </record>
+
+        <!-- Memberships -->
+        <record id="membership_carlos" model="club.membership">
+            <field name="affiliate_id" ref="affiliate_001"/>
+            <field name="plan_id" ref="plan_individual_annual"/>
+            <field name="start_date" eval="(datetime.date.today()).strftime('%Y-01-01')"/>
+            <field name="status">active</field>
+        </record>
+
+        <record id="membership_jorge" model="club.membership">
+            <field name="affiliate_id" ref="affiliate_003"/>
+            <field name="plan_id" ref="plan_family_annual"/>
+            <field name="start_date" eval="(datetime.date.today()).strftime('%Y-01-01')"/>
+            <field name="status">active</field>
+        </record>
+
+    </data>
+</odoo>

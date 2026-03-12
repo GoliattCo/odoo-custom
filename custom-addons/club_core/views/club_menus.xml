@@ -1,1 +1,59 @@
-<odoo/>
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Top-level Club menu -->
+    <menuitem id="menu_club_root"
+        name="Club"
+        sequence="50"
+        groups="club_core.group_club_admin,club_core.group_club_staff"/>
+
+    <!-- Affiliates -->
+    <menuitem id="menu_club_affiliates"
+        name="Affiliates"
+        parent="menu_club_root"
+        sequence="10"/>
+
+    <menuitem id="menu_club_affiliates_list"
+        name="All Affiliates"
+        parent="menu_club_affiliates"
+        action="action_club_affiliate"
+        sequence="10"/>
+
+    <menuitem id="menu_club_family_groups"
+        name="Family Groups"
+        parent="menu_club_affiliates"
+        action="action_club_family_group"
+        sequence="20"/>
+
+    <menuitem id="menu_club_corporate_groups"
+        name="Corporate Groups"
+        parent="menu_club_affiliates"
+        action="action_club_corporate_group"
+        sequence="30"/>
+
+    <!-- Memberships -->
+    <menuitem id="menu_club_memberships"
+        name="Memberships"
+        parent="menu_club_root"
+        sequence="20"/>
+
+    <menuitem id="menu_club_memberships_list"
+        name="All Memberships"
+        parent="menu_club_memberships"
+        action="action_club_membership"
+        sequence="10"/>
+
+    <!-- Configuration -->
+    <menuitem id="menu_club_config"
+        name="Configuration"
+        parent="menu_club_root"
+        sequence="100"
+        groups="club_core.group_club_admin"/>
+
+    <menuitem id="menu_club_config_plans"
+        name="Membership Plans"
+        parent="menu_club_config"
+        action="action_club_membership_plan"
+        sequence="10"/>
+
+</odoo>
