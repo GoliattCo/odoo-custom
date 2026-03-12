@@ -4,6 +4,7 @@
     <!-- Top-level Club menu -->
     <menuitem id="menu_club_root"
         name="Club"
+        action="action_club_affiliate"
         sequence="50"
         groups="club_core.group_club_admin,club_core.group_club_staff"/>
 
