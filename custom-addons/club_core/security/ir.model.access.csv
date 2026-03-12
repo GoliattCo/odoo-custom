@@ -1,1 +1,14 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_club_affiliate_admin,club.affiliate admin,model_club_affiliate,club_core.group_club_admin,1,1,1,1
+access_club_affiliate_staff,club.affiliate staff,model_club_affiliate,club_core.group_club_staff,1,1,1,0
+access_club_affiliate_member,club.affiliate member,model_club_affiliate,club_core.group_club_member,1,0,0,0
+access_club_membership_plan_admin,club.membership.plan admin,model_club_membership_plan,club_core.group_club_admin,1,1,1,1
+access_club_membership_plan_staff,club.membership.plan staff,model_club_membership_plan,club_core.group_club_staff,1,0,0,0
+access_club_membership_plan_member,club.membership.plan member,model_club_membership_plan,club_core.group_club_member,1,0,0,0
+access_club_membership_admin,club.membership admin,model_club_membership,club_core.group_club_admin,1,1,1,1
+access_club_membership_staff,club.membership staff,model_club_membership,club_core.group_club_staff,1,1,0,0
+access_club_membership_member,club.membership member,model_club_membership,club_core.group_club_member,1,0,0,0
+access_club_family_group_admin,club.family.group admin,model_club_family_group,club_core.group_club_admin,1,1,1,1
+access_club_family_group_staff,club.family.group staff,model_club_family_group,club_core.group_club_staff,1,1,1,0
+access_club_corporate_group_admin,club.corporate.group admin,model_club_corporate_group,club_core.group_club_admin,1,1,1,1
+access_club_corporate_group_staff,club.corporate.group staff,model_club_corporate_group,club_core.group_club_staff,1,1,1,0
