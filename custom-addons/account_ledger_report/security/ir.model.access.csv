@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_account_ledger_report_readonly,account.ledger.report readonly,model_account_ledger_report,account.group_account_readonly,1,0,0,0
+access_account_ledger_report_user,account.ledger.report user,model_account_ledger_report,account.group_account_user,1,0,0,0
+access_account_ledger_report_manager,account.ledger.report manager,model_account_ledger_report,account.group_account_manager,1,0,0,0
+access_account_ledger_report_system,account.ledger.report system,model_account_ledger_report,base.group_system,1,0,0,0
