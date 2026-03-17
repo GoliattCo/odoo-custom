@@ -23,7 +23,7 @@
                             <tr>
                                 <td><t t-out="line.date"/></td>
                                 <td><t t-out="line.account_code"/></td>
-                                <td><t t-out="line.account_id.name"/></td>
+                                <td><t t-out="line.account_name"/></td>
                                 <td><t t-out="line.move_name"/></td>
                                 <td><t t-out="line.partner_id.name or ''"/></td>
                                 <td class="text-end">

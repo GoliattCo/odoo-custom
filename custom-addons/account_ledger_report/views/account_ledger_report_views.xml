@@ -10,7 +10,8 @@
                   create="false" edit="false" delete="false">
                 <field name="date"/>
                 <field name="account_code" optional="show"/>
-                <field name="account_id"/>
+                <field name="account_name"/>
+                <field name="account_id" column_invisible="1"/>
                 <field name="move_name"/>
                 <field name="partner_id"/>
                 <field name="currency_id" column_invisible="1"/>

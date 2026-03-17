@@ -14,13 +14,14 @@ class AccountLedgerReport(models.Model):
             'move_id', 'account_id', 'partner_id',
             'debit', 'credit', 'company_id', 'parent_state',
         ],
-        'account.account': ['code_store'],  # code_store is the JSONB column backing the virtual `code` field
+        'account.account': ['code_store', 'name'],
         'res.company': ['currency_id'],
     }
 
     date = fields.Date(string='Date', readonly=True)
     account_id = fields.Many2one('account.account', string='Account', readonly=True)
     account_code = fields.Char(string='Code', readonly=True)
+    account_name = fields.Char(string='Account', readonly=True)
     move_id = fields.Many2one('account.move', string='Journal Entry', readonly=True)
     move_name = fields.Char(string='Reference', readonly=True)
     partner_id = fields.Many2one('res.partner', string='Partner', readonly=True)
@@ -37,6 +38,7 @@ class AccountLedgerReport(models.Model):
                 am.date             AS date,
                 aml.account_id      AS account_id,
                 aa.code_store->>(SPLIT_PART(rco.parent_path, '/', 1)::text) AS account_code,
+                aa.name             AS account_name,
                 aml.move_id         AS move_id,
                 am.name             AS move_name,
                 aml.partner_id      AS partner_id,
