@@ -1,4 +1,4 @@
-from odoo import fields, models
+from odoo import fields, models, tools
 
 
 class AccountLedgerReport(models.Model):
@@ -21,7 +21,7 @@ class AccountLedgerReport(models.Model):
     date = fields.Date(string='Date', readonly=True)
     account_id = fields.Many2one('account.account', string='Account', readonly=True)
     account_code = fields.Char(string='Code', readonly=True)
-    account_name = fields.Char(string='Account', readonly=True)
+    account_name = fields.Char(string='Account', translate=True, readonly=True)
     move_id = fields.Many2one('account.move', string='Journal Entry', readonly=True)
     move_name = fields.Char(string='Reference', readonly=True)
     partner_id = fields.Many2one('res.partner', string='Partner', readonly=True)
@@ -29,6 +29,12 @@ class AccountLedgerReport(models.Model):
     credit = fields.Monetary(string='Credit', readonly=True)
     company_id = fields.Many2one('res.company', string='Company', readonly=True)
     currency_id = fields.Many2one('res.currency', string='Currency', readonly=True)
+
+    def init(self):
+        tools.drop_view_if_exists(self._cr, self._table)
+        self._cr.execute("""
+            CREATE OR REPLACE VIEW %s AS (%s)
+        """ % (self._table, self._table_query))
 
     @property
     def _table_query(self):
