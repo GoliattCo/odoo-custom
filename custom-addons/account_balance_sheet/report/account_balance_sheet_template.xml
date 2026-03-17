@@ -4,29 +4,81 @@
         <t t-call="web.html_container">
             <t t-call="web.internal_layout">
             <div class="page">
-                <h2>Balance General</h2>
+
+                <!-- Report header -->
+                <div class="row mb-3">
+                    <div class="col-8">
+                        <h2 class="mb-0" style="color: #2c3e50; font-weight: 700;">Balance General</h2>
+                        <p class="mb-0 text-muted" style="font-size: 13px;">
+                            Al corte de: <strong><t t-out="as_of_date" t-options='{"widget": "date"}'/></strong>
+                        </p>
+                    </div>
+                    <div class="col-4 text-end" style="font-size: 11px; color: #666;">
+                        <div><t t-out="company.name"/></div>
+                        <div>Impreso por: <t t-out="user.name"/></div>
+                        <div>Fecha impresión: <t t-out="print_date" t-options='{"widget": "datetime"}'/></div>
+                    </div>
+                </div>
+
+                <hr style="border-color: #2c3e50; border-width: 2px; margin-bottom: 16px;"/>
+
+                <!-- Sections: ACTIVO, PASIVO, PATRIMONIO -->
                 <t t-foreach="sections" t-as="section">
-                    <h4><t t-out="section['class']"/>. <t t-out="section['label']"/></h4>
-                    <table class="table table-sm table-bordered">
-                        <thead><tr><th>Code</th><th>Account</th><th class="text-end">Balance</th></tr></thead>
+                    <h5 style="background-color: #2c3e50; color: #ffffff; padding: 6px 10px; margin-bottom: 0; font-weight: 600; letter-spacing: 0.5px;">
+                        <t t-out="section['class']"/>. <t t-out="section['label']"/>
+                    </h5>
+                    <table class="table table-sm table-bordered mb-4" style="font-size: 12px;">
+                        <thead>
+                            <tr style="background-color: #d6e4f0; color: #1a252f; text-align: center; font-weight: 600;">
+                                <th style="width: 12%; text-align: center;">Código</th>
+                                <th style="text-align: left;">Cuenta</th>
+                                <th style="width: 20%; text-align: center;">Saldo</th>
+                            </tr>
+                        </thead>
                         <tbody>
                             <t t-foreach="section['accounts']" t-as="acct">
-                                <tr><td><t t-out="acct['account_code']"/></td><td><t t-out="acct['account_name']"/></td><td class="text-end"><span t-out="acct['saldo']" t-options='{"widget": "monetary", "display_currency": company_currency}'/></td></tr>
+                                <tr>
+                                    <td style="text-align: center; font-family: monospace;"><t t-out="acct['account_code']"/></td>
+                                    <td><t t-out="acct['account_name']"/></td>
+                                    <td style="text-align: right; font-family: monospace; white-space: nowrap;"><t t-out="acct['saldo_fmt']"/></td>
+                                </tr>
                             </t>
                         </tbody>
-                        <tfoot><tr><td colspan="2"><strong>Total <t t-out="section['label'].title()"/></strong></td><td class="text-end"><strong><span t-out="section['total']" t-options='{"widget": "monetary", "display_currency": company_currency}'/></strong></td></tr></tfoot>
+                        <tfoot>
+                            <tr style="background-color: #eaf2fb; font-weight: 700;">
+                                <td colspan="2" style="text-align: right;">Total <t t-out="section['label'].title()"/></td>
+                                <td style="text-align: right; font-family: monospace; white-space: nowrap; border-top: 2px solid #2c3e50;"><t t-out="section['total_fmt']"/></td>
+                            </tr>
+                        </tfoot>
                     </table>
                 </t>
-                <table class="table table-sm mt-4">
+
+                <!-- Summary -->
+                <hr style="border-color: #2c3e50; border-width: 1px;"/>
+                <table class="table table-sm mb-2" style="font-size: 12px; width: 50%; margin-left: auto;">
                     <tbody>
-                        <tr><td><strong>Total Pasivo + Patrimonio</strong></td><td class="text-end"><strong><span t-out="total_pasivo_patrimonio" t-options='{"widget": "monetary", "display_currency": company_currency}'/></strong></td></tr>
-                        <tr><td colspan="2"><t t-if="equation_ok"><strong class="text-success">✓ Activo = Pasivo + Patrimonio</strong></t><t t-else=""><strong class="text-danger">✗ Activo ≠ Pasivo + Patrimonio (diferencia: <span t-out="equation_diff" t-options='{"widget": "monetary", "display_currency": company_currency}'/>)</strong></t></td></tr>
+                        <tr style="background-color: #d6e4f0; font-weight: 700;">
+                            <td style="padding: 6px 10px;">Total Pasivo + Patrimonio</td>
+                            <td style="text-align: right; font-family: monospace; white-space: nowrap; padding: 6px 10px;"><t t-out="total_pasivo_patrimonio_fmt"/></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" style="padding: 6px 10px; text-align: center;">
+                                <t t-if="equation_ok">
+                                    <strong style="color: #27ae60; font-size: 13px;">✓ Activo = Pasivo + Patrimonio</strong>
+                                </t>
+                                <t t-else="">
+                                    <strong style="color: #c0392b; font-size: 13px;">✗ Activo ≠ Pasivo + Patrimonio — Diferencia: <t t-out="equation_diff_fmt"/></strong>
+                                </t>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
+
             </div>
             </t>
         </t>
     </template>
+
     <record id="action_report_account_balance_sheet" model="ir.actions.report">
         <field name="name">Balance General</field>
         <field name="model">account.balance.sheet</field>
