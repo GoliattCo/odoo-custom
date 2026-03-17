@@ -1,3 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <template id="account_balance_sheet_document">
+        <t t-call="web.html_container">
+            <t t-call="web.internal_layout">
+            <div class="page">
+                <h2 t-esc="_('Balance General')"/>
+                <t t-foreach="sections" t-as="section">
+                    <h4><t t-out="section['class']"/>. <t t-out="section['label']"/></h4>
+                    <table class="table table-sm table-bordered">
+                        <thead><tr><th t-esc="_('Code')"/><th t-esc="_('Account')"/><th class="text-end" t-esc="_('Balance')"/></tr></thead>
+                        <tbody>
+                            <t t-foreach="section['accounts']" t-as="acct">
+                                <tr><td><t t-out="acct['account_code']"/></td><td><t t-out="acct['account_name']"/></td><td class="text-end"><t t-out="'%.2f' % acct['saldo']"/></td></tr>
+                            </t>
+                        </tbody>
+                        <tfoot><tr><td colspan="2"><strong>Total <t t-out="section['label'].title()"/></strong></td><td class="text-end"><strong><t t-out="'%.2f' % section['total']"/></strong></td></tr></tfoot>
+                    </table>
+                </t>
+                <table class="table table-sm mt-4">
+                    <tbody>
+                        <tr><td><strong t-esc="_('Total Pasivo + Patrimonio')"/></td><td class="text-end"><strong><t t-out="'%.2f' % total_pasivo_patrimonio"/></strong></td></tr>
+                        <tr><td colspan="2"><t t-if="equation_ok"><strong class="text-success">✓ Activo = Pasivo + Patrimonio</strong></t><t t-else=""><strong class="text-danger">✗ Activo ≠ Pasivo + Patrimonio (diferencia: <t t-out="'%.2f' % equation_diff"/>)</strong></t></td></tr>
+                    </tbody>
+                </table>
+            </div>
+            </t>
+        </t>
+    </template>
+    <record id="action_report_account_balance_sheet" model="ir.actions.report">
+        <field name="name">Balance General</field>
+        <field name="model">account.balance.sheet</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">account_balance_sheet.account_balance_sheet_document</field>
+        <field name="report_file">account_balance_sheet.account_balance_sheet_document</field>
+        <field name="binding_model_id" ref="model_account_balance_sheet"/>
+        <field name="binding_type">report</field>
+    </record>
 </odoo>
