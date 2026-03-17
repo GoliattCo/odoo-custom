@@ -1,3 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+
+    <!-- List View -->
+    <record id="account_ledger_report_view_list" model="ir.ui.view">
+        <field name="name">account.ledger.report.list</field>
+        <field name="model">account.ledger.report</field>
+        <field name="arch" type="xml">
+            <list string="Account Ledger"
+                  create="false" edit="false" delete="false">
+                <field name="date"/>
+                <field name="account_code" optional="show" string="Code"/>
+                <field name="account_id" string="Account"/>
+                <field name="move_name" string="Reference"/>
+                <field name="partner_id" string="Partner"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="debit" sum="Total Debit"/>
+                <field name="credit" sum="Total Credit"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Pivot View -->
+    <record id="account_ledger_report_view_pivot" model="ir.ui.view">
+        <field name="name">account.ledger.report.pivot</field>
+        <field name="model">account.ledger.report</field>
+        <field name="arch" type="xml">
+            <pivot string="Account Ledger" disable_linking="True">
+                <field name="account_id" type="row"/>
+                <field name="debit" type="measure"/>
+                <field name="credit" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="account_ledger_report_view_search" model="ir.ui.view">
+        <field name="name">account.ledger.report.search</field>
+        <field name="model">account.ledger.report</field>
+        <field name="arch" type="xml">
+            <search string="Account Ledger">
+                <field name="account_id" string="Account"/>
+                <field name="partner_id" string="Customer"
+                       domain="[('customer_rank', '&gt;', 0)]"/>
+                <field name="partner_id" string="Provider"
+                       domain="[('supplier_rank', '&gt;', 0)]"/>
+                <field name="move_id" string="Invoice"/>
+                <field name="date" string="Start Date"
+                       filter_domain="[('date', '&gt;=', self)]"/>
+                <field name="date" string="End Date"
+                       filter_domain="[('date', '&lt;=', self)]"/>
+                <separator/>
+                <filter string="Date" name="filter_date" date="date"/>
+                <group expand="0" string="Group By">
+                    <filter string="Account" name="group_by_account"
+                            context="{'group_by': 'account_id'}"/>
+                    <filter string="Partner" name="group_by_partner"
+                            context="{'group_by': 'partner_id'}"/>
+                    <filter string="Month" name="group_by_month"
+                            context="{'group_by': 'date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_account_ledger_report" model="ir.actions.act_window">
+        <field name="name">Account Ledger</field>
+        <field name="res_model">account.ledger.report</field>
+        <field name="view_mode">list,pivot</field>
+        <field name="search_view_id" ref="account_ledger_report_view_search"/>
+    </record>
+
+    <!-- Menu: Accounting → Reporting → Account Ledger -->
+    <menuitem id="menu_account_ledger_report"
+              name="Account Ledger"
+              parent="account.menu_finance_reports"
+              action="action_account_ledger_report"
+              sequence="100"/>
+
 </odoo>
