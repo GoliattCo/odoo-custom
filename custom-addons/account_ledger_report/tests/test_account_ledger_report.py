@@ -1,3 +1,5 @@
+import unittest
+
 from odoo.tests import tagged
 from odoo.tests.common import TransactionCase
 
@@ -21,6 +23,8 @@ class TestAccountLedgerReport(TransactionCase):
             ('account_type', '=', 'income'),
             ('company_ids', 'in', cls.company.id),
         ], limit=1)
+        if not cls.account_receivable or not cls.account_revenue or not cls.journal:
+            raise unittest.SkipTest("No chart of accounts installed; skipping ledger report tests.")
 
     def _create_posted_move(self, date, debit_account, credit_account, amount):
         move = self.env['account.move'].create({
@@ -82,7 +86,8 @@ class TestAccountLedgerReport(TransactionCase):
         )
         lines = self.env['account.ledger.report'].search([('move_id', '=', move.id)])
         for line in lines:
-            self.assertTrue(line.account_code, "account_code must be populated from SQL")
+            self.assertEqual(line.account_code, line.account_id.code,
+                             "account_code must match account.account.code")
 
     def test_date_filter(self):
         """Date range filter must work correctly."""

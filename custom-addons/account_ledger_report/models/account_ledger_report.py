@@ -6,6 +6,7 @@ class AccountLedgerReport(models.Model):
     _description = 'Account Ledger Report'
     _auto = False
     _order = 'date desc, id desc'
+    _rec_name = 'move_name'
 
     _depends = {
         'account.move': ['name', 'date', 'state'],
@@ -35,7 +36,7 @@ class AccountLedgerReport(models.Model):
                 aml.id              AS id,
                 am.date             AS date,
                 aml.account_id      AS account_id,
-                aa.code_store->>rco.id::text AS account_code,
+                aa.code_store->>(rco.id::text) AS account_code,
                 aml.move_id         AS move_id,
                 am.name             AS move_name,
                 aml.partner_id      AS partner_id,
