@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_account_balance_sheet_readonly,account.balance.sheet readonly,model_account_balance_sheet,account.group_account_readonly,1,0,0,0
+access_account_balance_sheet_user,account.balance.sheet user,model_account_balance_sheet,account.group_account_user,1,0,0,0
+access_account_balance_sheet_manager,account.balance.sheet manager,model_account_balance_sheet,account.group_account_manager,1,0,0,0
+access_account_balance_sheet_system,account.balance.sheet system,model_account_balance_sheet,base.group_system,1,0,0,0
