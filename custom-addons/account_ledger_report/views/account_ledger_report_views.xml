@@ -9,10 +9,10 @@
             <list string="Account Ledger"
                   create="false" edit="false" delete="false">
                 <field name="date"/>
-                <field name="account_code" optional="show" string="Code"/>
-                <field name="account_id" string="Account"/>
-                <field name="move_name" string="Reference"/>
-                <field name="partner_id" string="Partner"/>
+                <field name="account_code" optional="show"/>
+                <field name="account_id"/>
+                <field name="move_name"/>
+                <field name="partner_id"/>
                 <field name="currency_id" column_invisible="1"/>
                 <field name="debit" sum="Total Debit"/>
                 <field name="credit" sum="Total Credit"/>
