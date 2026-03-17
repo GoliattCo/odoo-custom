@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- List View -->
+    <record id="account_balance_sheet_view_list" model="ir.ui.view">
+        <field name="name">account.balance.sheet.list</field>
+        <field name="model">account.balance.sheet</field>
+        <field name="arch" type="xml">
+            <list string="Balance General"
+                  create="false" edit="false" delete="false">
+                <field name="account_class" optional="show"/>
+                <field name="account_code" optional="show"/>
+                <field name="account_name"/>
+                <field name="account_id" column_invisible="1"/>
+                <field name="move_name"/>
+                <field name="partner_id"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="debit" sum="Total Debit"/>
+                <field name="credit" sum="Total Credit"/>
+                <field name="balance" sum="Total Balance"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Pivot View -->
+    <record id="account_balance_sheet_view_pivot" model="ir.ui.view">
+        <field name="name">account.balance.sheet.pivot</field>
+        <field name="model">account.balance.sheet</field>
+        <field name="arch" type="xml">
+            <pivot string="Balance General" disable_linking="True">
+                <field name="account_class" type="row"/>
+                <field name="account_id" type="row"/>
+                <field name="debit" type="measure"/>
+                <field name="credit" type="measure"/>
+                <field name="balance" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="account_balance_sheet_view_search" model="ir.ui.view">
+        <field name="name">account.balance.sheet.search</field>
+        <field name="model">account.balance.sheet</field>
+        <field name="arch" type="xml">
+            <search string="Balance General">
+                <field name="date" string="Al Corte De"
+                       filter_domain="[('date', '&lt;=', self)]"/>
+                <field name="account_id" string="Cuenta"/>
+                <field name="partner_id" string="Contacto"/>
+                <field name="move_id" string="Asiento"/>
+                <separator/>
+                <filter name="date_to"
+                        string="Al Corte De (Hoy)"
+                        domain="[('date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                <separator/>
+                <filter name="class_activo" string="Activo"
+                        domain="[('account_class', '=', '1')]"/>
+                <filter name="class_pasivo" string="Pasivo"
+                        domain="[('account_class', '=', '2')]"/>
+                <filter name="class_patrimonio" string="Patrimonio"
+                        domain="[('account_class', '=', '3')]"/>
+                <group expand="0" string="Agrupar Por">
+                    <filter name="group_by_account_class" string="Clase"
+                            context="{'group_by': 'account_class'}"/>
+                    <filter name="group_by_account" string="Cuenta"
+                            context="{'group_by': 'account_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_account_balance_sheet" model="ir.actions.act_window">
+        <field name="name">Balance General</field>
+        <field name="res_model">account.balance.sheet</field>
+        <field name="view_mode">list,pivot</field>
+        <field name="search_view_id" ref="account_balance_sheet_view_search"/>
+        <field name="context">{
+            'search_default_date_to': 1,
+            'search_default_group_by_account_class': 1,
+            'search_default_group_by_account': 1,
+        }</field>
+    </record>
+
+    <!-- Menu: Accounting → Reporting → Balance General -->
+    <menuitem id="menu_account_balance_sheet"
+              name="Balance General"
+              parent="account.menu_finance_reports"
+              action="action_account_balance_sheet"
+              sequence="101"/>
+
+</odoo>
