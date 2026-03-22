@@ -5,6 +5,7 @@ LABEL maintainer="Manuel Caro"
 # System dependencies — all in one RUN layer
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
+    git \
     libpq-dev \
     libxml2-dev \
     libxslt1-dev \
@@ -44,16 +45,20 @@ RUN ARCH=$(dpkg --print-architecture) \
 # less CSS compiler
 RUN npm install -g less
 
-# Python dependencies from Odoo source
-COPY odoo/requirements.txt /tmp/requirements.txt
-RUN pip install --no-cache-dir -r /tmp/requirements.txt
+# Clone Odoo 18.0 from GitHub (pinned to exact commit)
+ARG ODOO_COMMIT=a91dbced90cdc012da8dc40ade180b59c9d41c5d
+RUN git clone --depth 1 --branch 18.0 https://github.com/odoo/odoo.git /odoo \
+    && cd /odoo && git fetch --depth 1 origin $ODOO_COMMIT && git checkout $ODOO_COMMIT \
+    && rm -rf /odoo/.git
 
-# Install Odoo source
-COPY odoo /odoo
+# Python dependencies from Odoo source
+RUN pip install --no-cache-dir -r /odoo/requirements.txt
 RUN pip install --no-cache-dir -e /odoo
 
-# Copy addons into the image (Railway has no volume mounts)
-COPY addons/jorels-odoo-addons /mnt/jorels-addons
+# Jorels Colombian localization addons (copied from build context)
+COPY jorels-addons /mnt/jorels-addons
+
+# Copy custom addons (small, from build context)
 COPY custom-addons /mnt/custom-addons
 
 # Copy Railway-specific config

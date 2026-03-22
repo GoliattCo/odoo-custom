@@ -14,6 +14,15 @@ DB_NAME="${PGDATABASE:-odoo}"
 # Railway provides PORT for the web server
 WEB_PORT="${PORT:-8069}"
 
+# On first run, initialize the database with base module
+# INIT_MODULES can be set via env var (e.g., "base,web,contacts")
+INIT_MODULES="${INIT_MODULES:-}"
+
+INIT_FLAG=""
+if [ -n "$INIT_MODULES" ]; then
+    INIT_FLAG="--init=$INIT_MODULES"
+fi
+
 exec /odoo/odoo-bin \
     --config=/etc/odoo/odoo.conf \
     --db_host="$DB_HOST" \
@@ -25,4 +34,5 @@ exec /odoo/odoo-bin \
     --proxy-mode \
     --no-database-list \
     --db-filter="^${DB_NAME}$" \
+    $INIT_FLAG \
     "$@"
