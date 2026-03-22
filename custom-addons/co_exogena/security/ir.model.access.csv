@@ -1,0 +1,10 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_co_exogena_report_user,co.exogena.report user,model_co_exogena_report,co_exogena.group_co_exogena_user,1,0,0,0
+access_co_exogena_report_manager,co.exogena.report manager,model_co_exogena_report,co_exogena.group_co_exogena_manager,1,1,1,1
+access_co_exogena_format_user,co.exogena.format user,model_co_exogena_format,co_exogena.group_co_exogena_user,1,0,0,0
+access_co_exogena_format_manager,co.exogena.format manager,model_co_exogena_format,co_exogena.group_co_exogena_manager,1,1,1,1
+access_co_exogena_line_user,co.exogena.line user,model_co_exogena_line,co_exogena.group_co_exogena_user,1,0,0,0
+access_co_exogena_line_manager,co.exogena.line manager,model_co_exogena_line,co_exogena.group_co_exogena_manager,1,1,1,1
+access_co_exogena_concept_user,co.exogena.concept user,model_co_exogena_concept,co_exogena.group_co_exogena_user,1,0,0,0
+access_co_exogena_concept_manager,co.exogena.concept manager,model_co_exogena_concept,co_exogena.group_co_exogena_manager,1,1,1,1
+access_co_exogena_generate_wizard,co.exogena.generate.wizard,model_co_exogena_generate_wizard,co_exogena.group_co_exogena_manager,1,1,1,0

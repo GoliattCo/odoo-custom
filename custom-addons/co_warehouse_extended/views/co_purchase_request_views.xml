@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================ -->
+    <!--                 Purchase Request: Form                       -->
+    <!-- ============================================================ -->
+    <record id="co_purchase_request_view_form" model="ir.ui.view">
+        <field name="name">co.purchase.request.form</field>
+        <field name="model">co.purchase.request</field>
+        <field name="arch" type="xml">
+            <form string="Purchase Request">
+                <header>
+                    <button name="action_submit" type="object"
+                            string="Submit" class="oe_highlight"
+                            invisible="state != 'draft'"/>
+                    <button name="action_approve" type="object"
+                            string="Approve" class="oe_highlight"
+                            invisible="state != 'submitted'"
+                            groups="co_warehouse_extended.group_purchase_request_manager"/>
+                    <button name="action_create_purchase_order" type="object"
+                            string="Create Purchase Order" class="oe_highlight"
+                            invisible="state != 'approved'"/>
+                    <button name="action_done" type="object"
+                            string="Mark Done"
+                            invisible="state != 'purchase'"/>
+                    <button name="action_cancel" type="object"
+                            string="Cancel"
+                            invisible="state in ('done', 'cancel')"/>
+                    <button name="action_draft" type="object"
+                            string="Reset to Draft"
+                            invisible="state not in ('cancel', 'submitted')"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,submitted,approved,purchase,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_purchase_orders" type="object"
+                                class="oe_stat_button" icon="fa-shopping-cart"
+                                invisible="purchase_order_count == 0">
+                            <field name="purchase_order_count" widget="statbutton"
+                                   string="Purchase Orders"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="date_request"
+                                   readonly="state != 'draft'"/>
+                            <field name="user_id"
+                                   readonly="state != 'draft'"/>
+                            <field name="department_id"
+                                   readonly="state != 'draft'"/>
+                            <field name="priority"
+                                   readonly="state != 'draft'"
+                                   widget="priority"/>
+                        </group>
+                        <group>
+                            <field name="date_approved"/>
+                            <field name="approver_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Request Lines" name="lines">
+                            <field name="line_ids"
+                                   readonly="state != 'draft'">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="product_id"/>
+                                    <field name="quantity"/>
+                                    <field name="product_uom_id"/>
+                                    <field name="estimated_price"/>
+                                    <field name="subtotal"/>
+                                    <field name="supplier_id"/>
+                                    <field name="reason"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="reason" placeholder="Justification for this purchase request..."
+                                   readonly="state != 'draft'"/>
+                            <field name="notes"
+                                   readonly="state != 'draft'"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!--                 Purchase Request: List                       -->
+    <!-- ============================================================ -->
+    <record id="co_purchase_request_view_list" model="ir.ui.view">
+        <field name="name">co.purchase.request.list</field>
+        <field name="model">co.purchase.request</field>
+        <field name="arch" type="xml">
+            <list string="Purchase Requests" decoration-info="state == 'draft'"
+                  decoration-warning="state == 'submitted'"
+                  decoration-success="state in ('approved', 'done')"
+                  decoration-muted="state == 'cancel'">
+                <field name="name"/>
+                <field name="date_request"/>
+                <field name="user_id"/>
+                <field name="department_id" optional="show"/>
+                <field name="priority" widget="priority"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!--                 Purchase Request: Search                     -->
+    <!-- ============================================================ -->
+    <record id="co_purchase_request_view_search" model="ir.ui.view">
+        <field name="name">co.purchase.request.search</field>
+        <field name="model">co.purchase.request</field>
+        <field name="arch" type="xml">
+            <search string="Purchase Requests">
+                <field name="name"/>
+                <field name="user_id"/>
+                <field name="department_id"/>
+                <separator/>
+                <filter name="filter_draft" string="Draft"
+                        domain="[('state', '=', 'draft')]"/>
+                <filter name="filter_submitted" string="Submitted"
+                        domain="[('state', '=', 'submitted')]"/>
+                <filter name="filter_approved" string="Approved"
+                        domain="[('state', '=', 'approved')]"/>
+                <filter name="filter_purchase" string="PO Created"
+                        domain="[('state', '=', 'purchase')]"/>
+                <separator/>
+                <filter name="filter_my" string="My Requests"
+                        domain="[('user_id', '=', uid)]"/>
+                <separator/>
+                <group expand="0" string="Group By">
+                    <filter name="group_state" string="Status"
+                            context="{'group_by': 'state'}"/>
+                    <filter name="group_user" string="Requested By"
+                            context="{'group_by': 'user_id'}"/>
+                    <filter name="group_department" string="Department"
+                            context="{'group_by': 'department_id'}"/>
+                    <filter name="group_date" string="Request Date"
+                            context="{'group_by': 'date_request:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!--                 Purchase Request: Action                     -->
+    <!-- ============================================================ -->
+    <record id="action_co_purchase_request" model="ir.actions.act_window">
+        <field name="name">Purchase Requests</field>
+        <field name="res_model">co.purchase.request</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="co_purchase_request_view_search"/>
+        <field name="context">{'search_default_filter_my': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first purchase request
+            </p>
+            <p>
+                Purchase requests allow you to formalize internal purchase needs
+                before converting them to purchase orders.
+            </p>
+        </field>
+        <field name="path">purchase-requests</field>
+    </record>
+
+    <record id="action_co_purchase_request_to_approve" model="ir.actions.act_window">
+        <field name="name">Requests to Approve</field>
+        <field name="res_model">co.purchase.request</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('state', '=', 'submitted')]</field>
+        <field name="path">purchase-requests-approve</field>
+    </record>
+
+</odoo>

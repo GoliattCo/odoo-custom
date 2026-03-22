@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Tree View -->
+    <record id="co_auto_posting_rule_view_list" model="ir.ui.view">
+        <field name="name">co.auto.posting.rule.list</field>
+        <field name="model">co.auto.posting.rule</field>
+        <field name="arch" type="xml">
+            <list string="Auto Posting Rules">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="rule_type"/>
+                <field name="trigger_account_id"
+                       invisible="rule_type != 'account_trigger'"/>
+                <field name="next_execution_date"
+                       invisible="rule_type != 'template_recurring'"/>
+                <field name="active" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="co_auto_posting_rule_view_form" model="ir.ui.view">
+        <field name="name">co.auto.posting.rule.form</field>
+        <field name="model">co.auto.posting.rule</field>
+        <field name="arch" type="xml">
+            <form string="Auto Posting Rule">
+                <sheet>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger"
+                            invisible="active"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="e.g., Cost allocation rule"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="rule_type"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group>
+                            <field name="sequence"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <!-- Account Trigger Page -->
+                        <page string="Account Trigger" name="account_trigger"
+                              invisible="rule_type != 'account_trigger'">
+                            <group>
+                                <group>
+                                    <field name="trigger_account_id"/>
+                                    <field name="trigger_type"/>
+                                </group>
+                                <group>
+                                    <field name="target_journal_id"/>
+                                    <field name="target_debit_account_id"/>
+                                    <field name="target_credit_account_id"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <!-- Percentage Allocation Page -->
+                        <page string="Percentage Allocation" name="percentage_allocation"
+                              invisible="rule_type != 'percentage_allocation'">
+                            <group>
+                                <field name="target_journal_id"/>
+                            </group>
+                            <field name="allocation_line_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="percentage"/>
+                                    <field name="analytic_account_id"/>
+                                    <field name="account_id" optional="hide"/>
+                                    <field name="business_unit_id" optional="hide"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <!-- Template Recurring Page -->
+                        <page string="Template Recurring" name="template_recurring"
+                              invisible="rule_type != 'template_recurring'">
+                            <group>
+                                <group>
+                                    <field name="template_journal_id"/>
+                                    <field name="next_execution_date"/>
+                                </group>
+                                <group>
+                                    <field name="recurring_interval"/>
+                                    <field name="recurring_period"/>
+                                </group>
+                            </group>
+                            <field name="template_line_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="account_id"/>
+                                    <field name="debit"/>
+                                    <field name="credit"/>
+                                    <field name="business_unit_id" optional="hide"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <!-- Description -->
+                        <page string="Notes" name="description">
+                            <field name="description"
+                                   placeholder="Describe when and how this rule should be applied..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="co_auto_posting_rule_view_search" model="ir.ui.view">
+        <field name="name">co.auto.posting.rule.search</field>
+        <field name="model">co.auto.posting.rule</field>
+        <field name="arch" type="xml">
+            <search string="Auto Posting Rules">
+                <field name="name"/>
+                <field name="trigger_account_id"/>
+                <filter name="account_trigger" string="Account Trigger"
+                        domain="[('rule_type', '=', 'account_trigger')]"/>
+                <filter name="percentage_allocation" string="Percentage Allocation"
+                        domain="[('rule_type', '=', 'percentage_allocation')]"/>
+                <filter name="template_recurring" string="Template Recurring"
+                        domain="[('rule_type', '=', 'template_recurring')]"/>
+                <separator/>
+                <filter name="archived" string="Archived"
+                        domain="[('active', '=', False)]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_type" string="Rule Type"
+                            context="{'group_by': 'rule_type'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_co_auto_posting_rule" model="ir.actions.act_window">
+        <field name="name">Auto Posting Rules</field>
+        <field name="res_model">co.auto.posting.rule</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="co_auto_posting_rule_view_search"/>
+        <field name="path">co-auto-posting-rules</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first automatic posting rule
+            </p>
+            <p>
+                Define rules to auto-generate journal entries based on triggers,
+                percentage allocations, or recurring templates.
+            </p>
+        </field>
+    </record>
+
+</odoo>

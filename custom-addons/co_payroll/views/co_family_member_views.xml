@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_co_family_member_form" model="ir.ui.view">
+        <field name="name">co.family.member.form</field>
+        <field name="model">co.family.member</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="employee_id"/>
+                            <field name="name"/>
+                            <field name="relationship"/>
+                            <field name="gender"/>
+                            <field name="birth_date"/>
+                        </group>
+                        <group>
+                            <field name="identification_type"/>
+                            <field name="identification_number"/>
+                            <field name="eps_id"/>
+                            <field name="eps_affiliated"/>
+                            <field name="is_dependent_for_tax"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <field name="notes" placeholder="Notes..."/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_co_family_member_list" model="ir.ui.view">
+        <field name="name">co.family.member.list</field>
+        <field name="model">co.family.member</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="employee_id"/>
+                <field name="name"/>
+                <field name="relationship"/>
+                <field name="birth_date"/>
+                <field name="eps_id"/>
+                <field name="eps_affiliated"/>
+                <field name="is_dependent_for_tax"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_co_family_member_search" model="ir.ui.view">
+        <field name="name">co.family.member.search</field>
+        <field name="model">co.family.member</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="employee_id"/>
+                <field name="name"/>
+                <field name="relationship"/>
+                <filter name="dependents" string="Tax Dependents"
+                        domain="[('is_dependent_for_tax', '=', True)]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_employee" string="Employee"
+                            context="{'group_by': 'employee_id'}"/>
+                    <filter name="group_relationship" string="Relationship"
+                            context="{'group_by': 'relationship'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_co_family_member" model="ir.actions.act_window">
+        <field name="name">Family Members / Dependents</field>
+        <field name="res_model">co.family.member</field>
+        <field name="view_mode">list,form</field>
+        <field name="path">co-family-members</field>
+    </record>
+
+</odoo>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- ARL Entities -->
+        <record id="arl_sura" model="co.arl.entity">
+            <field name="name">ARL SURA</field>
+            <field name="code">ARL001</field>
+            <field name="nit">890903790</field>
+        </record>
+        <record id="arl_positiva" model="co.arl.entity">
+            <field name="name">Positiva Compañía de Seguros</field>
+            <field name="code">ARL002</field>
+            <field name="nit">860011153</field>
+        </record>
+        <record id="arl_colmena" model="co.arl.entity">
+            <field name="name">Colmena Seguros</field>
+            <field name="code">ARL003</field>
+            <field name="nit">860002184</field>
+        </record>
+        <record id="arl_bolivar" model="co.arl.entity">
+            <field name="name">Seguros Bolívar</field>
+            <field name="code">ARL004</field>
+            <field name="nit">860002503</field>
+        </record>
+        <record id="arl_liberty" model="co.arl.entity">
+            <field name="name">Liberty Seguros</field>
+            <field name="code">ARL005</field>
+            <field name="nit">860039988</field>
+        </record>
+        <record id="arl_alfa" model="co.arl.entity">
+            <field name="name">ARL Alfa</field>
+            <field name="code">ARL006</field>
+            <field name="nit">860026058</field>
+        </record>
+        <record id="arl_equidad" model="co.arl.entity">
+            <field name="name">La Equidad Seguros</field>
+            <field name="code">ARL007</field>
+            <field name="nit">860009578</field>
+        </record>
+
+        <!-- ARL Risk Levels (Decreto 1295 de 1994) -->
+        <record id="arl_risk_I" model="co.arl.risk.level">
+            <field name="name">Nivel I - Riesgo Mínimo</field>
+            <field name="level">I</field>
+            <field name="rate">0.522</field>
+        </record>
+        <record id="arl_risk_II" model="co.arl.risk.level">
+            <field name="name">Nivel II - Riesgo Bajo</field>
+            <field name="level">II</field>
+            <field name="rate">1.044</field>
+        </record>
+        <record id="arl_risk_III" model="co.arl.risk.level">
+            <field name="name">Nivel III - Riesgo Medio</field>
+            <field name="level">III</field>
+            <field name="rate">2.436</field>
+        </record>
+        <record id="arl_risk_IV" model="co.arl.risk.level">
+            <field name="name">Nivel IV - Riesgo Alto</field>
+            <field name="level">IV</field>
+            <field name="rate">4.350</field>
+        </record>
+        <record id="arl_risk_V" model="co.arl.risk.level">
+            <field name="name">Nivel V - Riesgo Máximo</field>
+            <field name="level">V</field>
+            <field name="rate">6.960</field>
+        </record>
+    </data>
+</odoo>

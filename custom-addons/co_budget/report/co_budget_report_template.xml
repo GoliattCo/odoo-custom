@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================ -->
+    <!-- Report action -->
+    <!-- ============================================================ -->
+    <record id="action_co_budget_report" model="ir.actions.report">
+        <field name="name">Budget vs Actual</field>
+        <field name="model">co.budget</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">co_budget.co_budget_report_document</field>
+        <field name="report_file">co_budget.co_budget_report_document</field>
+        <field name="binding_model_id" ref="model_co_budget"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- Report template -->
+    <!-- ============================================================ -->
+    <template id="co_budget_report_document">
+        <t t-call="web.html_container">
+
+            <!-- Custom header -->
+            <div class="header">
+                <div class="row" style="align-items: center; padding: 4px 0;">
+                    <div class="col-2" style="text-align: left;">
+                        <img t-if="docs[0].company_id.logo"
+                             t-attf-src="/web/image/res.company/{{ docs[0].company_id.id }}/logo"
+                             style="max-height: 48px; max-width: 120px; object-fit: contain;"/>
+                    </div>
+                    <div class="col-7" style="padding-left: 8px;">
+                        <span style="font-size: 15px; font-weight: 700; color: #2c3e50;">
+                            <t t-out="docs[0].company_id.name"/>
+                        </span>
+                    </div>
+                    <div class="col-3 text-end" style="font-size: 11px; color: #555;">
+                        Page <span class="page"/> / <span class="topage"/>
+                    </div>
+                </div>
+            </div>
+
+            <t t-foreach="docs" t-as="budget">
+                <div class="article">
+                <div class="page">
+
+                    <!-- Title banner -->
+                    <div style="background-color: #2c3e50; color: #ffffff; padding: 8px 12px; margin-bottom: 8px;">
+                        <div style="font-size: 18px; font-weight: 700; letter-spacing: 1px; text-align: center;">
+                            PRESUPUESTO VS REAL
+                        </div>
+                        <div style="font-size: 12px; text-align: center; opacity: 0.85;">
+                            <t t-out="budget.name"/>
+                            &amp;mdash;
+                            <t t-out="budget.date_from" t-options='{"widget": "date"}'/> a
+                            <t t-out="budget.date_to" t-options='{"widget": "date"}'/>
+                        </div>
+                    </div>
+
+                    <!-- Summary -->
+                    <div class="row mb-3">
+                        <div class="col-3 text-center">
+                            <strong>Presupuestado</strong><br/>
+                            <span t-out="budget.total_planned"
+                                  t-options='{"widget": "monetary", "display_currency": budget.currency_id}'/>
+                        </div>
+                        <div class="col-3 text-center">
+                            <strong>Ejecutado</strong><br/>
+                            <span t-out="budget.total_actual"
+                                  t-options='{"widget": "monetary", "display_currency": budget.currency_id}'/>
+                        </div>
+                        <div class="col-3 text-center">
+                            <strong>Variacion</strong><br/>
+                            <span t-out="budget.total_variance"
+                                  t-options='{"widget": "monetary", "display_currency": budget.currency_id}'/>
+                        </div>
+                        <div class="col-3 text-center">
+                            <strong>Ejecutado %</strong><br/>
+                            <span t-out="'%.1f' % budget.total_percentage"/>%
+                        </div>
+                    </div>
+
+                    <!-- Lines table -->
+                    <table class="table table-sm table-striped" style="font-size: 11px;">
+                        <thead>
+                            <tr style="background-color: #34495e; color: #fff;">
+                                <th>Cuenta</th>
+                                <th>Analitica</th>
+                                <th>Periodo</th>
+                                <th class="text-end">Presupuestado</th>
+                                <th class="text-end">Ejecutado</th>
+                                <th class="text-end">Variacion</th>
+                                <th class="text-end">%</th>
+                                <th class="text-center">Alerta</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="budget.line_ids" t-as="line">
+                                <tr t-attf-class="{{ 'table-danger' if line.alert_level == 'exceeded' else ('table-warning' if line.alert_level == 'warning' else '') }}">
+                                    <td><t t-out="line.account_id.display_name"/></td>
+                                    <td><t t-out="line.analytic_account_id.name or '-'"/></td>
+                                    <td>
+                                        <t t-out="line.date_from" t-options='{"widget": "date"}'/>
+                                        -
+                                        <t t-out="line.date_to" t-options='{"widget": "date"}'/>
+                                    </td>
+                                    <td class="text-end">
+                                        <span t-out="line.planned_amount"
+                                              t-options='{"widget": "monetary", "display_currency": line.currency_id}'/>
+                                    </td>
+                                    <td class="text-end">
+                                        <span t-out="line.actual_amount"
+                                              t-options='{"widget": "monetary", "display_currency": line.currency_id}'/>
+                                    </td>
+                                    <td class="text-end">
+                                        <span t-out="line.variance"
+                                              t-options='{"widget": "monetary", "display_currency": line.currency_id}'/>
+                                    </td>
+                                    <td class="text-end">
+                                        <span t-out="'%.1f' % line.percentage"/>%
+                                    </td>
+                                    <td class="text-center">
+                                        <t t-if="line.alert_level == 'exceeded'">
+                                            <span class="badge bg-danger">Excedido</span>
+                                        </t>
+                                        <t t-elif="line.alert_level == 'warning'">
+                                            <span class="badge bg-warning text-dark">Alerta</span>
+                                        </t>
+                                        <t t-else="">
+                                            <span class="badge bg-success">OK</span>
+                                        </t>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                        <tfoot>
+                            <tr style="font-weight: 700; background-color: #ecf0f1;">
+                                <td colspan="3">TOTAL</td>
+                                <td class="text-end">
+                                    <span t-out="budget.total_planned"
+                                          t-options='{"widget": "monetary", "display_currency": budget.currency_id}'/>
+                                </td>
+                                <td class="text-end">
+                                    <span t-out="budget.total_actual"
+                                          t-options='{"widget": "monetary", "display_currency": budget.currency_id}'/>
+                                </td>
+                                <td class="text-end">
+                                    <span t-out="budget.total_variance"
+                                          t-options='{"widget": "monetary", "display_currency": budget.currency_id}'/>
+                                </td>
+                                <td class="text-end">
+                                    <span t-out="'%.1f' % budget.total_percentage"/>%
+                                </td>
+                                <td/>
+                            </tr>
+                        </tfoot>
+                    </table>
+
+                </div>
+                </div>
+            </t>
+        </t>
+    </template>
+
+</odoo>

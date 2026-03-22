@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Earnings -->
+        <record id="concept_basic_salary" model="co.salary.concept">
+            <field name="name">Salario Básico</field>
+            <field name="code">BASIC</field>
+            <field name="concept_type">earning</field>
+            <field name="formula">basic_salary * worked_days / total_days</field>
+            <field name="sequence">10</field>
+        </record>
+        <record id="concept_transport" model="co.salary.concept">
+            <field name="name">Auxilio de Transporte</field>
+            <field name="code">TRANSPORT</field>
+            <field name="concept_type">earning</field>
+            <field name="formula">transport_allowance * worked_days / total_days if basic_salary &lt;= 2 * smlmv else 0</field>
+            <field name="sequence">20</field>
+        </record>
+        <record id="concept_overtime" model="co.salary.concept">
+            <field name="name">Horas Extra y Recargos</field>
+            <field name="code">OVERTIME</field>
+            <field name="concept_type">earning</field>
+            <field name="formula">overtime_amount</field>
+            <field name="sequence">30</field>
+        </record>
+        <record id="concept_commissions" model="co.salary.concept">
+            <field name="name">Comisiones</field>
+            <field name="code">COMMISSIONS</field>
+            <field name="concept_type">earning</field>
+            <field name="formula">commissions</field>
+            <field name="sequence">40</field>
+        </record>
+        <record id="concept_bonuses" model="co.salary.concept">
+            <field name="name">Bonificaciones</field>
+            <field name="code">BONUSES</field>
+            <field name="concept_type">earning</field>
+            <field name="formula">bonuses</field>
+            <field name="sequence">50</field>
+        </record>
+
+        <!-- Deductions -->
+        <record id="concept_eps_employee" model="co.salary.concept">
+            <field name="name">EPS Empleado (4%)</field>
+            <field name="code">EPS_EE</field>
+            <field name="concept_type">deduction</field>
+            <field name="formula">ibc * 0.04</field>
+            <field name="sequence">100</field>
+        </record>
+        <record id="concept_afp_employee" model="co.salary.concept">
+            <field name="name">AFP Empleado (4%)</field>
+            <field name="code">AFP_EE</field>
+            <field name="concept_type">deduction</field>
+            <field name="formula">ibc * 0.04</field>
+            <field name="sequence">110</field>
+        </record>
+        <record id="concept_solidarity" model="co.salary.concept">
+            <field name="name">Fondo de Solidaridad (1%)</field>
+            <field name="code">SOLIDARITY</field>
+            <field name="concept_type">deduction</field>
+            <field name="formula">ibc * 0.01 if ibc >= 4 * smlmv else 0</field>
+            <field name="sequence">120</field>
+        </record>
+
+        <!-- Employer Contributions -->
+        <record id="concept_eps_employer" model="co.salary.concept">
+            <field name="name">EPS Empleador (8.5%)</field>
+            <field name="code">EPS_ER</field>
+            <field name="concept_type">employer</field>
+            <field name="formula">ibc * 0.085</field>
+            <field name="sequence">200</field>
+        </record>
+        <record id="concept_afp_employer" model="co.salary.concept">
+            <field name="name">AFP Empleador (12%)</field>
+            <field name="code">AFP_ER</field>
+            <field name="concept_type">employer</field>
+            <field name="formula">ibc * 0.12</field>
+            <field name="sequence">210</field>
+        </record>
+        <record id="concept_caja" model="co.salary.concept">
+            <field name="name">Caja de Compensación (4%)</field>
+            <field name="code">CAJA</field>
+            <field name="concept_type">employer</field>
+            <field name="formula">ibc * 0.04</field>
+            <field name="sequence">230</field>
+        </record>
+        <record id="concept_icbf" model="co.salary.concept">
+            <field name="name">ICBF (3%)</field>
+            <field name="code">ICBF</field>
+            <field name="concept_type">employer</field>
+            <field name="formula">ibc * 0.03</field>
+            <field name="sequence">240</field>
+        </record>
+        <record id="concept_sena" model="co.salary.concept">
+            <field name="name">SENA (2%)</field>
+            <field name="code">SENA</field>
+            <field name="concept_type">employer</field>
+            <field name="formula">ibc * 0.02</field>
+            <field name="sequence">250</field>
+        </record>
+
+        <!-- Provisions -->
+        <record id="concept_prima" model="co.salary.concept">
+            <field name="name">Prima de Servicios</field>
+            <field name="code">PRIMA</field>
+            <field name="concept_type">provision</field>
+            <field name="formula">(basic_salary + transport_allowance) / 12</field>
+            <field name="sequence">300</field>
+        </record>
+        <record id="concept_cesantias" model="co.salary.concept">
+            <field name="name">Cesantías</field>
+            <field name="code">CESANTIAS</field>
+            <field name="concept_type">provision</field>
+            <field name="formula">(basic_salary + transport_allowance) / 12</field>
+            <field name="sequence">310</field>
+        </record>
+        <record id="concept_int_cesantias" model="co.salary.concept">
+            <field name="name">Intereses sobre Cesantías</field>
+            <field name="code">INT_CESANT</field>
+            <field name="concept_type">provision</field>
+            <field name="formula">(basic_salary + transport_allowance) / 12 * 0.12 / 12</field>
+            <field name="sequence">320</field>
+        </record>
+        <record id="concept_vacaciones" model="co.salary.concept">
+            <field name="name">Vacaciones</field>
+            <field name="code">VACACIONES</field>
+            <field name="concept_type">provision</field>
+            <field name="formula">basic_salary * 15 / 360</field>
+            <field name="sequence">330</field>
+        </record>
+    </data>
+</odoo>

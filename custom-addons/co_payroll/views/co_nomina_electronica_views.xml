@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_co_nomina_electronica_form" model="ir.ui.view">
+        <field name="name">co.nomina.electronica.form</field>
+        <field name="model">co.nomina.electronica</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_generate_xml" string="Generate XML"
+                            type="object" invisible="state != 'draft'"
+                            class="oe_highlight"/>
+                    <button name="action_cancel" string="Cancel"
+                            type="object" invisible="state in ('accepted', 'cancelled')"/>
+                    <button name="action_reset_draft" string="Reset to Draft"
+                            type="object" invisible="state != 'cancelled'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,generated,sent,accepted"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="payslip_id" readonly="state != 'draft'"/>
+                            <field name="employee_id"/>
+                            <field name="document_type"/>
+                            <field name="predecessor_id"/>
+                        </group>
+                        <group>
+                            <field name="generation_date"/>
+                            <field name="period_start"/>
+                            <field name="period_end"/>
+                            <field name="payment_method"/>
+                            <field name="payment_date"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Employer / Employee">
+                            <group>
+                                <group string="Employer">
+                                    <field name="employer_nit"/>
+                                    <field name="employer_name"/>
+                                </group>
+                                <group string="Employee">
+                                    <field name="employee_document_type"/>
+                                    <field name="employee_document_number"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Totals">
+                            <group>
+                                <field name="total_earnings"/>
+                                <field name="total_deductions"/>
+                                <field name="net_pay"/>
+                            </group>
+                        </page>
+                        <page string="DIAN">
+                            <group>
+                                <field name="cune"/>
+                                <field name="dian_status"/>
+                                <field name="xml_filename"/>
+                            </group>
+                            <field name="dian_response" readonly="1"/>
+                        </page>
+                        <page string="XML Content">
+                            <field name="xml_content" readonly="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_co_nomina_electronica_list" model="ir.ui.view">
+        <field name="name">co.nomina.electronica.list</field>
+        <field name="model">co.nomina.electronica</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="payslip_id"/>
+                <field name="employee_id"/>
+                <field name="document_type"/>
+                <field name="generation_date"/>
+                <field name="net_pay"/>
+                <field name="dian_status" widget="badge"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'draft'"
+                       decoration-warning="state == 'generated'"
+                       decoration-success="state == 'accepted'"
+                       decoration-danger="state in ('rejected', 'cancelled')"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_co_nomina_electronica" model="ir.actions.act_window">
+        <field name="name">Nomina Electronica</field>
+        <field name="res_model">co.nomina.electronica</field>
+        <field name="view_mode">list,form</field>
+        <field name="path">co-nomina-electronica</field>
+    </record>
+
+</odoo>

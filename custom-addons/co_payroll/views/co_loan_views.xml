@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_co_loan_form" model="ir.ui.view">
+        <field name="name">co.loan.form</field>
+        <field name="model">co.loan</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_approve" string="Approve"
+                            type="object" invisible="state != 'draft'"
+                            class="oe_highlight"
+                            groups="co_payroll.group_co_payroll_manager"/>
+                    <button name="action_start_paying" string="Start Payments"
+                            type="object" invisible="state != 'approved'"/>
+                    <button name="action_mark_paid" string="Mark as Paid"
+                            type="object" invisible="state != 'paying'"/>
+                    <button name="action_cancel" string="Cancel"
+                            type="object" invisible="state in ('paid', 'cancelled')"/>
+                    <button name="action_reset_draft" string="Reset to Draft"
+                            type="object" invisible="state != 'cancelled'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,approved,paying,paid"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="employee_id" readonly="state != 'draft'"/>
+                            <field name="loan_date" readonly="state != 'draft'"/>
+                            <field name="amount" readonly="state != 'draft'"/>
+                        </group>
+                        <group>
+                            <field name="monthly_installment" readonly="state != 'draft'"/>
+                            <field name="number_of_installments"/>
+                            <field name="total_paid"/>
+                            <field name="remaining_balance"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Payments">
+                            <field name="payment_ids">
+                                <list>
+                                    <field name="date"/>
+                                    <field name="amount" sum="Total Paid"/>
+                                    <field name="payslip_id"/>
+                                    <field name="notes"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Notes">
+                            <field name="notes"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_co_loan_list" model="ir.ui.view">
+        <field name="name">co.loan.list</field>
+        <field name="model">co.loan</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="loan_date"/>
+                <field name="amount" sum="Total"/>
+                <field name="monthly_installment"/>
+                <field name="total_paid" sum="Total Paid"/>
+                <field name="remaining_balance" sum="Remaining"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'draft'"
+                       decoration-warning="state == 'approved'"
+                       decoration-primary="state == 'paying'"
+                       decoration-success="state == 'paid'"
+                       decoration-danger="state == 'cancelled'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_co_loan_search" model="ir.ui.view">
+        <field name="name">co.loan.search</field>
+        <field name="model">co.loan</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="employee_id"/>
+                <filter name="active_loans" string="Active"
+                        domain="[('state', 'in', ['approved', 'paying'])]"/>
+                <filter name="paid_loans" string="Paid"
+                        domain="[('state', '=', 'paid')]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_employee" string="Employee"
+                            context="{'group_by': 'employee_id'}"/>
+                    <filter name="group_state" string="Status"
+                            context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_co_loan" model="ir.actions.act_window">
+        <field name="name">Employee Loans</field>
+        <field name="res_model">co.loan</field>
+        <field name="view_mode">list,form</field>
+        <field name="path">co-loans</field>
+        <field name="context">{'search_default_active_loans': 1}</field>
+    </record>
+
+</odoo>

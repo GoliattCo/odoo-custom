@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ── Depreciation Line: List View ────────────────────────────────── -->
+    <record id="co_fixed_asset_depreciation_line_view_list" model="ir.ui.view">
+        <field name="name">co.fixed.asset.depreciation.line.list</field>
+        <field name="model">co.fixed.asset.depreciation.line</field>
+        <field name="arch" type="xml">
+            <list decoration-success="move_id" decoration-muted="not move_id">
+                <field name="asset_id"/>
+                <field name="sequence" string="#"/>
+                <field name="date"/>
+                <field name="amount" sum="Total"/>
+                <field name="cumulative_amount"/>
+                <field name="remaining_value"/>
+                <field name="move_id"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ── Depreciation Line: Form View ────────────────────────────────── -->
+    <record id="co_fixed_asset_depreciation_line_view_form" model="ir.ui.view">
+        <field name="name">co.fixed.asset.depreciation.line.form</field>
+        <field name="model">co.fixed.asset.depreciation.line</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="asset_id"/>
+                            <field name="sequence"/>
+                            <field name="date"/>
+                        </group>
+                        <group>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="amount"/>
+                            <field name="cumulative_amount"/>
+                            <field name="remaining_value"/>
+                            <field name="move_id"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ── Depreciation Line: Action ───────────────────────────────────── -->
+    <record id="co_fixed_asset_depreciation_line_action" model="ir.actions.act_window">
+        <field name="name">Depreciation Lines</field>
+        <field name="res_model">co.fixed.asset.depreciation.line</field>
+        <field name="view_mode">list,form</field>
+        <field name="path">fixed-asset-depreciations</field>
+    </record>
+
+</odoo>

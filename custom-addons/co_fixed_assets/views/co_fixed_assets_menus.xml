@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ── Top-level menu under Accounting ─────────────────────────────── -->
+    <menuitem id="menu_fixed_assets_root"
+              name="Fixed Assets"
+              parent="account.menu_finance"
+              sequence="30"/>
+
+    <!-- ── Sub-menus ───────────────────────────────────────────────────── -->
+    <menuitem id="menu_fixed_assets"
+              name="Assets"
+              parent="menu_fixed_assets_root"
+              action="co_fixed_asset_action"
+              sequence="10"/>
+
+    <menuitem id="menu_fixed_asset_categories"
+              name="Categories"
+              parent="menu_fixed_assets_root"
+              action="co_fixed_asset_category_action"
+              sequence="20"/>
+
+    <menuitem id="menu_fixed_asset_depreciations"
+              name="Depreciation Lines"
+              parent="menu_fixed_assets_root"
+              action="co_fixed_asset_depreciation_line_action"
+              sequence="30"/>
+
+    <menuitem id="menu_fixed_asset_maintenance"
+              name="Maintenance"
+              parent="menu_fixed_assets_root"
+              action="co_fixed_asset_maintenance_action"
+              sequence="40"/>
+
+</odoo>

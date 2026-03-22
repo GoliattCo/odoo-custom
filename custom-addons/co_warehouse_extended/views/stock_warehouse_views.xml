@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================ -->
+    <!--          stock.warehouse: Inherit Form                       -->
+    <!-- ============================================================ -->
+    <record id="stock_warehouse_view_form_inherit" model="ir.ui.view">
+        <field name="name">stock.warehouse.form.co_warehouse_extended</field>
+        <field name="model">stock.warehouse</field>
+        <field name="inherit_id" ref="stock.view_warehouse"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='company_id']" position="after">
+                <field name="warehouse_type"/>
+                <field name="responsible_user_id"/>
+            </xpath>
+            <xpath expr="//page[last()]" position="after">
+                <page string="CO Extended" name="co_extended">
+                    <group>
+                        <field name="warehouse_notes" placeholder="Internal notes about this warehouse..."/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!--          stock.warehouse: Inherit List                       -->
+    <!-- ============================================================ -->
+    <record id="stock_warehouse_view_list_inherit" model="ir.ui.view">
+        <field name="name">stock.warehouse.list.co_warehouse_extended</field>
+        <field name="model">stock.warehouse</field>
+        <field name="inherit_id" ref="stock.view_warehouse_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="warehouse_type" optional="show"/>
+                <field name="responsible_user_id" optional="show" widget="many2one_avatar_user"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

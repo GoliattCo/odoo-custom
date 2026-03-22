@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================ -->
+    <!--          stock.picking: Inherit Form (Goods Entry)           -->
+    <!-- ============================================================ -->
+    <record id="stock_picking_form_inherit" model="ir.ui.view">
+        <field name="name">stock.picking.form.co_warehouse_extended</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <!-- Add quality check and invoice fields in a new tab -->
+            <xpath expr="//page[@name='extra']" position="after">
+                <page string="CO Quality &amp; Invoice" name="co_quality_invoice">
+                    <group>
+                        <group string="Quality Check">
+                            <field name="quality_check_passed"/>
+                            <field name="quality_check_notes"/>
+                        </group>
+                        <group string="Invoice Link">
+                            <field name="co_auto_invoice"
+                                   invisible="picking_type_code != 'incoming'"/>
+                            <field name="co_invoice_id"/>
+                            <button name="action_view_invoice" type="object"
+                                    string="View Invoice" class="oe_link"
+                                    invisible="not co_invoice_id"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

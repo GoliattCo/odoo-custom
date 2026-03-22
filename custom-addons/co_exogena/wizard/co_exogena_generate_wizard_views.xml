@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="co_exogena_generate_wizard_form" model="ir.ui.view">
+        <field name="name">co.exogena.generate.wizard.form</field>
+        <field name="model">co.exogena.generate.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <group string="Reporte">
+                        <field name="report_id" readonly="1"/>
+                        <field name="fiscal_year"/>
+                        <field name="company_id"/>
+                    </group>
+                    <group string="Opciones">
+                        <field name="overwrite_existing"/>
+                    </group>
+                </group>
+                <separator string="Formatos a generar"/>
+                <group>
+                    <group>
+                        <field name="generate_1001"/>
+                        <field name="generate_1003"/>
+                        <field name="generate_1005"/>
+                        <field name="generate_1006"/>
+                        <field name="generate_1007"/>
+                    </group>
+                    <group>
+                        <field name="generate_1008"/>
+                        <field name="generate_1009"/>
+                        <field name="generate_1010"/>
+                        <field name="generate_1012"/>
+                    </group>
+                </group>
+                <separator string="Cuantias minimas"/>
+                <group>
+                    <group>
+                        <field name="min_amount_1001"/>
+                        <field name="min_amount_1007"/>
+                    </group>
+                    <group>
+                        <field name="min_amount_1008"/>
+                        <field name="min_amount_1009"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="action_generate"
+                            string="Generar"
+                            type="object"
+                            class="btn-primary"/>
+                    <button string="Cancelar" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_kardex_list" model="ir.ui.view">
+        <field name="name">co.restaurant.kardex.list</field>
+        <field name="model">co.restaurant.kardex</field>
+        <field name="arch" type="xml">
+            <list create="false" edit="false" delete="false"
+                  decoration-success="move_type == 'in'"
+                  decoration-danger="move_type == 'out'">
+                <field name="date"/>
+                <field name="product_id"/>
+                <field name="reference"/>
+                <field name="origin" optional="show"/>
+                <field name="move_type" widget="badge"
+                       decoration-success="move_type == 'in'"
+                       decoration-danger="move_type == 'out'"
+                       decoration-info="move_type == 'internal'"
+                />
+                <field name="location_id" optional="show"/>
+                <field name="location_dest_id" optional="show"/>
+                <field name="warehouse_id" optional="show"/>
+                <field name="qty_in" sum="Total In"/>
+                <field name="qty_out" sum="Total Out"/>
+                <field name="balance"/>
+                <field name="uom_id" optional="hide"/>
+                <field name="unit_cost" optional="show"/>
+                <field name="total_cost_in" sum="Cost In" optional="show"/>
+                <field name="total_cost_out" sum="Cost Out" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_kardex_search" model="ir.ui.view">
+        <field name="name">co.restaurant.kardex.search</field>
+        <field name="model">co.restaurant.kardex</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="product_id"/>
+                <field name="reference"/>
+                <field name="origin"/>
+                <field name="warehouse_id"/>
+                <filter name="filter_entries" string="Entries"
+                        domain="[('move_type', '=', 'in')]"/>
+                <filter name="filter_exits" string="Exits"
+                        domain="[('move_type', '=', 'out')]"/>
+                <separator/>
+                <filter name="filter_today" string="Today"
+                        domain="[('date', '>=', (context_today()).strftime('%%Y-%%m-%%d')),
+                                 ('date', '&lt;', (context_today() + relativedelta(days=1)).strftime('%%Y-%%m-%%d'))]"/>
+                <filter name="filter_this_month" string="This Month"
+                        domain="[('date', '>=', (context_today()).strftime('%%Y-%%m-01'))]"/>
+                <group expand="0" string="Group By">
+                    <filter name="groupby_product" string="Product"
+                            context="{'group_by': 'product_id'}"/>
+                    <filter name="groupby_product_categ" string="Product Category"
+                            context="{'group_by': 'product_categ_id'}"/>
+                    <filter name="groupby_warehouse" string="Warehouse"
+                            context="{'group_by': 'warehouse_id'}"/>
+                    <filter name="groupby_move_type" string="Type"
+                            context="{'group_by': 'move_type'}"/>
+                    <filter name="groupby_date" string="Date"
+                            context="{'group_by': 'date:day'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_kardex_pivot" model="ir.ui.view">
+        <field name="name">co.restaurant.kardex.pivot</field>
+        <field name="model">co.restaurant.kardex</field>
+        <field name="arch" type="xml">
+            <pivot>
+                <field name="product_id" type="row"/>
+                <field name="date" type="col" interval="month"/>
+                <field name="qty_in" type="measure"/>
+                <field name="qty_out" type="measure"/>
+                <field name="total_cost_in" type="measure"/>
+                <field name="total_cost_out" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="action_kardex" model="ir.actions.act_window">
+        <field name="name">Kardex</field>
+        <field name="res_model">co.restaurant.kardex</field>
+        <field name="view_mode">list,pivot</field>
+        <field name="path">restaurant-kardex</field>
+        <field name="search_view_id" ref="view_kardex_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No inventory movements found
+            </p>
+            <p>
+                The kardex shows all inventory entries and exits with running balances.
+            </p>
+        </field>
+    </record>
+
+    <menuitem
+        id="menu_kardex"
+        name="Kardex"
+        parent="menu_co_restaurant_inventory"
+        action="action_kardex"
+        sequence="10"
+    />
+</odoo>

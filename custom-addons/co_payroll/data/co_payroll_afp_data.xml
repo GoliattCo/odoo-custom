@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="afp_colpensiones" model="co.afp.entity">
+            <field name="name">Colpensiones</field>
+            <field name="code">AFP001</field>
+            <field name="nit">900336004</field>
+            <field name="fund_type">public</field>
+        </record>
+        <record id="afp_porvenir" model="co.afp.entity">
+            <field name="name">Porvenir</field>
+            <field name="code">AFP002</field>
+            <field name="nit">800144331</field>
+            <field name="fund_type">private</field>
+        </record>
+        <record id="afp_proteccion" model="co.afp.entity">
+            <field name="name">Protección</field>
+            <field name="code">AFP003</field>
+            <field name="nit">800138188</field>
+            <field name="fund_type">private</field>
+        </record>
+        <record id="afp_colfondos" model="co.afp.entity">
+            <field name="name">Colfondos (Habitat)</field>
+            <field name="code">AFP004</field>
+            <field name="nit">800198644</field>
+            <field name="fund_type">private</field>
+        </record>
+        <record id="afp_skandia" model="co.afp.entity">
+            <field name="name">Old Mutual (Skandia)</field>
+            <field name="code">AFP005</field>
+            <field name="nit">800185032</field>
+            <field name="fund_type">private</field>
+        </record>
+    </data>
+</odoo>

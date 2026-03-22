@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ================================================================ -->
+    <!-- Format: Tree view                                                 -->
+    <!-- ================================================================ -->
+    <record id="co_exogena_format_tree" model="ir.ui.view">
+        <field name="name">co.exogena.format.tree</field>
+        <field name="model">co.exogena.format</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="format_code"/>
+                <field name="name"/>
+                <field name="report_id"/>
+                <field name="line_count"/>
+                <field name="total_amount" sum="Total"/>
+                <field name="total_base_amount" sum="Total"/>
+                <field name="total_retention" sum="Total"/>
+                <field name="total_vat" sum="Total"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ================================================================ -->
+    <!-- Format: Form view                                                 -->
+    <!-- ================================================================ -->
+    <record id="co_exogena_format_form" model="ir.ui.view">
+        <field name="name">co.exogena.format.form</field>
+        <field name="model">co.exogena.format</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_download_csv"
+                            string="Descargar CSV"
+                            type="object"
+                            class="btn-primary"
+                            icon="fa-download"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_lines"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-list">
+                            <field name="line_count" widget="statinfo"
+                                   string="Lineas"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="format_code"/>
+                            <field name="report_id"/>
+                        </group>
+                        <group>
+                            <field name="total_amount"/>
+                            <field name="total_base_amount"/>
+                            <field name="total_retention"/>
+                            <field name="total_vat"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Lineas" name="lines">
+                            <field name="line_ids">
+                                <list editable="bottom">
+                                    <field name="partner_nit"/>
+                                    <field name="partner_nit_dv"/>
+                                    <field name="partner_name"/>
+                                    <field name="concept_code"/>
+                                    <field name="amount" sum="Total"/>
+                                    <field name="base_amount" sum="Total"/>
+                                    <field name="retention_amount" sum="Total"/>
+                                    <field name="vat_amount" sum="Total"/>
+                                    <field name="participation_pct"
+                                           invisible="parent.format_code != '1010'"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ================================================================ -->
+    <!-- Format: Search view                                               -->
+    <!-- ================================================================ -->
+    <record id="co_exogena_format_search" model="ir.ui.view">
+        <field name="name">co.exogena.format.search</field>
+        <field name="model">co.exogena.format</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="format_code"/>
+                <field name="report_id"/>
+                <group expand="0" string="Agrupar por">
+                    <filter name="group_format" string="Formato"
+                            context="{'group_by': 'format_code'}"/>
+                    <filter name="group_report" string="Reporte"
+                            context="{'group_by': 'report_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ================================================================ -->
+    <!-- Format: Action                                                    -->
+    <!-- ================================================================ -->
+    <record id="co_exogena_format_action" model="ir.actions.act_window">
+        <field name="name">Formatos Exogena</field>
+        <field name="res_model">co.exogena.format</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="co_exogena_format_search"/>
+        <field name="path">exogena-formatos</field>
+    </record>
+</odoo>

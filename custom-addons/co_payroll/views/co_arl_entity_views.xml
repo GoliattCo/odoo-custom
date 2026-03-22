@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_co_arl_entity_form" model="ir.ui.view">
+        <field name="name">co.arl.entity.form</field>
+        <field name="model">co.arl.entity</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="code"/>
+                        </group>
+                        <group>
+                            <field name="nit"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_co_arl_entity_list" model="ir.ui.view">
+        <field name="name">co.arl.entity.list</field>
+        <field name="model">co.arl.entity</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="code"/>
+                <field name="name"/>
+                <field name="nit"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ARL Risk Levels -->
+    <record id="view_co_arl_risk_level_list" model="ir.ui.view">
+        <field name="name">co.arl.risk.level.list</field>
+        <field name="model">co.arl.risk.level</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="level"/>
+                <field name="name"/>
+                <field name="rate"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_co_arl_entity" model="ir.actions.act_window">
+        <field name="name">ARL Entities</field>
+        <field name="res_model">co.arl.entity</field>
+        <field name="view_mode">list,form</field>
+        <field name="path">co-arl-entities</field>
+    </record>
+
+</odoo>

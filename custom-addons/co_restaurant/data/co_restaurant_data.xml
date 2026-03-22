@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Sequences -->
+    <record id="seq_co_restaurant_production" model="ir.sequence">
+        <field name="name">Restaurant Production</field>
+        <field name="code">co.restaurant.production</field>
+        <field name="prefix">PROD/%(year)s/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="seq_co_restaurant_waste" model="ir.sequence">
+        <field name="name">Restaurant Waste</field>
+        <field name="code">co.restaurant.waste</field>
+        <field name="prefix">WASTE/%(year)s/</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <!-- Default Recipe Categories -->
+    <record id="recipe_categ_entrees" model="co.restaurant.recipe.category">
+        <field name="name">Entradas</field>
+        <field name="sequence">10</field>
+    </record>
+    <record id="recipe_categ_soups" model="co.restaurant.recipe.category">
+        <field name="name">Sopas y Cremas</field>
+        <field name="sequence">20</field>
+    </record>
+    <record id="recipe_categ_main" model="co.restaurant.recipe.category">
+        <field name="name">Platos Fuertes</field>
+        <field name="sequence">30</field>
+    </record>
+    <record id="recipe_categ_sides" model="co.restaurant.recipe.category">
+        <field name="name">Acompañamientos</field>
+        <field name="sequence">40</field>
+    </record>
+    <record id="recipe_categ_desserts" model="co.restaurant.recipe.category">
+        <field name="name">Postres</field>
+        <field name="sequence">50</field>
+    </record>
+    <record id="recipe_categ_beverages" model="co.restaurant.recipe.category">
+        <field name="name">Bebidas</field>
+        <field name="sequence">60</field>
+    </record>
+    <record id="recipe_categ_sauces" model="co.restaurant.recipe.category">
+        <field name="name">Salsas y Aderezos</field>
+        <field name="sequence">70</field>
+    </record>
+    <record id="recipe_categ_bakery" model="co.restaurant.recipe.category">
+        <field name="name">Panadería y Repostería</field>
+        <field name="sequence">80</field>
+    </record>
+</odoo>

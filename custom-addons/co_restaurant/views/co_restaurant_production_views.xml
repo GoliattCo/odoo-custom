@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ==================== Production ==================== -->
+    <record id="view_production_list" model="ir.ui.view">
+        <field name="name">co.restaurant.production.list</field>
+        <field name="model">co.restaurant.production</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="state == 'cancelled'"
+                  decoration-success="state == 'done'">
+                <field name="name"/>
+                <field name="date"/>
+                <field name="recipe_id"/>
+                <field name="origin" widget="badge"/>
+                <field name="quantity"/>
+                <field name="actual_quantity"/>
+                <field name="variance_qty" optional="show"/>
+                <field name="total_cost" sum="Total"/>
+                <field name="cost_per_portion" optional="show"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'done'"
+                       decoration-info="state == 'draft'"
+                       decoration-warning="state == 'in_progress'"
+                       decoration-danger="state == 'cancelled'"
+                />
+            </list>
+        </field>
+    </record>
+
+    <record id="view_production_form" model="ir.ui.view">
+        <field name="name">co.restaurant.production.form</field>
+        <field name="model">co.restaurant.production</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_confirm" string="Confirm"
+                            type="object" class="oe_highlight"
+                            invisible="state != 'draft'"
+                    />
+                    <button name="action_start" string="Start Production"
+                            type="object" class="oe_highlight"
+                            invisible="state != 'confirmed'"
+                    />
+                    <button name="action_done" string="Mark Done"
+                            type="object" class="oe_highlight"
+                            invisible="state != 'in_progress'"
+                    />
+                    <button name="action_cancel" string="Cancel"
+                            type="object"
+                            invisible="state in ('done', 'cancelled')"
+                    />
+                    <button name="action_reset_draft" string="Reset to Draft"
+                            type="object"
+                            invisible="state not in ('cancelled',)"
+                    />
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,confirmed,in_progress,done"
+                    />
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="recipe_id"/>
+                            <field name="date"/>
+                            <field name="origin"/>
+                            <field name="pos_order_ref"
+                                   invisible="origin != 'pos'"/>
+                        </group>
+                        <group>
+                            <field name="quantity"/>
+                            <field name="actual_quantity"/>
+                            <field name="variance_qty"/>
+                            <field name="variance_pct" widget="progressbar"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="warehouse_id"/>
+                            <field name="location_id"
+                                   domain="[('usage', '=', 'internal')]"/>
+                        </group>
+                        <group>
+                            <field name="total_cost"/>
+                            <field name="cost_per_portion"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="company_id" invisible="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Ingredients Consumed" name="ingredients">
+                            <field name="line_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="product_id"/>
+                                    <field name="planned_qty"/>
+                                    <field name="actual_qty"/>
+                                    <field name="uom_id"/>
+                                    <field name="unit_cost"/>
+                                    <field name="subtotal" sum="Total"/>
+                                    <field name="variance_qty"/>
+                                    <field name="variance_pct" optional="show"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="notes"
+                                   placeholder="Production notes..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_production_search" model="ir.ui.view">
+        <field name="name">co.restaurant.production.search</field>
+        <field name="model">co.restaurant.production</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="recipe_id"/>
+                <field name="date"/>
+                <filter name="filter_today" string="Today"
+                        domain="[('date', '>=', (context_today()).strftime('%%Y-%%m-%%d')),
+                                 ('date', '&lt;', (context_today() + relativedelta(days=1)).strftime('%%Y-%%m-%%d'))]"/>
+                <filter name="filter_this_week" string="This Week"
+                        domain="[('date', '>=', (context_today() - relativedelta(weekday=0, weeks=1)).strftime('%%Y-%%m-%%d'))]"/>
+                <filter name="filter_done" string="Done"
+                        domain="[('state', '=', 'done')]"/>
+                <separator/>
+                <filter name="filter_manual" string="Manual"
+                        domain="[('origin', '=', 'manual')]"/>
+                <filter name="filter_pos" string="POS"
+                        domain="[('origin', '=', 'pos')]"/>
+                <group expand="0" string="Group By">
+                    <filter name="groupby_recipe" string="Recipe"
+                            context="{'group_by': 'recipe_id'}"/>
+                    <filter name="groupby_date" string="Date"
+                            context="{'group_by': 'date:day'}"/>
+                    <filter name="groupby_state" string="Status"
+                            context="{'group_by': 'state'}"/>
+                    <filter name="groupby_origin" string="Origin"
+                            context="{'group_by': 'origin'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_production_pivot" model="ir.ui.view">
+        <field name="name">co.restaurant.production.pivot</field>
+        <field name="model">co.restaurant.production</field>
+        <field name="arch" type="xml">
+            <pivot>
+                <field name="recipe_id" type="row"/>
+                <field name="date" type="col" interval="month"/>
+                <field name="quantity" type="measure"/>
+                <field name="actual_quantity" type="measure"/>
+                <field name="total_cost" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="action_production" model="ir.actions.act_window">
+        <field name="name">Production</field>
+        <field name="res_model">co.restaurant.production</field>
+        <field name="view_mode">list,form,pivot</field>
+        <field name="path">restaurant-production</field>
+        <field name="search_view_id" ref="view_production_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Record your first production
+            </p>
+            <p>
+                Track ingredient consumption for each recipe production batch.
+            </p>
+        </field>
+    </record>
+
+    <menuitem
+        id="menu_production_list"
+        name="Production Orders"
+        parent="menu_co_restaurant_production"
+        action="action_production"
+        sequence="10"
+    />
+</odoo>

@@ -1,0 +1,21 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_recipe_category_user,co.restaurant.recipe.category user,model_co_restaurant_recipe_category,group_restaurant_user,1,0,0,0
+access_recipe_category_manager,co.restaurant.recipe.category manager,model_co_restaurant_recipe_category,group_restaurant_manager,1,1,1,1
+access_recipe_user,co.restaurant.recipe user,model_co_restaurant_recipe,group_restaurant_user,1,0,0,0
+access_recipe_manager,co.restaurant.recipe manager,model_co_restaurant_recipe,group_restaurant_manager,1,1,1,1
+access_recipe_line_user,co.restaurant.recipe.line user,model_co_restaurant_recipe_line,group_restaurant_user,1,0,0,0
+access_recipe_line_manager,co.restaurant.recipe.line manager,model_co_restaurant_recipe_line,group_restaurant_manager,1,1,1,1
+access_production_user,co.restaurant.production user,model_co_restaurant_production,group_restaurant_user,1,1,1,0
+access_production_manager,co.restaurant.production manager,model_co_restaurant_production,group_restaurant_manager,1,1,1,1
+access_production_line_user,co.restaurant.production.line user,model_co_restaurant_production_line,group_restaurant_user,1,1,1,0
+access_production_line_manager,co.restaurant.production.line manager,model_co_restaurant_production_line,group_restaurant_manager,1,1,1,1
+access_presentation_equiv_user,co.restaurant.presentation.equiv user,model_co_restaurant_presentation_equiv,group_restaurant_user,1,0,0,0
+access_presentation_equiv_manager,co.restaurant.presentation.equiv manager,model_co_restaurant_presentation_equiv,group_restaurant_manager,1,1,1,1
+access_kardex_user,co.restaurant.kardex user,model_co_restaurant_kardex,group_restaurant_user,1,0,0,0
+access_kardex_manager,co.restaurant.kardex manager,model_co_restaurant_kardex,group_restaurant_manager,1,0,0,0
+access_waste_user,co.restaurant.waste user,model_co_restaurant_waste,group_restaurant_user,1,1,1,0
+access_waste_manager,co.restaurant.waste manager,model_co_restaurant_waste,group_restaurant_manager,1,1,1,1
+access_cost_analysis_user,co.restaurant.cost.analysis user,model_co_restaurant_cost_analysis,group_restaurant_user,1,0,0,0
+access_cost_analysis_manager,co.restaurant.cost.analysis manager,model_co_restaurant_cost_analysis,group_restaurant_manager,1,0,0,0
+access_inventory_adj_manager,co.restaurant.inventory.adjustment manager,model_co_restaurant_inventory_adjustment,group_restaurant_manager,1,1,1,1
+access_inventory_adj_line_manager,co.restaurant.inventory.adjustment.line manager,model_co_restaurant_inventory_adjustment_line,group_restaurant_manager,1,1,1,1

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_inventory_adjustment_form" model="ir.ui.view">
+        <field name="name">co.restaurant.inventory.adjustment.form</field>
+        <field name="model">co.restaurant.inventory.adjustment</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <group>
+                        <field name="date"/>
+                        <field name="location_id"/>
+                    </group>
+                    <group>
+                        <field name="notes" placeholder="Notes..."/>
+                        <field name="company_id" invisible="1"/>
+                    </group>
+                </group>
+                <div class="mb-3">
+                    <button name="action_load_products" string="Load Products"
+                            type="object" class="btn-secondary"
+                            help="Load all products with stock in the selected location."
+                    />
+                </div>
+                <field name="line_ids">
+                    <list editable="bottom">
+                        <field name="product_id"/>
+                        <field name="uom_id"/>
+                        <field name="theoretical_qty"/>
+                        <field name="counted_qty"/>
+                        <field name="variance_qty"
+                               decoration-danger="variance_qty &lt; 0"
+                               decoration-success="variance_qty > 0"/>
+                        <field name="variance_pct"/>
+                        <field name="unit_cost"/>
+                        <field name="variance_cost"
+                               decoration-danger="variance_cost &lt; 0"
+                               decoration-success="variance_cost > 0"
+                               sum="Total Variance"/>
+                    </list>
+                </field>
+                <footer>
+                    <button name="action_apply_adjustment" string="Apply Adjustment"
+                            type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_inventory_adjustment" model="ir.actions.act_window">
+        <field name="name">Inventory Adjustment</field>
+        <field name="res_model">co.restaurant.inventory.adjustment</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem
+        id="menu_inventory_adjustment"
+        name="Inventory Adjustment"
+        parent="menu_co_restaurant_inventory"
+        action="action_inventory_adjustment"
+        sequence="20"
+    />
+</odoo>

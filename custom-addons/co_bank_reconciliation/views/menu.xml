@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Top-level menu under Accounting -->
+    <menuitem id="menu_co_bank_reconciliation_root"
+              name="Bank Reconciliation"
+              parent="account.menu_finance"
+              sequence="35"/>
+
+    <!-- Sub-menus -->
+    <menuitem id="menu_co_bank_import_wizard"
+              name="Import Statement"
+              parent="menu_co_bank_reconciliation_root"
+              action="action_co_bank_import_wizard"
+              sequence="10"/>
+
+    <menuitem id="menu_co_bank_statement_import"
+              name="Statements"
+              parent="menu_co_bank_reconciliation_root"
+              action="action_co_bank_statement_import"
+              sequence="20"/>
+
+    <menuitem id="menu_co_bank_statement_line"
+              name="All Lines"
+              parent="menu_co_bank_reconciliation_root"
+              action="action_co_bank_statement_line"
+              sequence="30"/>
+
+    <!-- Configuration -->
+    <menuitem id="menu_co_bank_config"
+              name="Configuration"
+              parent="menu_co_bank_reconciliation_root"
+              sequence="90"/>
+
+    <menuitem id="menu_co_bank_format"
+              name="Bank Formats"
+              parent="menu_co_bank_config"
+              action="action_co_bank_format"
+              sequence="10"/>
+
+</odoo>

@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================ -->
+    <!-- Budget Line: Tree (standalone) -->
+    <!-- ============================================================ -->
+    <record id="co_budget_line_view_list" model="ir.ui.view">
+        <field name="name">co.budget.line.list</field>
+        <field name="model">co.budget.line</field>
+        <field name="arch" type="xml">
+            <list string="Budget Lines"
+                  decoration-danger="alert_level == 'exceeded'"
+                  decoration-warning="alert_level == 'warning'">
+                <field name="budget_id"/>
+                <field name="budget_position_id" optional="show"/>
+                <field name="account_id"/>
+                <field name="analytic_account_id" optional="show"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <field name="planned_amount" sum="Total Planned"/>
+                <field name="actual_amount" sum="Total Actual"/>
+                <field name="variance" sum="Total Variance"/>
+                <field name="percentage" widget="progressbar"/>
+                <field name="alert_level" widget="badge"
+                       decoration-success="alert_level == 'ok'"
+                       decoration-warning="alert_level == 'warning'"
+                       decoration-danger="alert_level == 'exceeded'"/>
+                <field name="budget_state" widget="badge"
+                       decoration-info="budget_state == 'draft'"
+                       decoration-success="budget_state == 'confirmed'"
+                       optional="hide"/>
+                <field name="currency_id" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- Budget Line: Form (standalone) -->
+    <!-- ============================================================ -->
+    <record id="co_budget_line_view_form" model="ir.ui.view">
+        <field name="name">co.budget.line.form</field>
+        <field name="model">co.budget.line</field>
+        <field name="arch" type="xml">
+            <form string="Budget Line">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="budget_id"/>
+                            <field name="account_id"/>
+                            <field name="analytic_account_id"/>
+                            <field name="budget_position_id"/>
+                        </group>
+                        <group>
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                            <field name="planned_amount"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                    </group>
+                    <group string="Execution">
+                        <group>
+                            <field name="actual_amount"/>
+                            <field name="variance"/>
+                        </group>
+                        <group>
+                            <field name="percentage" widget="progressbar"/>
+                            <field name="alert_level" widget="badge"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- Budget Line: Pivot -->
+    <!-- ============================================================ -->
+    <record id="co_budget_line_view_pivot" model="ir.ui.view">
+        <field name="name">co.budget.line.pivot</field>
+        <field name="model">co.budget.line</field>
+        <field name="arch" type="xml">
+            <pivot string="Budget vs Actual">
+                <field name="account_id" type="row"/>
+                <field name="date_from" type="col" interval="month"/>
+                <field name="planned_amount" type="measure"/>
+                <field name="actual_amount" type="measure"/>
+                <field name="variance" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- Budget Line: Graph -->
+    <!-- ============================================================ -->
+    <record id="co_budget_line_view_graph" model="ir.ui.view">
+        <field name="name">co.budget.line.graph</field>
+        <field name="model">co.budget.line</field>
+        <field name="arch" type="xml">
+            <graph string="Budget vs Actual" type="bar">
+                <field name="account_id"/>
+                <field name="planned_amount" type="measure"/>
+                <field name="actual_amount" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- Budget Line: Search -->
+    <!-- ============================================================ -->
+    <record id="co_budget_line_view_search" model="ir.ui.view">
+        <field name="name">co.budget.line.search</field>
+        <field name="model">co.budget.line</field>
+        <field name="arch" type="xml">
+            <search string="Budget Lines">
+                <field name="budget_id"/>
+                <field name="account_id"/>
+                <field name="analytic_account_id"/>
+                <field name="budget_position_id"/>
+                <separator/>
+                <filter string="Over Budget" name="exceeded"
+                        domain="[('alert_level', '=', 'exceeded')]"/>
+                <filter string="Warning" name="warning"
+                        domain="[('alert_level', '=', 'warning')]"/>
+                <filter string="OK" name="ok"
+                        domain="[('alert_level', '=', 'ok')]"/>
+                <separator/>
+                <filter string="Confirmed Budgets" name="confirmed"
+                        domain="[('budget_state', '=', 'confirmed')]"/>
+                <separator/>
+                <group expand="0" string="Group By">
+                    <filter string="Budget" name="groupby_budget" context="{'group_by': 'budget_id'}"/>
+                    <filter string="Account" name="groupby_account" context="{'group_by': 'account_id'}"/>
+                    <filter string="Analytic Account" name="groupby_analytic" context="{'group_by': 'analytic_account_id'}"/>
+                    <filter string="Position" name="groupby_position" context="{'group_by': 'budget_position_id'}"/>
+                    <filter string="Period" name="groupby_period" context="{'group_by': 'date_from:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- Budget Lines: Action (all lines) -->
+    <!-- ============================================================ -->
+    <record id="action_co_budget_line" model="ir.actions.act_window">
+        <field name="name">Budget Lines</field>
+        <field name="res_model">co.budget.line</field>
+        <field name="view_mode">list,pivot,graph,form</field>
+        <field name="path">budget-lines</field>
+        <field name="context">{'search_default_confirmed': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No budget lines found
+            </p>
+            <p>
+                Budget lines are created from within a budget record.
+            </p>
+        </field>
+    </record>
+
+</odoo>

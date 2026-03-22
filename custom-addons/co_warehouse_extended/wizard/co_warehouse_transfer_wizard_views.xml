@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================ -->
+    <!--      Inter-Warehouse Transfer Wizard: Form                   -->
+    <!-- ============================================================ -->
+    <record id="co_warehouse_transfer_wizard_view_form" model="ir.ui.view">
+        <field name="name">co.warehouse.transfer.wizard.form</field>
+        <field name="model">co.warehouse.transfer.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Inter-Warehouse Transfer">
+                <group>
+                    <group>
+                        <field name="source_warehouse_id"/>
+                        <field name="dest_warehouse_id"/>
+                    </group>
+                    <group>
+                        <field name="scheduled_date"/>
+                        <field name="company_id" groups="base.group_multi_company"/>
+                    </group>
+                </group>
+                <field name="line_ids">
+                    <list editable="bottom">
+                        <field name="product_id"/>
+                        <field name="quantity"/>
+                        <field name="product_uom_id"/>
+                    </list>
+                </field>
+                <group>
+                    <field name="notes" placeholder="Transfer notes..."/>
+                </group>
+                <footer>
+                    <button name="action_create_transfer" type="object"
+                            string="Create Transfer" class="oe_highlight"/>
+                    <button string="Cancel" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

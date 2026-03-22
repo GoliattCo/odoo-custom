@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- UVT withholding tax table is implemented in Python code
+         (co_payslip.py _compute_uvt_tax method) following Art. 383
+         of the Colombian Tax Code (Estatuto Tributario).
+
+         This file is a placeholder for reference.
+         The table ranges are:
+         0 - 95 UVT: 0%
+         95 - 150 UVT: 19% marginal
+         150 - 360 UVT: 28% marginal
+         360 - 640 UVT: 33% marginal
+         640 - 945 UVT: 35% marginal
+         945 - 2300 UVT: 37% marginal
+         2300+ UVT: 39% marginal
+    -->
+</odoo>

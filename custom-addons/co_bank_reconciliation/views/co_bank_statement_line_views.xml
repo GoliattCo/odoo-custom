@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================ -->
+    <!-- co.bank.statement.line — Form                                -->
+    <!-- ============================================================ -->
+    <record id="view_co_bank_statement_line_form" model="ir.ui.view">
+        <field name="name">co.bank.statement.line.form</field>
+        <field name="model">co.bank.statement.line</field>
+        <field name="arch" type="xml">
+            <form string="Statement Line">
+                <header>
+                    <button name="action_unreconcile"
+                            type="object"
+                            string="Un-reconcile"
+                            invisible="reconciled == False"
+                            confirm="Remove the reconciliation for this line?"/>
+                    <button name="action_open_matched_entry"
+                            type="object"
+                            string="Open Matched Entry"
+                            class="oe_highlight"
+                            invisible="reconciled == False"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group string="Transaction">
+                            <field name="statement_id"/>
+                            <field name="date"/>
+                            <field name="reference"/>
+                            <field name="description"/>
+                            <field name="amount"/>
+                            <field name="balance"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                        <group string="Reconciliation">
+                            <field name="reconciled"/>
+                            <field name="match_type"/>
+                            <field name="partner_id"/>
+                            <field name="payment_id"/>
+                            <field name="move_id"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="notes"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- co.bank.statement.line — List                                -->
+    <!-- ============================================================ -->
+    <record id="view_co_bank_statement_line_list" model="ir.ui.view">
+        <field name="name">co.bank.statement.line.list</field>
+        <field name="model">co.bank.statement.line</field>
+        <field name="arch" type="xml">
+            <list string="Statement Lines"
+                  decoration-success="reconciled == True"
+                  decoration-warning="reconciled == False">
+                <field name="date"/>
+                <field name="reference"/>
+                <field name="description"/>
+                <field name="amount" sum="Total"/>
+                <field name="balance"/>
+                <field name="partner_id"/>
+                <field name="reconciled"/>
+                <field name="match_type"/>
+                <field name="payment_id" optional="hide"/>
+                <field name="move_id" optional="hide"/>
+                <field name="statement_id"/>
+                <field name="currency_id" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- co.bank.statement.line — Search                              -->
+    <!-- ============================================================ -->
+    <record id="view_co_bank_statement_line_search" model="ir.ui.view">
+        <field name="name">co.bank.statement.line.search</field>
+        <field name="model">co.bank.statement.line</field>
+        <field name="arch" type="xml">
+            <search string="Statement Lines">
+                <field name="reference"/>
+                <field name="description"/>
+                <field name="partner_id"/>
+                <field name="statement_id"/>
+                <filter name="filter_reconciled" string="Reconciled" domain="[('reconciled', '=', True)]"/>
+                <filter name="filter_unreconciled" string="Unreconciled" domain="[('reconciled', '=', False)]"/>
+                <separator/>
+                <filter name="filter_incoming" string="Incoming" domain="[('amount', '&gt;', 0)]"/>
+                <filter name="filter_outgoing" string="Outgoing" domain="[('amount', '&lt;', 0)]"/>
+                <separator/>
+                <group expand="0" string="Group By">
+                    <filter name="groupby_statement" string="Statement" context="{'group_by': 'statement_id'}"/>
+                    <filter name="groupby_partner" string="Partner" context="{'group_by': 'partner_id'}"/>
+                    <filter name="groupby_date" string="Date" context="{'group_by': 'date:month'}"/>
+                    <filter name="groupby_reconciled" string="Reconciled" context="{'group_by': 'reconciled'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- co.bank.statement.line — Action (standalone)                 -->
+    <!-- ============================================================ -->
+    <record id="action_co_bank_statement_line" model="ir.actions.act_window">
+        <field name="name">All Statement Lines</field>
+        <field name="res_model">co.bank.statement.line</field>
+        <field name="view_mode">list,form</field>
+        <field name="path">co-bank-statement-lines</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No statement lines yet
+            </p>
+            <p>
+                Import a bank statement to see individual transaction lines here.
+            </p>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,70 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# * co_restaurant
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-03-22 00:00+0000\n"
+"PO-Revision-Date: 2026-03-22 00:00+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. module: co_restaurant
+#: model:ir.model,name:co_restaurant.model_co_restaurant_recipe
+msgid "Restaurant Recipe"
+msgstr ""
+
+#. module: co_restaurant
+#: model:ir.model,name:co_restaurant.model_co_restaurant_recipe_line
+msgid "Recipe Ingredient Line"
+msgstr ""
+
+#. module: co_restaurant
+#: model:ir.model,name:co_restaurant.model_co_restaurant_recipe_category
+msgid "Recipe Category"
+msgstr ""
+
+#. module: co_restaurant
+#: model:ir.model,name:co_restaurant.model_co_restaurant_production
+msgid "Recipe Production"
+msgstr ""
+
+#. module: co_restaurant
+#: model:ir.model,name:co_restaurant.model_co_restaurant_production_line
+msgid "Production Ingredient Line"
+msgstr ""
+
+#. module: co_restaurant
+#: model:ir.model,name:co_restaurant.model_co_restaurant_presentation_equiv
+msgid "Product Presentation Equivalence"
+msgstr ""
+
+#. module: co_restaurant
+#: model:ir.model,name:co_restaurant.model_co_restaurant_kardex
+msgid "Inventory Kardex"
+msgstr ""
+
+#. module: co_restaurant
+#: model:ir.model,name:co_restaurant.model_co_restaurant_waste
+msgid "Production Waste Record"
+msgstr ""
+
+#. module: co_restaurant
+#: model:ir.model,name:co_restaurant.model_co_restaurant_cost_analysis
+msgid "Recipe Cost Analysis"
+msgstr ""
+
+#. module: co_restaurant
+#: model:ir.model,name:co_restaurant.model_co_restaurant_inventory_adjustment
+msgid "Inventory Adjustment Wizard"
+msgstr ""
+
+#. module: co_restaurant
+#: model:ir.model,name:co_restaurant.model_co_restaurant_inventory_adjustment_line
+msgid "Inventory Adjustment Line"
+msgstr ""

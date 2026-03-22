@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ================================================================ -->
+    <!-- Concept views and action (must be defined before menus)          -->
+    <!-- ================================================================ -->
+
+    <!-- Concept Tree View -->
+    <record id="co_exogena_concept_tree" model="ir.ui.view">
+        <field name="name">co.exogena.concept.tree</field>
+        <field name="model">co.exogena.concept</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="format_code"/>
+                <field name="code"/>
+                <field name="name"/>
+                <field name="min_amount"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Concept Form View -->
+    <record id="co_exogena_concept_form" model="ir.ui.view">
+        <field name="name">co.exogena.concept.form</field>
+        <field name="model">co.exogena.concept</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Nombre del concepto"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="code"/>
+                            <field name="format_code"/>
+                            <field name="min_amount"/>
+                            <field name="active"/>
+                        </group>
+                        <group>
+                            <field name="tax_group_id"/>
+                            <field name="account_ids" widget="many2many_tags"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="description"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Concept Search View -->
+    <record id="co_exogena_concept_search" model="ir.ui.view">
+        <field name="name">co.exogena.concept.search</field>
+        <field name="model">co.exogena.concept</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="format_code"/>
+                <filter name="active" string="Activos"
+                        domain="[('active', '=', True)]"/>
+                <group expand="0" string="Agrupar por">
+                    <filter name="group_format" string="Formato"
+                            context="{'group_by': 'format_code'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Concept Action -->
+    <record id="co_exogena_concept_action" model="ir.actions.act_window">
+        <field name="name">Conceptos Exogena</field>
+        <field name="res_model">co.exogena.concept</field>
+        <field name="view_mode">list,form</field>
+        <field name="path">exogena-conceptos</field>
+    </record>
+
+    <!-- ================================================================ -->
+    <!-- Menu items under Accounting > Reports > Exogena                   -->
+    <!-- ================================================================ -->
+
+    <!-- Parent menu under Accounting > Reporting -->
+    <menuitem id="menu_co_exogena_root"
+              name="Exogena"
+              parent="account.menu_finance_reports"
+              sequence="90"/>
+
+    <menuitem id="menu_co_exogena_report"
+              name="Reportes Exogena"
+              parent="menu_co_exogena_root"
+              action="co_exogena_report_action"
+              sequence="10"/>
+
+    <menuitem id="menu_co_exogena_format"
+              name="Formatos"
+              parent="menu_co_exogena_root"
+              action="co_exogena_format_action"
+              sequence="20"/>
+
+    <menuitem id="menu_co_exogena_line"
+              name="Lineas detalle"
+              parent="menu_co_exogena_root"
+              action="co_exogena_line_action"
+              sequence="30"/>
+
+    <!-- Configuration menu -->
+    <menuitem id="menu_co_exogena_config"
+              name="Exogena"
+              parent="account.account_management_menu"
+              sequence="90"/>
+
+    <menuitem id="menu_co_exogena_concept"
+              name="Conceptos Exogena"
+              parent="menu_co_exogena_config"
+              action="co_exogena_concept_action"
+              sequence="10"/>
+
+</odoo>

@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="action_report_co_payslip" model="ir.actions.report">
+        <field name="name">Payslip (Comprobante de Nomina)</field>
+        <field name="model">co.payslip</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">co_payroll.report_co_payslip</field>
+        <field name="report_file">co_payroll.report_co_payslip</field>
+        <field name="print_report_name">'Nomina_%s_%s' % (object.employee_id.name, object.name)</field>
+        <field name="binding_model_id" ref="model_co_payslip"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_co_payslip">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <div class="article o_report_layout_standard"
+                     t-att-data-oe-model="o and o._name"
+                     t-att-data-oe-id="o and o.id">
+
+                    <!-- Custom header -->
+                    <div class="header" style="border-bottom: 2px solid #333; padding-bottom: 8px; margin-bottom: 16px;">
+                        <div class="row">
+                            <div class="col-3">
+                                <img t-if="o.company_id.logo"
+                                     t-att-src="image_data_uri(o.company_id.logo)"
+                                     style="max-height: 60px;" alt="Logo"/>
+                            </div>
+                            <div class="col-6 text-center">
+                                <h3 t-field="o.company_id.name"/>
+                                <p style="margin: 0;">NIT: <span t-field="o.company_id.vat"/></p>
+                                <h4 style="margin-top: 8px;">COMPROBANTE DE NOMINA</h4>
+                            </div>
+                            <div class="col-3 text-end">
+                                <p><strong t-field="o.name"/></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Employee info -->
+                    <div class="row" style="margin-bottom: 16px;">
+                        <div class="col-6">
+                            <table class="table table-sm table-borderless">
+                                <tr>
+                                    <td><strong>Empleado:</strong></td>
+                                    <td><span t-field="o.employee_id"/></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Departamento:</strong></td>
+                                    <td><span t-field="o.department_id"/></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Cargo:</strong></td>
+                                    <td><span t-field="o.employee_id.job_id"/></td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-6">
+                            <table class="table table-sm table-borderless">
+                                <tr>
+                                    <td><strong>Periodo:</strong></td>
+                                    <td>
+                                        <span t-field="o.date_from"/> -
+                                        <span t-field="o.date_to"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Dias Trabajados:</strong></td>
+                                    <td><span t-field="o.worked_days"/></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Frecuencia:</strong></td>
+                                    <td><span t-field="o.pay_frequency"/></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Two-column: Earnings and Deductions -->
+                    <div class="row">
+                        <div class="col-6">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr style="background-color: #2c5f2d; color: white;">
+                                        <th colspan="2">DEVENGADOS</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="o.line_ids.filtered(lambda l: l.line_type == 'earning')" t-as="line">
+                                        <tr>
+                                            <td><span t-field="line.name"/></td>
+                                            <td class="text-end">
+                                                <span t-field="line.amount"
+                                                      t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                    <tr style="font-weight: bold; border-top: 2px solid #333;">
+                                        <td>TOTAL DEVENGADOS</td>
+                                        <td class="text-end">
+                                            <span t-field="o.total_earnings"
+                                                  t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-6">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr style="background-color: #c0392b; color: white;">
+                                        <th colspan="2">DEDUCCIONES</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="o.line_ids.filtered(lambda l: l.line_type == 'deduction')" t-as="line">
+                                        <tr>
+                                            <td><span t-field="line.name"/></td>
+                                            <td class="text-end">
+                                                <span t-field="line.amount"
+                                                      t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                    <tr style="font-weight: bold; border-top: 2px solid #333;">
+                                        <td>TOTAL DEDUCCIONES</td>
+                                        <td class="text-end">
+                                            <span t-field="o.total_deductions"
+                                                  t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Net Pay -->
+                    <div class="row" style="margin-top: 16px;">
+                        <div class="col-12">
+                            <table class="table table-sm">
+                                <tr style="font-weight: bold; font-size: 1.2em; background-color: #2c3e50; color: white;">
+                                    <td>NETO A PAGAR</td>
+                                    <td class="text-end">
+                                        <span t-field="o.net_pay"
+                                              t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Employer contributions (informative) -->
+                    <div class="row" style="margin-top: 16px;">
+                        <div class="col-6">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr style="background-color: #7f8c8d; color: white;">
+                                        <th colspan="2">APORTES EMPLEADOR</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="o.line_ids.filtered(lambda l: l.line_type == 'employer')" t-as="line">
+                                        <tr>
+                                            <td><span t-field="line.name"/></td>
+                                            <td class="text-end">
+                                                <span t-field="line.amount"
+                                                      t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                    <tr style="font-weight: bold; border-top: 2px solid #333;">
+                                        <td>TOTAL APORTES</td>
+                                        <td class="text-end">
+                                            <span t-field="o.total_employer"
+                                                  t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-6">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr style="background-color: #7f8c8d; color: white;">
+                                        <th colspan="2">PROVISIONES</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="o.line_ids.filtered(lambda l: l.line_type == 'provision')" t-as="line">
+                                        <tr>
+                                            <td><span t-field="line.name"/></td>
+                                            <td class="text-end">
+                                                <span t-field="line.amount"
+                                                      t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                    <tr style="font-weight: bold; border-top: 2px solid #333;">
+                                        <td>TOTAL PROVISIONES</td>
+                                        <td class="text-end">
+                                            <span t-field="o.total_provisions"
+                                                  t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Signature lines -->
+                    <div class="row" style="margin-top: 48px;">
+                        <div class="col-5 text-center">
+                            <hr style="border-top: 1px solid #333;"/>
+                            <p>Empleador</p>
+                        </div>
+                        <div class="col-2"/>
+                        <div class="col-5 text-center">
+                            <hr style="border-top: 1px solid #333;"/>
+                            <p>Empleado</p>
+                        </div>
+                    </div>
+
+                </div>
+            </t>
+        </t>
+    </template>
+
+</odoo>

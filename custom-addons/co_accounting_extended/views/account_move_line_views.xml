@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Inherit journal items list to add business_unit_id and cost_center_notes -->
+    <record id="view_move_line_list_inherit" model="ir.ui.view">
+        <field name="name">account.move.line.list.inherit.co.ext</field>
+        <field name="model">account.move.line</field>
+        <field name="inherit_id" ref="account.view_move_line_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="inside">
+                <field name="business_unit_id" string="Business Unit" optional="hide"/>
+                <field name="cost_center_notes" string="CC Notes" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Inherit journal items form to add business_unit_id and cost_center_notes -->
+    <record id="view_move_line_form_inherit" model="ir.ui.view">
+        <field name="name">account.move.line.form.inherit.co.ext</field>
+        <field name="model">account.move.line</field>
+        <field name="inherit_id" ref="account.view_move_line_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group string="Colombian Extensions">
+                    <field name="business_unit_id"/>
+                    <field name="cost_center_notes"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Inherit the journal entry form (account.move) to show business_unit_id in the line items -->
+    <record id="view_move_form_inherit" model="ir.ui.view">
+        <field name="name">account.move.form.inherit.co.ext</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='line_ids']//list//field[@name='analytic_distribution']"
+                   position="after">
+                <field name="business_unit_id" string="BU" optional="hide"/>
+                <field name="cost_center_notes" string="CC Notes" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

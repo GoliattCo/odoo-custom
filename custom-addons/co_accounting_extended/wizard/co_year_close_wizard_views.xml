@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Wizard Form View -->
+    <record id="co_year_close_wizard_view_form" model="ir.ui.view">
+        <field name="name">co.year.close.wizard.form</field>
+        <field name="model">co.year.close.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Year-Close Entry">
+                <group>
+                    <group>
+                        <field name="fiscal_year"/>
+                        <field name="date_close"/>
+                        <field name="journal_id"/>
+                    </group>
+                    <group>
+                        <field name="pnl_summary_account_id"/>
+                        <field name="retained_earnings_account_id"/>
+                        <field name="company_id" groups="base.group_multi_company"/>
+                    </group>
+                </group>
+                <div class="alert alert-warning" role="alert">
+                    <strong>This wizard will generate a journal entry that:</strong>
+                    <ol>
+                        <li>Closes income accounts (PUC class 4) to P&amp;L summary</li>
+                        <li>Closes expense accounts (PUC classes 5, 6) to P&amp;L summary</li>
+                        <li>Transfers net result to retained earnings (PUC 3605)</li>
+                    </ol>
+                    <p>The entry will be created in <strong>draft</strong> state for review before posting.</p>
+                </div>
+                <footer>
+                    <button name="action_generate_year_close" type="object"
+                            string="Generate Year-Close Entry"
+                            class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_co_year_close_wizard" model="ir.actions.act_window">
+        <field name="name">Year-Close Entry</field>
+        <field name="res_model">co.year.close.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="path">co-year-close</field>
+    </record>
+
+</odoo>

@@ -1,0 +1,10 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_co_budget_user,co.budget user,model_co_budget,co_budget.group_co_budget_user,1,1,1,0
+access_co_budget_manager,co.budget manager,model_co_budget,co_budget.group_co_budget_manager,1,1,1,1
+access_co_budget_readonly,co.budget readonly,model_co_budget,account.group_account_readonly,1,0,0,0
+access_co_budget_line_user,co.budget.line user,model_co_budget_line,co_budget.group_co_budget_user,1,1,1,0
+access_co_budget_line_manager,co.budget.line manager,model_co_budget_line,co_budget.group_co_budget_manager,1,1,1,1
+access_co_budget_line_readonly,co.budget.line readonly,model_co_budget_line,account.group_account_readonly,1,0,0,0
+access_co_budget_position_user,co.budget.position user,model_co_budget_position,co_budget.group_co_budget_user,1,1,1,0
+access_co_budget_position_manager,co.budget.position manager,model_co_budget_position,co_budget.group_co_budget_manager,1,1,1,1
+access_co_budget_position_readonly,co.budget.position readonly,model_co_budget_position,account.group_account_readonly,1,0,0,0

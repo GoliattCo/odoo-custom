@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================ -->
+    <!-- co.bank.format — Form                                        -->
+    <!-- ============================================================ -->
+    <record id="view_co_bank_format_form" model="ir.ui.view">
+        <field name="name">co.bank.format.form</field>
+        <field name="model">co.bank.format</field>
+        <field name="arch" type="xml">
+            <form string="Bank Format">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="e.g. Bancolombia - CSV"/></h1>
+                    </div>
+                    <group>
+                        <group string="General">
+                            <field name="code"/>
+                            <field name="active"/>
+                            <field name="sequence"/>
+                        </group>
+                        <group string="File Structure">
+                            <field name="delimiter"/>
+                            <field name="encoding"/>
+                            <field name="skip_header_lines"/>
+                            <field name="skip_footer_lines"/>
+                            <field name="date_format"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Column Mapping (0-based index)">
+                            <field name="col_date"/>
+                            <field name="col_reference"/>
+                            <field name="col_description"/>
+                            <field name="col_debit"/>
+                            <field name="col_credit"/>
+                            <field name="col_amount"/>
+                            <field name="col_balance"/>
+                        </group>
+                        <group string="Number Format">
+                            <field name="thousands_separator"/>
+                            <field name="decimal_separator"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="notes" placeholder="Additional notes about this format..."/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- co.bank.format — List                                        -->
+    <!-- ============================================================ -->
+    <record id="view_co_bank_format_list" model="ir.ui.view">
+        <field name="name">co.bank.format.list</field>
+        <field name="model">co.bank.format</field>
+        <field name="arch" type="xml">
+            <list string="Bank Formats">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="delimiter"/>
+                <field name="encoding"/>
+                <field name="date_format"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- co.bank.format — Action                                      -->
+    <!-- ============================================================ -->
+    <record id="action_co_bank_format" model="ir.actions.act_window">
+        <field name="name">Bank Formats</field>
+        <field name="res_model">co.bank.format</field>
+        <field name="view_mode">list,form</field>
+        <field name="path">co-bank-formats</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Define a new bank file format
+            </p>
+            <p>
+                Configure column mappings, delimiters, encodings, and number formats
+                for each bank's flat file export.
+            </p>
+        </field>
+    </record>
+
+</odoo>

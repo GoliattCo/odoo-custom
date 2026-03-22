@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Tree View -->
+    <record id="co_formulated_concept_view_list" model="ir.ui.view">
+        <field name="name">co.formulated.concept.list</field>
+        <field name="model">co.formulated.concept</field>
+        <field name="arch" type="xml">
+            <list string="Formulated Concepts">
+                <field name="sequence" widget="handle"/>
+                <field name="code"/>
+                <field name="name"/>
+                <field name="formula"/>
+                <field name="computed_value" string="Value"/>
+                <field name="display_in_reports"/>
+                <field name="currency_id" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="co_formulated_concept_view_form" model="ir.ui.view">
+        <field name="name">co.formulated.concept.form</field>
+        <field name="model">co.formulated.concept</field>
+        <field name="arch" type="xml">
+            <form string="Formulated Concept">
+                <header>
+                    <button name="action_evaluate" type="object"
+                            string="Evaluate Now" class="oe_highlight"
+                            icon="fa-calculator"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger"
+                            invisible="active"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="e.g., Gross Profit"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="code"/>
+                            <field name="display_in_reports"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group>
+                            <field name="computed_value"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                    </group>
+                    <separator string="Formula"/>
+                    <field name="formula" widget="ace" options="{'mode': 'python'}"/>
+                    <div class="alert alert-info" role="alert">
+                        <strong>Available functions:</strong>
+                        <ul>
+                            <li><code>balance("4")</code> - Sum of balances for accounts starting with "4"</li>
+                            <li><code>account_balance("4101")</code> - Balance of exact account code "4101"</li>
+                            <li><code>abs(), round(), min(), max(), sum()</code> - Standard Python builtins</li>
+                        </ul>
+                        <strong>Example:</strong>
+                        <code>balance("4") - balance("5") - balance("6")</code>
+                    </div>
+                    <separator string="Description"/>
+                    <field name="description"
+                           placeholder="Describe what this concept calculates..."/>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="co_formulated_concept_view_search" model="ir.ui.view">
+        <field name="name">co.formulated.concept.search</field>
+        <field name="model">co.formulated.concept</field>
+        <field name="arch" type="xml">
+            <search string="Formulated Concepts">
+                <field name="name" string="Name or Code"
+                       filter_domain="['|', ('name', 'ilike', self), ('code', 'ilike', self)]"/>
+                <filter name="in_reports" string="In Reports"
+                        domain="[('display_in_reports', '=', True)]"/>
+                <filter name="archived" string="Archived"
+                        domain="[('active', '=', False)]"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_co_formulated_concept" model="ir.actions.act_window">
+        <field name="name">Formulated Concepts</field>
+        <field name="res_model">co.formulated.concept</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="co_formulated_concept_view_search"/>
+        <field name="path">co-formulated-concepts</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first formulated concept
+            </p>
+            <p>
+                Define calculation formulas that compute values from account balances.
+                Use functions like balance("4") to reference account class totals.
+            </p>
+        </field>
+    </record>
+
+</odoo>

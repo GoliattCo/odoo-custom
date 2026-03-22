@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_waste_list" model="ir.ui.view">
+        <field name="name">co.restaurant.waste.list</field>
+        <field name="model">co.restaurant.waste</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="state == 'confirmed'">
+                <field name="name"/>
+                <field name="date"/>
+                <field name="product_id"/>
+                <field name="waste_type" widget="badge"
+                       decoration-danger="waste_type == 'spoilage'"
+                       decoration-warning="waste_type in ('preparation', 'expired')"
+                       decoration-info="waste_type == 'overproduction'"
+                />
+                <field name="quantity"/>
+                <field name="uom_id"/>
+                <field name="unit_cost"/>
+                <field name="total_cost" sum="Total"/>
+                <field name="recipe_id" optional="show"/>
+                <field name="responsible_id" widget="many2one_avatar_user" optional="show"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'draft'"
+                       decoration-success="state == 'confirmed'"
+                />
+            </list>
+        </field>
+    </record>
+
+    <record id="view_waste_form" model="ir.ui.view">
+        <field name="name">co.restaurant.waste.form</field>
+        <field name="model">co.restaurant.waste</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_confirm" string="Confirm"
+                            type="object" class="oe_highlight"
+                            invisible="state != 'draft'"
+                    />
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,confirmed"
+                    />
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="date"/>
+                            <field name="waste_type"/>
+                            <field name="product_id"/>
+                            <field name="quantity"/>
+                            <field name="uom_id"/>
+                        </group>
+                        <group>
+                            <field name="unit_cost"/>
+                            <field name="total_cost"/>
+                            <field name="recipe_id"/>
+                            <field name="production_id"
+                                   domain="[('recipe_id', '=', recipe_id)]"/>
+                            <field name="location_id"
+                                   domain="[('usage', '=', 'internal')]"/>
+                            <field name="responsible_id"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="company_id" invisible="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="notes" placeholder="Describe the waste..."/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_waste_search" model="ir.ui.view">
+        <field name="name">co.restaurant.waste.search</field>
+        <field name="model">co.restaurant.waste</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="product_id"/>
+                <field name="recipe_id"/>
+                <filter name="filter_spoilage" string="Spoilage"
+                        domain="[('waste_type', '=', 'spoilage')]"/>
+                <filter name="filter_preparation" string="Preparation"
+                        domain="[('waste_type', '=', 'preparation')]"/>
+                <filter name="filter_overproduction" string="Overproduction"
+                        domain="[('waste_type', '=', 'overproduction')]"/>
+                <separator/>
+                <filter name="filter_this_month" string="This Month"
+                        domain="[('date', '>=', (context_today()).strftime('%%Y-%%m-01'))]"/>
+                <group expand="0" string="Group By">
+                    <filter name="groupby_waste_type" string="Waste Type"
+                            context="{'group_by': 'waste_type'}"/>
+                    <filter name="groupby_product" string="Product"
+                            context="{'group_by': 'product_id'}"/>
+                    <filter name="groupby_recipe" string="Recipe"
+                            context="{'group_by': 'recipe_id'}"/>
+                    <filter name="groupby_responsible" string="Responsible"
+                            context="{'group_by': 'responsible_id'}"/>
+                    <filter name="groupby_date" string="Date"
+                            context="{'group_by': 'date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_waste_pivot" model="ir.ui.view">
+        <field name="name">co.restaurant.waste.pivot</field>
+        <field name="model">co.restaurant.waste</field>
+        <field name="arch" type="xml">
+            <pivot>
+                <field name="waste_type" type="row"/>
+                <field name="product_id" type="row"/>
+                <field name="date" type="col" interval="month"/>
+                <field name="quantity" type="measure"/>
+                <field name="total_cost" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="action_waste" model="ir.actions.act_window">
+        <field name="name">Waste Records</field>
+        <field name="res_model">co.restaurant.waste</field>
+        <field name="view_mode">list,form,pivot</field>
+        <field name="path">restaurant-waste</field>
+        <field name="search_view_id" ref="view_waste_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No waste recorded yet
+            </p>
+            <p>
+                Track spoilage, preparation waste, overproduction and other losses.
+            </p>
+        </field>
+    </record>
+
+    <menuitem
+        id="menu_waste_list"
+        name="Waste Records"
+        parent="menu_co_restaurant_waste_parent"
+        action="action_waste"
+        sequence="10"
+    />
+</odoo>

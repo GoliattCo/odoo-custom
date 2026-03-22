@@ -1,0 +1,1 @@
+from . import co_restaurant_inventory_adjustment

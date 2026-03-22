@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="module_category_co_payroll" model="ir.module.category">
+        <field name="name">Colombian Payroll</field>
+        <field name="sequence">30</field>
+    </record>
+
+    <record id="group_co_payroll_user" model="res.groups">
+        <field name="name">User</field>
+        <field name="category_id" ref="module_category_co_payroll"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="group_co_payroll_manager" model="res.groups">
+        <field name="name">Manager</field>
+        <field name="category_id" ref="module_category_co_payroll"/>
+        <field name="implied_ids" eval="[(4, ref('group_co_payroll_user'))]"/>
+    </record>
+
+    <!-- Sequences -->
+    <record id="seq_co_hiring_request" model="ir.sequence">
+        <field name="name">Hiring Request</field>
+        <field name="code">co.hiring.request</field>
+        <field name="prefix">HR-%(year)s-</field>
+        <field name="padding">4</field>
+    </record>
+
+    <record id="seq_co_payslip" model="ir.sequence">
+        <field name="name">Payslip</field>
+        <field name="code">co.payslip</field>
+        <field name="prefix">NOM-%(year)s%(month)s-</field>
+        <field name="padding">4</field>
+    </record>
+
+    <record id="seq_co_loan" model="ir.sequence">
+        <field name="name">Employee Loan</field>
+        <field name="code">co.loan</field>
+        <field name="prefix">LOAN-%(year)s-</field>
+        <field name="padding">4</field>
+    </record>
+
+    <record id="seq_co_nomina_electronica" model="ir.sequence">
+        <field name="name">Nómina Electrónica</field>
+        <field name="code">co.nomina.electronica</field>
+        <field name="prefix">NE-%(year)s%(month)s-</field>
+        <field name="padding">4</field>
+    </record>
+
+</odoo>

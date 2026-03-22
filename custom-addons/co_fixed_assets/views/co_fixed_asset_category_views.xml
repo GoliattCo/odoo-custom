@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ── Category: List View ─────────────────────────────────────────── -->
+    <record id="co_fixed_asset_category_view_list" model="ir.ui.view">
+        <field name="name">co.fixed.asset.category.list</field>
+        <field name="model">co.fixed.asset.category</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="code" optional="show"/>
+                <field name="name"/>
+                <field name="depreciation_method"/>
+                <field name="useful_life"/>
+                <field name="asset_count"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ── Category: Form View ─────────────────────────────────────────── -->
+    <record id="co_fixed_asset_category_view_form" model="ir.ui.view">
+        <field name="name">co.fixed.asset.category.form</field>
+        <field name="model">co.fixed.asset.category</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_assets" type="object"
+                                class="oe_stat_button" icon="fa-building-o">
+                            <field name="asset_count" widget="statinfo" string="Assets"/>
+                        </button>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="code"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Depreciation Settings" name="depreciation">
+                            <group>
+                                <group>
+                                    <field name="depreciation_method"/>
+                                    <field name="useful_life"/>
+                                    <field name="salvage_percentage"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Accounting" name="accounting">
+                            <group>
+                                <group>
+                                    <field name="journal_id"/>
+                                    <field name="asset_account_id"/>
+                                </group>
+                                <group>
+                                    <field name="depreciation_account_id"/>
+                                    <field name="expense_account_id"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ── Category: Action ────────────────────────────────────────────── -->
+    <record id="co_fixed_asset_category_action" model="ir.actions.act_window">
+        <field name="name">Asset Categories</field>
+        <field name="res_model">co.fixed.asset.category</field>
+        <field name="view_mode">list,form</field>
+        <field name="path">fixed-asset-categories</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first asset category
+            </p>
+            <p>
+                Asset categories define default depreciation settings and accounts.
+            </p>
+        </field>
+    </record>
+
+</odoo>

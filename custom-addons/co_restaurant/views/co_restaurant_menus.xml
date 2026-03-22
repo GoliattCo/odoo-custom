@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Root Menu -->
+    <menuitem
+        id="menu_co_restaurant_root"
+        name="Restaurant"
+        web_icon="co_restaurant,static/description/icon.png"
+        sequence="45"
+    />
+
+    <!-- Level 1 Menus -->
+    <menuitem
+        id="menu_co_restaurant_recipes"
+        name="Recipes"
+        parent="menu_co_restaurant_root"
+        sequence="10"
+    />
+    <menuitem
+        id="menu_co_restaurant_production"
+        name="Production"
+        parent="menu_co_restaurant_root"
+        sequence="20"
+    />
+    <menuitem
+        id="menu_co_restaurant_inventory"
+        name="Inventory"
+        parent="menu_co_restaurant_root"
+        sequence="30"
+    />
+    <menuitem
+        id="menu_co_restaurant_waste_parent"
+        name="Waste"
+        parent="menu_co_restaurant_root"
+        sequence="40"
+    />
+    <menuitem
+        id="menu_co_restaurant_reports"
+        name="Reports"
+        parent="menu_co_restaurant_root"
+        sequence="50"
+    />
+    <menuitem
+        id="menu_co_restaurant_config"
+        name="Configuration"
+        parent="menu_co_restaurant_root"
+        sequence="90"
+        groups="group_restaurant_manager"
+    />
+</odoo>

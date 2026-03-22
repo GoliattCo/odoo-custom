@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_presentation_equiv_list" model="ir.ui.view">
+        <field name="name">co.restaurant.presentation.equiv.list</field>
+        <field name="model">co.restaurant.presentation.equiv</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="name"/>
+                <field name="product_id"/>
+                <field name="purchase_qty"/>
+                <field name="purchase_uom_id"/>
+                <field name="recipe_qty"/>
+                <field name="recipe_uom_id"/>
+                <field name="factor"/>
+                <field name="active" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_presentation_equiv_form" model="ir.ui.view">
+        <field name="name">co.restaurant.presentation.equiv.form</field>
+        <field name="model">co.restaurant.presentation.equiv</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="product_id"/>
+                            <field name="active"/>
+                        </group>
+                        <group>
+                            <field name="company_id" invisible="1"/>
+                        </group>
+                    </group>
+                    <group string="Equivalence">
+                        <group>
+                            <field name="purchase_qty"/>
+                            <field name="purchase_uom_id"/>
+                        </group>
+                        <group>
+                            <field name="recipe_qty"/>
+                            <field name="recipe_uom_id"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="factor"/>
+                    </group>
+                    <group>
+                        <field name="notes" placeholder="Notes..."/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_presentation_equiv_search" model="ir.ui.view">
+        <field name="name">co.restaurant.presentation.equiv.search</field>
+        <field name="model">co.restaurant.presentation.equiv</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="product_id"/>
+                <group expand="0" string="Group By">
+                    <filter name="groupby_product" string="Product"
+                            context="{'group_by': 'product_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_presentation_equiv" model="ir.actions.act_window">
+        <field name="name">Presentation Equivalences</field>
+        <field name="res_model">co.restaurant.presentation.equiv</field>
+        <field name="view_mode">list,form</field>
+        <field name="path">restaurant-equivalences</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Define your first unit equivalence
+            </p>
+            <p>
+                Map between purchase units and recipe units.
+                Example: 1 chicken breast = 200g.
+            </p>
+        </field>
+    </record>
+
+    <menuitem
+        id="menu_presentation_equiv"
+        name="Unit Equivalences"
+        parent="menu_co_restaurant_config"
+        action="action_presentation_equiv"
+        sequence="20"
+    />
+</odoo>

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Root menu -->
+    <menuitem id="menu_co_payroll_root"
+              name="Payroll"
+              web_icon="co_payroll,static/description/icon.png"
+              sequence="35"/>
+
+    <!-- Top-level categories -->
+    <menuitem id="menu_co_payroll_employees"
+              name="Employees"
+              parent="menu_co_payroll_root"
+              sequence="10"/>
+
+    <menuitem id="menu_co_payroll_payslips"
+              name="Payslips"
+              parent="menu_co_payroll_root"
+              sequence="20"/>
+
+    <menuitem id="menu_co_payroll_social_security"
+              name="Social Security"
+              parent="menu_co_payroll_root"
+              sequence="30"/>
+
+    <menuitem id="menu_co_payroll_loans"
+              name="Loans &amp; Deductions"
+              parent="menu_co_payroll_root"
+              sequence="40"/>
+
+    <menuitem id="menu_co_payroll_config"
+              name="Configuration"
+              parent="menu_co_payroll_root"
+              sequence="90"/>
+
+    <!-- Sub-menus under Employees -->
+    <menuitem id="menu_co_hiring_request"
+              name="Hiring Requests"
+              parent="menu_co_payroll_employees"
+              action="action_co_hiring_request"
+              sequence="10"/>
+
+    <menuitem id="menu_co_family_member"
+              name="Family Members"
+              parent="menu_co_payroll_employees"
+              action="action_co_family_member"
+              sequence="30"/>
+
+    <!-- Sub-menus under Payslips -->
+    <menuitem id="menu_co_payslip"
+              name="Payslips"
+              parent="menu_co_payroll_payslips"
+              action="action_co_payslip"
+              sequence="10"/>
+
+    <menuitem id="menu_co_payslip_line"
+              name="Payslip Lines"
+              parent="menu_co_payroll_payslips"
+              action="action_co_payslip_line"
+              sequence="20"/>
+
+    <menuitem id="menu_co_overtime"
+              name="Overtime"
+              parent="menu_co_payroll_payslips"
+              action="action_co_overtime"
+              sequence="30"/>
+
+    <menuitem id="menu_co_nomina_electronica"
+              name="Nomina Electronica"
+              parent="menu_co_payroll_payslips"
+              action="action_co_nomina_electronica"
+              sequence="40"/>
+
+    <!-- Sub-menus under Social Security -->
+    <menuitem id="menu_co_social_security"
+              name="Employee SS Config"
+              parent="menu_co_payroll_social_security"
+              action="action_co_social_security"
+              sequence="10"/>
+
+    <menuitem id="menu_co_pila"
+              name="PILA"
+              parent="menu_co_payroll_social_security"
+              action="action_co_pila"
+              sequence="20"/>
+
+    <menuitem id="menu_co_eps_entity"
+              name="EPS Entities"
+              parent="menu_co_payroll_social_security"
+              action="action_co_eps_entity"
+              sequence="30"/>
+
+    <menuitem id="menu_co_afp_entity"
+              name="AFP Entities"
+              parent="menu_co_payroll_social_security"
+              action="action_co_afp_entity"
+              sequence="40"/>
+
+    <menuitem id="menu_co_arl_entity"
+              name="ARL Entities"
+              parent="menu_co_payroll_social_security"
+              action="action_co_arl_entity"
+              sequence="50"/>
+
+    <!-- Sub-menus under Loans -->
+    <menuitem id="menu_co_loan"
+              name="Loans"
+              parent="menu_co_payroll_loans"
+              action="action_co_loan"
+              sequence="10"/>
+
+    <menuitem id="menu_co_deduction"
+              name="Manual Deductions"
+              parent="menu_co_payroll_loans"
+              action="action_co_deduction"
+              sequence="20"/>
+
+    <!-- Sub-menus under Configuration -->
+    <menuitem id="menu_co_salary_concept"
+              name="Salary Concepts"
+              parent="menu_co_payroll_config"
+              action="action_co_salary_concept"
+              sequence="10"/>
+
+    <menuitem id="menu_co_payroll_settings"
+              name="Settings"
+              parent="menu_co_payroll_config"
+              action="action_co_payroll_config_settings"
+              sequence="90"/>
+
+</odoo>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================ -->
+    <!--              Inventory Formula: Form                         -->
+    <!-- ============================================================ -->
+    <record id="co_inventory_formula_view_form" model="ir.ui.view">
+        <field name="name">co.inventory.formula.form</field>
+        <field name="model">co.inventory.formula</field>
+        <field name="arch" type="xml">
+            <form string="Inventory Valuation Formula">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="method"/>
+                            <field name="sequence"/>
+                            <field name="active"/>
+                        </group>
+                        <group>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="product_category_ids" widget="many2many_tags"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Formula" name="formula">
+                            <group>
+                                <field name="formula_description"/>
+                                <field name="formula_expression"/>
+                            </group>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="notes"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!--              Inventory Formula: List                         -->
+    <!-- ============================================================ -->
+    <record id="co_inventory_formula_view_list" model="ir.ui.view">
+        <field name="name">co.inventory.formula.list</field>
+        <field name="model">co.inventory.formula</field>
+        <field name="arch" type="xml">
+            <list string="Valuation Formulas">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="method"/>
+                <field name="product_category_ids" widget="many2many_tags"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!--              Inventory Formula: Action                       -->
+    <!-- ============================================================ -->
+    <record id="action_co_inventory_formula" model="ir.actions.act_window">
+        <field name="name">Valuation Formulas</field>
+        <field name="res_model">co.inventory.formula</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Define inventory valuation formulas
+            </p>
+            <p>
+                Configure formulas for standard cost, weighted average,
+                and FIFO inventory valuation concepts.
+            </p>
+        </field>
+        <field name="path">inventory-valuation-formulas</field>
+    </record>
+
+</odoo>

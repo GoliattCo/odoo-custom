@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================ -->
+    <!--      stock.warehouse.orderpoint: Inherit Form                -->
+    <!-- ============================================================ -->
+    <record id="stock_warehouse_orderpoint_form_inherit" model="ir.ui.view">
+        <field name="name">stock.warehouse.orderpoint.form.co_warehouse_extended</field>
+        <field name="model">stock.warehouse.orderpoint</field>
+        <field name="inherit_id" ref="stock.view_warehouse_orderpoint_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[last()]" position="inside">
+                <separator string="CO Extended Reorder Settings"/>
+                <field name="supplier_lead_time"/>
+                <field name="safety_stock_days"/>
+                <field name="avg_daily_consumption"/>
+                <field name="safety_stock_qty"/>
+                <field name="auto_purchase_request"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!--      stock.warehouse.orderpoint: Inherit List                -->
+    <!-- ============================================================ -->
+    <record id="stock_warehouse_orderpoint_list_inherit" model="ir.ui.view">
+        <field name="name">stock.warehouse.orderpoint.list.co_warehouse_extended</field>
+        <field name="model">stock.warehouse.orderpoint</field>
+        <field name="inherit_id" ref="stock.view_warehouse_orderpoint_tree_editable"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='product_min_qty']" position="after">
+                <field name="supplier_lead_time" optional="hide"/>
+                <field name="safety_stock_qty" optional="hide"/>
+                <field name="auto_purchase_request" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

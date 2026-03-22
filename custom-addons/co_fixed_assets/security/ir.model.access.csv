@@ -1,0 +1,13 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_co_fixed_asset_category_user,co.fixed.asset.category user,model_co_fixed_asset_category,group_fixed_asset_user,1,0,0,0
+access_co_fixed_asset_category_manager,co.fixed.asset.category manager,model_co_fixed_asset_category,group_fixed_asset_manager,1,1,1,1
+access_co_fixed_asset_user,co.fixed.asset user,model_co_fixed_asset,group_fixed_asset_user,1,1,1,0
+access_co_fixed_asset_manager,co.fixed.asset manager,model_co_fixed_asset,group_fixed_asset_manager,1,1,1,1
+access_co_fixed_asset_depreciation_line_user,co.fixed.asset.depreciation.line user,model_co_fixed_asset_depreciation_line,group_fixed_asset_user,1,0,0,0
+access_co_fixed_asset_depreciation_line_manager,co.fixed.asset.depreciation.line manager,model_co_fixed_asset_depreciation_line,group_fixed_asset_manager,1,1,1,1
+access_co_fixed_asset_maintenance_user,co.fixed.asset.maintenance user,model_co_fixed_asset_maintenance,group_fixed_asset_user,1,1,1,0
+access_co_fixed_asset_maintenance_manager,co.fixed.asset.maintenance manager,model_co_fixed_asset_maintenance,group_fixed_asset_manager,1,1,1,1
+access_co_fixed_asset_accountant,co.fixed.asset accountant,model_co_fixed_asset,account.group_account_user,1,0,0,0
+access_co_fixed_asset_depreciation_line_accountant,co.fixed.asset.depreciation.line accountant,model_co_fixed_asset_depreciation_line,account.group_account_user,1,0,0,0
+access_co_fixed_asset_category_accountant,co.fixed.asset.category accountant,model_co_fixed_asset_category,account.group_account_user,1,0,0,0
+access_co_fixed_asset_maintenance_accountant,co.fixed.asset.maintenance accountant,model_co_fixed_asset_maintenance,account.group_account_user,1,0,0,0

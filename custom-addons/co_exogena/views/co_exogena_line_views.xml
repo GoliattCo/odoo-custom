@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ================================================================ -->
+    <!-- Line: Tree view                                                   -->
+    <!-- ================================================================ -->
+    <record id="co_exogena_line_tree" model="ir.ui.view">
+        <field name="name">co.exogena.line.tree</field>
+        <field name="model">co.exogena.line</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="format_code"/>
+                <field name="partner_nit"/>
+                <field name="partner_nit_dv"/>
+                <field name="partner_name"/>
+                <field name="partner_doc_type"/>
+                <field name="concept_code"/>
+                <field name="amount" sum="Total"/>
+                <field name="base_amount" sum="Total"/>
+                <field name="retention_amount" sum="Total"/>
+                <field name="vat_amount" sum="Total"/>
+                <field name="partner_country_code"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ================================================================ -->
+    <!-- Line: Form view                                                   -->
+    <!-- ================================================================ -->
+    <record id="co_exogena_line_form" model="ir.ui.view">
+        <field name="name">co.exogena.line.form</field>
+        <field name="model">co.exogena.line</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group string="Formato">
+                            <field name="format_id"/>
+                            <field name="format_code"/>
+                            <field name="report_id"/>
+                            <field name="concept_code"/>
+                            <field name="concept_id"/>
+                        </group>
+                        <group string="Tercero">
+                            <field name="partner_id"/>
+                            <field name="partner_name"/>
+                            <field name="partner_nit"/>
+                            <field name="partner_nit_dv"/>
+                            <field name="partner_doc_type"/>
+                            <field name="partner_is_company"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Montos">
+                            <field name="amount"/>
+                            <field name="base_amount"/>
+                            <field name="retention_amount"/>
+                            <field name="vat_amount"/>
+                            <field name="participation_pct"/>
+                        </group>
+                        <group string="Ubicacion">
+                            <field name="partner_address"/>
+                            <field name="partner_dept_code"/>
+                            <field name="partner_mun_code"/>
+                            <field name="partner_country_code"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ================================================================ -->
+    <!-- Line: Search view                                                 -->
+    <!-- ================================================================ -->
+    <record id="co_exogena_line_search" model="ir.ui.view">
+        <field name="name">co.exogena.line.search</field>
+        <field name="model">co.exogena.line</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="partner_nit"/>
+                <field name="partner_name"/>
+                <field name="concept_code"/>
+                <field name="format_code"/>
+                <group expand="0" string="Agrupar por">
+                    <filter name="group_format" string="Formato"
+                            context="{'group_by': 'format_code'}"/>
+                    <filter name="group_partner" string="NIT"
+                            context="{'group_by': 'partner_nit'}"/>
+                    <filter name="group_concept" string="Concepto"
+                            context="{'group_by': 'concept_code'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ================================================================ -->
+    <!-- Line: Action                                                      -->
+    <!-- ================================================================ -->
+    <record id="co_exogena_line_action" model="ir.actions.act_window">
+        <field name="name">Lineas Exogena</field>
+        <field name="res_model">co.exogena.line</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="co_exogena_line_search"/>
+        <field name="path">exogena-lineas</field>
+    </record>
+</odoo>

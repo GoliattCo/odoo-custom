@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================ -->
+    <!-- co.bank.import.wizard — Form                                 -->
+    <!-- ============================================================ -->
+    <record id="view_co_bank_import_wizard_form" model="ir.ui.view">
+        <field name="name">co.bank.import.wizard.form</field>
+        <field name="model">co.bank.import.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Import Bank Statement">
+                <group>
+                    <group>
+                        <field name="journal_id"/>
+                        <field name="format_id"/>
+                    </group>
+                    <group>
+                        <field name="file_data" filename="filename"/>
+                        <field name="filename" invisible="1"/>
+                        <field name="auto_reconcile"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="action_import"
+                            type="object"
+                            string="Import"
+                            class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- co.bank.import.wizard — Action                               -->
+    <!-- ============================================================ -->
+    <record id="action_co_bank_import_wizard" model="ir.actions.act_window">
+        <field name="name">Import Bank Statement</field>
+        <field name="res_model">co.bank.import.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+</odoo>

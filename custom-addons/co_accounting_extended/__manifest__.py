@@ -1,0 +1,21 @@
+{
+    'name': 'Colombian Accounting Extended',
+    'version': '18.0.1.0.0',
+    'summary': 'Cost centers, business units, auto-posting rules, year-close, and formulated concepts for Colombian accounting',
+    'category': 'Accounting',
+    'author': 'Custom',
+    'depends': ['account', 'analytic', 'mail'],
+    'data': [
+        'security/ir.model.access.csv',
+        'views/co_business_unit_views.xml',
+        'views/account_analytic_account_views.xml',
+        'views/co_auto_posting_rule_views.xml',
+        'views/co_formulated_concept_views.xml',
+        'views/account_move_line_views.xml',
+        'wizard/co_year_close_wizard_views.xml',
+        'views/menus.xml',
+    ],
+    'installable': True,
+    'auto_install': False,
+    'license': 'LGPL-3',
+}

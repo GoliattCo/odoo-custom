@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================ -->
+    <!--  Accounting > Configuration > Colombian Extensions            -->
+    <!-- ============================================================ -->
+    <menuitem id="menu_co_config_root"
+              name="Colombian Extensions"
+              parent="account.menu_finance_configuration"
+              sequence="90"/>
+
+    <menuitem id="menu_co_business_unit"
+              name="Business Units"
+              parent="menu_co_config_root"
+              action="action_co_business_unit"
+              sequence="10"/>
+
+    <menuitem id="menu_co_auto_posting_rule"
+              name="Auto Posting Rules"
+              parent="menu_co_config_root"
+              action="action_co_auto_posting_rule"
+              sequence="20"/>
+
+    <menuitem id="menu_co_formulated_concept"
+              name="Formulated Concepts"
+              parent="menu_co_config_root"
+              action="action_co_formulated_concept"
+              sequence="30"/>
+
+    <!-- ============================================================ -->
+    <!--  Accounting > Operations > Year-Close                         -->
+    <!-- ============================================================ -->
+    <menuitem id="menu_co_operations_root"
+              name="Colombian Operations"
+              parent="account.menu_finance"
+              sequence="90"/>
+
+    <menuitem id="menu_co_year_close"
+              name="Year-Close Entry"
+              parent="menu_co_operations_root"
+              action="action_co_year_close_wizard"
+              sequence="10"/>
+
+</odoo>

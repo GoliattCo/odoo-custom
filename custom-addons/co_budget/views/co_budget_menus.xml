@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Root menu under Accounting -->
+    <menuitem id="menu_co_budget_root"
+              name="Budgets"
+              parent="account.menu_finance"
+              sequence="30"/>
+
+    <!-- Budgets -->
+    <menuitem id="menu_co_budget"
+              name="Budgets"
+              parent="menu_co_budget_root"
+              action="action_co_budget"
+              sequence="10"/>
+
+    <!-- Budget Lines (all) -->
+    <menuitem id="menu_co_budget_line"
+              name="Budget Lines"
+              parent="menu_co_budget_root"
+              action="action_co_budget_line"
+              sequence="20"/>
+
+    <!-- Budget Positions -->
+    <menuitem id="menu_co_budget_position"
+              name="Budget Positions"
+              parent="menu_co_budget_root"
+              action="action_co_budget_position"
+              sequence="30"/>
+
+</odoo>

@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- ============================================================ -->
+        <!-- Formato 1001 - Pagos y abonos en cuenta                      -->
+        <!-- ============================================================ -->
+        <record id="concept_1001_5001" model="co.exogena.concept">
+            <field name="name">Compras</field>
+            <field name="code">5001</field>
+            <field name="format_code">1001</field>
+            <field name="description">Compras de bienes y servicios</field>
+            <field name="min_amount">100000</field>
+        </record>
+        <record id="concept_1001_5002" model="co.exogena.concept">
+            <field name="name">Gastos operacionales de administracion</field>
+            <field name="code">5002</field>
+            <field name="format_code">1001</field>
+            <field name="description">Gastos operacionales de administracion</field>
+            <field name="min_amount">100000</field>
+        </record>
+        <record id="concept_1001_5003" model="co.exogena.concept">
+            <field name="name">Gastos operacionales de ventas</field>
+            <field name="code">5003</field>
+            <field name="format_code">1001</field>
+            <field name="description">Gastos operacionales de ventas</field>
+            <field name="min_amount">100000</field>
+        </record>
+        <record id="concept_1001_5004" model="co.exogena.concept">
+            <field name="name">Otros gastos</field>
+            <field name="code">5004</field>
+            <field name="format_code">1001</field>
+            <field name="description">Otros costos y gastos</field>
+            <field name="min_amount">100000</field>
+        </record>
+        <record id="concept_1001_5005" model="co.exogena.concept">
+            <field name="name">Honorarios</field>
+            <field name="code">5005</field>
+            <field name="format_code">1001</field>
+            <field name="description">Pagos por honorarios</field>
+            <field name="min_amount">100000</field>
+        </record>
+        <record id="concept_1001_5006" model="co.exogena.concept">
+            <field name="name">Comisiones</field>
+            <field name="code">5006</field>
+            <field name="format_code">1001</field>
+            <field name="description">Pagos por comisiones</field>
+            <field name="min_amount">100000</field>
+        </record>
+        <record id="concept_1001_5007" model="co.exogena.concept">
+            <field name="name">Servicios</field>
+            <field name="code">5007</field>
+            <field name="format_code">1001</field>
+            <field name="description">Pagos por servicios</field>
+            <field name="min_amount">100000</field>
+        </record>
+        <record id="concept_1001_5008" model="co.exogena.concept">
+            <field name="name">Arrendamientos</field>
+            <field name="code">5008</field>
+            <field name="format_code">1001</field>
+            <field name="description">Pagos por arrendamientos</field>
+            <field name="min_amount">100000</field>
+        </record>
+        <record id="concept_1001_5010" model="co.exogena.concept">
+            <field name="name">Intereses y rendimientos financieros</field>
+            <field name="code">5010</field>
+            <field name="format_code">1001</field>
+            <field name="description">Pagos por intereses y rendimientos financieros</field>
+            <field name="min_amount">100000</field>
+        </record>
+        <record id="concept_1001_5016" model="co.exogena.concept">
+            <field name="name">Salarios y pagos laborales</field>
+            <field name="code">5016</field>
+            <field name="format_code">1001</field>
+            <field name="description">Pagos laborales</field>
+            <field name="min_amount">0</field>
+        </record>
+
+        <!-- ============================================================ -->
+        <!-- Formato 1003 - Retenciones en la fuente                      -->
+        <!-- ============================================================ -->
+        <record id="concept_1003_1301" model="co.exogena.concept">
+            <field name="name">Retencion por renta</field>
+            <field name="code">1301</field>
+            <field name="format_code">1003</field>
+            <field name="description">Retenciones en la fuente por concepto de renta</field>
+        </record>
+        <record id="concept_1003_1302" model="co.exogena.concept">
+            <field name="name">Retencion por IVA</field>
+            <field name="code">1302</field>
+            <field name="format_code">1003</field>
+            <field name="description">Retenciones por concepto de IVA</field>
+        </record>
+        <record id="concept_1003_1303" model="co.exogena.concept">
+            <field name="name">Retencion por ICA</field>
+            <field name="code">1303</field>
+            <field name="format_code">1003</field>
+            <field name="description">Retenciones por concepto de ICA</field>
+        </record>
+        <record id="concept_1003_1304" model="co.exogena.concept">
+            <field name="name">Retencion por timbre</field>
+            <field name="code">1304</field>
+            <field name="format_code">1003</field>
+            <field name="description">Retenciones por concepto de timbre</field>
+        </record>
+
+        <!-- ============================================================ -->
+        <!-- Formato 1007 - Ingresos recibidos                            -->
+        <!-- ============================================================ -->
+        <record id="concept_1007_4001" model="co.exogena.concept">
+            <field name="name">Ingresos operacionales</field>
+            <field name="code">4001</field>
+            <field name="format_code">1007</field>
+            <field name="description">Ingresos brutos operacionales</field>
+            <field name="min_amount">500000</field>
+        </record>
+        <record id="concept_1007_4002" model="co.exogena.concept">
+            <field name="name">Ingresos no operacionales</field>
+            <field name="code">4002</field>
+            <field name="format_code">1007</field>
+            <field name="description">Ingresos no operacionales</field>
+            <field name="min_amount">500000</field>
+        </record>
+
+        <!-- ============================================================ -->
+        <!-- Formato 1012 - Declaraciones tributarias                     -->
+        <!-- ============================================================ -->
+        <record id="concept_1012_0001" model="co.exogena.concept">
+            <field name="name">IVA</field>
+            <field name="code">0001</field>
+            <field name="format_code">1012</field>
+            <field name="description">Impuesto sobre las ventas - IVA</field>
+        </record>
+        <record id="concept_1012_0002" model="co.exogena.concept">
+            <field name="name">Retencion en la fuente</field>
+            <field name="code">0002</field>
+            <field name="format_code">1012</field>
+            <field name="description">Retencion en la fuente a titulo de renta</field>
+        </record>
+        <record id="concept_1012_0003" model="co.exogena.concept">
+            <field name="name">Retencion de IVA</field>
+            <field name="code">0003</field>
+            <field name="format_code">1012</field>
+            <field name="description">Retencion en la fuente a titulo de IVA</field>
+        </record>
+        <record id="concept_1012_0004" model="co.exogena.concept">
+            <field name="name">ICA</field>
+            <field name="code">0004</field>
+            <field name="format_code">1012</field>
+            <field name="description">Impuesto de industria y comercio</field>
+        </record>
+        <record id="concept_1012_0099" model="co.exogena.concept">
+            <field name="name">Otros impuestos</field>
+            <field name="code">0099</field>
+            <field name="format_code">1012</field>
+            <field name="description">Otros impuestos, tasas y contribuciones</field>
+        </record>
+    </data>
+</odoo>

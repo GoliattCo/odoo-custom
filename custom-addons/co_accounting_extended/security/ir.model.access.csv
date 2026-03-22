@@ -1,0 +1,12 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_co_business_unit_user,co.business.unit.user,model_co_business_unit,account.group_account_user,1,0,0,0
+access_co_business_unit_manager,co.business.unit.manager,model_co_business_unit,account.group_account_manager,1,1,1,1
+access_co_auto_posting_rule_user,co.auto.posting.rule.user,model_co_auto_posting_rule,account.group_account_user,1,0,0,0
+access_co_auto_posting_rule_manager,co.auto.posting.rule.manager,model_co_auto_posting_rule,account.group_account_manager,1,1,1,1
+access_co_auto_posting_rule_allocation_user,co.auto.posting.rule.allocation.user,model_co_auto_posting_rule_allocation,account.group_account_user,1,0,0,0
+access_co_auto_posting_rule_allocation_manager,co.auto.posting.rule.allocation.manager,model_co_auto_posting_rule_allocation,account.group_account_manager,1,1,1,1
+access_co_auto_posting_rule_template_line_user,co.auto.posting.rule.template.line.user,model_co_auto_posting_rule_template_line,account.group_account_user,1,0,0,0
+access_co_auto_posting_rule_template_line_manager,co.auto.posting.rule.template.line.manager,model_co_auto_posting_rule_template_line,account.group_account_manager,1,1,1,1
+access_co_formulated_concept_user,co.formulated.concept.user,model_co_formulated_concept,account.group_account_user,1,0,0,0
+access_co_formulated_concept_manager,co.formulated.concept.manager,model_co_formulated_concept,account.group_account_manager,1,1,1,1
+access_co_year_close_wizard_manager,co.year.close.wizard.manager,model_co_year_close_wizard,account.group_account_manager,1,1,1,1

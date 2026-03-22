@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================ -->
+    <!--              Purchase Menus                                  -->
+    <!-- ============================================================ -->
+
+    <!-- Parent menu under Purchase -->
+    <menuitem id="menu_purchase_request_root"
+              name="Purchase Requests"
+              parent="purchase.menu_purchase_root"
+              sequence="5"/>
+
+    <menuitem id="menu_purchase_request_all"
+              name="All Requests"
+              parent="menu_purchase_request_root"
+              action="action_co_purchase_request"
+              sequence="10"/>
+
+    <menuitem id="menu_purchase_request_approve"
+              name="To Approve"
+              parent="menu_purchase_request_root"
+              action="action_co_purchase_request_to_approve"
+              groups="co_warehouse_extended.group_purchase_request_manager"
+              sequence="20"/>
+
+    <!-- ============================================================ -->
+    <!--              Inventory / Operations Menus                    -->
+    <!-- ============================================================ -->
+
+    <!-- Inter-Warehouse Transfer under Inventory > Operations -->
+    <record id="action_co_warehouse_transfer_wizard" model="ir.actions.act_window">
+        <field name="name">Inter-Warehouse Transfer</field>
+        <field name="res_model">co.warehouse.transfer.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="path">inter-warehouse-transfer</field>
+    </record>
+
+    <menuitem id="menu_co_warehouse_transfer"
+              name="Inter-Warehouse Transfer"
+              parent="stock.menu_stock_warehouse_mgmt"
+              action="action_co_warehouse_transfer_wizard"
+              sequence="99"/>
+
+    <!-- ============================================================ -->
+    <!--              Inventory / Configuration Menus                 -->
+    <!-- ============================================================ -->
+
+    <menuitem id="menu_co_inventory_formula"
+              name="Valuation Formulas"
+              parent="stock.menu_stock_config_settings"
+              action="action_co_inventory_formula"
+              sequence="90"/>
+
+</odoo>

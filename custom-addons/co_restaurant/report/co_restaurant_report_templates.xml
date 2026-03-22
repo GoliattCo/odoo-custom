@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ==================== Recipe Card PDF Report ==================== -->
+    <record id="action_report_recipe_card" model="ir.actions.report">
+        <field name="name">Recipe Card</field>
+        <field name="model">co.restaurant.recipe</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">co_restaurant.report_recipe_card</field>
+        <field name="report_file">co_restaurant.report_recipe_card</field>
+        <field name="binding_model_id" ref="model_co_restaurant_recipe"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_recipe_card">
+        <t t-call="web.html_container">
+            <div class="header" style="border-bottom: 2px solid #333; padding-bottom: 8px; margin-bottom: 16px;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-weight: bold; font-size: 14pt;">Ficha de Receta</span>
+                    <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%Y-%m-%d %H:%M')"
+                          style="font-size: 9pt; color: #666;"/>
+                </div>
+            </div>
+            <t t-foreach="docs" t-as="recipe">
+                <div class="page" style="font-family: Arial, sans-serif;">
+                    <h2 style="margin-bottom: 4px;">
+                        <t t-esc="recipe.name"/>
+                    </h2>
+                    <div style="color: #666; margin-bottom: 16px;">
+                        <t t-if="recipe.category_id">
+                            <span t-esc="recipe.category_id.name"/> |
+                        </t>
+                        Rendimiento: <t t-esc="recipe.yield_qty"/> porciones
+                    </div>
+
+                    <!-- Cost Summary Box -->
+                    <div style="background: #f5f5f5; padding: 12px; border-radius: 4px; margin-bottom: 20px;">
+                        <table style="width: 100%;">
+                            <tr>
+                                <td style="padding: 4px 12px;">
+                                    <strong>Costo Total:</strong>
+                                    $<t t-esc="'%.2f' % recipe.total_cost"/>
+                                </td>
+                                <td style="padding: 4px 12px;">
+                                    <strong>Costo/Porcion:</strong>
+                                    $<t t-esc="'%.2f' % recipe.cost_per_portion"/>
+                                </td>
+                                <td style="padding: 4px 12px;">
+                                    <strong>Precio Venta:</strong>
+                                    $<t t-esc="'%.2f' % recipe.selling_price"/>
+                                </td>
+                                <td style="padding: 4px 12px;">
+                                    <strong>% Costo:</strong>
+                                    <t t-esc="'%.1f' % recipe.food_cost_pct"/>%
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <!-- Ingredients Table -->
+                    <h4>Ingredientes</h4>
+                    <table class="table table-sm table-bordered" style="font-size: 10pt;">
+                        <thead style="background: #e9ecef;">
+                            <tr>
+                                <th>Ingrediente</th>
+                                <th style="text-align: right;">Cantidad Neta</th>
+                                <th style="text-align: right;">% Merma</th>
+                                <th style="text-align: right;">Cantidad Bruta</th>
+                                <th>UdM</th>
+                                <th style="text-align: right;">Costo Unit.</th>
+                                <th style="text-align: right;">Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="recipe.line_ids" t-as="line">
+                                <tr>
+                                    <td><t t-esc="line.product_id.display_name"/></td>
+                                    <td style="text-align: right;">
+                                        <t t-esc="'%.2f' % line.quantity"/>
+                                    </td>
+                                    <td style="text-align: right;">
+                                        <t t-esc="'%.1f' % line.loss_pct"/>%
+                                    </td>
+                                    <td style="text-align: right;">
+                                        <t t-esc="'%.2f' % line.gross_quantity"/>
+                                    </td>
+                                    <td><t t-esc="line.uom_id.name"/></td>
+                                    <td style="text-align: right;">
+                                        $<t t-esc="'%.2f' % line.unit_cost"/>
+                                    </td>
+                                    <td style="text-align: right;">
+                                        $<t t-esc="'%.2f' % line.subtotal"/>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                        <tfoot style="font-weight: bold; background: #e9ecef;">
+                            <tr>
+                                <td colspan="6" style="text-align: right;">Total</td>
+                                <td style="text-align: right;">
+                                    $<t t-esc="'%.2f' % recipe.total_cost"/>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+
+                    <!-- Instructions -->
+                    <t t-if="recipe.instructions">
+                        <h4 style="margin-top: 20px;">Instrucciones de Preparacion</h4>
+                        <div style="font-size: 10pt; line-height: 1.6;">
+                            <t t-out="recipe.instructions"/>
+                        </div>
+                    </t>
+
+                    <!-- Notes -->
+                    <t t-if="recipe.notes">
+                        <h4 style="margin-top: 16px;">Notas</h4>
+                        <p style="font-size: 10pt;">
+                            <t t-esc="recipe.notes"/>
+                        </p>
+                    </t>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <!-- ==================== Production Report ==================== -->
+    <record id="action_report_production" model="ir.actions.report">
+        <field name="name">Production Report</field>
+        <field name="model">co.restaurant.production</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">co_restaurant.report_production</field>
+        <field name="report_file">co_restaurant.report_production</field>
+        <field name="binding_model_id" ref="model_co_restaurant_production"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_production">
+        <t t-call="web.html_container">
+            <div class="header" style="border-bottom: 2px solid #333; padding-bottom: 8px; margin-bottom: 16px;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-weight: bold; font-size: 14pt;">Reporte de Produccion</span>
+                    <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%Y-%m-%d %H:%M')"
+                          style="font-size: 9pt; color: #666;"/>
+                </div>
+            </div>
+            <t t-foreach="docs" t-as="prod">
+                <div class="page" style="font-family: Arial, sans-serif;">
+                    <h2>
+                        <t t-esc="prod.name"/>
+                    </h2>
+                    <div style="margin-bottom: 16px; color: #666;">
+                        Receta: <t t-esc="prod.recipe_id.name"/> |
+                        Fecha: <t t-esc="str(prod.date)[:16]"/> |
+                        Origen: <t t-esc="prod.origin"/>
+                    </div>
+
+                    <div style="background: #f5f5f5; padding: 12px; border-radius: 4px; margin-bottom: 20px;">
+                        <table style="width: 100%;">
+                            <tr>
+                                <td style="padding: 4px 12px;">
+                                    <strong>Porciones Planificadas:</strong>
+                                    <t t-esc="'%.1f' % prod.quantity"/>
+                                </td>
+                                <td style="padding: 4px 12px;">
+                                    <strong>Porciones Reales:</strong>
+                                    <t t-esc="'%.1f' % prod.actual_quantity"/>
+                                </td>
+                                <td style="padding: 4px 12px;">
+                                    <strong>Varianza:</strong>
+                                    <t t-esc="'%.1f' % prod.variance_qty"/>
+                                    (<t t-esc="'%.1f' % prod.variance_pct"/>%)
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 4px 12px;">
+                                    <strong>Costo Total:</strong>
+                                    $<t t-esc="'%.2f' % prod.total_cost"/>
+                                </td>
+                                <td style="padding: 4px 12px;">
+                                    <strong>Costo/Porcion:</strong>
+                                    $<t t-esc="'%.2f' % prod.cost_per_portion"/>
+                                </td>
+                                <td/>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <h4>Ingredientes Consumidos</h4>
+                    <table class="table table-sm table-bordered" style="font-size: 10pt;">
+                        <thead style="background: #e9ecef;">
+                            <tr>
+                                <th>Ingrediente</th>
+                                <th style="text-align: right;">Planificado</th>
+                                <th style="text-align: right;">Real</th>
+                                <th>UdM</th>
+                                <th style="text-align: right;">Varianza</th>
+                                <th style="text-align: right;">Varianza %</th>
+                                <th style="text-align: right;">Costo Unit.</th>
+                                <th style="text-align: right;">Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="prod.line_ids" t-as="line">
+                                <tr>
+                                    <td><t t-esc="line.product_id.display_name"/></td>
+                                    <td style="text-align: right;">
+                                        <t t-esc="'%.2f' % line.planned_qty"/>
+                                    </td>
+                                    <td style="text-align: right;">
+                                        <t t-esc="'%.2f' % line.actual_qty"/>
+                                    </td>
+                                    <td><t t-esc="line.uom_id.name"/></td>
+                                    <td style="text-align: right;">
+                                        <t t-esc="'%.2f' % line.variance_qty"/>
+                                    </td>
+                                    <td style="text-align: right;">
+                                        <t t-esc="'%.1f' % line.variance_pct"/>%
+                                    </td>
+                                    <td style="text-align: right;">
+                                        $<t t-esc="'%.2f' % line.unit_cost"/>
+                                    </td>
+                                    <td style="text-align: right;">
+                                        $<t t-esc="'%.2f' % line.subtotal"/>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                        <tfoot style="font-weight: bold; background: #e9ecef;">
+                            <tr>
+                                <td colspan="7" style="text-align: right;">Total</td>
+                                <td style="text-align: right;">
+                                    $<t t-esc="'%.2f' % prod.total_cost"/>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+
+                    <t t-if="prod.notes">
+                        <h4 style="margin-top: 16px;">Notas</h4>
+                        <p style="font-size: 10pt;">
+                            <t t-esc="prod.notes"/>
+                        </p>
+                    </t>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Sequence for statement imports -->
+        <record id="seq_co_bank_statement_import" model="ir.sequence">
+            <field name="name">Colombian Bank Statement Import</field>
+            <field name="code">co.bank.statement.import</field>
+            <field name="prefix">BANK/%(year)s/</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Bancolombia CSV format -->
+        <record id="format_bancolombia_csv" model="co.bank.format">
+            <field name="name">Bancolombia - CSV</field>
+            <field name="code">bancolombia_csv</field>
+            <field name="sequence">1</field>
+            <field name="delimiter">semicolon</field>
+            <field name="encoding">latin-1</field>
+            <field name="skip_header_lines">1</field>
+            <field name="skip_footer_lines">0</field>
+            <field name="date_format">%d/%m/%Y</field>
+            <field name="col_date">0</field>
+            <field name="col_reference">2</field>
+            <field name="col_description">1</field>
+            <field name="col_debit">3</field>
+            <field name="col_credit">4</field>
+            <field name="col_amount">-1</field>
+            <field name="col_balance">5</field>
+            <field name="thousands_separator">dot</field>
+            <field name="decimal_separator">comma</field>
+            <field name="notes">Standard Bancolombia CSV export. Delimiter: semicolon. Encoding: Latin-1.
+Columns: Fecha;Descripcion;Referencia;Debito;Credito;Saldo</field>
+        </record>
+
+        <!-- Davivienda CSV format -->
+        <record id="format_davivienda_csv" model="co.bank.format">
+            <field name="name">Davivienda - CSV</field>
+            <field name="code">davivienda_csv</field>
+            <field name="sequence">2</field>
+            <field name="delimiter">semicolon</field>
+            <field name="encoding">latin-1</field>
+            <field name="skip_header_lines">1</field>
+            <field name="skip_footer_lines">0</field>
+            <field name="date_format">%d/%m/%Y</field>
+            <field name="col_date">0</field>
+            <field name="col_reference">1</field>
+            <field name="col_description">2</field>
+            <field name="col_debit">3</field>
+            <field name="col_credit">4</field>
+            <field name="col_amount">-1</field>
+            <field name="col_balance">5</field>
+            <field name="thousands_separator">dot</field>
+            <field name="decimal_separator">comma</field>
+            <field name="notes">Standard Davivienda CSV export. Delimiter: semicolon. Encoding: Latin-1.
+Columns: Fecha;Referencia;Descripcion;Debito;Credito;Saldo</field>
+        </record>
+
+        <!-- Generic CSV format -->
+        <record id="format_generic_csv" model="co.bank.format">
+            <field name="name">Generic CSV</field>
+            <field name="code">generic_csv</field>
+            <field name="sequence">99</field>
+            <field name="delimiter">comma</field>
+            <field name="encoding">utf-8</field>
+            <field name="skip_header_lines">1</field>
+            <field name="skip_footer_lines">0</field>
+            <field name="date_format">%Y-%m-%d</field>
+            <field name="col_date">0</field>
+            <field name="col_reference">1</field>
+            <field name="col_description">2</field>
+            <field name="col_debit">3</field>
+            <field name="col_credit">4</field>
+            <field name="col_amount">-1</field>
+            <field name="col_balance">5</field>
+            <field name="thousands_separator">comma</field>
+            <field name="decimal_separator">dot</field>
+            <field name="notes">Generic CSV format with standard column layout.
+Columns: date,reference,description,debit,credit,balance</field>
+        </record>
+
+    </data>
+</odoo>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_co_eps_entity_form" model="ir.ui.view">
+        <field name="name">co.eps.entity.form</field>
+        <field name="model">co.eps.entity</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="code"/>
+                        </group>
+                        <group>
+                            <field name="nit"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_co_eps_entity_list" model="ir.ui.view">
+        <field name="name">co.eps.entity.list</field>
+        <field name="model">co.eps.entity</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="code"/>
+                <field name="name"/>
+                <field name="nit"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_co_eps_entity" model="ir.actions.act_window">
+        <field name="name">EPS Entities</field>
+        <field name="res_model">co.eps.entity</field>
+        <field name="view_mode">list,form</field>
+        <field name="path">co-eps-entities</field>
+    </record>
+
+</odoo>

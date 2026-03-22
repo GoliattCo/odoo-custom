@@ -1,0 +1,12 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_co_bank_format_readonly,co.bank.format readonly,model_co_bank_format,account.group_account_readonly,1,0,0,0
+access_co_bank_format_user,co.bank.format user,model_co_bank_format,account.group_account_user,1,1,1,0
+access_co_bank_format_manager,co.bank.format manager,model_co_bank_format,account.group_account_manager,1,1,1,1
+access_co_bank_statement_import_readonly,co.bank.statement.import readonly,model_co_bank_statement_import,account.group_account_readonly,1,0,0,0
+access_co_bank_statement_import_user,co.bank.statement.import user,model_co_bank_statement_import,account.group_account_user,1,1,1,0
+access_co_bank_statement_import_manager,co.bank.statement.import manager,model_co_bank_statement_import,account.group_account_manager,1,1,1,1
+access_co_bank_statement_line_readonly,co.bank.statement.line readonly,model_co_bank_statement_line,account.group_account_readonly,1,0,0,0
+access_co_bank_statement_line_user,co.bank.statement.line user,model_co_bank_statement_line,account.group_account_user,1,1,1,0
+access_co_bank_statement_line_manager,co.bank.statement.line manager,model_co_bank_statement_line,account.group_account_manager,1,1,1,1
+access_co_bank_import_wizard_user,co.bank.import.wizard user,model_co_bank_import_wizard,account.group_account_user,1,1,1,0
+access_co_bank_import_wizard_manager,co.bank.import.wizard manager,model_co_bank_import_wizard,account.group_account_manager,1,1,1,1

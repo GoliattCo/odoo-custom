@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================ -->
+    <!-- Budget: Tree -->
+    <!-- ============================================================ -->
+    <record id="co_budget_view_list" model="ir.ui.view">
+        <field name="name">co.budget.list</field>
+        <field name="model">co.budget</field>
+        <field name="arch" type="xml">
+            <list string="Budgets" decoration-info="state == 'draft'"
+                  decoration-success="state == 'confirmed'"
+                  decoration-muted="state == 'cancelled'">
+                <field name="name"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <field name="period_type"/>
+                <field name="responsible_id" widget="many2one_avatar_user"/>
+                <field name="total_planned" sum="Total Planned"/>
+                <field name="total_actual" sum="Total Actual"/>
+                <field name="total_variance" sum="Total Variance"/>
+                <field name="total_percentage" widget="progressbar"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'draft'"
+                       decoration-success="state == 'confirmed'"
+                       decoration-warning="state == 'done'"
+                       decoration-danger="state == 'cancelled'"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- Budget: Form -->
+    <!-- ============================================================ -->
+    <record id="co_budget_view_form" model="ir.ui.view">
+        <field name="name">co.budget.form</field>
+        <field name="model">co.budget</field>
+        <field name="arch" type="xml">
+            <form string="Budget">
+                <header>
+                    <button name="action_confirm" string="Confirm"
+                            type="object" class="oe_highlight"
+                            invisible="state != 'draft'"/>
+                    <button name="action_done" string="Mark as Done"
+                            type="object" class="oe_highlight"
+                            invisible="state != 'confirmed'"/>
+                    <button name="action_cancel" string="Cancel"
+                            type="object"
+                            invisible="state not in ('draft', 'confirmed')"/>
+                    <button name="action_draft" string="Reset to Draft"
+                            type="object"
+                            invisible="state != 'cancelled'"/>
+                    <button name="action_compute_actual" string="Recompute Actuals"
+                            type="object"
+                            invisible="state == 'cancelled'"
+                            class="oe_highlight"/>
+                    <button name="action_generate_lines" string="Generate Period Lines"
+                            type="object"
+                            invisible="state != 'draft'"
+                            confirm="This will replace existing lines with period-split lines. Continue?"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,confirmed,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="%(co_budget.action_co_budget_report)d"
+                                type="action"
+                                class="oe_stat_button"
+                                icon="fa-print"
+                                string="Print Report"
+                                invisible="state == 'draft'"/>
+                    </div>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" placeholder="e.g. Budget 2026"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                            <field name="period_type"/>
+                            <field name="alert_threshold"/>
+                        </group>
+                        <group>
+                            <field name="responsible_id" widget="many2one_avatar_user"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                    </group>
+
+                    <!-- Summary cards -->
+                    <group string="Summary">
+                        <group>
+                            <field name="total_planned"/>
+                            <field name="total_actual"/>
+                        </group>
+                        <group>
+                            <field name="total_variance"/>
+                            <field name="total_percentage" widget="progressbar"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Budget Lines" name="lines">
+                            <field name="line_ids">
+                                <list string="Budget Lines" editable="bottom"
+                                      decoration-danger="alert_level == 'exceeded'"
+                                      decoration-warning="alert_level == 'warning'">
+                                    <field name="budget_position_id" optional="show"/>
+                                    <field name="account_id"/>
+                                    <field name="analytic_account_id" optional="show"/>
+                                    <field name="date_from"/>
+                                    <field name="date_to"/>
+                                    <field name="planned_amount" sum="Total Planned"/>
+                                    <field name="actual_amount" sum="Total Actual"/>
+                                    <field name="variance" sum="Total Variance"/>
+                                    <field name="percentage" widget="progressbar"/>
+                                    <field name="alert_level" widget="badge"
+                                           decoration-success="alert_level == 'ok'"
+                                           decoration-warning="alert_level == 'warning'"
+                                           decoration-danger="alert_level == 'exceeded'"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="description" nolabel="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- Budget: Search -->
+    <!-- ============================================================ -->
+    <record id="co_budget_view_search" model="ir.ui.view">
+        <field name="name">co.budget.search</field>
+        <field name="model">co.budget</field>
+        <field name="arch" type="xml">
+            <search string="Budgets">
+                <field name="name"/>
+                <field name="responsible_id"/>
+                <separator/>
+                <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="Confirmed" name="confirmed" domain="[('state', '=', 'confirmed')]"/>
+                <filter string="Done" name="done" domain="[('state', '=', 'done')]"/>
+                <separator/>
+                <filter string="Current Year" name="current_year"
+                        domain="[
+                            ('date_from', '&lt;=', (context_today() + relativedelta(month=12, day=31)).strftime('%%Y-%%m-%%d')),
+                            ('date_to', '&gt;=', (context_today() + relativedelta(month=1, day=1)).strftime('%%Y-%%m-%%d')),
+                        ]"/>
+                <separator/>
+                <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Group By">
+                    <filter string="State" name="groupby_state" context="{'group_by': 'state'}"/>
+                    <filter string="Responsible" name="groupby_responsible" context="{'group_by': 'responsible_id'}"/>
+                    <filter string="Period Type" name="groupby_period" context="{'group_by': 'period_type'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- Budget: Action -->
+    <!-- ============================================================ -->
+    <record id="action_co_budget" model="ir.actions.act_window">
+        <field name="name">Budgets</field>
+        <field name="res_model">co.budget</field>
+        <field name="view_mode">list,form</field>
+        <field name="path">budgets</field>
+        <field name="context">{'search_default_confirmed': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first budget
+            </p>
+            <p>
+                Define planned amounts per account and period, then track
+                actual spending from journal entries.
+            </p>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_cost_analysis_list" model="ir.ui.view">
+        <field name="name">co.restaurant.cost.analysis.list</field>
+        <field name="model">co.restaurant.cost.analysis</field>
+        <field name="arch" type="xml">
+            <list create="false" edit="false" delete="false"
+                  decoration-danger="cost_variance_pct > 10"
+                  decoration-warning="cost_variance_pct > 5 and cost_variance_pct &lt;= 10">
+                <field name="date"/>
+                <field name="recipe_id"/>
+                <field name="recipe_category_id" optional="show"/>
+                <field name="production_count"/>
+                <field name="total_planned_portions"/>
+                <field name="total_actual_portions"/>
+                <field name="theoretical_cost" sum="Theoretical"/>
+                <field name="actual_cost" sum="Actual"/>
+                <field name="cost_variance" sum="Variance"/>
+                <field name="cost_variance_pct"/>
+                <field name="selling_price" optional="show"/>
+                <field name="theoretical_food_cost_pct" optional="show"/>
+                <field name="actual_food_cost_pct"/>
+                <field name="waste_cost" sum="Waste" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_cost_analysis_search" model="ir.ui.view">
+        <field name="name">co.restaurant.cost.analysis.search</field>
+        <field name="model">co.restaurant.cost.analysis</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="recipe_id"/>
+                <field name="recipe_category_id"/>
+                <filter name="filter_high_variance" string="High Variance (>10%)"
+                        domain="[('cost_variance_pct', '>', 10)]"/>
+                <filter name="filter_this_month" string="This Month"
+                        domain="[('date', '>=', (context_today()).strftime('%%Y-%%m-01'))]"/>
+                <group expand="0" string="Group By">
+                    <filter name="groupby_recipe" string="Recipe"
+                            context="{'group_by': 'recipe_id'}"/>
+                    <filter name="groupby_category" string="Category"
+                            context="{'group_by': 'recipe_category_id'}"/>
+                    <filter name="groupby_date" string="Date"
+                            context="{'group_by': 'date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_cost_analysis_pivot" model="ir.ui.view">
+        <field name="name">co.restaurant.cost.analysis.pivot</field>
+        <field name="model">co.restaurant.cost.analysis</field>
+        <field name="arch" type="xml">
+            <pivot>
+                <field name="recipe_id" type="row"/>
+                <field name="date" type="col" interval="month"/>
+                <field name="theoretical_cost" type="measure"/>
+                <field name="actual_cost" type="measure"/>
+                <field name="cost_variance" type="measure"/>
+                <field name="waste_cost" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="action_cost_analysis" model="ir.actions.act_window">
+        <field name="name">Cost Analysis</field>
+        <field name="res_model">co.restaurant.cost.analysis</field>
+        <field name="view_mode">list,pivot</field>
+        <field name="path">restaurant-cost-analysis</field>
+        <field name="search_view_id" ref="view_cost_analysis_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No production data to analyze
+            </p>
+            <p>
+                Complete production orders to see theoretical vs actual food cost analysis.
+            </p>
+        </field>
+    </record>
+
+    <menuitem
+        id="menu_cost_analysis"
+        name="Cost Analysis"
+        parent="menu_co_restaurant_reports"
+        action="action_cost_analysis"
+        sequence="10"
+    />
+    <menuitem
+        id="menu_kardex_report"
+        name="Kardex"
+        parent="menu_co_restaurant_reports"
+        action="action_kardex"
+        sequence="20"
+    />
+    <menuitem
+        id="menu_waste_report"
+        name="Waste Analysis"
+        parent="menu_co_restaurant_reports"
+        action="action_waste"
+        sequence="30"
+    />
+</odoo>

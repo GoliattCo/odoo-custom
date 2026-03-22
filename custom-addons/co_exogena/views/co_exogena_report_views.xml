@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ================================================================ -->
+    <!-- Report: Tree view                                                 -->
+    <!-- ================================================================ -->
+    <record id="co_exogena_report_tree" model="ir.ui.view">
+        <field name="name">co.exogena.report.tree</field>
+        <field name="model">co.exogena.report</field>
+        <field name="arch" type="xml">
+            <list decoration-info="state == 'draft'"
+                  decoration-success="state == 'validated'"
+                  decoration-warning="state == 'generated'"
+                  decoration-danger="state == 'error'">
+                <field name="name"/>
+                <field name="fiscal_year"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="company_nit"/>
+                <field name="format_count"/>
+                <field name="state" widget="badge"/>
+                <field name="create_date"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ================================================================ -->
+    <!-- Report: Form view                                                 -->
+    <!-- ================================================================ -->
+    <record id="co_exogena_report_form" model="ir.ui.view">
+        <field name="name">co.exogena.report.form</field>
+        <field name="model">co.exogena.report</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_generate"
+                            string="Generar formatos"
+                            type="object"
+                            class="btn-primary"
+                            invisible="state != 'draft'"/>
+                    <button name="action_generate"
+                            string="Regenerar formatos"
+                            type="object"
+                            class="btn-secondary"
+                            invisible="state == 'draft'"
+                            confirm="Esto abrira el asistente de generacion. Los formatos existentes pueden ser sobrescritos."/>
+                    <button name="action_validate"
+                            string="Validar"
+                            type="object"
+                            class="btn-primary"
+                            invisible="state != 'generated'"/>
+                    <button name="action_download_zip"
+                            string="Descargar ZIP"
+                            type="object"
+                            class="btn-success"
+                            invisible="state not in ('generated', 'validated')"/>
+                    <button name="action_reset_draft"
+                            string="Volver a borrador"
+                            type="object"
+                            class="btn-secondary"
+                            invisible="state == 'draft'"
+                            confirm="Esto eliminara todos los formatos generados. Desea continuar?"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,generated,validated"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_formats"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-file-text-o">
+                            <field name="format_count" widget="statinfo"
+                                   string="Formatos"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="fiscal_year"/>
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                        </group>
+                        <group>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="company_nit"/>
+                            <field name="company_nit_dv"/>
+                            <field name="company_name_report"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Formatos" name="formats">
+                            <field name="format_ids" readonly="1">
+                                <list>
+                                    <field name="format_code"/>
+                                    <field name="name"/>
+                                    <field name="line_count"/>
+                                    <field name="total_amount" sum="Total"/>
+                                    <field name="total_retention" sum="Total"/>
+                                    <field name="total_vat" sum="Total"/>
+                                    <button name="action_download_csv"
+                                            type="object"
+                                            string="CSV"
+                                            icon="fa-download"
+                                            class="btn-link"/>
+                                    <button name="action_view_lines"
+                                            type="object"
+                                            string="Ver lineas"
+                                            icon="fa-list"
+                                            class="btn-link"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Validacion" name="validation"
+                              invisible="not validation_log">
+                            <field name="validation_log" readonly="1"/>
+                        </page>
+                        <page string="Notas" name="notes">
+                            <field name="notes"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- ================================================================ -->
+    <!-- Report: Search view                                               -->
+    <!-- ================================================================ -->
+    <record id="co_exogena_report_search" model="ir.ui.view">
+        <field name="name">co.exogena.report.search</field>
+        <field name="model">co.exogena.report</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="fiscal_year"/>
+                <field name="company_nit"/>
+                <filter name="draft" string="Borrador"
+                        domain="[('state', '=', 'draft')]"/>
+                <filter name="generated" string="Generado"
+                        domain="[('state', '=', 'generated')]"/>
+                <filter name="validated" string="Validado"
+                        domain="[('state', '=', 'validated')]"/>
+                <filter name="error" string="Con errores"
+                        domain="[('state', '=', 'error')]"/>
+                <group expand="0" string="Agrupar por">
+                    <filter name="group_year" string="Ano gravable"
+                            context="{'group_by': 'fiscal_year'}"/>
+                    <filter name="group_state" string="Estado"
+                            context="{'group_by': 'state'}"/>
+                    <filter name="group_company" string="Compania"
+                            context="{'group_by': 'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ================================================================ -->
+    <!-- Report: Action                                                    -->
+    <!-- ================================================================ -->
+    <record id="co_exogena_report_action" model="ir.actions.act_window">
+        <field name="name">Exogena</field>
+        <field name="res_model">co.exogena.report</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="co_exogena_report_search"/>
+        <field name="path">exogena</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Crear un nuevo reporte de Informacion Exogena
+            </p>
+            <p>
+                Genere los formatos requeridos por la DIAN para la
+                Informacion Exogena del ano gravable correspondiente.
+            </p>
+        </field>
+    </record>
+</odoo>

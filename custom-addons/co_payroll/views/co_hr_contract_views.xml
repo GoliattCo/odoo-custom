@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_hr_contract_form_co_payroll" model="ir.ui.view">
+        <field name="name">hr.contract.form.co_payroll</field>
+        <field name="model">hr.contract</field>
+        <field name="inherit_id" ref="hr_contract.hr_contract_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='other']" position="after">
+                <page string="Colombian Payroll" name="co_payroll">
+                    <group>
+                        <group>
+                            <field name="co_contract_type"/>
+                            <field name="co_integral_salary"/>
+                            <field name="co_transport_allowance"/>
+                            <field name="co_work_schedule"/>
+                            <field name="co_pay_frequency"/>
+                            <field name="co_probation_end_date"/>
+                        </group>
+                        <group>
+                            <field name="co_eps_id"/>
+                            <field name="co_afp_id"/>
+                            <field name="co_arl_id"/>
+                            <field name="co_arl_risk_level_id"/>
+                            <field name="co_caja_compensacion"/>
+                            <field name="co_hiring_request_id"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

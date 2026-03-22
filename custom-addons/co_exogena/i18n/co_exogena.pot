@@ -1,0 +1,41 @@
+# Translation file for co_exogena module.
+# Copyright (C) 2026
+# This file is distributed under the same license as the co_exogena package.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-03-22 00:00+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. module: co_exogena
+#: model:ir.model,name:co_exogena.model_co_exogena_report
+msgid "Exogena Report"
+msgstr ""
+
+#. module: co_exogena
+#: model:ir.model,name:co_exogena.model_co_exogena_format
+msgid "Exogena Format"
+msgstr ""
+
+#. module: co_exogena
+#: model:ir.model,name:co_exogena.model_co_exogena_line
+msgid "Exogena Line"
+msgstr ""
+
+#. module: co_exogena
+#: model:ir.model,name:co_exogena.model_co_exogena_concept
+msgid "Exogena Concept"
+msgstr ""
+
+#. module: co_exogena
+#: model:ir.model,name:co_exogena.model_co_exogena_generate_wizard
+msgid "Generate Exogena Wizard"
+msgstr ""

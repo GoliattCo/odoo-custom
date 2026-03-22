@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ==================== Recipe Category ==================== -->
+    <record id="view_recipe_category_list" model="ir.ui.view">
+        <field name="name">co.restaurant.recipe.category.list</field>
+        <field name="model">co.restaurant.recipe.category</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="recipe_count"/>
+                <field name="active" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_recipe_category" model="ir.actions.act_window">
+        <field name="name">Recipe Categories</field>
+        <field name="res_model">co.restaurant.recipe.category</field>
+        <field name="view_mode">list</field>
+        <field name="path">restaurant-recipe-categories</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first recipe category
+            </p>
+        </field>
+    </record>
+
+    <menuitem
+        id="menu_recipe_category"
+        name="Recipe Categories"
+        parent="menu_co_restaurant_config"
+        action="action_recipe_category"
+        sequence="10"
+    />
+
+    <!-- ==================== Recipe ==================== -->
+    <record id="view_recipe_list" model="ir.ui.view">
+        <field name="name">co.restaurant.recipe.list</field>
+        <field name="model">co.restaurant.recipe</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="state == 'archived'">
+                <field name="name"/>
+                <field name="category_id"/>
+                <field name="product_id" optional="show"/>
+                <field name="yield_qty"/>
+                <field name="total_cost" sum="Total"/>
+                <field name="cost_per_portion"/>
+                <field name="selling_price" optional="show"/>
+                <field name="food_cost_pct" widget="progressbar" optional="show"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'active'"
+                       decoration-info="state == 'draft'"
+                       decoration-muted="state == 'archived'"
+                />
+            </list>
+        </field>
+    </record>
+
+    <record id="view_recipe_form" model="ir.ui.view">
+        <field name="name">co.restaurant.recipe.form</field>
+        <field name="model">co.restaurant.recipe</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_activate" string="Activate"
+                            type="object" class="oe_highlight"
+                            invisible="state != 'draft'"
+                    />
+                    <button name="action_archive_recipe" string="Archive"
+                            type="object"
+                            invisible="state != 'active'"
+                    />
+                    <button name="action_reset_draft" string="Reset to Draft"
+                            type="object"
+                            invisible="state == 'draft'"
+                    />
+                    <button name="action_create_production" string="Produce"
+                            type="object" class="oe_highlight"
+                            invisible="state != 'active'"
+                    />
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,active"
+                    />
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_productions"
+                                type="object" class="oe_stat_button"
+                                icon="fa-industry">
+                            <field name="production_count" widget="statinfo"
+                                   string="Productions"/>
+                        </button>
+                    </div>
+                    <field name="image" widget="image" class="oe_avatar"
+                           options="{'size': [128, 128]}"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" placeholder="Recipe name..."/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="category_id"/>
+                            <field name="product_id"/>
+                            <field name="yield_qty"/>
+                            <field name="yield_uom_id"/>
+                        </group>
+                        <group>
+                            <field name="selling_price"/>
+                            <field name="total_cost"/>
+                            <field name="cost_per_portion"/>
+                            <field name="food_cost_pct" widget="progressbar"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="company_id" invisible="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Ingredients" name="ingredients">
+                            <field name="line_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="product_id"/>
+                                    <field name="quantity"/>
+                                    <field name="uom_id"/>
+                                    <field name="loss_pct"/>
+                                    <field name="gross_quantity"/>
+                                    <field name="unit_cost"/>
+                                    <field name="subtotal" sum="Total"/>
+                                    <field name="notes" optional="hide"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Instructions" name="instructions">
+                            <field name="instructions"
+                                   placeholder="Enter preparation instructions..."/>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="notes"
+                                   placeholder="Additional notes..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_recipe_search" model="ir.ui.view">
+        <field name="name">co.restaurant.recipe.search</field>
+        <field name="model">co.restaurant.recipe</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="category_id"/>
+                <field name="product_id"/>
+                <filter name="filter_active_state" string="Active"
+                        domain="[('state', '=', 'active')]"/>
+                <filter name="filter_draft" string="Draft"
+                        domain="[('state', '=', 'draft')]"/>
+                <separator/>
+                <filter name="filter_high_cost" string="Food Cost > 35%"
+                        domain="[('food_cost_pct', '>', 35)]"/>
+                <group expand="0" string="Group By">
+                    <filter name="groupby_category" string="Category"
+                            context="{'group_by': 'category_id'}"/>
+                    <filter name="groupby_state" string="Status"
+                            context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_recipe_kanban" model="ir.ui.view">
+        <field name="name">co.restaurant.recipe.kanban</field>
+        <field name="model">co.restaurant.recipe</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="name"/>
+                <field name="category_id"/>
+                <field name="image"/>
+                <field name="cost_per_portion"/>
+                <field name="food_cost_pct"/>
+                <field name="state"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="o_kanban_image">
+                            <img t-att-src="kanban_image('co.restaurant.recipe', 'image', record.id.raw_value)"
+                                 alt="Recipe" class="o_image_64_contain"/>
+                        </div>
+                        <div class="oe_kanban_details">
+                            <strong class="o_kanban_record_title">
+                                <field name="name"/>
+                            </strong>
+                            <div class="o_kanban_tags_section">
+                                <field name="category_id"/>
+                            </div>
+                            <div>
+                                Cost/portion: <field name="cost_per_portion" widget="monetary"/>
+                            </div>
+                            <div>
+                                Food cost: <field name="food_cost_pct"/>%
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="action_recipe" model="ir.actions.act_window">
+        <field name="name">Recipes</field>
+        <field name="res_model">co.restaurant.recipe</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="path">restaurant-recipes</field>
+        <field name="search_view_id" ref="view_recipe_search"/>
+        <field name="context">{'search_default_filter_active_state': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first recipe
+            </p>
+            <p>
+                Define ingredients, preparation instructions, yield and costs.
+            </p>
+        </field>
+    </record>
+
+    <menuitem
+        id="menu_recipe_list"
+        name="Recipes"
+        parent="menu_co_restaurant_recipes"
+        action="action_recipe"
+        sequence="10"
+    />
+    <menuitem
+        id="menu_recipe_categories_sub"
+        name="Categories"
+        parent="menu_co_restaurant_recipes"
+        action="action_recipe_category"
+        sequence="20"
+    />
+</odoo>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="eps_sura" model="co.eps.entity">
+            <field name="name">EPS Suramericana (SURA)</field>
+            <field name="code">EPS010</field>
+            <field name="nit">800088702</field>
+        </record>
+        <record id="eps_sanitas" model="co.eps.entity">
+            <field name="name">EPS Sanitas</field>
+            <field name="code">EPS005</field>
+            <field name="nit">800251440</field>
+        </record>
+        <record id="eps_compensar" model="co.eps.entity">
+            <field name="name">Compensar EPS</field>
+            <field name="code">EPS008</field>
+            <field name="nit">860066942</field>
+        </record>
+        <record id="eps_famisanar" model="co.eps.entity">
+            <field name="name">Famisanar</field>
+            <field name="code">EPS017</field>
+            <field name="nit">830003564</field>
+        </record>
+        <record id="eps_nueva_eps" model="co.eps.entity">
+            <field name="name">Nueva EPS</field>
+            <field name="code">EPS037</field>
+            <field name="nit">900156264</field>
+        </record>
+        <record id="eps_salud_total" model="co.eps.entity">
+            <field name="name">Salud Total</field>
+            <field name="code">EPS002</field>
+            <field name="nit">800130907</field>
+        </record>
+        <record id="eps_coosalud" model="co.eps.entity">
+            <field name="name">Coosalud</field>
+            <field name="code">EPS016</field>
+            <field name="nit">900226715</field>
+        </record>
+        <record id="eps_mutual_ser" model="co.eps.entity">
+            <field name="name">Mutual Ser</field>
+            <field name="code">EPS014</field>
+            <field name="nit">806008394</field>
+        </record>
+        <record id="eps_aliansalud" model="co.eps.entity">
+            <field name="name">Aliansalud</field>
+            <field name="code">EPS001</field>
+            <field name="nit">830113831</field>
+        </record>
+        <record id="eps_savia_salud" model="co.eps.entity">
+            <field name="name">Savia Salud</field>
+            <field name="code">EPS040</field>
+            <field name="nit">900604350</field>
+        </record>
+    </data>
+</odoo>

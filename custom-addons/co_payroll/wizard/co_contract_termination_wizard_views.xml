@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_co_contract_termination_wizard_form" model="ir.ui.view">
+        <field name="name">co.contract.termination.wizard.form</field>
+        <field name="model">co.contract.termination.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <group string="Employee Information">
+                    <group>
+                        <field name="employee_id"/>
+                        <field name="contract_id" domain="[('employee_id', '=', employee_id), ('state', '=', 'open')]"/>
+                    </group>
+                    <group>
+                        <field name="termination_date"/>
+                        <field name="termination_reason"/>
+                    </group>
+                </group>
+                <group string="Liquidation Calculation">
+                    <group>
+                        <field name="pending_salary"/>
+                        <field name="prima_amount"/>
+                        <field name="cesantias_amount"/>
+                        <field name="intereses_cesantias"/>
+                    </group>
+                    <group>
+                        <field name="vacaciones_amount"/>
+                        <field name="indemnizacion_amount"/>
+                    </group>
+                </group>
+                <group>
+                    <field name="total_liquidation" class="oe_subtotal_footer_separator"/>
+                </group>
+                <footer>
+                    <button name="action_confirm_termination" string="Confirm Termination"
+                            type="object" class="oe_highlight"/>
+                    <button string="Cancel" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_co_contract_termination_wizard" model="ir.actions.act_window">
+        <field name="name">Contract Termination (Liquidacion)</field>
+        <field name="res_model">co.contract.termination.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="path">co-contract-termination</field>
+    </record>
+
+    <!-- Add to menus -->
+    <menuitem id="menu_co_contract_termination"
+              name="Contract Termination"
+              parent="menu_co_payroll_employees"
+              action="action_co_contract_termination_wizard"
+              sequence="20"/>
+
+</odoo>

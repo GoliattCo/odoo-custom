@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================ -->
+    <!-- co.bank.statement.import — Form                              -->
+    <!-- ============================================================ -->
+    <record id="view_co_bank_statement_import_form" model="ir.ui.view">
+        <field name="name">co.bank.statement.import.form</field>
+        <field name="model">co.bank.statement.import</field>
+        <field name="arch" type="xml">
+            <form string="Bank Statement Import">
+                <header>
+                    <button name="action_auto_reconcile"
+                            type="object"
+                            string="Auto-Reconcile"
+                            class="oe_highlight"
+                            invisible="state not in ('imported', 'processing')"/>
+                    <button name="action_mark_done"
+                            type="object"
+                            string="Mark as Done"
+                            class="oe_highlight"
+                            invisible="state not in ('reconciled', 'processing')"/>
+                    <button name="action_cancel"
+                            type="object"
+                            string="Cancel"
+                            invisible="state in ('done', 'cancelled', 'draft')"/>
+                    <button name="action_reset_draft"
+                            type="object"
+                            string="Reset to Draft"
+                            invisible="state not in ('cancelled',)"
+                            confirm="This will delete all imported lines. Continue?"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,imported,processing,reconciled,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_lines"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-list">
+                            <field name="line_count" widget="statinfo" string="Lines"/>
+                        </button>
+                        <button name="action_open_unreconciled"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-question-circle"
+                                invisible="unreconciled_count == 0">
+                            <field name="unreconciled_count" widget="statinfo" string="Unreconciled"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" readonly="state != 'draft'"/></h1>
+                    </div>
+                    <group>
+                        <group string="Statement">
+                            <field name="journal_id" readonly="state != 'draft'"/>
+                            <field name="format_id" readonly="state != 'draft'"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="effective_currency_id" invisible="1"/>
+                            <field name="company_currency_id" invisible="1"/>
+                            <field name="filename" readonly="1"/>
+                        </group>
+                        <group string="Period &amp; Balances">
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                            <field name="balance_start"/>
+                            <field name="balance_end"/>
+                            <field name="reconciled_pct" widget="progressbar"/>
+                        </group>
+                    </group>
+                    <group string="Auto-Reconciliation Settings"
+                           invisible="state in ('done', 'cancelled')">
+                        <group>
+                            <field name="match_reference"/>
+                            <field name="match_amount"/>
+                            <field name="match_date_tolerance"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Statement Lines" name="lines">
+                            <field name="line_ids" readonly="state == 'done'">
+                                <list string="Lines"
+                                      decoration-success="reconciled == True"
+                                      decoration-warning="reconciled == False">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="date"/>
+                                    <field name="reference"/>
+                                    <field name="description"/>
+                                    <field name="amount"/>
+                                    <field name="balance"/>
+                                    <field name="partner_id"/>
+                                    <field name="reconciled"/>
+                                    <field name="match_type"/>
+                                    <field name="payment_id" optional="hide"/>
+                                    <field name="move_id" optional="hide"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="notes" placeholder="Internal notes..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- co.bank.statement.import — List                              -->
+    <!-- ============================================================ -->
+    <record id="view_co_bank_statement_import_list" model="ir.ui.view">
+        <field name="name">co.bank.statement.import.list</field>
+        <field name="model">co.bank.statement.import</field>
+        <field name="arch" type="xml">
+            <list string="Bank Statement Imports"
+                  decoration-muted="state == 'cancelled'"
+                  decoration-success="state == 'done'">
+                <field name="name"/>
+                <field name="journal_id"/>
+                <field name="format_id"/>
+                <field name="date_start"/>
+                <field name="date_end"/>
+                <field name="line_count"/>
+                <field name="reconciled_count"/>
+                <field name="reconciled_pct" widget="progressbar"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- co.bank.statement.import — Search                            -->
+    <!-- ============================================================ -->
+    <record id="view_co_bank_statement_import_search" model="ir.ui.view">
+        <field name="name">co.bank.statement.import.search</field>
+        <field name="model">co.bank.statement.import</field>
+        <field name="arch" type="xml">
+            <search string="Bank Statement Imports">
+                <field name="name"/>
+                <field name="journal_id"/>
+                <field name="format_id"/>
+                <filter name="filter_draft" string="Draft" domain="[('state', '=', 'draft')]"/>
+                <filter name="filter_imported" string="Imported" domain="[('state', '=', 'imported')]"/>
+                <filter name="filter_processing" string="Processing" domain="[('state', '=', 'processing')]"/>
+                <filter name="filter_reconciled" string="Reconciled" domain="[('state', '=', 'reconciled')]"/>
+                <filter name="filter_done" string="Done" domain="[('state', '=', 'done')]"/>
+                <separator/>
+                <group expand="0" string="Group By">
+                    <filter name="groupby_journal" string="Journal" context="{'group_by': 'journal_id'}"/>
+                    <filter name="groupby_format" string="Format" context="{'group_by': 'format_id'}"/>
+                    <filter name="groupby_state" string="Status" context="{'group_by': 'state'}"/>
+                    <filter name="groupby_month" string="End Date" context="{'group_by': 'date_end:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- co.bank.statement.import — Action                            -->
+    <!-- ============================================================ -->
+    <record id="action_co_bank_statement_import" model="ir.actions.act_window">
+        <field name="name">Bank Statements</field>
+        <field name="res_model">co.bank.statement.import</field>
+        <field name="view_mode">list,form</field>
+        <field name="path">co-bank-statements</field>
+        <field name="context">{'search_default_filter_imported': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Import your first bank statement
+            </p>
+            <p>
+                Use the Import wizard to upload flat files from Colombian banks
+                and reconcile them with your journal entries.
+            </p>
+        </field>
+    </record>
+
+</odoo>

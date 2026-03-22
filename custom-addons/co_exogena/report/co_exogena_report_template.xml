@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ================================================================ -->
+    <!-- QWeb report action                                                -->
+    <!-- ================================================================ -->
+    <record id="action_report_co_exogena" model="ir.actions.report">
+        <field name="name">Resumen Exogena</field>
+        <field name="model">co.exogena.report</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">co_exogena.report_exogena_summary</field>
+        <field name="report_file">co_exogena.report_exogena_summary</field>
+        <field name="binding_model_id" ref="model_co_exogena_report"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <!-- ================================================================ -->
+    <!-- QWeb PDF template - Summary report                                -->
+    <!-- ================================================================ -->
+    <template id="report_exogena_summary">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="report">
+                <div class="header" style="border-bottom: 2px solid #333; padding-bottom: 8px; margin-bottom: 16px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <img t-if="report.company_id.logo"
+                                 t-att-src="image_data_uri(report.company_id.logo)"
+                                 style="max-height: 50px;" alt="Logo"/>
+                        </div>
+                        <div style="text-align: center;">
+                            <h3 style="margin: 0;" t-esc="report.company_name_report"/>
+                            <p style="margin: 0;">
+                                NIT: <t t-esc="report.company_nit"/>-<t t-esc="report.company_nit_dv"/>
+                            </p>
+                        </div>
+                        <div style="text-align: right; font-size: 10px; color: #666;">
+                            <p style="margin: 0;">Generado: <t t-esc="context_timestamp(datetime.datetime.now()).strftime('%Y-%m-%d %H:%M')"/></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="page">
+                    <h2 style="text-align: center; margin-bottom: 20px;">
+                        Resumen Informacion Exogena - Ano Gravable <t t-esc="report.fiscal_year"/>
+                    </h2>
+
+                    <table class="table table-sm table-bordered" style="font-size: 11px;">
+                        <thead>
+                            <tr style="background-color: #f0f0f0;">
+                                <th>Formato</th>
+                                <th>Descripcion</th>
+                                <th class="text-end">Lineas</th>
+                                <th class="text-end">Total monto</th>
+                                <th class="text-end">Total base</th>
+                                <th class="text-end">Total retencion</th>
+                                <th class="text-end">Total IVA</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="report.format_ids" t-as="fmt">
+                                <tr>
+                                    <td t-esc="fmt.format_code"/>
+                                    <td t-esc="fmt.name"/>
+                                    <td class="text-end" t-esc="fmt.line_count"/>
+                                    <td class="text-end" t-esc="'{:,.2f}'.format(fmt.total_amount)"/>
+                                    <td class="text-end" t-esc="'{:,.2f}'.format(fmt.total_base_amount)"/>
+                                    <td class="text-end" t-esc="'{:,.2f}'.format(fmt.total_retention)"/>
+                                    <td class="text-end" t-esc="'{:,.2f}'.format(fmt.total_vat)"/>
+                                </tr>
+                            </t>
+                        </tbody>
+                        <tfoot>
+                            <tr style="font-weight: bold; background-color: #e8e8e8;">
+                                <td colspan="2">TOTALES</td>
+                                <td class="text-end" t-esc="sum(report.format_ids.mapped('line_count'))"/>
+                                <td class="text-end" t-esc="'{:,.2f}'.format(sum(report.format_ids.mapped('total_amount')))"/>
+                                <td class="text-end" t-esc="'{:,.2f}'.format(sum(report.format_ids.mapped('total_base_amount')))"/>
+                                <td class="text-end" t-esc="'{:,.2f}'.format(sum(report.format_ids.mapped('total_retention')))"/>
+                                <td class="text-end" t-esc="'{:,.2f}'.format(sum(report.format_ids.mapped('total_vat')))"/>
+                            </tr>
+                        </tfoot>
+                    </table>
+
+                    <t t-if="report.validation_log">
+                        <h4 style="margin-top: 20px;">Log de Validacion</h4>
+                        <pre style="font-size: 10px; background: #f9f9f9; padding: 10px; border: 1px solid #ddd;"
+                             t-esc="report.validation_log"/>
+                    </t>
+
+                    <!-- Detail per format -->
+                    <t t-foreach="report.format_ids" t-as="fmt">
+                        <div style="page-break-before: always;"/>
+                        <h3 style="margin-top: 20px; border-bottom: 1px solid #ccc; padding-bottom: 5px;">
+                            <t t-esc="fmt.name"/>
+                        </h3>
+                        <p style="font-size: 10px; color: #666;">
+                            <t t-esc="fmt.line_count"/> lineas |
+                            Total: <t t-esc="'{:,.2f}'.format(fmt.total_amount)"/>
+                        </p>
+                        <table class="table table-sm table-bordered" style="font-size: 9px;">
+                            <thead>
+                                <tr style="background-color: #f0f0f0;">
+                                    <th>NIT</th>
+                                    <th>DV</th>
+                                    <th>Nombre / Razon Social</th>
+                                    <th>Concepto</th>
+                                    <th class="text-end">Monto</th>
+                                    <th class="text-end">Base</th>
+                                    <th class="text-end">Retencion</th>
+                                    <th class="text-end">IVA</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="fmt.line_ids" t-as="line">
+                                    <tr>
+                                        <td t-esc="line.partner_nit"/>
+                                        <td t-esc="line.partner_nit_dv"/>
+                                        <td t-esc="line.partner_name"/>
+                                        <td t-esc="line.concept_code"/>
+                                        <td class="text-end" t-esc="'{:,.2f}'.format(line.amount)"/>
+                                        <td class="text-end" t-esc="'{:,.2f}'.format(line.base_amount)"/>
+                                        <td class="text-end" t-esc="'{:,.2f}'.format(line.retention_amount)"/>
+                                        <td class="text-end" t-esc="'{:,.2f}'.format(line.vat_amount)"/>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </t>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

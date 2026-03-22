@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_co_overtime_form" model="ir.ui.view">
+        <field name="name">co.overtime.form</field>
+        <field name="model">co.overtime</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="employee_id"/>
+                            <field name="date"/>
+                            <field name="overtime_type"/>
+                        </group>
+                        <group>
+                            <field name="hours"/>
+                            <field name="amount"/>
+                            <field name="applied"/>
+                            <field name="payslip_id"/>
+                        </group>
+                    </group>
+                    <field name="notes" placeholder="Notes..."/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_co_overtime_list" model="ir.ui.view">
+        <field name="name">co.overtime.list</field>
+        <field name="model">co.overtime</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="employee_id"/>
+                <field name="date"/>
+                <field name="overtime_type"/>
+                <field name="hours"/>
+                <field name="amount" sum="Total"/>
+                <field name="applied"/>
+                <field name="payslip_id" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_co_overtime_search" model="ir.ui.view">
+        <field name="name">co.overtime.search</field>
+        <field name="model">co.overtime</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="employee_id"/>
+                <field name="overtime_type"/>
+                <filter name="not_applied" string="Not Applied"
+                        domain="[('applied', '=', False)]"/>
+                <filter name="applied" string="Applied"
+                        domain="[('applied', '=', True)]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_employee" string="Employee"
+                            context="{'group_by': 'employee_id'}"/>
+                    <filter name="group_type" string="Type"
+                            context="{'group_by': 'overtime_type'}"/>
+                    <filter name="group_month" string="Month"
+                            context="{'group_by': 'date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_co_overtime" model="ir.actions.act_window">
+        <field name="name">Overtime Records</field>
+        <field name="res_model">co.overtime</field>
+        <field name="view_mode">list,form</field>
+        <field name="path">co-overtime</field>
+        <field name="context">{'search_default_not_applied': 1}</field>
+    </record>
+
+</odoo>

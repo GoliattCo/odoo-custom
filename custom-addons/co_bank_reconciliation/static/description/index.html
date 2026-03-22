@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <style>
+        body { font-family: sans-serif; max-width: 800px; margin: 40px auto; padding: 0 20px; }
+        h1 { color: #714B67; }
+        h2 { color: #333; border-bottom: 1px solid #eee; padding-bottom: 8px; }
+        ul { line-height: 1.8; }
+        .badge { display: inline-block; padding: 4px 12px; border-radius: 4px; font-size: 12px; font-weight: bold; }
+        .badge-primary { background: #714B67; color: #fff; }
+    </style>
+</head>
+<body>
+    <h1>Colombian Bank Reconciliation</h1>
+    <p><span class="badge badge-primary">Odoo 18</span></p>
+    <p>Import bank statement flat files (CSV/TXT) from major Colombian banks and reconcile them with your accounting entries.</p>
+
+    <h2>Supported Banks</h2>
+    <ul>
+        <li><strong>Bancolombia</strong> - CSV export with semicolon delimiter</li>
+        <li><strong>Davivienda</strong> - CSV export with semicolon delimiter</li>
+        <li><strong>Generic CSV/TXT</strong> - Fully configurable column mapping</li>
+    </ul>
+
+    <h2>Features</h2>
+    <ul>
+        <li>Import wizard with encoding auto-detection (UTF-8, Latin-1, CP1252)</li>
+        <li>Auto-reconciliation by reference and amount matching</li>
+        <li>Manual reconciliation for unmatched lines</li>
+        <li>Configurable bank formats: delimiter, column mapping, date/number formats</li>
+        <li>Colombian number format support (dot as thousands, comma as decimal)</li>
+        <li>Progress tracking per imported statement</li>
+    </ul>
+
+    <h2>Configuration</h2>
+    <p>Go to <strong>Accounting &gt; Bank Reconciliation &gt; Configuration &gt; Bank Formats</strong> to create or modify bank file format definitions.</p>
+</body>
+</html>

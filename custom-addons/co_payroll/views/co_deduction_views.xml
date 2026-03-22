@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_co_deduction_form" model="ir.ui.view">
+        <field name="name">co.deduction.form</field>
+        <field name="model">co.deduction</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="employee_id"/>
+                            <field name="deduction_type"/>
+                        </group>
+                        <group>
+                            <field name="amount"/>
+                            <field name="date"/>
+                            <field name="applied"/>
+                            <field name="payslip_id"/>
+                        </group>
+                    </group>
+                    <field name="notes" placeholder="Notes..."/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_co_deduction_list" model="ir.ui.view">
+        <field name="name">co.deduction.list</field>
+        <field name="model">co.deduction</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="deduction_type"/>
+                <field name="amount" sum="Total"/>
+                <field name="date"/>
+                <field name="applied"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_co_deduction_search" model="ir.ui.view">
+        <field name="name">co.deduction.search</field>
+        <field name="model">co.deduction</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="employee_id"/>
+                <field name="deduction_type"/>
+                <filter name="not_applied" string="Not Applied"
+                        domain="[('applied', '=', False)]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_employee" string="Employee"
+                            context="{'group_by': 'employee_id'}"/>
+                    <filter name="group_type" string="Type"
+                            context="{'group_by': 'deduction_type'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_co_deduction" model="ir.actions.act_window">
+        <field name="name">Manual Deductions</field>
+        <field name="res_model">co.deduction</field>
+        <field name="view_mode">list,form</field>
+        <field name="path">co-deductions</field>
+        <field name="context">{'search_default_not_applied': 1}</field>
+    </record>
+
+</odoo>

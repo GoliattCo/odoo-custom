@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_co_social_security_form" model="ir.ui.view">
+        <field name="name">co.social.security.form</field>
+        <field name="model">co.social.security</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="employee_id"/>
+                            <field name="eps_id"/>
+                            <field name="afp_id"/>
+                        </group>
+                        <group>
+                            <field name="arl_id"/>
+                            <field name="arl_risk_level_id"/>
+                            <field name="caja_compensacion"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                        </group>
+                        <group>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <field name="notes" placeholder="Notes..."/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_co_social_security_list" model="ir.ui.view">
+        <field name="name">co.social.security.list</field>
+        <field name="model">co.social.security</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="employee_id"/>
+                <field name="eps_id"/>
+                <field name="afp_id"/>
+                <field name="arl_id"/>
+                <field name="arl_risk_level_id"/>
+                <field name="caja_compensacion"/>
+                <field name="date_from"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_co_social_security" model="ir.actions.act_window">
+        <field name="name">Social Security Configuration</field>
+        <field name="res_model">co.social.security</field>
+        <field name="view_mode">list,form</field>
+        <field name="path">co-social-security</field>
+    </record>
+
+</odoo>
