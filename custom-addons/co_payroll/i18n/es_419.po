@@ -1,0 +1,2543 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* co_payroll
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-03-23 00:31+0000\n"
+"PO-Revision-Date: 2026-03-22 00:00+0000\n"
+"Last-Translator: \n"
+"Language-Team: Spanish (Latin America)\n"
+"Language: es_419\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. module: co_payroll
+#: model:ir.actions.report,print_report_name:co_payroll.action_report_co_payslip
+msgid "'Nomina_%s_%s' % (object.employee_id.name, object.name)"
+msgstr "'Nomina_%s_%s' % (object.employee_id.name, object.name)"
+
+#. module: co_payroll
+#: model_terms:ir.ui.view,arch_db:co_payroll.report_co_payslip
+msgid "<strong>Cargo:</strong>"
+msgstr "<strong>Cargo:</strong>"
+
+#. module: co_payroll
+#: model_terms:ir.ui.view,arch_db:co_payroll.report_co_payslip
+msgid "<strong>Departamento:</strong>"
+msgstr "<strong>Departamento:</strong>"
+
+#. module: co_payroll
+#: model_terms:ir.ui.view,arch_db:co_payroll.report_co_payslip
+msgid "<strong>Dias Trabajados:</strong>"
+msgstr "<strong>Dias Trabajados:</strong>"
+
+#. module: co_payroll
+#: model_terms:ir.ui.view,arch_db:co_payroll.report_co_payslip
+msgid "<strong>Empleado:</strong>"
+msgstr "<strong>Empleado:</strong>"
+
+#. module: co_payroll
+#: model_terms:ir.ui.view,arch_db:co_payroll.report_co_payslip
+msgid "<strong>Frecuencia:</strong>"
+msgstr "<strong>Frecuencia:</strong>"
+
+#. module: co_payroll
+#: model_terms:ir.ui.view,arch_db:co_payroll.report_co_payslip
+msgid "<strong>Periodo:</strong>"
+msgstr "<strong>Periodo:</strong>"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_social_security__afp_id
+#: model:ir.model.fields,field_description:co_payroll.field_hr_contract__co_afp_id
+msgid "AFP (Pension Fund)"
+msgstr "AFP (Fondo de Pensiones)"
+
+#. module: co_payroll
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_pila_form
+msgid "AFP EE"
+msgstr "AFP EE"
+
+#. module: co_payroll
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_pila_form
+msgid "AFP ER"
+msgstr "AFP ER"
+
+#. module: co_payroll
+#: model:co.salary.concept,name:co_payroll.concept_afp_employee
+msgid "AFP Empleado (4%)"
+msgstr "AFP Empleado (4%)"
+
+#. module: co_payroll
+#: model:co.salary.concept,name:co_payroll.concept_afp_employer
+msgid "AFP Empleador (12%)"
+msgstr "AFP Empleador (12%)"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_pila_line__afp_employee
+msgid "AFP Employee"
+msgstr "AFP Empleado"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip__afp_employee
+msgid "AFP Employee (4%)"
+msgstr "AFP Empleado (4%)"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_pila_line__afp_employer
+msgid "AFP Employer"
+msgstr "AFP Empleador"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip__afp_employer
+msgid "AFP Employer (12%)"
+msgstr "AFP Empleador (12%)"
+
+#. module: co_payroll
+#: model:ir.actions.act_window,name:co_payroll.action_co_afp_entity
+#: model:ir.ui.menu,name:co_payroll.menu_co_afp_entity
+msgid "AFP Entities"
+msgstr "Entidades AFP"
+
+#. module: co_payroll
+#: model:ir.model,name:co_payroll.model_co_afp_entity
+msgid "AFP Entity (Pension Fund)"
+msgstr "Entidad AFP (Fondo de Pensiones)"
+
+#. module: co_payroll
+#: model:ir.model.constraint,message:co_payroll.constraint_co_afp_entity_code_unique
+msgid "AFP code must be unique."
+msgstr "El código AFP debe ser único."
+
+#. module: co_payroll
+#: model_terms:ir.ui.view,arch_db:co_payroll.report_co_payslip
+msgid "APORTES EMPLEADOR"
+msgstr "APORTES EMPLEADOR"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip__arl_employer
+#: model:ir.model.fields,field_description:co_payroll.field_co_pila_line__arl
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_pila_form
+msgid "ARL"
+msgstr "ARL"
+
+#. module: co_payroll
+#: model:ir.actions.act_window,name:co_payroll.action_co_arl_entity
+#: model:ir.ui.menu,name:co_payroll.menu_co_arl_entity
+msgid "ARL Entities"
+msgstr "Entidades ARL"
+
+#. module: co_payroll
+#: model:ir.model,name:co_payroll.model_co_arl_entity
+#: model:ir.model.fields,field_description:co_payroll.field_co_social_security__arl_id
+#: model:ir.model.fields,field_description:co_payroll.field_hr_contract__co_arl_id
+msgid "ARL Entity"
+msgstr "Entidad ARL"
+
+#. module: co_payroll
+#: model:ir.model,name:co_payroll.model_co_arl_risk_level
+#: model:ir.model.fields,field_description:co_payroll.field_co_social_security__arl_risk_level_id
+#: model:ir.model.fields,field_description:co_payroll.field_hr_contract__co_arl_risk_level_id
+msgid "ARL Risk Level"
+msgstr "Nivel de Riesgo ARL"
+
+#. module: co_payroll
+#: model:ir.model.constraint,message:co_payroll.constraint_co_arl_entity_code_unique
+msgid "ARL code must be unique."
+msgstr "El código ARL debe ser único."
+
+#. module: co_payroll
+#: model:ir.model.fields,help:co_payroll.field_co_arl_risk_level__rate
+msgid "ARL contribution rate as a percentage"
+msgstr "Tasa de cotización ARL como porcentaje"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_nomina_electronica__dian_status__accepted
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_nomina_electronica__state__accepted
+msgid "Accepted"
+msgstr "Aceptado"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_hiring_request__message_needaction
+#: model:ir.model.fields,field_description:co_payroll.field_co_loan__message_needaction
+#: model:ir.model.fields,field_description:co_payroll.field_co_nomina_electronica__message_needaction
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip__message_needaction
+#: model:ir.model.fields,field_description:co_payroll.field_co_pila__message_needaction
+msgid "Action Needed"
+msgstr "Acción requerida"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_afp_entity__active
+#: model:ir.model.fields,field_description:co_payroll.field_co_arl_entity__active
+#: model:ir.model.fields,field_description:co_payroll.field_co_eps_entity__active
+#: model:ir.model.fields,field_description:co_payroll.field_co_family_member__active
+#: model:ir.model.fields,field_description:co_payroll.field_co_salary_concept__active
+#: model:ir.model.fields,field_description:co_payroll.field_co_social_security__active
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_loan_search
+msgid "Active"
+msgstr "Activo"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_hiring_request__activity_ids
+#: model:ir.model.fields,field_description:co_payroll.field_co_loan__activity_ids
+#: model:ir.model.fields,field_description:co_payroll.field_co_nomina_electronica__activity_ids
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip__activity_ids
+#: model:ir.model.fields,field_description:co_payroll.field_co_pila__activity_ids
+msgid "Activities"
+msgstr "Actividades"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_hiring_request__activity_exception_decoration
+#: model:ir.model.fields,field_description:co_payroll.field_co_loan__activity_exception_decoration
+#: model:ir.model.fields,field_description:co_payroll.field_co_nomina_electronica__activity_exception_decoration
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip__activity_exception_decoration
+#: model:ir.model.fields,field_description:co_payroll.field_co_pila__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr "Decoración de excepción de actividad"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_hiring_request__activity_state
+#: model:ir.model.fields,field_description:co_payroll.field_co_loan__activity_state
+#: model:ir.model.fields,field_description:co_payroll.field_co_nomina_electronica__activity_state
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip__activity_state
+#: model:ir.model.fields,field_description:co_payroll.field_co_pila__activity_state
+msgid "Activity State"
+msgstr "Estado de actividad"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_hiring_request__activity_type_icon
+#: model:ir.model.fields,field_description:co_payroll.field_co_loan__activity_type_icon
+#: model:ir.model.fields,field_description:co_payroll.field_co_nomina_electronica__activity_type_icon
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip__activity_type_icon
+#: model:ir.model.fields,field_description:co_payroll.field_co_pila__activity_type_icon
+msgid "Activity Type Icon"
+msgstr "Icono de tipo de actividad"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_deduction__amount
+#: model:ir.model.fields,field_description:co_payroll.field_co_loan_payment__amount
+#: model:ir.model.fields,field_description:co_payroll.field_co_overtime__amount
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip_line__amount
+msgid "Amount"
+msgstr "Monto"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_salary_concept__appears_on_payslip
+msgid "Appears on Payslip"
+msgstr "Aparece en el comprobante de nómina"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_deduction__applied
+#: model:ir.model.fields,field_description:co_payroll.field_co_overtime__applied
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_overtime_search
+msgid "Applied"
+msgstr "Aplicado"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_deduction__payslip_id
+msgid "Applied on Payslip"
+msgstr "Aplicado en nómina"
+
+#. module: co_payroll
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_hiring_request_form
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_loan_form
+msgid "Approve"
+msgstr "Aprobar"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_hiring_request__state__approved
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_loan__state__approved
+msgid "Approved"
+msgstr "Aprobado"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_hiring_request__approved_by
+msgid "Approved By"
+msgstr "Aprobado por"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_hiring_request__contract_type__aprendizaje
+msgid "Aprendizaje"
+msgstr "Aprendizaje"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_pila__period_month__04
+msgid "April"
+msgstr "Abril"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_hiring_request__message_attachment_count
+#: model:ir.model.fields,field_description:co_payroll.field_co_loan__message_attachment_count
+#: model:ir.model.fields,field_description:co_payroll.field_co_nomina_electronica__message_attachment_count
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip__message_attachment_count
+#: model:ir.model.fields,field_description:co_payroll.field_co_pila__message_attachment_count
+msgid "Attachment Count"
+msgstr "Cantidad de adjuntos"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_pila__period_month__08
+msgid "August"
+msgstr "Agosto"
+
+#. module: co_payroll
+#: model:co.salary.concept,name:co_payroll.concept_transport
+#: model:ir.model.fields,help:co_payroll.field_co_payroll_constants__transport_allowance
+#: model:ir.model.fields,help:co_payroll.field_res_config_settings__co_payroll_transport_allowance
+msgid "Auxilio de Transporte"
+msgstr "Auxilio de Transporte"
+
+#. module: co_payroll
+#: model:ir.model.fields,help:co_payroll.field_hr_contract__co_transport_allowance
+msgid "Auxilio de transporte. Applies when salary <= 2 SMLMV."
+msgstr "Auxilio de transporte. Aplica cuando el salario <= 2 SMLMV."
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_nomina_electronica__payment_method__2
+msgid "Bank Transfer"
+msgstr "Transferencia bancaria"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip__basic_salary
+msgid "Basic Salary"
+msgstr "Salario Básico"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_family_member__birth_date
+msgid "Birth Date"
+msgstr "Fecha de nacimiento"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_payslip__pay_frequency__biweekly
+#: model:ir.model.fields.selection,name:co_payroll.selection__hr_contract__co_pay_frequency__biweekly
+msgid "Biweekly (Quincenal)"
+msgstr "Quincenal"
+
+#. module: co_payroll
+#: model:co.salary.concept,name:co_payroll.concept_bonuses
+msgid "Bonificaciones"
+msgstr "Bonificaciones"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip__bonuses
+msgid "Bonuses"
+msgstr "Bonificaciones"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_hr_contract__co_contract_type
+msgid "CO Contract Type"
+msgstr "Tipo de contrato CO"
+
+#. module: co_payroll
+#: model_terms:ir.ui.view,arch_db:co_payroll.report_co_payslip
+msgid "COMPROBANTE DE NOMINA"
+msgstr "COMPROBANTE DE NÓMINA"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_nomina_electronica__cune
+msgid "CUNE"
+msgstr "CUNE"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_pila_line__caja
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_pila_form
+msgid "Caja"
+msgstr "Caja"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip__caja_compensacion
+msgid "Caja Compensación (4%)"
+msgstr "Caja de Compensación (4%)"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_social_security__caja_compensacion
+#: model:ir.model.fields,field_description:co_payroll.field_hr_contract__co_caja_compensacion
+msgid "Caja de Compensación"
+msgstr "Caja de Compensación"
+
+#. module: co_payroll
+#: model:co.salary.concept,name:co_payroll.concept_caja
+msgid "Caja de Compensación (4%)"
+msgstr "Caja de Compensación (4%)"
+
+#. module: co_payroll
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_contract_termination_wizard_form
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_hiring_request_form
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_loan_form
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_nomina_electronica_form
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_payslip_form
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_pila_form
+msgid "Cancel"
+msgstr "Cancelar"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_hiring_request__state__cancelled
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_loan__state__cancelled
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_nomina_electronica__state__cancelled
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_payslip__state__cancelled
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_pila__state__cancelled
+msgid "Cancelled"
+msgstr "Cancelado"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_nomina_electronica__payment_method__1
+msgid "Cash"
+msgstr "Efectivo"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_contract_termination_wizard__cesantias_amount
+msgid "Cesantias"
+msgstr "Cesantías"
+
+#. module: co_payroll
+#: model:co.salary.concept,name:co_payroll.concept_cesantias
+msgid "Cesantías"
+msgstr "Cesantías"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip__cesantias_provision
+msgid "Cesantías Provision"
+msgstr "Provisión de Cesantías"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_nomina_electronica__payment_method__3
+msgid "Check"
+msgstr "Cheque"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_family_member__relationship__child
+msgid "Child"
+msgstr "Hijo/a"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_afp_entity__code
+#: model:ir.model.fields,field_description:co_payroll.field_co_arl_entity__code
+#: model:ir.model.fields,field_description:co_payroll.field_co_eps_entity__code
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip_line__code
+#: model:ir.model.fields,field_description:co_payroll.field_co_salary_concept__code
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_payslip_line_search
+msgid "Code"
+msgstr "Código"
+
+#. module: co_payroll
+#: model:ir.module.category,name:co_payroll.module_category_co_payroll
+#: model_terms:ir.ui.view,arch_db:co_payroll.res_config_settings_view_form_co_payroll
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_hr_contract_form_co_payroll
+msgid "Colombian Payroll"
+msgstr "Nómina Colombiana"
+
+#. module: co_payroll
+#: model:ir.model,name:co_payroll.model_co_payroll_constants
+msgid "Colombian Payroll Constants"
+msgstr "Constantes de Nómina Colombiana"
+
+#. module: co_payroll
+#: model:ir.model,name:co_payroll.model_co_payslip
+msgid "Colombian Payslip (Nómina)"
+msgstr "Comprobante de Nómina Colombiana"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_afp_entity__fund_type__public
+msgid "Colpensiones"
+msgstr "Colpensiones"
+
+#. module: co_payroll
+#: model:co.salary.concept,name:co_payroll.concept_commissions
+msgid "Comisiones"
+msgstr "Comisiones"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip__commissions
+msgid "Commissions"
+msgstr "Comisiones"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_nomina_electronica__company_id
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip__company_id
+#: model:ir.model.fields,field_description:co_payroll.field_co_pila__company_id
+msgid "Company"
+msgstr "Empresa"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_deduction__deduction_type__company_purchase
+msgid "Company Product Purchase"
+msgstr "Compra de productos de la empresa"
+
+#. module: co_payroll
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_payslip_form
+msgid "Compute"
+msgstr "Calcular"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_payslip__state__computed
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_payslip_search
+msgid "Computed"
+msgstr "Calculado"
+
+#. module: co_payroll
+#: model:ir.model.constraint,message:co_payroll.constraint_co_salary_concept_code_unique
+msgid "Concept code must be unique."
+msgstr "El código del concepto debe ser único."
+
+#. module: co_payroll
+#: model:ir.model,name:co_payroll.model_res_config_settings
+msgid "Config Settings"
+msgstr "Ajustes de configuración"
+
+#. module: co_payroll
+#: model:ir.ui.menu,name:co_payroll.menu_co_payroll_config
+msgid "Configuration"
+msgstr "Configuración"
+
+#. module: co_payroll
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_payslip_form
+msgid "Confirm"
+msgstr "Confirmar"
+
+#. module: co_payroll
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_contract_termination_wizard_form
+msgid "Confirm Termination"
+msgstr "Confirmar terminación"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_res_config_settings__co_payroll_year
+msgid "Constants Year"
+msgstr "Año de constantes"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_contract_termination_wizard__contract_id
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip__contract_id
+msgid "Contract"
+msgstr "Contrato"
+
+#. module: co_payroll
+#: model:ir.ui.menu,name:co_payroll.menu_co_contract_termination
+msgid "Contract Termination"
+msgstr "Terminación de contrato"
+
+#. module: co_payroll
+#: model:ir.actions.act_window,name:co_payroll.action_co_contract_termination_wizard
+msgid "Contract Termination (Liquidacion)"
+msgstr "Liquidación de contrato"
+
+#. module: co_payroll
+#: model:ir.model,name:co_payroll.model_co_contract_termination_wizard
+msgid "Contract Termination Wizard"
+msgstr "Asistente de liquidación de contrato"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_hiring_request__contract_type
+msgid "Contract Type"
+msgstr "Tipo de contrato"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__hr_contract__co_contract_type__aprendizaje
+msgid "Contrato de Aprendizaje"
+msgstr "Contrato de Aprendizaje"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_afp_entity__create_uid
+#: model:ir.model.fields,field_description:co_payroll.field_co_arl_entity__create_uid
+#: model:ir.model.fields,field_description:co_payroll.field_co_arl_risk_level__create_uid
+#: model:ir.model.fields,field_description:co_payroll.field_co_contract_termination_wizard__create_uid
+#: model:ir.model.fields,field_description:co_payroll.field_co_deduction__create_uid
+#: model:ir.model.fields,field_description:co_payroll.field_co_eps_entity__create_uid
+#: model:ir.model.fields,field_description:co_payroll.field_co_family_member__create_uid
+#: model:ir.model.fields,field_description:co_payroll.field_co_hiring_request__create_uid
+#: model:ir.model.fields,field_description:co_payroll.field_co_loan__create_uid
+#: model:ir.model.fields,field_description:co_payroll.field_co_loan_payment__create_uid
+#: model:ir.model.fields,field_description:co_payroll.field_co_nomina_electronica__create_uid
+#: model:ir.model.fields,field_description:co_payroll.field_co_overtime__create_uid
+#: model:ir.model.fields,field_description:co_payroll.field_co_payroll_constants__create_uid
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip__create_uid
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip_line__create_uid
+#: model:ir.model.fields,field_description:co_payroll.field_co_pila__create_uid
+#: model:ir.model.fields,field_description:co_payroll.field_co_pila_line__create_uid
+#: model:ir.model.fields,field_description:co_payroll.field_co_salary_concept__create_uid
+#: model:ir.model.fields,field_description:co_payroll.field_co_social_security__create_uid
+msgid "Created by"
+msgstr "Creado por"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_afp_entity__create_date
+#: model:ir.model.fields,field_description:co_payroll.field_co_arl_entity__create_date
+#: model:ir.model.fields,field_description:co_payroll.field_co_arl_risk_level__create_date
+#: model:ir.model.fields,field_description:co_payroll.field_co_contract_termination_wizard__create_date
+#: model:ir.model.fields,field_description:co_payroll.field_co_deduction__create_date
+#: model:ir.model.fields,field_description:co_payroll.field_co_eps_entity__create_date
+#: model:ir.model.fields,field_description:co_payroll.field_co_family_member__create_date
+#: model:ir.model.fields,field_description:co_payroll.field_co_hiring_request__create_date
+#: model:ir.model.fields,field_description:co_payroll.field_co_loan__create_date
+#: model:ir.model.fields,field_description:co_payroll.field_co_loan_payment__create_date
+#: model:ir.model.fields,field_description:co_payroll.field_co_nomina_electronica__create_date
+#: model:ir.model.fields,field_description:co_payroll.field_co_overtime__create_date
+#: model:ir.model.fields,field_description:co_payroll.field_co_payroll_constants__create_date
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip__create_date
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip_line__create_date
+#: model:ir.model.fields,field_description:co_payroll.field_co_pila__create_date
+#: model:ir.model.fields,field_description:co_payroll.field_co_pila_line__create_date
+#: model:ir.model.fields,field_description:co_payroll.field_co_salary_concept__create_date
+#: model:ir.model.fields,field_description:co_payroll.field_co_social_security__create_date
+msgid "Created on"
+msgstr "Creado el"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip__currency_id
+msgid "Currency"
+msgstr "Moneda"
+
+#. module: co_payroll
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_payslip_search
+msgid "Current Month"
+msgstr "Mes actual"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_family_member__identification_type__cc
+msgid "Cédula de Ciudadanía"
+msgstr "Cédula de Ciudadanía"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_family_member__identification_type__ce
+msgid "Cédula de Extranjería"
+msgstr "Cédula de Extranjería"
+
+#. module: co_payroll
+#: model:ir.model.fields,help:co_payroll.field_co_nomina_electronica__cune
+msgid "Código Único de Nómina Electrónica"
+msgstr "Código Único de Nómina Electrónica"
+
+#. module: co_payroll
+#: model_terms:ir.ui.view,arch_db:co_payroll.report_co_payslip
+msgid "DEDUCCIONES"
+msgstr "DEDUCCIONES"
+
+#. module: co_payroll
+#: model_terms:ir.ui.view,arch_db:co_payroll.report_co_payslip
+msgid "DEVENGADOS"
+msgstr "DEVENGADOS"
+
+#. module: co_payroll
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_nomina_electronica_form
+msgid "DIAN"
+msgstr "DIAN"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_nomina_electronica__dian_response
+msgid "DIAN Response"
+msgstr "Respuesta DIAN"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_nomina_electronica__dian_status
+msgid "DIAN Status"
+msgstr "Estado DIAN"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_deduction__date
+#: model:ir.model.fields,field_description:co_payroll.field_co_loan_payment__date
+#: model:ir.model.fields,field_description:co_payroll.field_co_overtime__date
+msgid "Date"
+msgstr "Fecha"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_pila__period_month__12
+msgid "December"
+msgstr "Diciembre"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_payslip_line__line_type__deduction
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_salary_concept__concept_type__deduction
+msgid "Deduction (Deducción)"
+msgstr "Deducción"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip__deduction_ids
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_payslip_form
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_salary_concept_search
+msgid "Deductions"
+msgstr "Deducciones"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_hiring_request__department_id
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip__department_id
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_payslip_search
+msgid "Department"
+msgstr "Departamento"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_family_member__is_dependent_for_tax
+msgid "Dependent for Tax"
+msgstr "Dependiente para impuestos"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_deduction__name
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip_line__name
+msgid "Description"
+msgstr "Descripción"
+
+#. module: co_payroll
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_payslip_form
+msgid "Detail Lines"
+msgstr "Líneas de detalle"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_afp_entity__display_name
+#: model:ir.model.fields,field_description:co_payroll.field_co_arl_entity__display_name
+#: model:ir.model.fields,field_description:co_payroll.field_co_arl_risk_level__display_name
+#: model:ir.model.fields,field_description:co_payroll.field_co_contract_termination_wizard__display_name
+#: model:ir.model.fields,field_description:co_payroll.field_co_deduction__display_name
+#: model:ir.model.fields,field_description:co_payroll.field_co_eps_entity__display_name
+#: model:ir.model.fields,field_description:co_payroll.field_co_family_member__display_name
+#: model:ir.model.fields,field_description:co_payroll.field_co_hiring_request__display_name
+#: model:ir.model.fields,field_description:co_payroll.field_co_loan__display_name
+#: model:ir.model.fields,field_description:co_payroll.field_co_loan_payment__display_name
+#: model:ir.model.fields,field_description:co_payroll.field_co_nomina_electronica__display_name
+#: model:ir.model.fields,field_description:co_payroll.field_co_overtime__display_name
+#: model:ir.model.fields,field_description:co_payroll.field_co_payroll_constants__display_name
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip__display_name
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip_line__display_name
+#: model:ir.model.fields,field_description:co_payroll.field_co_pila__display_name
+#: model:ir.model.fields,field_description:co_payroll.field_co_pila_line__display_name
+#: model:ir.model.fields,field_description:co_payroll.field_co_salary_concept__display_name
+#: model:ir.model.fields,field_description:co_payroll.field_co_social_security__display_name
+msgid "Display Name"
+msgstr "Nombre mostrado"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_nomina_electronica__document_type
+msgid "Document Type"
+msgstr "Tipo de documento"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_payslip__state__done
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_payslip_search
+msgid "Done"
+msgstr "Hecho"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_hiring_request__state__draft
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_loan__state__draft
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_nomina_electronica__state__draft
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_payslip__state__draft
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_pila__state__draft
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_payslip_search
+msgid "Draft"
+msgstr "Borrador"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_family_member__eps_id
+#: model:ir.model.fields,field_description:co_payroll.field_co_social_security__eps_id
+#: model:ir.model.fields,field_description:co_payroll.field_hr_contract__co_eps_id
+msgid "EPS"
+msgstr "EPS"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_family_member__eps_affiliated
+msgid "EPS Affiliated"
+msgstr "Afiliado a EPS"
+
+#. module: co_payroll
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_pila_form
+msgid "EPS EE"
+msgstr "EPS EE"
+
+#. module: co_payroll
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_pila_form
+msgid "EPS ER"
+msgstr "EPS ER"
+
+#. module: co_payroll
+#: model:co.salary.concept,name:co_payroll.concept_eps_employee
+msgid "EPS Empleado (4%)"
+msgstr "EPS Empleado (4%)"
+
+#. module: co_payroll
+#: model:co.salary.concept,name:co_payroll.concept_eps_employer
+msgid "EPS Empleador (8.5%)"
+msgstr "EPS Empleador (8.5%)"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_pila_line__eps_employee
+msgid "EPS Employee"
+msgstr "EPS Empleado"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip__eps_employee
+msgid "EPS Employee (4%)"
+msgstr "EPS Empleado (4%)"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_pila_line__eps_employer
+msgid "EPS Employer"
+msgstr "EPS Empleador"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip__eps_employer
+msgid "EPS Employer (8.5%)"
+msgstr "EPS Empleador (8.5%)"
+
+#. module: co_payroll
+#: model:ir.actions.act_window,name:co_payroll.action_co_eps_entity
+#: model:ir.ui.menu,name:co_payroll.menu_co_eps_entity
+msgid "EPS Entities"
+msgstr "Entidades EPS"
+
+#. module: co_payroll
+#: model:ir.model,name:co_payroll.model_co_eps_entity
+msgid "EPS Entity"
+msgstr "Entidad EPS"
+
+#. module: co_payroll
+#: model:ir.model.constraint,message:co_payroll.constraint_co_eps_entity_code_unique
+msgid "EPS code must be unique."
+msgstr "El código EPS debe ser único."
+
+#. module: co_payroll
+#: model:ir.model.constraint,message:co_payroll.constraint_co_arl_risk_level_level_unique
+msgid "Each risk level must be unique."
+msgstr "Cada nivel de riesgo debe ser único."
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_payslip_line__line_type__earning
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_salary_concept__concept_type__earning
+msgid "Earning (Devengado)"
+msgstr "Devengado"
+
+#. module: co_payroll
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_payslip_form
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_salary_concept_search
+msgid "Earnings"
+msgstr "Devengados"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_social_security__date_from
+msgid "Effective From"
+msgstr "Vigente desde"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_social_security__date_to
+msgid "Effective To"
+msgstr "Vigente hasta"
+
+#. module: co_payroll
+#: model:ir.model,name:co_payroll.model_co_nomina_electronica
+msgid "Electronic Payroll (Nómina Electrónica)"
+msgstr "Nómina Electrónica"
+
+#. module: co_payroll
+#: model_terms:ir.ui.view,arch_db:co_payroll.report_co_payslip
+msgid "Empleado"
+msgstr "Empleado"
+
+#. module: co_payroll
+#: model_terms:ir.ui.view,arch_db:co_payroll.report_co_payslip
+msgid "Empleador"
+msgstr "Empleador"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_contract_termination_wizard__employee_id
+#: model:ir.model.fields,field_description:co_payroll.field_co_deduction__employee_id
+#: model:ir.model.fields,field_description:co_payroll.field_co_family_member__employee_id
+#: model:ir.model.fields,field_description:co_payroll.field_co_loan__employee_id
+#: model:ir.model.fields,field_description:co_payroll.field_co_nomina_electronica__employee_id
+#: model:ir.model.fields,field_description:co_payroll.field_co_overtime__employee_id
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip__employee_id
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip_line__employee_id
+#: model:ir.model.fields,field_description:co_payroll.field_co_pila_line__employee_id
+#: model:ir.model.fields,field_description:co_payroll.field_co_social_security__employee_id
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_deduction_search
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_family_member_search
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_loan_search
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_nomina_electronica_form
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_overtime_search
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_payslip_line_search
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_payslip_search
+msgid "Employee"
+msgstr "Empleado"
+
+#. module: co_payroll
+#: model:ir.model,name:co_payroll.model_hr_contract
+msgid "Employee Contract"
+msgstr "Contrato de empleado"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_nomina_electronica__employee_document_number
+msgid "Employee Doc Number"
+msgstr "No. documento del empleado"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_nomina_electronica__employee_document_type
+msgid "Employee Doc Type"
+msgstr "Tipo de documento del empleado"
+
+#. module: co_payroll
+#: model:ir.model,name:co_payroll.model_co_family_member
+msgid "Employee Family Member / Dependent"
+msgstr "Familiar / Dependiente del empleado"
+
+#. module: co_payroll
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_contract_termination_wizard_form
+msgid "Employee Information"
+msgstr "Información del empleado"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_pila__line_ids
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_pila_form
+msgid "Employee Lines"
+msgstr "Líneas de empleados"
+
+#. module: co_payroll
+#: model:ir.model,name:co_payroll.model_co_loan
+msgid "Employee Loan"
+msgstr "Préstamo al empleado"
+
+#. module: co_payroll
+#: model:ir.actions.act_window,name:co_payroll.action_co_loan
+msgid "Employee Loans"
+msgstr "Préstamos a empleados"
+
+#. module: co_payroll
+#: model:ir.ui.menu,name:co_payroll.menu_co_social_security
+msgid "Employee SS Config"
+msgstr "Config. seguridad social del empleado"
+
+#. module: co_payroll
+#: model:ir.model,name:co_payroll.model_co_social_security
+msgid "Employee Social Security Configuration"
+msgstr "Configuración de seguridad social del empleado"
+
+#. module: co_payroll
+#: model:ir.model.fields,help:co_payroll.field_co_hiring_request__employee_id
+msgid "Employee hired for this position"
+msgstr "Empleado contratado para este cargo"
+
+#. module: co_payroll
+#: model:ir.ui.menu,name:co_payroll.menu_co_payroll_employees
+msgid "Employees"
+msgstr "Empleados"
+
+#. module: co_payroll
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_nomina_electronica_form
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_salary_concept_search
+msgid "Employer"
+msgstr "Empleador"
+
+#. module: co_payroll
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_nomina_electronica_form
+msgid "Employer / Employee"
+msgstr "Empleador / Empleado"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_payslip_line__line_type__employer
+msgid "Employer Contribution"
+msgstr "Aporte patronal"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_salary_concept__concept_type__employer
+msgid "Employer Contribution (Aporte Empleador)"
+msgstr "Aporte patronal"
+
+#. module: co_payroll
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_payslip_form
+msgid "Employer Contributions"
+msgstr "Aportes patronales"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_nomina_electronica__employer_nit
+msgid "Employer NIT"
+msgstr "NIT del empleador"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_nomina_electronica__employer_name
+msgid "Employer Name"
+msgstr "Nombre del empleador"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_contract_termination_wizard__termination_reason__end_term
+msgid "End of Term"
+msgstr "Vencimiento del plazo"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_hiring_request__expected_start_date
+msgid "Expected Start Date"
+msgstr "Fecha de inicio esperada"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_overtime__overtime_type__hed
+msgid "Extra Diurna (HED +25%)"
+msgstr "Extra Diurna (HED +25%)"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_overtime__overtime_type__heddf
+msgid "Extra Diurna Dom/Fest (HEDDF +100%)"
+msgstr "Extra Diurna Dom/Fest (HEDDF +100%)"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_overtime__overtime_type__hen
+msgid "Extra Nocturna (HEN +75%)"
+msgstr "Extra Nocturna (HEN +75%)"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_overtime__overtime_type__hendf
+msgid "Extra Nocturna Dom/Fest (HENDF +150%)"
+msgstr "Extra Nocturna Dom/Fest (HENDF +150%)"
+
+#. module: co_payroll
+#: model:ir.ui.menu,name:co_payroll.menu_co_family_member
+msgid "Family Members"
+msgstr "Familiares"
+
+#. module: co_payroll
+#: model:ir.actions.act_window,name:co_payroll.action_co_family_member
+msgid "Family Members / Dependents"
+msgstr "Familiares / Dependientes"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_pila__period_month__02
+msgid "February"
+msgstr "Febrero"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_family_member__gender__female
+msgid "Female"
+msgstr "Femenino"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_pila__state__filed
+msgid "Filed"
+msgstr "Radicado"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_hiring_request__state__filled
+msgid "Filled"
+msgstr "Cubierto"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_hiring_request__message_follower_ids
+#: model:ir.model.fields,field_description:co_payroll.field_co_loan__message_follower_ids
+#: model:ir.model.fields,field_description:co_payroll.field_co_nomina_electronica__message_follower_ids
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip__message_follower_ids
+#: model:ir.model.fields,field_description:co_payroll.field_co_pila__message_follower_ids
+msgid "Followers"
+msgstr "Seguidores"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_hiring_request__message_partner_ids
+#: model:ir.model.fields,field_description:co_payroll.field_co_loan__message_partner_ids
+#: model:ir.model.fields,field_description:co_payroll.field_co_nomina_electronica__message_partner_ids
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip__message_partner_ids
+#: model:ir.model.fields,field_description:co_payroll.field_co_pila__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Seguidores (Contactos)"
+
+#. module: co_payroll
+#: model:co.salary.concept,name:co_payroll.concept_solidarity
+msgid "Fondo de Solidaridad (1%)"
+msgstr "Fondo de Solidaridad (1%)"
+
+#. module: co_payroll
+#: model:ir.model.fields,help:co_payroll.field_co_hiring_request__activity_type_icon
+#: model:ir.model.fields,help:co_payroll.field_co_loan__activity_type_icon
+#: model:ir.model.fields,help:co_payroll.field_co_nomina_electronica__activity_type_icon
+#: model:ir.model.fields,help:co_payroll.field_co_payslip__activity_type_icon
+#: model:ir.model.fields,help:co_payroll.field_co_pila__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr "Icono Font Awesome, por ejemplo fa-tasks"
+
+#. module: co_payroll
+#: model:ir.model.fields,help:co_payroll.field_co_nomina_electronica__predecessor_id
+msgid "For adjustment documents (type 103)"
+msgstr "Para documentos de ajuste (tipo 103)"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_salary_concept__formula
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_salary_concept_form
+msgid "Formula"
+msgstr "Fórmula"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_family_member__name
+msgid "Full Name"
+msgstr "Nombre completo"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__hr_contract__co_work_schedule__full_time
+msgid "Full Time (48h/week)"
+msgstr "Tiempo completo (48h/semana)"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_afp_entity__fund_type
+msgid "Fund Type"
+msgstr "Tipo de fondo"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_family_member__gender
+msgid "Gender"
+msgstr "Género"
+
+#. module: co_payroll
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_nomina_electronica_form
+msgid "Generate XML"
+msgstr "Generar XML"
+
+#. module: co_payroll
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_pila_form
+msgid "Generate from Payslips"
+msgstr "Generar desde nóminas"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_pila__state__generated
+msgid "Generated"
+msgstr "Generado"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_nomina_electronica__generation_date
+msgid "Generation Date"
+msgstr "Fecha de generación"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_pila__grand_total
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_pila_list
+msgid "Grand Total"
+msgstr "Gran total"
+
+#. module: co_payroll
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_deduction_search
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_family_member_search
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_loan_search
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_overtime_search
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_payslip_line_search
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_payslip_search
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_salary_concept_search
+msgid "Group By"
+msgstr "Agrupar por"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_hiring_request__has_message
+#: model:ir.model.fields,field_description:co_payroll.field_co_loan__has_message
+#: model:ir.model.fields,field_description:co_payroll.field_co_nomina_electronica__has_message
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip__has_message
+#: model:ir.model.fields,field_description:co_payroll.field_co_pila__has_message
+msgid "Has Message"
+msgstr "Tiene mensaje"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_hiring_request__employee_id
+msgid "Hired Employee"
+msgstr "Empleado contratado"
+
+#. module: co_payroll
+#: model:ir.model,name:co_payroll.model_co_hiring_request
+#: model:ir.model.fields,field_description:co_payroll.field_hr_contract__co_hiring_request_id
+msgid "Hiring Request"
+msgstr "Solicitud de contratación"
+
+#. module: co_payroll
+#: model:ir.actions.act_window,name:co_payroll.action_co_hiring_request
+#: model:ir.ui.menu,name:co_payroll.menu_co_hiring_request
+msgid "Hiring Requests"
+msgstr "Solicitudes de contratación"
+
+#. module: co_payroll
+#: model:co.salary.concept,name:co_payroll.concept_overtime
+msgid "Horas Extra y Recargos"
+msgstr "Horas Extra y Recargos"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_overtime__hours
+msgid "Hours"
+msgstr "Horas"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip__ibc
+#: model:ir.model.fields,field_description:co_payroll.field_co_pila_line__ibc
+msgid "IBC"
+msgstr "IBC"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_pila_line__icbf
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_pila_form
+msgid "ICBF"
+msgstr "ICBF"
+
+#. module: co_payroll
+#: model:co.salary.concept,name:co_payroll.concept_icbf
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip__icbf
+msgid "ICBF (3%)"
+msgstr "ICBF (3%)"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_afp_entity__id
+#: model:ir.model.fields,field_description:co_payroll.field_co_arl_entity__id
+#: model:ir.model.fields,field_description:co_payroll.field_co_arl_risk_level__id
+#: model:ir.model.fields,field_description:co_payroll.field_co_contract_termination_wizard__id
+#: model:ir.model.fields,field_description:co_payroll.field_co_deduction__id
+#: model:ir.model.fields,field_description:co_payroll.field_co_eps_entity__id
+#: model:ir.model.fields,field_description:co_payroll.field_co_family_member__id
+#: model:ir.model.fields,field_description:co_payroll.field_co_hiring_request__id
+#: model:ir.model.fields,field_description:co_payroll.field_co_loan__id
+#: model:ir.model.fields,field_description:co_payroll.field_co_loan_payment__id
+#: model:ir.model.fields,field_description:co_payroll.field_co_nomina_electronica__id
+#: model:ir.model.fields,field_description:co_payroll.field_co_overtime__id
+#: model:ir.model.fields,field_description:co_payroll.field_co_payroll_constants__id
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip__id
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip_line__id
+#: model:ir.model.fields,field_description:co_payroll.field_co_pila__id
+#: model:ir.model.fields,field_description:co_payroll.field_co_pila_line__id
+#: model:ir.model.fields,field_description:co_payroll.field_co_salary_concept__id
+#: model:ir.model.fields,field_description:co_payroll.field_co_social_security__id
+msgid "ID"
+msgstr "ID"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_family_member__identification_number
+msgid "ID Number"
+msgstr "Número de identificación"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_family_member__identification_type
+msgid "ID Type"
+msgstr "Tipo de identificación"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_hiring_request__activity_exception_icon
+#: model:ir.model.fields,field_description:co_payroll.field_co_loan__activity_exception_icon
+#: model:ir.model.fields,field_description:co_payroll.field_co_nomina_electronica__activity_exception_icon
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip__activity_exception_icon
+#: model:ir.model.fields,field_description:co_payroll.field_co_pila__activity_exception_icon
+msgid "Icon"
+msgstr "Icono"
+
+#. module: co_payroll
+#: model:ir.model.fields,help:co_payroll.field_co_hiring_request__activity_exception_icon
+#: model:ir.model.fields,help:co_payroll.field_co_loan__activity_exception_icon
+#: model:ir.model.fields,help:co_payroll.field_co_nomina_electronica__activity_exception_icon
+#: model:ir.model.fields,help:co_payroll.field_co_payslip__activity_exception_icon
+#: model:ir.model.fields,help:co_payroll.field_co_pila__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr "Icono para indicar una actividad de excepción."
+
+#. module: co_payroll
+#: model:ir.model.fields,help:co_payroll.field_co_hiring_request__message_needaction
+#: model:ir.model.fields,help:co_payroll.field_co_loan__message_needaction
+#: model:ir.model.fields,help:co_payroll.field_co_nomina_electronica__message_needaction
+#: model:ir.model.fields,help:co_payroll.field_co_payslip__message_needaction
+#: model:ir.model.fields,help:co_payroll.field_co_pila__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "Si está marcado, los nuevos mensajes requieren su atención."
+
+#. module: co_payroll
+#: model:ir.model.fields,help:co_payroll.field_co_hiring_request__message_has_error
+#: model:ir.model.fields,help:co_payroll.field_co_hiring_request__message_has_sms_error
+#: model:ir.model.fields,help:co_payroll.field_co_loan__message_has_error
+#: model:ir.model.fields,help:co_payroll.field_co_loan__message_has_sms_error
+#: model:ir.model.fields,help:co_payroll.field_co_nomina_electronica__message_has_error
+#: model:ir.model.fields,help:co_payroll.field_co_nomina_electronica__message_has_sms_error
+#: model:ir.model.fields,help:co_payroll.field_co_payslip__message_has_error
+#: model:ir.model.fields,help:co_payroll.field_co_payslip__message_has_sms_error
+#: model:ir.model.fields,help:co_payroll.field_co_pila__message_has_error
+#: model:ir.model.fields,help:co_payroll.field_co_pila__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "Si está marcado, algunos mensajes tienen un error de entrega."
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_loan__state__paying
+msgid "In Payment"
+msgstr "En pago"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_hiring_request__contract_type__indefinido
+msgid "Indefinido"
+msgstr "Indefinido"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_contract_termination_wizard__indemnizacion_amount
+msgid "Indemnizacion"
+msgstr "Indemnización"
+
+#. module: co_payroll
+#: model:ir.model.fields,help:co_payroll.field_co_payslip__ibc
+msgid "Ingreso Base de Cotización for social security"
+msgstr "Ingreso Base de Cotización para seguridad social"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip__intereses_cesantias_provision
+msgid "Int. Cesantías Provision"
+msgstr "Provisión Int. Cesantías"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_hr_contract__co_integral_salary
+msgid "Integral Salary"
+msgstr "Salario Integral"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_contract_termination_wizard__intereses_cesantias
+msgid "Intereses sobre Cesantias"
+msgstr "Intereses sobre Cesantías"
+
+#. module: co_payroll
+#: model:co.salary.concept,name:co_payroll.concept_int_cesantias
+msgid "Intereses sobre Cesantías"
+msgstr "Intereses sobre Cesantías"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_hiring_request__message_is_follower
+#: model:ir.model.fields,field_description:co_payroll.field_co_loan__message_is_follower
+#: model:ir.model.fields,field_description:co_payroll.field_co_nomina_electronica__message_is_follower
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip__message_is_follower
+#: model:ir.model.fields,field_description:co_payroll.field_co_pila__message_is_follower
+msgid "Is Follower"
+msgstr "Es seguidor"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_pila__period_month__01
+msgid "January"
+msgstr "Enero"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_hiring_request__job_id
+msgid "Job Position"
+msgstr "Cargo"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_pila__period_month__07
+msgid "July"
+msgstr "Julio"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_pila__period_month__06
+msgid "June"
+msgstr "Junio"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_contract_termination_wizard__termination_reason__just_cause
+msgid "Just Cause"
+msgstr "Justa causa"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_hiring_request__justification
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_hiring_request_form
+msgid "Justification"
+msgstr "Justificación"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_afp_entity__write_uid
+#: model:ir.model.fields,field_description:co_payroll.field_co_arl_entity__write_uid
+#: model:ir.model.fields,field_description:co_payroll.field_co_arl_risk_level__write_uid
+#: model:ir.model.fields,field_description:co_payroll.field_co_contract_termination_wizard__write_uid
+#: model:ir.model.fields,field_description:co_payroll.field_co_deduction__write_uid
+#: model:ir.model.fields,field_description:co_payroll.field_co_eps_entity__write_uid
+#: model:ir.model.fields,field_description:co_payroll.field_co_family_member__write_uid
+#: model:ir.model.fields,field_description:co_payroll.field_co_hiring_request__write_uid
+#: model:ir.model.fields,field_description:co_payroll.field_co_loan__write_uid
+#: model:ir.model.fields,field_description:co_payroll.field_co_loan_payment__write_uid
+#: model:ir.model.fields,field_description:co_payroll.field_co_nomina_electronica__write_uid
+#: model:ir.model.fields,field_description:co_payroll.field_co_overtime__write_uid
+#: model:ir.model.fields,field_description:co_payroll.field_co_payroll_constants__write_uid
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip__write_uid
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip_line__write_uid
+#: model:ir.model.fields,field_description:co_payroll.field_co_pila__write_uid
+#: model:ir.model.fields,field_description:co_payroll.field_co_pila_line__write_uid
+#: model:ir.model.fields,field_description:co_payroll.field_co_salary_concept__write_uid
+#: model:ir.model.fields,field_description:co_payroll.field_co_social_security__write_uid
+msgid "Last Updated by"
+msgstr "Última actualización por"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_afp_entity__write_date
+#: model:ir.model.fields,field_description:co_payroll.field_co_arl_entity__write_date
+#: model:ir.model.fields,field_description:co_payroll.field_co_arl_risk_level__write_date
+#: model:ir.model.fields,field_description:co_payroll.field_co_contract_termination_wizard__write_date
+#: model:ir.model.fields,field_description:co_payroll.field_co_deduction__write_date
+#: model:ir.model.fields,field_description:co_payroll.field_co_eps_entity__write_date
+#: model:ir.model.fields,field_description:co_payroll.field_co_family_member__write_date
+#: model:ir.model.fields,field_description:co_payroll.field_co_hiring_request__write_date
+#: model:ir.model.fields,field_description:co_payroll.field_co_loan__write_date
+#: model:ir.model.fields,field_description:co_payroll.field_co_loan_payment__write_date
+#: model:ir.model.fields,field_description:co_payroll.field_co_nomina_electronica__write_date
+#: model:ir.model.fields,field_description:co_payroll.field_co_overtime__write_date
+#: model:ir.model.fields,field_description:co_payroll.field_co_payroll_constants__write_date
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip__write_date
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip_line__write_date
+#: model:ir.model.fields,field_description:co_payroll.field_co_pila__write_date
+#: model:ir.model.fields,field_description:co_payroll.field_co_pila_line__write_date
+#: model:ir.model.fields,field_description:co_payroll.field_co_salary_concept__write_date
+#: model:ir.model.fields,field_description:co_payroll.field_co_social_security__write_date
+msgid "Last Updated on"
+msgstr "Última actualización el"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_arl_risk_level__level__i
+msgid "Level I - Minimum Risk"
+msgstr "Nivel I - Riesgo mínimo"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_arl_risk_level__level__ii
+msgid "Level II - Low Risk"
+msgstr "Nivel II - Riesgo bajo"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_arl_risk_level__level__iii
+msgid "Level III - Medium Risk"
+msgstr "Nivel III - Riesgo medio"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_arl_risk_level__level__iv
+msgid "Level IV - High Risk"
+msgstr "Nivel IV - Riesgo alto"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_arl_risk_level__level__v
+msgid "Level V - Maximum Risk"
+msgstr "Nivel V - Riesgo máximo"
+
+#. module: co_payroll
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_contract_termination_wizard_form
+msgid "Liquidation Calculation"
+msgstr "Cálculo de liquidación"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_loan_payment__loan_id
+msgid "Loan"
+msgstr "Préstamo"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_loan__amount
+msgid "Loan Amount"
+msgstr "Monto del préstamo"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_loan__loan_date
+msgid "Loan Date"
+msgstr "Fecha del préstamo"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip__loan_deductions
+msgid "Loan Deductions"
+msgstr "Descuentos por préstamos"
+
+#. module: co_payroll
+#: model:ir.model,name:co_payroll.model_co_loan_payment
+msgid "Loan Payment"
+msgstr "Pago de préstamo"
+
+#. module: co_payroll
+#: model:ir.ui.menu,name:co_payroll.menu_co_loan
+msgid "Loans"
+msgstr "Préstamos"
+
+#. module: co_payroll
+#: model:ir.ui.menu,name:co_payroll.menu_co_payroll_loans
+msgid "Loans & Deductions"
+msgstr "Préstamos y deducciones"
+
+#. module: co_payroll
+#: model_terms:ir.ui.view,arch_db:co_payroll.report_co_payslip
+msgid "Logo"
+msgstr "Logo"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_family_member__gender__male
+msgid "Male"
+msgstr "Masculino"
+
+#. module: co_payroll
+#: model:res.groups,name:co_payroll.group_co_payroll_manager
+msgid "Manager"
+msgstr "Administrador"
+
+#. module: co_payroll
+#: model:ir.model,name:co_payroll.model_co_deduction
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_deduction__deduction_type__manual
+msgid "Manual Deduction"
+msgstr "Deducción manual"
+
+#. module: co_payroll
+#: model:ir.actions.act_window,name:co_payroll.action_co_deduction
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip__manual_deductions
+#: model:ir.ui.menu,name:co_payroll.menu_co_deduction
+msgid "Manual Deductions"
+msgstr "Deducciones manuales"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_pila__period_month__03
+msgid "March"
+msgstr "Marzo"
+
+#. module: co_payroll
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_hiring_request_form
+msgid "Mark Filled"
+msgstr "Marcar como cubierto"
+
+#. module: co_payroll
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_pila_form
+msgid "Mark as Filed"
+msgstr "Marcar como radicado"
+
+#. module: co_payroll
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_loan_form
+msgid "Mark as Paid"
+msgstr "Marcar como pagado"
+
+#. module: co_payroll
+#: model:ir.model.fields,help:co_payroll.field_co_family_member__is_dependent_for_tax
+msgid ""
+"Mark if this person qualifies as a dependent for withholding tax deductions"
+msgstr ""
+"Marcar si esta persona califica como dependiente para deducciones de retención en la fuente"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_pila__period_month__05
+msgid "May"
+msgstr "Mayo"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_hiring_request__message_has_error
+#: model:ir.model.fields,field_description:co_payroll.field_co_loan__message_has_error
+#: model:ir.model.fields,field_description:co_payroll.field_co_nomina_electronica__message_has_error
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip__message_has_error
+#: model:ir.model.fields,field_description:co_payroll.field_co_pila__message_has_error
+msgid "Message Delivery error"
+msgstr "Error de entrega de mensaje"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_hiring_request__message_ids
+#: model:ir.model.fields,field_description:co_payroll.field_co_loan__message_ids
+#: model:ir.model.fields,field_description:co_payroll.field_co_nomina_electronica__message_ids
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip__message_ids
+#: model:ir.model.fields,field_description:co_payroll.field_co_pila__message_ids
+msgid "Messages"
+msgstr "Mensajes"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_pila__period_month
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_overtime_search
+msgid "Month"
+msgstr "Mes"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_payslip__pay_frequency__monthly
+#: model:ir.model.fields.selection,name:co_payroll.selection__hr_contract__co_pay_frequency__monthly
+msgid "Monthly"
+msgstr "Mensual"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_loan__monthly_installment
+msgid "Monthly Installment"
+msgstr "Cuota mensual"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_contract_termination_wizard__termination_reason__mutual
+msgid "Mutual Agreement"
+msgstr "Mutuo acuerdo"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_hiring_request__my_activity_date_deadline
+#: model:ir.model.fields,field_description:co_payroll.field_co_loan__my_activity_date_deadline
+#: model:ir.model.fields,field_description:co_payroll.field_co_nomina_electronica__my_activity_date_deadline
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip__my_activity_date_deadline
+#: model:ir.model.fields,field_description:co_payroll.field_co_pila__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr "Fecha límite de mi actividad"
+
+#. module: co_payroll
+#: model_terms:ir.ui.view,arch_db:co_payroll.report_co_payslip
+msgid "NETO A PAGAR"
+msgstr "NETO A PAGAR"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_afp_entity__nit
+#: model:ir.model.fields,field_description:co_payroll.field_co_arl_entity__nit
+#: model:ir.model.fields,field_description:co_payroll.field_co_eps_entity__nit
+msgid "NIT"
+msgstr "NIT"
+
+#. module: co_payroll
+#: model_terms:ir.ui.view,arch_db:co_payroll.report_co_payslip
+msgid "NIT:"
+msgstr "NIT:"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_afp_entity__name
+#: model:ir.model.fields,field_description:co_payroll.field_co_arl_entity__name
+#: model:ir.model.fields,field_description:co_payroll.field_co_arl_risk_level__name
+#: model:ir.model.fields,field_description:co_payroll.field_co_eps_entity__name
+#: model:ir.model.fields,field_description:co_payroll.field_co_salary_concept__name
+msgid "Name"
+msgstr "Nombre"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_nomina_electronica__net_pay
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip__net_pay
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_payslip_list
+msgid "Net Pay"
+msgstr "Neto a pagar"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_hiring_request__activity_calendar_event_id
+#: model:ir.model.fields,field_description:co_payroll.field_co_loan__activity_calendar_event_id
+#: model:ir.model.fields,field_description:co_payroll.field_co_nomina_electronica__activity_calendar_event_id
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip__activity_calendar_event_id
+#: model:ir.model.fields,field_description:co_payroll.field_co_pila__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr "Próximo evento de calendario de actividad"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_hiring_request__activity_date_deadline
+#: model:ir.model.fields,field_description:co_payroll.field_co_loan__activity_date_deadline
+#: model:ir.model.fields,field_description:co_payroll.field_co_nomina_electronica__activity_date_deadline
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip__activity_date_deadline
+#: model:ir.model.fields,field_description:co_payroll.field_co_pila__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr "Próxima fecha límite de actividad"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_hiring_request__activity_summary
+#: model:ir.model.fields,field_description:co_payroll.field_co_loan__activity_summary
+#: model:ir.model.fields,field_description:co_payroll.field_co_nomina_electronica__activity_summary
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip__activity_summary
+#: model:ir.model.fields,field_description:co_payroll.field_co_pila__activity_summary
+msgid "Next Activity Summary"
+msgstr "Resumen de próxima actividad"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_hiring_request__activity_type_id
+#: model:ir.model.fields,field_description:co_payroll.field_co_loan__activity_type_id
+#: model:ir.model.fields,field_description:co_payroll.field_co_nomina_electronica__activity_type_id
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip__activity_type_id
+#: model:ir.model.fields,field_description:co_payroll.field_co_pila__activity_type_id
+msgid "Next Activity Type"
+msgstr "Tipo de próxima actividad"
+
+#. module: co_payroll
+#: model:ir.actions.act_window,name:co_payroll.action_co_nomina_electronica
+#: model:ir.ui.menu,name:co_payroll.menu_co_nomina_electronica
+msgid "Nomina Electronica"
+msgstr "Nómina Electrónica"
+
+#. module: co_payroll
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_deduction_search
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_overtime_search
+msgid "Not Applied"
+msgstr "No aplicado"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_deduction__notes
+#: model:ir.model.fields,field_description:co_payroll.field_co_family_member__notes
+#: model:ir.model.fields,field_description:co_payroll.field_co_hiring_request__notes
+#: model:ir.model.fields,field_description:co_payroll.field_co_loan__notes
+#: model:ir.model.fields,field_description:co_payroll.field_co_loan_payment__notes
+#: model:ir.model.fields,field_description:co_payroll.field_co_overtime__notes
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip__notes
+#: model:ir.model.fields,field_description:co_payroll.field_co_salary_concept__notes
+#: model:ir.model.fields,field_description:co_payroll.field_co_social_security__notes
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_loan_form
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_payslip_form
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_salary_concept_form
+msgid "Notes"
+msgstr "Notas"
+
+#. module: co_payroll
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_deduction_form
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_family_member_form
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_hiring_request_form
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_overtime_form
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_social_security_form
+msgid "Notes..."
+msgstr "Notas..."
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_pila__period_month__11
+msgid "November"
+msgstr "Noviembre"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_hiring_request__message_needaction_counter
+#: model:ir.model.fields,field_description:co_payroll.field_co_loan__message_needaction_counter
+#: model:ir.model.fields,field_description:co_payroll.field_co_nomina_electronica__message_needaction_counter
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip__message_needaction_counter
+#: model:ir.model.fields,field_description:co_payroll.field_co_pila__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Número de acciones"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_loan__number_of_installments
+msgid "Number of Installments"
+msgstr "Número de cuotas"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_hiring_request__number_of_positions
+msgid "Number of Positions"
+msgstr "Número de cargos"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_hiring_request__message_has_error_counter
+#: model:ir.model.fields,field_description:co_payroll.field_co_loan__message_has_error_counter
+#: model:ir.model.fields,field_description:co_payroll.field_co_nomina_electronica__message_has_error_counter
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip__message_has_error_counter
+#: model:ir.model.fields,field_description:co_payroll.field_co_pila__message_has_error_counter
+msgid "Number of errors"
+msgstr "Número de errores"
+
+#. module: co_payroll
+#: model:ir.model.fields,help:co_payroll.field_co_hiring_request__message_needaction_counter
+#: model:ir.model.fields,help:co_payroll.field_co_loan__message_needaction_counter
+#: model:ir.model.fields,help:co_payroll.field_co_nomina_electronica__message_needaction_counter
+#: model:ir.model.fields,help:co_payroll.field_co_payslip__message_needaction_counter
+#: model:ir.model.fields,help:co_payroll.field_co_pila__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "Número de mensajes que requieren acción"
+
+#. module: co_payroll
+#: model:ir.model.fields,help:co_payroll.field_co_hiring_request__message_has_error_counter
+#: model:ir.model.fields,help:co_payroll.field_co_loan__message_has_error_counter
+#: model:ir.model.fields,help:co_payroll.field_co_nomina_electronica__message_has_error_counter
+#: model:ir.model.fields,help:co_payroll.field_co_payslip__message_has_error_counter
+#: model:ir.model.fields,help:co_payroll.field_co_pila__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Número de mensajes con error de entrega"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_nomina_electronica__document_type__102
+msgid "Nómina Individual"
+msgstr "Nómina Individual"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_nomina_electronica__document_type__103
+msgid "Nómina de Ajuste"
+msgstr "Nómina de Ajuste"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_hiring_request__contract_type__obra_labor
+#: model:ir.model.fields.selection,name:co_payroll.selection__hr_contract__co_contract_type__obra_labor
+msgid "Obra o Labor"
+msgstr "Obra o Labor"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_pila__period_month__10
+msgid "October"
+msgstr "Octubre"
+
+#. module: co_payroll
+#: model:ir.model.constraint,message:co_payroll.constraint_co_payroll_constants_year_unique
+msgid "Only one constants record per year is allowed."
+msgstr "Solo se permite un registro de constantes por año."
+
+#. module: co_payroll
+#: model:ir.model.constraint,message:co_payroll.constraint_co_social_security_employee_unique
+msgid "Only one social security record per employee per effective date."
+msgstr "Solo se permite un registro de seguridad social por empleado por fecha de vigencia."
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_deduction__deduction_type__other
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_family_member__gender__other
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_family_member__relationship__other
+msgid "Other"
+msgstr "Otro"
+
+#. module: co_payroll
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_payslip_form
+msgid "Other Deductions"
+msgstr "Otras deducciones"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip__other_earnings
+msgid "Other Earnings"
+msgstr "Otros devengados"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip__overtime_amount
+#: model:ir.ui.menu,name:co_payroll.menu_co_overtime
+msgid "Overtime"
+msgstr "Horas extra"
+
+#. module: co_payroll
+#: model:ir.model,name:co_payroll.model_co_overtime
+msgid "Overtime Record"
+msgstr "Registro de horas extra"
+
+#. module: co_payroll
+#: model:ir.actions.act_window,name:co_payroll.action_co_overtime
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip__overtime_ids
+msgid "Overtime Records"
+msgstr "Registros de horas extra"
+
+#. module: co_payroll
+#: model:ir.actions.act_window,name:co_payroll.action_co_pila
+#: model:ir.model.fields,field_description:co_payroll.field_co_pila_line__pila_id
+#: model:ir.ui.menu,name:co_payroll.menu_co_pila
+msgid "PILA"
+msgstr "PILA"
+
+#. module: co_payroll
+#: model:ir.model,name:co_payroll.model_co_pila
+msgid "PILA (Social Security Filing)"
+msgstr "PILA (Planilla Integrada de Liquidación de Aportes)"
+
+#. module: co_payroll
+#: model:ir.model,name:co_payroll.model_co_pila_line
+msgid "PILA Line"
+msgstr "Línea PILA"
+
+#. module: co_payroll
+#: model_terms:ir.ui.view,arch_db:co_payroll.report_co_payslip
+msgid "PROVISIONES"
+msgstr "PROVISIONES"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_loan__state__paid
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_loan_search
+msgid "Paid"
+msgstr "Pagado"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_family_member__relationship__parent
+msgid "Parent"
+msgstr "Padre/Madre"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__hr_contract__co_work_schedule__part_time
+msgid "Part Time"
+msgstr "Medio tiempo"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_family_member__identification_type__passport
+msgid "Pasaporte"
+msgstr "Pasaporte"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip__pay_frequency
+#: model:ir.model.fields,field_description:co_payroll.field_hr_contract__co_pay_frequency
+msgid "Pay Frequency"
+msgstr "Frecuencia de pago"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_nomina_electronica__payment_date
+msgid "Payment Date"
+msgstr "Fecha de pago"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_nomina_electronica__payment_method
+msgid "Payment Method"
+msgstr "Método de pago"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_loan__payment_ids
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_loan_form
+msgid "Payments"
+msgstr "Pagos"
+
+#. module: co_payroll
+#: model:ir.ui.menu,name:co_payroll.menu_co_payroll_root
+msgid "Payroll"
+msgstr "Nómina"
+
+#. module: co_payroll
+#: model_terms:ir.ui.view,arch_db:co_payroll.res_config_settings_view_form_co_payroll
+msgid "Payroll Constants"
+msgstr "Constantes de nómina"
+
+#. module: co_payroll
+#: model:ir.actions.act_window,name:co_payroll.action_co_payroll_config_settings
+msgid "Payroll Settings"
+msgstr "Configuración de nómina"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_loan_payment__payslip_id
+#: model:ir.model.fields,field_description:co_payroll.field_co_nomina_electronica__payslip_id
+#: model:ir.model.fields,field_description:co_payroll.field_co_overtime__payslip_id
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip_line__payslip_id
+#: model:ir.model.fields,field_description:co_payroll.field_co_pila_line__payslip_id
+msgid "Payslip"
+msgstr "Comprobante de nómina"
+
+#. module: co_payroll
+#: model:ir.actions.report,name:co_payroll.action_report_co_payslip
+msgid "Payslip (Comprobante de Nomina)"
+msgstr "Comprobante de Nómina"
+
+#. module: co_payroll
+#: model:ir.model,name:co_payroll.model_co_payslip_line
+msgid "Payslip Line"
+msgstr "Línea de nómina"
+
+#. module: co_payroll
+#: model:ir.actions.act_window,name:co_payroll.action_co_payslip_line
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip__line_ids
+#: model:ir.ui.menu,name:co_payroll.menu_co_payslip_line
+msgid "Payslip Lines"
+msgstr "Líneas de nómina"
+
+#. module: co_payroll
+#: model:ir.actions.act_window,name:co_payroll.action_co_payslip
+#: model:ir.ui.menu,name:co_payroll.menu_co_payroll_payslips
+#: model:ir.ui.menu,name:co_payroll.menu_co_payslip
+msgid "Payslips"
+msgstr "Comprobantes de nómina"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_nomina_electronica__dian_status__pending
+msgid "Pending"
+msgstr "Pendiente"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_contract_termination_wizard__pending_salary
+msgid "Pending Salary"
+msgstr "Salario pendiente"
+
+#. module: co_payroll
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_payslip_line_search
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_payslip_search
+msgid "Period"
+msgstr "Periodo"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_nomina_electronica__period_end
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip__date_to
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip_line__date_to
+msgid "Period End"
+msgstr "Fin del periodo"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_nomina_electronica__period_start
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip__date_from
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip_line__date_from
+msgid "Period Start"
+msgstr "Inicio del periodo"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_hiring_request__position
+msgid "Position"
+msgstr "Cargo"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_nomina_electronica__predecessor_id
+msgid "Predecessor Document"
+msgstr "Documento predecesor"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip__prima_provision
+msgid "Prima Provision"
+msgstr "Provisión de Prima"
+
+#. module: co_payroll
+#: model:co.salary.concept,name:co_payroll.concept_prima
+#: model:ir.model.fields,field_description:co_payroll.field_co_contract_termination_wizard__prima_amount
+msgid "Prima de Servicios"
+msgstr "Prima de Servicios"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_afp_entity__fund_type__private
+msgid "Private Fund"
+msgstr "Fondo privado"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_hr_contract__co_probation_end_date
+msgid "Probation End Date"
+msgstr "Fecha fin del periodo de prueba"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_payslip_line__line_type__provision
+msgid "Provision"
+msgstr "Provisión"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_salary_concept__concept_type__provision
+msgid "Provision (Provisión)"
+msgstr "Provisión"
+
+#. module: co_payroll
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_payslip_form
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_salary_concept_search
+msgid "Provisions"
+msgstr "Provisiones"
+
+#. module: co_payroll
+#: model:ir.model.fields,help:co_payroll.field_co_salary_concept__formula
+msgid ""
+"Python expression. Available vars: basic_salary, transport_allowance, smlmv,"
+" uvt, worked_days, total_days, overtime_amount, commissions, bonuses, ibc"
+msgstr ""
+"Expresión Python. Variables disponibles: basic_salary, transport_allowance, smlmv,"
+" uvt, worked_days, total_days, overtime_amount, commissions, bonuses, ibc"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_arl_risk_level__rate
+msgid "Rate (%)"
+msgstr "Tasa (%)"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_contract_termination_wizard__termination_reason
+msgid "Reason"
+msgstr "Motivo"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_overtime__overtime_type__rdd
+msgid "Recargo Dominical Diurno (RDD +75%)"
+msgstr "Recargo Dominical Diurno (RDD +75%)"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_overtime__overtime_type__rddn
+msgid "Recargo Dominical Nocturno (RDDN +110%)"
+msgstr "Recargo Dominical Nocturno (RDDN +110%)"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_overtime__overtime_type__rn
+msgid "Recargo Nocturno (RN +35%)"
+msgstr "Recargo Nocturno (RN +35%)"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_hiring_request__state__recruiting
+msgid "Recruiting"
+msgstr "En reclutamiento"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_hiring_request__name
+#: model:ir.model.fields,field_description:co_payroll.field_co_loan__name
+#: model:ir.model.fields,field_description:co_payroll.field_co_nomina_electronica__name
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip__name
+#: model:ir.model.fields,field_description:co_payroll.field_co_pila__name
+msgid "Reference"
+msgstr "Referencia"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_family_member__identification_type__rc
+msgid "Registro Civil"
+msgstr "Registro Civil"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_nomina_electronica__dian_status__rejected
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_nomina_electronica__state__rejected
+msgid "Rejected"
+msgstr "Rechazado"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_family_member__relationship
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_family_member_search
+msgid "Relationship"
+msgstr "Parentesco"
+
+#. module: co_payroll
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_loan_list
+msgid "Remaining"
+msgstr "Pendiente"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_loan__remaining_balance
+msgid "Remaining Balance"
+msgstr "Saldo pendiente"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_hiring_request__request_date
+msgid "Request Date"
+msgstr "Fecha de solicitud"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_hiring_request__requested_by
+msgid "Requested By"
+msgstr "Solicitado por"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_hiring_request__requirements
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_hiring_request_form
+msgid "Requirements"
+msgstr "Requisitos"
+
+#. module: co_payroll
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_hiring_request_form
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_loan_form
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_nomina_electronica_form
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_payslip_form
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_pila_form
+msgid "Reset to Draft"
+msgstr "Restablecer a borrador"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_contract_termination_wizard__termination_reason__resignation
+msgid "Resignation"
+msgstr "Renuncia"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_hiring_request__activity_user_id
+#: model:ir.model.fields,field_description:co_payroll.field_co_loan__activity_user_id
+#: model:ir.model.fields,field_description:co_payroll.field_co_nomina_electronica__activity_user_id
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip__activity_user_id
+#: model:ir.model.fields,field_description:co_payroll.field_co_pila__activity_user_id
+msgid "Responsible User"
+msgstr "Usuario responsable"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_deduction__deduction_type__restaurant
+msgid "Restaurant / Cafeteria"
+msgstr "Restaurante / Cafetería"
+
+#. module: co_payroll
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_hiring_request_form
+msgid "Result"
+msgstr "Resultado"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_contract_termination_wizard__termination_reason__retirement
+msgid "Retirement"
+msgstr "Jubilación"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_arl_risk_level__level
+msgid "Risk Level"
+msgstr "Nivel de riesgo"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_pila_line__sena
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_pila_form
+msgid "SENA"
+msgstr "SENA"
+
+#. module: co_payroll
+#: model:co.salary.concept,name:co_payroll.concept_sena
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip__sena
+msgid "SENA (2%)"
+msgstr "SENA (2%)"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_payroll_constants__smlmv
+#: model:ir.model.fields,field_description:co_payroll.field_res_config_settings__co_payroll_smlmv
+msgid "SMLMV"
+msgstr "SMLMV"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_hiring_request__message_has_sms_error
+#: model:ir.model.fields,field_description:co_payroll.field_co_loan__message_has_sms_error
+#: model:ir.model.fields,field_description:co_payroll.field_co_nomina_electronica__message_has_sms_error
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip__message_has_sms_error
+#: model:ir.model.fields,field_description:co_payroll.field_co_pila__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "Error de entrega de SMS"
+
+#. module: co_payroll
+#: model:co.salary.concept,name:co_payroll.concept_basic_salary
+msgid "Salario Básico"
+msgstr "Salario Básico"
+
+#. module: co_payroll
+#: model:ir.model.fields,help:co_payroll.field_co_payroll_constants__smlmv
+#: model:ir.model.fields,help:co_payroll.field_res_config_settings__co_payroll_smlmv
+msgid "Salario Mínimo Legal Mensual Vigente"
+msgstr "Salario Mínimo Legal Mensual Vigente"
+
+#. module: co_payroll
+#: model:ir.model.fields,help:co_payroll.field_hr_contract__co_integral_salary
+msgid ""
+"Salario integral (>= 13 SMLMV). Transport allowance and some provisions are "
+"handled differently."
+msgstr ""
+"Salario integral (>= 13 SMLMV). El auxilio de transporte y algunas provisiones se "
+"manejan de forma diferente."
+
+#. module: co_payroll
+#: model:ir.model,name:co_payroll.model_co_salary_concept
+msgid "Salary Concept"
+msgstr "Concepto salarial"
+
+#. module: co_payroll
+#: model:ir.actions.act_window,name:co_payroll.action_co_salary_concept
+#: model:ir.ui.menu,name:co_payroll.menu_co_salary_concept
+msgid "Salary Concepts"
+msgstr "Conceptos salariales"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_hiring_request__salary_range_max
+msgid "Salary Range Max"
+msgstr "Rango salarial máximo"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_hiring_request__salary_range_min
+msgid "Salary Range Min"
+msgstr "Rango salarial mínimo"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_nomina_electronica__dian_status__sent
+msgid "Sent"
+msgstr "Enviado"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_nomina_electronica__state__sent
+msgid "Sent to DIAN"
+msgstr "Enviado a DIAN"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_pila__period_month__09
+msgid "September"
+msgstr "Septiembre"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip_line__sequence
+#: model:ir.model.fields,field_description:co_payroll.field_co_salary_concept__sequence
+msgid "Sequence"
+msgstr "Secuencia"
+
+#. module: co_payroll
+#: model:ir.ui.menu,name:co_payroll.menu_co_payroll_settings
+msgid "Settings"
+msgstr "Configuración"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_family_member__relationship__sibling
+msgid "Sibling"
+msgstr "Hermano/a"
+
+#. module: co_payroll
+#: model:ir.ui.menu,name:co_payroll.menu_co_payroll_social_security
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_payslip_form
+msgid "Social Security"
+msgstr "Seguridad social"
+
+#. module: co_payroll
+#: model:ir.actions.act_window,name:co_payroll.action_co_social_security
+msgid "Social Security Configuration"
+msgstr "Configuración de seguridad social"
+
+#. module: co_payroll
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_pila_form
+msgid "Solidarity"
+msgstr "Solidaridad"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_pila_line__solidarity_fund
+msgid "Solidarity Fund"
+msgstr "Fondo de Solidaridad"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip__solidarity_fund
+msgid "Solidarity Fund (1%)"
+msgstr "Fondo de Solidaridad (1%)"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_family_member__relationship__spouse
+msgid "Spouse / Partner"
+msgstr "Cónyuge / Compañero(a)"
+
+#. module: co_payroll
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_loan_form
+msgid "Start Payments"
+msgstr "Iniciar pagos"
+
+#. module: co_payroll
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_hiring_request_form
+msgid "Start Recruiting"
+msgstr "Iniciar reclutamiento"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_hiring_request__state
+#: model:ir.model.fields,field_description:co_payroll.field_co_loan__state
+#: model:ir.model.fields,field_description:co_payroll.field_co_nomina_electronica__state
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip__state
+#: model:ir.model.fields,field_description:co_payroll.field_co_pila__state
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_loan_search
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_payslip_search
+msgid "Status"
+msgstr "Estado"
+
+#. module: co_payroll
+#: model:ir.model.fields,help:co_payroll.field_co_hiring_request__activity_state
+#: model:ir.model.fields,help:co_payroll.field_co_loan__activity_state
+#: model:ir.model.fields,help:co_payroll.field_co_nomina_electronica__activity_state
+#: model:ir.model.fields,help:co_payroll.field_co_payslip__activity_state
+#: model:ir.model.fields,help:co_payroll.field_co_pila__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+"Estado basado en actividades\n"
+"Vencido: La fecha límite ya pasó\n"
+"Hoy: La fecha de la actividad es hoy\n"
+"Planificado: Actividades futuras."
+
+#. module: co_payroll
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_hiring_request_form
+msgid "Submit"
+msgstr "Enviar"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_hiring_request__state__submitted
+msgid "Submitted"
+msgstr "Enviado"
+
+#. module: co_payroll
+#: model_terms:ir.ui.view,arch_db:co_payroll.report_co_payslip
+msgid "TOTAL APORTES"
+msgstr "TOTAL APORTES"
+
+#. module: co_payroll
+#: model_terms:ir.ui.view,arch_db:co_payroll.report_co_payslip
+msgid "TOTAL DEDUCCIONES"
+msgstr "TOTAL DEDUCCIONES"
+
+#. module: co_payroll
+#: model_terms:ir.ui.view,arch_db:co_payroll.report_co_payslip
+msgid "TOTAL DEVENGADOS"
+msgstr "TOTAL DEVENGADOS"
+
+#. module: co_payroll
+#: model_terms:ir.ui.view,arch_db:co_payroll.report_co_payslip
+msgid "TOTAL PROVISIONES"
+msgstr "TOTAL PROVISIONES"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_family_member__identification_type__ti
+msgid "Tarjeta de Identidad"
+msgstr "Tarjeta de Identidad"
+
+#. module: co_payroll
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_family_member_search
+msgid "Tax Dependents"
+msgstr "Dependientes tributarios"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_contract_termination_wizard__termination_date
+msgid "Termination Date"
+msgstr "Fecha de terminación"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_pila_line__total
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_deduction_list
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_loan_list
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_overtime_list
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_payslip_form
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_payslip_line_list
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_pila_form
+msgid "Total"
+msgstr "Total"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_pila__total_afp_employee
+msgid "Total AFP Employee"
+msgstr "Total AFP empleado"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_pila__total_afp_employer
+msgid "Total AFP Employer"
+msgstr "Total AFP empleador"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_pila__total_arl
+msgid "Total ARL"
+msgstr "Total ARL"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_pila__total_caja
+msgid "Total Caja"
+msgstr "Total Caja"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip__total_days
+msgid "Total Days in Period"
+msgstr "Total de días en el periodo"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_nomina_electronica__total_deductions
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip__total_deductions
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_payslip_list
+msgid "Total Deductions"
+msgstr "Total deducciones"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_pila__total_eps_employee
+msgid "Total EPS Employee"
+msgstr "Total EPS empleado"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_pila__total_eps_employer
+msgid "Total EPS Employer"
+msgstr "Total EPS empleador"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_nomina_electronica__total_earnings
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip__total_earnings
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_payslip_list
+msgid "Total Earnings"
+msgstr "Total devengados"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip__total_employer
+msgid "Total Employer Contributions"
+msgstr "Total aportes patronales"
+
+#. module: co_payroll
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_pila_form
+msgid "Total IBC"
+msgstr "Total IBC"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_pila__total_icbf
+msgid "Total ICBF"
+msgstr "Total ICBF"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_contract_termination_wizard__total_liquidation
+msgid "Total Liquidacion"
+msgstr "Total liquidación"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_loan__total_paid
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_loan_form
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_loan_list
+msgid "Total Paid"
+msgstr "Total pagado"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip__total_provisions
+msgid "Total Provisions"
+msgstr "Total provisiones"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_pila__total_sena
+msgid "Total SENA"
+msgstr "Total SENA"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_pila__total_solidarity
+msgid "Total Solidarity Fund"
+msgstr "Total Fondo de Solidaridad"
+
+#. module: co_payroll
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_nomina_electronica_form
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_pila_form
+msgid "Totals"
+msgstr "Totales"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_payroll_constants__transport_allowance
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip__transport_allowance
+#: model:ir.model.fields,field_description:co_payroll.field_hr_contract__co_transport_allowance
+#: model:ir.model.fields,field_description:co_payroll.field_res_config_settings__co_payroll_transport_allowance
+msgid "Transport Allowance"
+msgstr "Auxilio de Transporte"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_deduction__deduction_type
+#: model:ir.model.fields,field_description:co_payroll.field_co_overtime__overtime_type
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip_line__line_type
+#: model:ir.model.fields,field_description:co_payroll.field_co_salary_concept__concept_type
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_deduction_search
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_overtime_search
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_payslip_line_search
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_salary_concept_search
+msgid "Type"
+msgstr "Tipo"
+
+#. module: co_payroll
+#: model:ir.model.fields,help:co_payroll.field_co_hiring_request__activity_exception_decoration
+#: model:ir.model.fields,help:co_payroll.field_co_loan__activity_exception_decoration
+#: model:ir.model.fields,help:co_payroll.field_co_nomina_electronica__activity_exception_decoration
+#: model:ir.model.fields,help:co_payroll.field_co_payslip__activity_exception_decoration
+#: model:ir.model.fields,help:co_payroll.field_co_pila__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr "Tipo de la actividad de excepción en el registro."
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_hiring_request__contract_type__fijo
+#: model:ir.model.fields.selection,name:co_payroll.selection__hr_contract__co_contract_type__fijo
+msgid "Término Fijo"
+msgstr "Término Fijo"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__hr_contract__co_contract_type__indefinido
+msgid "Término Indefinido"
+msgstr "Término Indefinido"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_payroll_constants__uvt
+#: model:ir.model.fields,field_description:co_payroll.field_res_config_settings__co_payroll_uvt
+msgid "UVT"
+msgstr "UVT"
+
+#. module: co_payroll
+#: model:ir.model.fields,help:co_payroll.field_co_payroll_constants__uvt
+#: model:ir.model.fields,help:co_payroll.field_res_config_settings__co_payroll_uvt
+msgid "Unidad de Valor Tributario"
+msgstr "Unidad de Valor Tributario"
+
+#. module: co_payroll
+#: model:res.groups,name:co_payroll.group_co_payroll_user
+msgid "User"
+msgstr "Usuario"
+
+#. module: co_payroll
+#: model:co.salary.concept,name:co_payroll.concept_vacaciones
+#: model:ir.model.fields,field_description:co_payroll.field_co_contract_termination_wizard__vacaciones_amount
+msgid "Vacaciones"
+msgstr "Vacaciones"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip__vacaciones_provision
+msgid "Vacaciones Provision"
+msgstr "Provisión de Vacaciones"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_hiring_request__website_message_ids
+#: model:ir.model.fields,field_description:co_payroll.field_co_loan__website_message_ids
+#: model:ir.model.fields,field_description:co_payroll.field_co_nomina_electronica__website_message_ids
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip__website_message_ids
+#: model:ir.model.fields,field_description:co_payroll.field_co_pila__website_message_ids
+msgid "Website Messages"
+msgstr "Mensajes del sitio web"
+
+#. module: co_payroll
+#: model:ir.model.fields,help:co_payroll.field_co_hiring_request__website_message_ids
+#: model:ir.model.fields,help:co_payroll.field_co_loan__website_message_ids
+#: model:ir.model.fields,help:co_payroll.field_co_nomina_electronica__website_message_ids
+#: model:ir.model.fields,help:co_payroll.field_co_payslip__website_message_ids
+#: model:ir.model.fields,help:co_payroll.field_co_pila__website_message_ids
+msgid "Website communication history"
+msgstr "Historial de comunicación del sitio web"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip__withholding_tax
+msgid "Withholding Tax"
+msgstr "Retención en la Fuente"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_contract_termination_wizard__termination_reason__no_cause
+msgid "Without Just Cause"
+msgstr "Sin justa causa"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_hr_contract__co_work_schedule
+msgid "Work Schedule"
+msgstr "Jornada laboral"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_payslip__worked_days
+msgid "Worked Days"
+msgstr "Días trabajados"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_nomina_electronica__xml_content
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_nomina_electronica_form
+msgid "XML Content"
+msgstr "Contenido XML"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_nomina_electronica__xml_filename
+msgid "XML Filename"
+msgstr "Nombre de archivo XML"
+
+#. module: co_payroll
+#: model:ir.model.fields.selection,name:co_payroll.selection__co_nomina_electronica__state__generated
+msgid "XML Generated"
+msgstr "XML generado"
+
+#. module: co_payroll
+#: model:ir.model.fields,field_description:co_payroll.field_co_payroll_constants__year
+#: model:ir.model.fields,field_description:co_payroll.field_co_pila__period_year
+msgid "Year"
+msgstr "Año"
+
+#. module: co_payroll
+#: model_terms:ir.ui.view,arch_db:co_payroll.view_co_salary_concept_form
+msgid "e.g., basic_salary * 0.04"
+msgstr "ej., basic_salary * 0.04"

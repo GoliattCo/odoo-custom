@@ -7,124 +7,125 @@ msgstr ""
 "Project-Id-Version: Odoo Server 18.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-03-23 00:31+0000\n"
-"PO-Revision-Date: 2026-03-23 00:31+0000\n"
+"PO-Revision-Date: 2026-03-22 00:00+0000\n"
 "Last-Translator: \n"
-"Language-Team: \n"
+"Language-Team: Spanish (Latin America) <>\n"
+"Language: es_419\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: \n"
-"Plural-Forms: \n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_line__participation_pct
 msgid "% Participacion"
-msgstr ""
+msgstr "%% Participación"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_generate_wizard__generate_1001
 msgid "1001 - Pagos y abonos"
-msgstr ""
+msgstr "1001 - Pagos y abonos"
 
 #. module: co_exogena
 #: model:ir.model.fields.selection,name:co_exogena.selection__co_exogena_concept__format_code__1001
 #: model:ir.model.fields.selection,name:co_exogena.selection__co_exogena_format__format_code__1001
 msgid "1001 - Pagos y abonos en cuenta"
-msgstr ""
+msgstr "1001 - Pagos y abonos en cuenta"
 
 #. module: co_exogena
 #: model:ir.model.fields.selection,name:co_exogena.selection__co_exogena_concept__format_code__1003
 #: model:ir.model.fields.selection,name:co_exogena.selection__co_exogena_format__format_code__1003
 msgid "1003 - Retenciones en la fuente"
-msgstr ""
+msgstr "1003 - Retenciones en la Fuente"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_generate_wizard__generate_1003
 msgid "1003 - Retenciones fuente"
-msgstr ""
+msgstr "1003 - Retenciones en la Fuente"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_generate_wizard__generate_1005
 #: model:ir.model.fields.selection,name:co_exogena.selection__co_exogena_concept__format_code__1005
 #: model:ir.model.fields.selection,name:co_exogena.selection__co_exogena_format__format_code__1005
 msgid "1005 - IVA descontable"
-msgstr ""
+msgstr "1005 - IVA Descontable"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_generate_wizard__generate_1006
 #: model:ir.model.fields.selection,name:co_exogena.selection__co_exogena_concept__format_code__1006
 #: model:ir.model.fields.selection,name:co_exogena.selection__co_exogena_format__format_code__1006
 msgid "1006 - IVA generado"
-msgstr ""
+msgstr "1006 - IVA Generado"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_generate_wizard__generate_1007
 #: model:ir.model.fields.selection,name:co_exogena.selection__co_exogena_concept__format_code__1007
 #: model:ir.model.fields.selection,name:co_exogena.selection__co_exogena_format__format_code__1007
 msgid "1007 - Ingresos recibidos"
-msgstr ""
+msgstr "1007 - Ingresos recibidos"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_generate_wizard__generate_1008
 #: model:ir.model.fields.selection,name:co_exogena.selection__co_exogena_concept__format_code__1008
 #: model:ir.model.fields.selection,name:co_exogena.selection__co_exogena_format__format_code__1008
 msgid "1008 - Cuentas por cobrar"
-msgstr ""
+msgstr "1008 - Cuentas por Cobrar"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_generate_wizard__generate_1009
 #: model:ir.model.fields.selection,name:co_exogena.selection__co_exogena_concept__format_code__1009
 #: model:ir.model.fields.selection,name:co_exogena.selection__co_exogena_format__format_code__1009
 msgid "1009 - Cuentas por pagar"
-msgstr ""
+msgstr "1009 - Cuentas por Pagar"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_generate_wizard__generate_1010
 #: model:ir.model.fields.selection,name:co_exogena.selection__co_exogena_concept__format_code__1010
 #: model:ir.model.fields.selection,name:co_exogena.selection__co_exogena_format__format_code__1010
 msgid "1010 - Socios y accionistas"
-msgstr ""
+msgstr "1010 - Socios y accionistas"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_generate_wizard__generate_1012
 #: model:ir.model.fields.selection,name:co_exogena.selection__co_exogena_concept__format_code__1012
 #: model:ir.model.fields.selection,name:co_exogena.selection__co_exogena_format__format_code__1012
 msgid "1012 - Declaraciones tributarias"
-msgstr ""
+msgstr "1012 - Declaraciones tributarias"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_report__message_needaction
 msgid "Action Needed"
-msgstr ""
+msgstr "Acción requerida"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_report__activity_ids
 msgid "Activities"
-msgstr ""
+msgstr "Actividades"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_report__activity_exception_decoration
 msgid "Activity Exception Decoration"
-msgstr ""
+msgstr "Decoración de excepción de actividad"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_report__activity_state
 msgid "Activity State"
-msgstr ""
+msgstr "Estado de la actividad"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_report__activity_type_icon
 msgid "Activity Type Icon"
-msgstr ""
+msgstr "Ícono del tipo de actividad"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_concept__active
 msgid "Activo"
-msgstr ""
+msgstr "Activo"
 
 #. module: co_exogena
 #: model_terms:ir.ui.view,arch_db:co_exogena.co_exogena_concept_search
 msgid "Activos"
-msgstr ""
+msgstr "Activos"
 
 #. module: co_exogena
 #: model_terms:ir.ui.view,arch_db:co_exogena.co_exogena_concept_search
@@ -132,137 +133,137 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:co_exogena.co_exogena_line_search
 #: model_terms:ir.ui.view,arch_db:co_exogena.co_exogena_report_search
 msgid "Agrupar por"
-msgstr ""
+msgstr "Agrupar por"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_generate_wizard__fiscal_year
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_report__fiscal_year
 #: model_terms:ir.ui.view,arch_db:co_exogena.co_exogena_report_search
 msgid "Ano gravable"
-msgstr ""
+msgstr "Año gravable"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_format__csv_file
 msgid "Archivo CSV"
-msgstr ""
+msgstr "Archivo CSV"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_report__zip_file
 msgid "Archivo ZIP"
-msgstr ""
+msgstr "Archivo ZIP"
 
 #. module: co_exogena
 #: model:co.exogena.concept,name:co_exogena.concept_1001_5008
 msgid "Arrendamientos"
-msgstr ""
+msgstr "Arrendamientos"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_report__message_attachment_count
 msgid "Attachment Count"
-msgstr ""
+msgstr "Cantidad de adjuntos"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_line__base_amount
 #: model_terms:ir.ui.view,arch_db:co_exogena.report_exogena_summary
 msgid "Base"
-msgstr ""
+msgstr "Base"
 
 #. module: co_exogena
 #: model:ir.model.fields.selection,name:co_exogena.selection__co_exogena_report__state__draft
 #: model_terms:ir.ui.view,arch_db:co_exogena.co_exogena_report_search
 msgid "Borrador"
-msgstr ""
+msgstr "Borrador"
 
 #. module: co_exogena
 #: model_terms:ir.ui.view,arch_db:co_exogena.co_exogena_report_form
 msgid "CSV"
-msgstr ""
+msgstr "CSV"
 
 #. module: co_exogena
 #: model_terms:ir.ui.view,arch_db:co_exogena.co_exogena_generate_wizard_form
 msgid "Cancelar"
-msgstr ""
+msgstr "Cancelar"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_line__partner_dept_code
 msgid "Cod. departamento"
-msgstr ""
+msgstr "Cód. departamento"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_line__partner_mun_code
 msgid "Cod. municipio"
-msgstr ""
+msgstr "Cód. municipio"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_line__partner_country_code
 msgid "Cod. pais"
-msgstr ""
+msgstr "Cód. país"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_concept__code
 msgid "Codigo"
-msgstr ""
+msgstr "Código"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_line__concept_code
 msgid "Codigo concepto"
-msgstr ""
+msgstr "Código concepto"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_line__format_code
 msgid "Codigo formato"
-msgstr ""
+msgstr "Código formato"
 
 #. module: co_exogena
 #: model:co.exogena.concept,name:co_exogena.concept_1001_5006
 msgid "Comisiones"
-msgstr ""
+msgstr "Comisiones"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_generate_wizard__company_id
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_report__company_id
 #: model_terms:ir.ui.view,arch_db:co_exogena.co_exogena_report_search
 msgid "Compania"
-msgstr ""
+msgstr "Compañía"
 
 #. module: co_exogena
 #: model:co.exogena.concept,name:co_exogena.concept_1001_5001
 msgid "Compras"
-msgstr ""
+msgstr "Compras"
 
 #. module: co_exogena
 #: model:co.exogena.concept,description:co_exogena.concept_1001_5001
 msgid "Compras de bienes y servicios"
-msgstr ""
+msgstr "Compras de bienes y servicios"
 
 #. module: co_exogena
 #: model:ir.model.fields.selection,name:co_exogena.selection__co_exogena_report__state__error
 #: model_terms:ir.ui.view,arch_db:co_exogena.co_exogena_report_search
 msgid "Con errores"
-msgstr ""
+msgstr "Con errores"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_line__concept_id
 #: model_terms:ir.ui.view,arch_db:co_exogena.co_exogena_line_search
 #: model_terms:ir.ui.view,arch_db:co_exogena.report_exogena_summary
 msgid "Concepto"
-msgstr ""
+msgstr "Concepto"
 
 #. module: co_exogena
 #: model:ir.model,name:co_exogena.model_co_exogena_concept
 msgid "Concepto Exogena DIAN"
-msgstr ""
+msgstr "Concepto Información Exógena DIAN"
 
 #. module: co_exogena
 #: model:ir.actions.act_window,name:co_exogena.co_exogena_concept_action
 #: model:ir.ui.menu,name:co_exogena.menu_co_exogena_concept
 msgid "Conceptos Exogena"
-msgstr ""
+msgstr "Conceptos Información Exógena"
 
 #. module: co_exogena
 #: model_terms:ir.actions.act_window,help:co_exogena.co_exogena_report_action
 msgid "Crear un nuevo reporte de Informacion Exogena"
-msgstr ""
+msgstr "Crear un nuevo reporte de Información Exógena"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_concept__create_uid
@@ -271,7 +272,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_line__create_uid
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_report__create_uid
 msgid "Created by"
-msgstr ""
+msgstr "Creado por"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_concept__create_date
@@ -280,82 +281,83 @@ msgstr ""
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_line__create_date
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_report__create_date
 msgid "Created on"
-msgstr ""
+msgstr "Creado el"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_concept__min_amount
 msgid "Cuantia minima"
-msgstr ""
+msgstr "Cuantía mínima"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_generate_wizard__min_amount_1001
 msgid "Cuantia minima 1001"
-msgstr ""
+msgstr "Cuantía mínima 1001"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_generate_wizard__min_amount_1007
 msgid "Cuantia minima 1007"
-msgstr ""
+msgstr "Cuantía mínima 1007"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_generate_wizard__min_amount_1008
 msgid "Cuantia minima 1008"
-msgstr ""
+msgstr "Cuantía mínima 1008"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_generate_wizard__min_amount_1009
 msgid "Cuantia minima 1009"
-msgstr ""
+msgstr "Cuantía mínima 1009"
 
 #. module: co_exogena
 #: model_terms:ir.ui.view,arch_db:co_exogena.co_exogena_generate_wizard_form
 msgid "Cuantias minimas"
-msgstr ""
+msgstr "Cuantías mínimas"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_concept__account_ids
 msgid "Cuentas contables"
-msgstr ""
+msgstr "Cuentas contables"
 
 #. module: co_exogena
 #: model:ir.model.fields,help:co_exogena.field_co_exogena_concept__account_ids
 msgid ""
 "Cuentas contables asociadas a este concepto para extraccion automatica."
 msgstr ""
+"Cuentas contables asociadas a este concepto para extracción automática."
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_line__partner_nit_dv
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_report__company_nit_dv
 #: model_terms:ir.ui.view,arch_db:co_exogena.report_exogena_summary
 msgid "DV"
-msgstr ""
+msgstr "DV"
 
 #. module: co_exogena
 #. odoo-python
 #: code:addons/co_exogena/wizard/co_exogena_generate_wizard.py:0
 msgid "Debe seleccionar al menos un formato para generar."
-msgstr ""
+msgstr "Debe seleccionar al menos un formato para generar."
 
 #. module: co_exogena
 #: model_terms:ir.ui.view,arch_db:co_exogena.co_exogena_format_form
 msgid "Descargar CSV"
-msgstr ""
+msgstr "Descargar CSV"
 
 #. module: co_exogena
 #: model_terms:ir.ui.view,arch_db:co_exogena.co_exogena_report_form
 msgid "Descargar ZIP"
-msgstr ""
+msgstr "Descargar ZIP"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_concept__description
 #: model_terms:ir.ui.view,arch_db:co_exogena.report_exogena_summary
 msgid "Descripcion"
-msgstr ""
+msgstr "Descripción"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_line__partner_address
 msgid "Direccion"
-msgstr ""
+msgstr "Dirección"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_concept__display_name
@@ -364,34 +366,34 @@ msgstr ""
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_line__display_name
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_report__display_name
 msgid "Display Name"
-msgstr ""
+msgstr "Nombre para mostrar"
 
 #. module: co_exogena
 #. odoo-python
 #: code:addons/co_exogena/models/co_exogena_report.py:0
 msgid "El ano gravable debe estar entre 2000 y %s."
-msgstr ""
+msgstr "El año gravable debe estar entre 2000 y %s."
 
 #. module: co_exogena
 #: model:ir.model.constraint,message:co_exogena.constraint_co_exogena_concept_format_code_uniq
 msgid "El codigo de concepto debe ser unico por formato."
-msgstr ""
+msgstr "El código de concepto debe ser único por formato."
 
 #. module: co_exogena
 #: model:ir.model.constraint,message:co_exogena.constraint_co_exogena_format_report_format_uniq
 msgid "El formato debe ser unico por reporte."
-msgstr ""
+msgstr "El formato debe ser único por reporte."
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_line__partner_is_company
 msgid "Es empresa"
-msgstr ""
+msgstr "Es empresa"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_report__state
 #: model_terms:ir.ui.view,arch_db:co_exogena.co_exogena_report_search
 msgid "Estado"
-msgstr ""
+msgstr "Estado"
 
 #. module: co_exogena
 #: model_terms:ir.ui.view,arch_db:co_exogena.co_exogena_report_form
@@ -399,59 +401,61 @@ msgid ""
 "Esto abrira el asistente de generacion. Los formatos existentes pueden ser "
 "sobrescritos."
 msgstr ""
+"Esto abrirá el asistente de generación. Los formatos existentes pueden ser "
+"sobrescritos."
 
 #. module: co_exogena
 #: model_terms:ir.ui.view,arch_db:co_exogena.co_exogena_report_form
 msgid "Esto eliminara todos los formatos generados. Desea continuar?"
-msgstr ""
+msgstr "Esto eliminará todos los formatos generados. ¿Desea continuar?"
 
 #. module: co_exogena
 #: model:ir.actions.act_window,name:co_exogena.co_exogena_report_action
 #: model:ir.ui.menu,name:co_exogena.menu_co_exogena_config
 #: model:ir.ui.menu,name:co_exogena.menu_co_exogena_root
 msgid "Exogena"
-msgstr ""
+msgstr "Información Exógena"
 
 #. module: co_exogena
 #. odoo-python
 #: code:addons/co_exogena/wizard/co_exogena_generate_wizard.py:0
 msgid "Exogena generada"
-msgstr ""
+msgstr "Información Exógena generada"
 
 #. module: co_exogena
 #: model:res.groups,name:co_exogena.group_co_exogena_manager
 msgid "Exogena: Administrador"
-msgstr ""
+msgstr "Información Exógena: Administrador"
 
 #. module: co_exogena
 #: model:res.groups,name:co_exogena.group_co_exogena_user
 msgid "Exogena: Usuario"
-msgstr ""
+msgstr "Información Exógena: Usuario"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_report__date_from
 msgid "Fecha desde"
-msgstr ""
+msgstr "Fecha desde"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_report__date_to
 msgid "Fecha hasta"
-msgstr ""
+msgstr "Fecha hasta"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_report__message_follower_ids
 msgid "Followers"
-msgstr ""
+msgstr "Seguidores"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_report__message_partner_ids
 msgid "Followers (Partners)"
-msgstr ""
+msgstr "Seguidores (Contactos)"
 
 #. module: co_exogena
 #: model:ir.model.fields,help:co_exogena.field_co_exogena_report__activity_type_icon
 msgid "Font awesome icon e.g. fa-tasks"
-msgstr ""
+msgstr "Ícono de Font Awesome, ej. fa-tasks"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_concept__format_code
@@ -463,76 +467,76 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:co_exogena.co_exogena_line_search
 #: model_terms:ir.ui.view,arch_db:co_exogena.report_exogena_summary
 msgid "Formato"
-msgstr ""
+msgstr "Formato"
 
 #. module: co_exogena
 #: model:ir.model,name:co_exogena.model_co_exogena_format
 msgid "Formato Exogena"
-msgstr ""
+msgstr "Formato Información Exógena"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_report__format_ids
 #: model:ir.ui.menu,name:co_exogena.menu_co_exogena_format
 #: model_terms:ir.ui.view,arch_db:co_exogena.co_exogena_report_form
 msgid "Formatos"
-msgstr ""
+msgstr "Formatos"
 
 #. module: co_exogena
 #. odoo-python
 #: code:addons/co_exogena/models/co_exogena_report.py:0
 #: model:ir.actions.act_window,name:co_exogena.co_exogena_format_action
 msgid "Formatos Exogena"
-msgstr ""
+msgstr "Formatos Información Exógena"
 
 #. module: co_exogena
 #: model_terms:ir.ui.view,arch_db:co_exogena.co_exogena_generate_wizard_form
 msgid "Formatos a generar"
-msgstr ""
+msgstr "Formatos a generar"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_report__format_count
 msgid "Formatos generados"
-msgstr ""
+msgstr "Formatos generados"
 
 #. module: co_exogena
 #: model:co.exogena.concept,description:co_exogena.concept_1001_5002
 #: model:co.exogena.concept,name:co_exogena.concept_1001_5002
 msgid "Gastos operacionales de administracion"
-msgstr ""
+msgstr "Gastos operacionales de administración"
 
 #. module: co_exogena
 #: model:co.exogena.concept,description:co_exogena.concept_1001_5003
 #: model:co.exogena.concept,name:co_exogena.concept_1001_5003
 msgid "Gastos operacionales de ventas"
-msgstr ""
+msgstr "Gastos operacionales de ventas"
 
 #. module: co_exogena
 #: model:ir.model.fields.selection,name:co_exogena.selection__co_exogena_report__state__generated
 #: model_terms:ir.ui.view,arch_db:co_exogena.co_exogena_report_search
 msgid "Generado"
-msgstr ""
+msgstr "Generado"
 
 #. module: co_exogena
 #: model_terms:ir.ui.view,arch_db:co_exogena.report_exogena_summary
 msgid "Generado:"
-msgstr ""
+msgstr "Generado:"
 
 #. module: co_exogena
 #: model_terms:ir.ui.view,arch_db:co_exogena.co_exogena_generate_wizard_form
 msgid "Generar"
-msgstr ""
+msgstr "Generar"
 
 #. module: co_exogena
 #. odoo-python
 #: code:addons/co_exogena/models/co_exogena_report.py:0
 #: model:ir.model,name:co_exogena.model_co_exogena_generate_wizard
 msgid "Generar Exogena"
-msgstr ""
+msgstr "Generar Información Exógena"
 
 #. module: co_exogena
 #: model_terms:ir.ui.view,arch_db:co_exogena.co_exogena_report_form
 msgid "Generar formatos"
-msgstr ""
+msgstr "Generar formatos"
 
 #. module: co_exogena
 #: model_terms:ir.actions.act_window,help:co_exogena.co_exogena_report_action
@@ -540,31 +544,33 @@ msgid ""
 "Genere los formatos requeridos por la DIAN para la\n"
 "                Informacion Exogena del ano gravable correspondiente."
 msgstr ""
+"Genere los formatos requeridos por la DIAN para la\n"
+"                Información Exógena del año gravable correspondiente."
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_concept__tax_group_id
 msgid "Grupo de impuestos"
-msgstr ""
+msgstr "Grupo de impuestos"
 
 #. module: co_exogena
 #: model:ir.model.fields,help:co_exogena.field_co_exogena_concept__tax_group_id
 msgid "Grupo de impuestos asociado para extraccion automatica."
-msgstr ""
+msgstr "Grupo de impuestos asociado para extracción automática."
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_report__has_message
 msgid "Has Message"
-msgstr ""
+msgstr "Tiene mensaje"
 
 #. module: co_exogena
 #: model:co.exogena.concept,name:co_exogena.concept_1001_5005
 msgid "Honorarios"
-msgstr ""
+msgstr "Honorarios"
 
 #. module: co_exogena
 #: model:co.exogena.concept,name:co_exogena.concept_1012_0004
 msgid "ICA"
-msgstr ""
+msgstr "ICA"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_concept__id
@@ -573,71 +579,71 @@ msgstr ""
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_line__id
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_report__id
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
 #. module: co_exogena
 #: model:co.exogena.concept,name:co_exogena.concept_1012_0001
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_line__vat_amount
 #: model_terms:ir.ui.view,arch_db:co_exogena.report_exogena_summary
 msgid "IVA"
-msgstr ""
+msgstr "IVA"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_report__activity_exception_icon
 msgid "Icon"
-msgstr ""
+msgstr "Ícono"
 
 #. module: co_exogena
 #: model:ir.model.fields,help:co_exogena.field_co_exogena_report__activity_exception_icon
 msgid "Icon to indicate an exception activity."
-msgstr ""
+msgstr "Ícono para indicar una actividad de excepción."
 
 #. module: co_exogena
 #: model:ir.model.fields,help:co_exogena.field_co_exogena_report__message_needaction
 msgid "If checked, new messages require your attention."
-msgstr ""
+msgstr "Si está marcado, hay mensajes nuevos que requieren su atención."
 
 #. module: co_exogena
 #: model:ir.model.fields,help:co_exogena.field_co_exogena_report__message_has_error
 #: model:ir.model.fields,help:co_exogena.field_co_exogena_report__message_has_sms_error
 msgid "If checked, some messages have a delivery error."
-msgstr ""
+msgstr "Si está marcado, algunos mensajes tienen un error de envío."
 
 #. module: co_exogena
 #: model:co.exogena.concept,description:co_exogena.concept_1012_0004
 msgid "Impuesto de industria y comercio"
-msgstr ""
+msgstr "Impuesto de industria y comercio"
 
 #. module: co_exogena
 #: model:co.exogena.concept,description:co_exogena.concept_1012_0001
 msgid "Impuesto sobre las ventas - IVA"
-msgstr ""
+msgstr "Impuesto sobre las ventas - IVA"
 
 #. module: co_exogena
 #: model:co.exogena.concept,description:co_exogena.concept_1007_4001
 msgid "Ingresos brutos operacionales"
-msgstr ""
+msgstr "Ingresos brutos operacionales"
 
 #. module: co_exogena
 #: model:co.exogena.concept,description:co_exogena.concept_1007_4002
 #: model:co.exogena.concept,name:co_exogena.concept_1007_4002
 msgid "Ingresos no operacionales"
-msgstr ""
+msgstr "Ingresos no operacionales"
 
 #. module: co_exogena
 #: model:co.exogena.concept,name:co_exogena.concept_1007_4001
 msgid "Ingresos operacionales"
-msgstr ""
+msgstr "Ingresos operacionales"
 
 #. module: co_exogena
 #: model:co.exogena.concept,name:co_exogena.concept_1001_5010
 msgid "Intereses y rendimientos financieros"
-msgstr ""
+msgstr "Intereses y rendimientos financieros"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_report__message_is_follower
 msgid "Is Follower"
-msgstr ""
+msgstr "Es seguidor"
 
 #. module: co_exogena
 #. odoo-python
@@ -646,6 +652,8 @@ msgid ""
 "La compania %s no tiene NIT configurado. Configure el NIT en Ajustes > "
 "Companias."
 msgstr ""
+"La compañía %s no tiene NIT configurado. Configure el NIT en Ajustes > "
+"Compañías."
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_concept__write_uid
@@ -654,7 +662,7 @@ msgstr ""
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_line__write_uid
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_report__write_uid
 msgid "Last Updated by"
-msgstr ""
+msgstr "Última actualización por"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_concept__write_date
@@ -663,12 +671,12 @@ msgstr ""
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_line__write_date
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_report__write_date
 msgid "Last Updated on"
-msgstr ""
+msgstr "Última actualización el"
 
 #. module: co_exogena
 #: model:ir.model,name:co_exogena.model_co_exogena_line
 msgid "Linea Exogena"
-msgstr ""
+msgstr "Línea Información Exógena"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_format__line_count
@@ -676,69 +684,69 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:co_exogena.co_exogena_format_form
 #: model_terms:ir.ui.view,arch_db:co_exogena.report_exogena_summary
 msgid "Lineas"
-msgstr ""
+msgstr "Líneas"
 
 #. module: co_exogena
 #. odoo-python
 #: code:addons/co_exogena/models/co_exogena_format.py:0
 msgid "Lineas - %s"
-msgstr ""
+msgstr "Líneas - %s"
 
 #. module: co_exogena
 #: model:ir.actions.act_window,name:co_exogena.co_exogena_line_action
 msgid "Lineas Exogena"
-msgstr ""
+msgstr "Líneas Información Exógena"
 
 #. module: co_exogena
 #: model:ir.ui.menu,name:co_exogena.menu_co_exogena_line
 msgid "Lineas detalle"
-msgstr ""
+msgstr "Líneas detalle"
 
 #. module: co_exogena
 #: model_terms:ir.ui.view,arch_db:co_exogena.report_exogena_summary
 msgid "Log de Validacion"
-msgstr ""
+msgstr "Log de Validación"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_report__validation_log
 msgid "Log de validacion"
-msgstr ""
+msgstr "Log de validación"
 
 #. module: co_exogena
 #: model_terms:ir.ui.view,arch_db:co_exogena.report_exogena_summary
 msgid "Logo"
-msgstr ""
+msgstr "Logo"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_report__message_has_error
 msgid "Message Delivery error"
-msgstr ""
+msgstr "Error de envío de mensaje"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_report__message_ids
 msgid "Messages"
-msgstr ""
+msgstr "Mensajes"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_line__amount
 #: model_terms:ir.ui.view,arch_db:co_exogena.report_exogena_summary
 msgid "Monto"
-msgstr ""
+msgstr "Monto"
 
 #. module: co_exogena
 #: model:ir.model.fields,help:co_exogena.field_co_exogena_concept__min_amount
 msgid "Monto minimo para reportar en este concepto. 0 = sin minimo."
-msgstr ""
+msgstr "Monto mínimo para reportar en este concepto. 0 = sin mínimo."
 
 #. module: co_exogena
 #: model_terms:ir.ui.view,arch_db:co_exogena.co_exogena_line_form
 msgid "Montos"
-msgstr ""
+msgstr "Montos"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_report__my_activity_date_deadline
 msgid "My Activity Deadline"
-msgstr ""
+msgstr "Fecha límite de mi actividad"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_line__partner_nit
@@ -746,166 +754,166 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:co_exogena.co_exogena_line_search
 #: model_terms:ir.ui.view,arch_db:co_exogena.report_exogena_summary
 msgid "NIT"
-msgstr ""
+msgstr "NIT"
 
 #. module: co_exogena
 #: model_terms:ir.ui.view,arch_db:co_exogena.report_exogena_summary
 msgid "NIT:"
-msgstr ""
+msgstr "NIT:"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_report__activity_calendar_event_id
 msgid "Next Activity Calendar Event"
-msgstr ""
+msgstr "Próximo evento de calendario de actividad"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_report__activity_date_deadline
 msgid "Next Activity Deadline"
-msgstr ""
+msgstr "Fecha límite de próxima actividad"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_report__activity_summary
 msgid "Next Activity Summary"
-msgstr ""
+msgstr "Resumen de próxima actividad"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_report__activity_type_id
 msgid "Next Activity Type"
-msgstr ""
+msgstr "Tipo de próxima actividad"
 
 #. module: co_exogena
 #. odoo-python
 #: code:addons/co_exogena/models/co_exogena_report.py:0
 msgid "No hay formatos generados para descargar."
-msgstr ""
+msgstr "No hay formatos generados para descargar."
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_concept__name
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_format__name
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_report__name
 msgid "Nombre"
-msgstr ""
+msgstr "Nombre"
 
 #. module: co_exogena
 #: model_terms:ir.ui.view,arch_db:co_exogena.report_exogena_summary
 msgid "Nombre / Razon Social"
-msgstr ""
+msgstr "Nombre / Razón Social"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_line__partner_name
 msgid "Nombre / Razon social"
-msgstr ""
+msgstr "Nombre / Razón social"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_format__csv_filename
 msgid "Nombre archivo CSV"
-msgstr ""
+msgstr "Nombre archivo CSV"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_report__zip_filename
 msgid "Nombre archivo ZIP"
-msgstr ""
+msgstr "Nombre archivo ZIP"
 
 #. module: co_exogena
 #: model_terms:ir.ui.view,arch_db:co_exogena.co_exogena_concept_form
 msgid "Nombre del concepto"
-msgstr ""
+msgstr "Nombre del concepto"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_report__notes
 #: model_terms:ir.ui.view,arch_db:co_exogena.co_exogena_report_form
 msgid "Notas"
-msgstr ""
+msgstr "Notas"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_report__message_needaction_counter
 msgid "Number of Actions"
-msgstr ""
+msgstr "Número de acciones"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_report__message_has_error_counter
 msgid "Number of errors"
-msgstr ""
+msgstr "Número de errores"
 
 #. module: co_exogena
 #: model:ir.model.fields,help:co_exogena.field_co_exogena_report__message_needaction_counter
 msgid "Number of messages requiring action"
-msgstr ""
+msgstr "Número de mensajes que requieren acción"
 
 #. module: co_exogena
 #: model:ir.model.fields,help:co_exogena.field_co_exogena_report__message_has_error_counter
 msgid "Number of messages with delivery error"
-msgstr ""
+msgstr "Número de mensajes con error de envío"
 
 #. module: co_exogena
 #: model_terms:ir.ui.view,arch_db:co_exogena.co_exogena_generate_wizard_form
 msgid "Opciones"
-msgstr ""
+msgstr "Opciones"
 
 #. module: co_exogena
 #: model:co.exogena.concept,description:co_exogena.concept_1001_5004
 msgid "Otros costos y gastos"
-msgstr ""
+msgstr "Otros costos y gastos"
 
 #. module: co_exogena
 #: model:co.exogena.concept,name:co_exogena.concept_1001_5004
 msgid "Otros gastos"
-msgstr ""
+msgstr "Otros gastos"
 
 #. module: co_exogena
 #: model:co.exogena.concept,name:co_exogena.concept_1012_0099
 msgid "Otros impuestos"
-msgstr ""
+msgstr "Otros impuestos"
 
 #. module: co_exogena
 #: model:co.exogena.concept,description:co_exogena.concept_1012_0099
 msgid "Otros impuestos, tasas y contribuciones"
-msgstr ""
+msgstr "Otros impuestos, tasas y contribuciones"
 
 #. module: co_exogena
 #: model:co.exogena.concept,description:co_exogena.concept_1001_5016
 msgid "Pagos laborales"
-msgstr ""
+msgstr "Pagos laborales"
 
 #. module: co_exogena
 #: model:co.exogena.concept,description:co_exogena.concept_1001_5008
 msgid "Pagos por arrendamientos"
-msgstr ""
+msgstr "Pagos por arrendamientos"
 
 #. module: co_exogena
 #: model:co.exogena.concept,description:co_exogena.concept_1001_5006
 msgid "Pagos por comisiones"
-msgstr ""
+msgstr "Pagos por comisiones"
 
 #. module: co_exogena
 #: model:co.exogena.concept,description:co_exogena.concept_1001_5005
 msgid "Pagos por honorarios"
-msgstr ""
+msgstr "Pagos por honorarios"
 
 #. module: co_exogena
 #: model:co.exogena.concept,description:co_exogena.concept_1001_5010
 msgid "Pagos por intereses y rendimientos financieros"
-msgstr ""
+msgstr "Pagos por intereses y rendimientos financieros"
 
 #. module: co_exogena
 #: model:co.exogena.concept,description:co_exogena.concept_1001_5007
 msgid "Pagos por servicios"
-msgstr ""
+msgstr "Pagos por servicios"
 
 #. module: co_exogena
 #: model:ir.model.fields,help:co_exogena.field_co_exogena_line__participation_pct
 msgid "Porcentaje de participacion (solo para formato 1010)."
-msgstr ""
+msgstr "Porcentaje de participación (solo para formato 1010)."
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_report__company_name_report
 msgid "Razon social"
-msgstr ""
+msgstr "Razón social"
 
 #. module: co_exogena
 #: model_terms:ir.ui.view,arch_db:co_exogena.co_exogena_report_form
 msgid "Regenerar formatos"
-msgstr ""
+msgstr "Regenerar formatos"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_format__report_id
@@ -914,136 +922,137 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:co_exogena.co_exogena_format_search
 #: model_terms:ir.ui.view,arch_db:co_exogena.co_exogena_generate_wizard_form
 msgid "Reporte"
-msgstr ""
+msgstr "Reporte"
 
 #. module: co_exogena
 #: model:ir.model,name:co_exogena.model_co_exogena_report
 msgid "Reporte Exogena DIAN"
-msgstr ""
+msgstr "Reporte Información Exógena DIAN"
 
 #. module: co_exogena
 #: model:ir.ui.menu,name:co_exogena.menu_co_exogena_report
 msgid "Reportes Exogena"
-msgstr ""
+msgstr "Reportes Información Exógena"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_report__activity_user_id
 msgid "Responsible User"
-msgstr ""
+msgstr "Usuario responsable"
 
 #. module: co_exogena
 #: model:ir.actions.report,name:co_exogena.action_report_co_exogena
 msgid "Resumen Exogena"
-msgstr ""
+msgstr "Resumen Información Exógena"
 
 #. module: co_exogena
 #: model_terms:ir.ui.view,arch_db:co_exogena.report_exogena_summary
 msgid "Resumen Informacion Exogena - Ano Gravable"
-msgstr ""
+msgstr "Resumen Información Exógena - Año Gravable"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_line__retention_amount
 #: model_terms:ir.ui.view,arch_db:co_exogena.report_exogena_summary
 msgid "Retencion"
-msgstr ""
+msgstr "Retención"
 
 #. module: co_exogena
 #: model:co.exogena.concept,name:co_exogena.concept_1012_0003
 msgid "Retencion de IVA"
-msgstr ""
+msgstr "Retención de IVA"
 
 #. module: co_exogena
 #: model:co.exogena.concept,name:co_exogena.concept_1012_0002
 msgid "Retencion en la fuente"
-msgstr ""
+msgstr "Retención en la Fuente"
 
 #. module: co_exogena
 #: model:co.exogena.concept,description:co_exogena.concept_1012_0003
 msgid "Retencion en la fuente a titulo de IVA"
-msgstr ""
+msgstr "Retención en la fuente a título de IVA"
 
 #. module: co_exogena
 #: model:co.exogena.concept,description:co_exogena.concept_1012_0002
 msgid "Retencion en la fuente a titulo de renta"
-msgstr ""
+msgstr "Retención en la fuente a título de renta"
 
 #. module: co_exogena
 #: model:co.exogena.concept,name:co_exogena.concept_1003_1303
 msgid "Retencion por ICA"
-msgstr ""
+msgstr "Retención por ICA"
 
 #. module: co_exogena
 #: model:co.exogena.concept,name:co_exogena.concept_1003_1302
 msgid "Retencion por IVA"
-msgstr ""
+msgstr "Retención por IVA"
 
 #. module: co_exogena
 #: model:co.exogena.concept,name:co_exogena.concept_1003_1301
 msgid "Retencion por renta"
-msgstr ""
+msgstr "Retención por renta"
 
 #. module: co_exogena
 #: model:co.exogena.concept,name:co_exogena.concept_1003_1304
 msgid "Retencion por timbre"
-msgstr ""
+msgstr "Retención por timbre"
 
 #. module: co_exogena
 #: model:co.exogena.concept,description:co_exogena.concept_1003_1301
 msgid "Retenciones en la fuente por concepto de renta"
-msgstr ""
+msgstr "Retenciones en la Fuente por concepto de renta"
 
 #. module: co_exogena
 #: model:co.exogena.concept,description:co_exogena.concept_1003_1303
 msgid "Retenciones por concepto de ICA"
-msgstr ""
+msgstr "Retenciones por concepto de ICA"
 
 #. module: co_exogena
 #: model:co.exogena.concept,description:co_exogena.concept_1003_1302
 msgid "Retenciones por concepto de IVA"
-msgstr ""
+msgstr "Retenciones por concepto de IVA"
 
 #. module: co_exogena
 #: model:co.exogena.concept,description:co_exogena.concept_1003_1304
 msgid "Retenciones por concepto de timbre"
-msgstr ""
+msgstr "Retenciones por concepto de timbre"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_report__message_has_sms_error
 msgid "SMS Delivery error"
-msgstr ""
+msgstr "Error de envío de SMS"
 
 #. module: co_exogena
 #: model:co.exogena.concept,name:co_exogena.concept_1001_5016
 msgid "Salarios y pagos laborales"
-msgstr ""
+msgstr "Salarios y pagos laborales"
 
 #. module: co_exogena
 #. odoo-python
 #: code:addons/co_exogena/wizard/co_exogena_generate_wizard.py:0
 msgid "Se generaron %s formato(s) exitosamente."
-msgstr ""
+msgstr "Se generaron %s formato(s) exitosamente."
 
 #. module: co_exogena
 #: model:co.exogena.concept,name:co_exogena.concept_1001_5007
 msgid "Servicios"
-msgstr ""
+msgstr "Servicios"
 
 #. module: co_exogena
 #: model:ir.model.fields,help:co_exogena.field_co_exogena_generate_wizard__overwrite_existing
 msgid ""
 "Si esta activo, elimina los formatos existentes antes de generar nuevos."
 msgstr ""
+"Si está activo, elimina los formatos existentes antes de generar nuevos."
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_generate_wizard__overwrite_existing
 msgid "Sobrescribir formatos existentes"
-msgstr ""
+msgstr "Sobrescribir formatos existentes"
 
 #. module: co_exogena
 #. odoo-python
 #: code:addons/co_exogena/models/co_exogena_report.py:0
 msgid "Solo se pueden validar reportes en estado Generado."
-msgstr ""
+msgstr "Solo se pueden validar reportes en estado Generado."
 
 #. module: co_exogena
 #: model:ir.model.fields,help:co_exogena.field_co_exogena_report__activity_state
@@ -1053,22 +1062,26 @@ msgid ""
 "Today: Activity date is today\n"
 "Planned: Future activities."
 msgstr ""
+"Estado basado en actividades\n"
+"Vencida: La fecha límite ya pasó\n"
+"Hoy: La fecha de la actividad es hoy\n"
+"Planificada: Actividades futuras."
 
 #. module: co_exogena
 #: model_terms:ir.ui.view,arch_db:co_exogena.report_exogena_summary
 msgid "TOTALES"
-msgstr ""
+msgstr "TOTALES"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_line__partner_id
 #: model_terms:ir.ui.view,arch_db:co_exogena.co_exogena_line_form
 msgid "Tercero"
-msgstr ""
+msgstr "Tercero"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_line__partner_doc_type
 msgid "Tipo documento"
-msgstr ""
+msgstr "Tipo documento"
 
 #. module: co_exogena
 #: model_terms:ir.ui.view,arch_db:co_exogena.co_exogena_format_form
@@ -1076,82 +1089,82 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:co_exogena.co_exogena_line_tree
 #: model_terms:ir.ui.view,arch_db:co_exogena.co_exogena_report_form
 msgid "Total"
-msgstr ""
+msgstr "Total"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_format__total_vat
 #: model_terms:ir.ui.view,arch_db:co_exogena.report_exogena_summary
 msgid "Total IVA"
-msgstr ""
+msgstr "Total IVA"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_format__total_base_amount
 #: model_terms:ir.ui.view,arch_db:co_exogena.report_exogena_summary
 msgid "Total base"
-msgstr ""
+msgstr "Total base"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_format__total_amount
 #: model_terms:ir.ui.view,arch_db:co_exogena.report_exogena_summary
 msgid "Total monto"
-msgstr ""
+msgstr "Total monto"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_format__total_retention
 #: model_terms:ir.ui.view,arch_db:co_exogena.report_exogena_summary
 msgid "Total retencion"
-msgstr ""
+msgstr "Total retención"
 
 #. module: co_exogena
 #: model:ir.model.fields,help:co_exogena.field_co_exogena_report__activity_exception_decoration
 msgid "Type of the exception activity on record."
-msgstr ""
+msgstr "Tipo de la actividad de excepción en el registro."
 
 #. module: co_exogena
 #: model_terms:ir.ui.view,arch_db:co_exogena.co_exogena_line_form
 msgid "Ubicacion"
-msgstr ""
+msgstr "Ubicación"
 
 #. module: co_exogena
 #: model_terms:ir.ui.view,arch_db:co_exogena.co_exogena_report_form
 msgid "Validacion"
-msgstr ""
+msgstr "Validación"
 
 #. module: co_exogena
 #: model:ir.model.fields.selection,name:co_exogena.selection__co_exogena_report__state__validated
 #: model_terms:ir.ui.view,arch_db:co_exogena.co_exogena_report_search
 msgid "Validado"
-msgstr ""
+msgstr "Validado"
 
 #. module: co_exogena
 #: model_terms:ir.ui.view,arch_db:co_exogena.co_exogena_report_form
 msgid "Validar"
-msgstr ""
+msgstr "Validar"
 
 #. module: co_exogena
 #: model_terms:ir.ui.view,arch_db:co_exogena.co_exogena_report_form
 msgid "Ver lineas"
-msgstr ""
+msgstr "Ver líneas"
 
 #. module: co_exogena
 #: model_terms:ir.ui.view,arch_db:co_exogena.co_exogena_report_form
 msgid "Volver a borrador"
-msgstr ""
+msgstr "Volver a borrador"
 
 #. module: co_exogena
 #: model:ir.model.fields,field_description:co_exogena.field_co_exogena_report__website_message_ids
 msgid "Website Messages"
-msgstr ""
+msgstr "Mensajes del sitio web"
 
 #. module: co_exogena
 #: model:ir.model.fields,help:co_exogena.field_co_exogena_report__website_message_ids
 msgid "Website communication history"
-msgstr ""
+msgstr "Historial de comunicación del sitio web"
 
 #. module: co_exogena
 #: model:ir.model.constraint,message:co_exogena.constraint_co_exogena_report_company_year_uniq
 msgid "Ya existe un reporte Exogena para esta compania y ano gravable."
-msgstr ""
+msgstr "Ya existe un reporte de Información Exógena para esta compañía y año gravable."
 
 #. module: co_exogena
 #: model_terms:ir.ui.view,arch_db:co_exogena.report_exogena_summary
@@ -1159,3 +1172,5 @@ msgid ""
 "lineas |\n"
 "                            Total:"
 msgstr ""
+"líneas |\n"
+"                            Total:"

@@ -1,0 +1,795 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* co_budget
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-03-23 00:31+0000\n"
+"PO-Revision-Date: 2026-03-23 00:31+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: co_budget
+#: model_terms:ir.ui.view,arch_db:co_budget.co_budget_report_document
+msgid "&amp;mdash;"
+msgstr ""
+
+#. module: co_budget
+#: model_terms:ir.ui.view,arch_db:co_budget.co_budget_report_document
+msgid "<span class=\"badge bg-danger\">Excedido</span>"
+msgstr ""
+
+#. module: co_budget
+#: model_terms:ir.ui.view,arch_db:co_budget.co_budget_report_document
+msgid "<span class=\"badge bg-success\">OK</span>"
+msgstr ""
+
+#. module: co_budget
+#: model_terms:ir.ui.view,arch_db:co_budget.co_budget_report_document
+msgid "<span class=\"badge bg-warning text-dark\">Alerta</span>"
+msgstr ""
+
+#. module: co_budget
+#: model_terms:ir.ui.view,arch_db:co_budget.co_budget_report_document
+msgid "<strong>Ejecutado %</strong><br/>"
+msgstr ""
+
+#. module: co_budget
+#: model_terms:ir.ui.view,arch_db:co_budget.co_budget_report_document
+msgid "<strong>Ejecutado</strong><br/>"
+msgstr ""
+
+#. module: co_budget
+#: model_terms:ir.ui.view,arch_db:co_budget.co_budget_report_document
+msgid "<strong>Presupuestado</strong><br/>"
+msgstr ""
+
+#. module: co_budget
+#: model_terms:ir.ui.view,arch_db:co_budget.co_budget_report_document
+msgid "<strong>Variacion</strong><br/>"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields,field_description:co_budget.field_co_budget_line__account_id
+#: model_terms:ir.ui.view,arch_db:co_budget.co_budget_line_view_search
+msgid "Account"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields,field_description:co_budget.field_co_budget_position__account_ids
+#: model_terms:ir.ui.view,arch_db:co_budget.co_budget_position_view_form
+msgid "Accounts"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields,help:co_budget.field_co_budget_position__account_ids
+msgid "Accounts grouped under this budget position."
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields,field_description:co_budget.field_co_budget__message_needaction
+msgid "Action Needed"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields,field_description:co_budget.field_co_budget__active
+#: model:ir.model.fields,field_description:co_budget.field_co_budget_position__active
+msgid "Active"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields,field_description:co_budget.field_co_budget__activity_ids
+msgid "Activities"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields,field_description:co_budget.field_co_budget__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields,field_description:co_budget.field_co_budget__activity_state
+msgid "Activity State"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields,field_description:co_budget.field_co_budget__activity_type_icon
+msgid "Activity Type Icon"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields,field_description:co_budget.field_co_budget_line__actual_amount
+msgid "Actual Amount"
+msgstr ""
+
+#. module: co_budget
+#. odoo-python
+#: code:addons/co_budget/models/co_budget.py:0
+msgid ""
+"Add at least one budget line with an account before generating period lines."
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields,field_description:co_budget.field_co_budget_line__alert_level
+msgid "Alert"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields,field_description:co_budget.field_co_budget__alert_threshold
+msgid "Alert Threshold (%)"
+msgstr ""
+
+#. module: co_budget
+#: model_terms:ir.ui.view,arch_db:co_budget.co_budget_report_document
+msgid "Alerta"
+msgstr ""
+
+#. module: co_budget
+#: model_terms:ir.ui.view,arch_db:co_budget.co_budget_report_document
+msgid "Analitica"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields,field_description:co_budget.field_co_budget_line__analytic_account_id
+#: model_terms:ir.ui.view,arch_db:co_budget.co_budget_line_view_search
+msgid "Analytic Account"
+msgstr ""
+
+#. module: co_budget
+#: model_terms:ir.ui.view,arch_db:co_budget.co_budget_position_view_search
+#: model_terms:ir.ui.view,arch_db:co_budget.co_budget_view_search
+msgid "Archived"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields,field_description:co_budget.field_co_budget__message_attachment_count
+msgid "Attachment Count"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model,name:co_budget.model_co_budget
+#: model:ir.model.fields,field_description:co_budget.field_co_budget_line__budget_id
+#: model_terms:ir.ui.view,arch_db:co_budget.co_budget_line_view_search
+#: model_terms:ir.ui.view,arch_db:co_budget.co_budget_view_form
+msgid "Budget"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model,name:co_budget.model_co_budget_line
+#: model_terms:ir.ui.view,arch_db:co_budget.co_budget_line_view_form
+msgid "Budget Line"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.actions.act_window,name:co_budget.action_co_budget_line
+#: model:ir.model.fields,field_description:co_budget.field_co_budget__line_ids
+#: model:ir.model.fields,field_description:co_budget.field_co_budget_position__line_ids
+#: model:ir.ui.menu,name:co_budget.menu_co_budget_line
+#: model_terms:ir.ui.view,arch_db:co_budget.co_budget_line_view_list
+#: model_terms:ir.ui.view,arch_db:co_budget.co_budget_line_view_search
+#: model_terms:ir.ui.view,arch_db:co_budget.co_budget_view_form
+msgid "Budget Lines"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.module.category,name:co_budget.module_category_co_budget
+msgid "Budget Management"
+msgstr ""
+
+#. module: co_budget
+#: model:res.groups,name:co_budget.group_co_budget_manager
+msgid "Budget Manager"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields,field_description:co_budget.field_co_budget__name
+msgid "Budget Name"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model,name:co_budget.model_co_budget_position
+#: model:ir.model.fields,field_description:co_budget.field_co_budget_line__budget_position_id
+#: model_terms:ir.ui.view,arch_db:co_budget.co_budget_position_view_form
+msgid "Budget Position"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.actions.act_window,name:co_budget.action_co_budget_position
+#: model:ir.ui.menu,name:co_budget.menu_co_budget_position
+#: model_terms:ir.ui.view,arch_db:co_budget.co_budget_position_view_list
+#: model_terms:ir.ui.view,arch_db:co_budget.co_budget_position_view_search
+msgid "Budget Positions"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields,field_description:co_budget.field_co_budget_line__budget_state
+msgid "Budget State"
+msgstr ""
+
+#. module: co_budget
+#: model:res.groups,name:co_budget.group_co_budget_user
+msgid "Budget User"
+msgstr ""
+
+#. module: co_budget
+#: model_terms:ir.actions.act_window,help:co_budget.action_co_budget_line
+msgid "Budget lines are created from within a budget record."
+msgstr ""
+
+#. module: co_budget
+#: model_terms:ir.actions.act_window,help:co_budget.action_co_budget_position
+msgid "Budget positions group accounts for budget tracking."
+msgstr ""
+
+#. module: co_budget
+#: model:ir.actions.report,name:co_budget.action_co_budget_report
+#: model_terms:ir.ui.view,arch_db:co_budget.co_budget_line_view_graph
+#: model_terms:ir.ui.view,arch_db:co_budget.co_budget_line_view_pivot
+msgid "Budget vs Actual"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.actions.act_window,name:co_budget.action_co_budget
+#: model:ir.ui.menu,name:co_budget.menu_co_budget
+#: model:ir.ui.menu,name:co_budget.menu_co_budget_root
+#: model_terms:ir.ui.view,arch_db:co_budget.co_budget_view_list
+#: model_terms:ir.ui.view,arch_db:co_budget.co_budget_view_search
+msgid "Budgets"
+msgstr ""
+
+#. module: co_budget
+#: model_terms:ir.ui.view,arch_db:co_budget.co_budget_view_form
+msgid "Cancel"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields.selection,name:co_budget.selection__co_budget__state__cancelled
+msgid "Cancelled"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields,field_description:co_budget.field_co_budget_position__code
+msgid "Code"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields,field_description:co_budget.field_co_budget__company_id
+#: model:ir.model.fields,field_description:co_budget.field_co_budget_line__company_id
+#: model:ir.model.fields,field_description:co_budget.field_co_budget_position__company_id
+msgid "Company"
+msgstr ""
+
+#. module: co_budget
+#: model_terms:ir.ui.view,arch_db:co_budget.co_budget_view_form
+msgid "Confirm"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields.selection,name:co_budget.selection__co_budget__state__confirmed
+#: model_terms:ir.ui.view,arch_db:co_budget.co_budget_view_search
+msgid "Confirmed"
+msgstr ""
+
+#. module: co_budget
+#: model_terms:ir.ui.view,arch_db:co_budget.co_budget_line_view_search
+msgid "Confirmed Budgets"
+msgstr ""
+
+#. module: co_budget
+#: model_terms:ir.actions.act_window,help:co_budget.action_co_budget_position
+msgid "Create a budget position"
+msgstr ""
+
+#. module: co_budget
+#: model_terms:ir.actions.act_window,help:co_budget.action_co_budget
+msgid "Create your first budget"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields,field_description:co_budget.field_co_budget__create_uid
+#: model:ir.model.fields,field_description:co_budget.field_co_budget_line__create_uid
+#: model:ir.model.fields,field_description:co_budget.field_co_budget_position__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields,field_description:co_budget.field_co_budget__create_date
+#: model:ir.model.fields,field_description:co_budget.field_co_budget_line__create_date
+#: model:ir.model.fields,field_description:co_budget.field_co_budget_position__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: co_budget
+#: model_terms:ir.ui.view,arch_db:co_budget.co_budget_report_document
+msgid "Cuenta"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields,field_description:co_budget.field_co_budget__currency_id
+#: model:ir.model.fields,field_description:co_budget.field_co_budget_line__currency_id
+msgid "Currency"
+msgstr ""
+
+#. module: co_budget
+#: model_terms:ir.ui.view,arch_db:co_budget.co_budget_view_search
+msgid "Current Year"
+msgstr ""
+
+#. module: co_budget
+#: model_terms:ir.actions.act_window,help:co_budget.action_co_budget
+msgid ""
+"Define planned amounts per account and period, then track\n"
+"                actual spending from journal entries."
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields,field_description:co_budget.field_co_budget_position__description
+#: model_terms:ir.ui.view,arch_db:co_budget.co_budget_position_view_form
+msgid "Description"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields,field_description:co_budget.field_co_budget__display_name
+#: model:ir.model.fields,field_description:co_budget.field_co_budget_line__display_name
+#: model:ir.model.fields,field_description:co_budget.field_co_budget_position__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields.selection,name:co_budget.selection__co_budget__state__done
+#: model_terms:ir.ui.view,arch_db:co_budget.co_budget_view_search
+msgid "Done"
+msgstr ""
+
+#. module: co_budget
+#. odoo-python
+#: code:addons/co_budget/models/co_budget.py:0
+msgid "Done budgets cannot be cancelled."
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields.selection,name:co_budget.selection__co_budget__state__draft
+#: model_terms:ir.ui.view,arch_db:co_budget.co_budget_view_search
+msgid "Draft"
+msgstr ""
+
+#. module: co_budget
+#: model_terms:ir.ui.view,arch_db:co_budget.co_budget_report_document
+msgid "Ejecutado"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields,field_description:co_budget.field_co_budget__date_to
+#: model:ir.model.fields,field_description:co_budget.field_co_budget_line__date_to
+msgid "End Date"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields.selection,name:co_budget.selection__co_budget_line__alert_level__exceeded
+msgid "Exceeded"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields,field_description:co_budget.field_co_budget_line__percentage
+msgid "Executed (%)"
+msgstr ""
+
+#. module: co_budget
+#: model_terms:ir.ui.view,arch_db:co_budget.co_budget_line_view_form
+msgid "Execution"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields,field_description:co_budget.field_co_budget__message_follower_ids
+msgid "Followers"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields,field_description:co_budget.field_co_budget__message_partner_ids
+msgid "Followers (Partners)"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields,help:co_budget.field_co_budget__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr ""
+
+#. module: co_budget
+#: model_terms:ir.ui.view,arch_db:co_budget.co_budget_view_form
+msgid "Generate Period Lines"
+msgstr ""
+
+#. module: co_budget
+#: model_terms:ir.ui.view,arch_db:co_budget.co_budget_line_view_search
+#: model_terms:ir.ui.view,arch_db:co_budget.co_budget_view_search
+msgid "Group By"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields,field_description:co_budget.field_co_budget__has_message
+msgid "Has Message"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields,help:co_budget.field_co_budget__period_type
+msgid "How budget lines are distributed across periods."
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields,field_description:co_budget.field_co_budget__id
+#: model:ir.model.fields,field_description:co_budget.field_co_budget_line__id
+#: model:ir.model.fields,field_description:co_budget.field_co_budget_position__id
+msgid "ID"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields,field_description:co_budget.field_co_budget__activity_exception_icon
+msgid "Icon"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields,help:co_budget.field_co_budget__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields,help:co_budget.field_co_budget__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields,help:co_budget.field_co_budget__message_has_error
+#: model:ir.model.fields,help:co_budget.field_co_budget__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields,field_description:co_budget.field_co_budget__message_is_follower
+msgid "Is Follower"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields,field_description:co_budget.field_co_budget__write_uid
+#: model:ir.model.fields,field_description:co_budget.field_co_budget_line__write_uid
+#: model:ir.model.fields,field_description:co_budget.field_co_budget_position__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields,field_description:co_budget.field_co_budget__write_date
+#: model:ir.model.fields,field_description:co_budget.field_co_budget_line__write_date
+#: model:ir.model.fields,field_description:co_budget.field_co_budget_position__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: co_budget
+#. odoo-python
+#: code:addons/co_budget/models/co_budget.py:0
+msgid "Lines can only be generated on draft budgets."
+msgstr ""
+
+#. module: co_budget
+#: model_terms:ir.ui.view,arch_db:co_budget.co_budget_view_form
+msgid "Mark as Done"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields,field_description:co_budget.field_co_budget__message_has_error
+msgid "Message Delivery error"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields,field_description:co_budget.field_co_budget__message_ids
+msgid "Messages"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields.selection,name:co_budget.selection__co_budget__period_type__monthly
+msgid "Monthly"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields,field_description:co_budget.field_co_budget__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields,field_description:co_budget.field_co_budget__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields,field_description:co_budget.field_co_budget__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields,field_description:co_budget.field_co_budget__activity_summary
+msgid "Next Activity Summary"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields,field_description:co_budget.field_co_budget__activity_type_id
+msgid "Next Activity Type"
+msgstr ""
+
+#. module: co_budget
+#: model_terms:ir.actions.act_window,help:co_budget.action_co_budget_line
+msgid "No budget lines found"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields,field_description:co_budget.field_co_budget__description
+#: model_terms:ir.ui.view,arch_db:co_budget.co_budget_view_form
+msgid "Notes"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields,field_description:co_budget.field_co_budget__message_needaction_counter
+msgid "Number of Actions"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields,field_description:co_budget.field_co_budget__message_has_error_counter
+msgid "Number of errors"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields,help:co_budget.field_co_budget__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields,help:co_budget.field_co_budget__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields.selection,name:co_budget.selection__co_budget_line__alert_level__ok
+#: model_terms:ir.ui.view,arch_db:co_budget.co_budget_line_view_search
+msgid "OK"
+msgstr ""
+
+#. module: co_budget
+#. odoo-python
+#: code:addons/co_budget/models/co_budget.py:0
+msgid "Only cancelled budgets can be reset to draft."
+msgstr ""
+
+#. module: co_budget
+#. odoo-python
+#: code:addons/co_budget/models/co_budget.py:0
+msgid "Only confirmed budgets can be marked as done."
+msgstr ""
+
+#. module: co_budget
+#. odoo-python
+#: code:addons/co_budget/models/co_budget.py:0
+msgid "Only draft budgets can be confirmed."
+msgstr ""
+
+#. module: co_budget
+#: model_terms:ir.ui.view,arch_db:co_budget.co_budget_line_view_search
+msgid "Over Budget"
+msgstr ""
+
+#. module: co_budget
+#: model_terms:ir.ui.view,arch_db:co_budget.co_budget_report_document
+msgid "PRESUPUESTO VS REAL"
+msgstr ""
+
+#. module: co_budget
+#: model_terms:ir.ui.view,arch_db:co_budget.co_budget_report_document
+msgid "Page <span class=\"page\"/> / <span class=\"topage\"/>"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields,help:co_budget.field_co_budget__alert_threshold
+msgid "Percentage at which a warning is triggered on budget lines."
+msgstr ""
+
+#. module: co_budget
+#: model_terms:ir.ui.view,arch_db:co_budget.co_budget_line_view_search
+msgid "Period"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields,field_description:co_budget.field_co_budget__period_type
+#: model_terms:ir.ui.view,arch_db:co_budget.co_budget_view_search
+msgid "Period Type"
+msgstr ""
+
+#. module: co_budget
+#: model_terms:ir.ui.view,arch_db:co_budget.co_budget_report_document
+msgid "Periodo"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields,field_description:co_budget.field_co_budget_line__planned_amount
+msgid "Planned Amount"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields,help:co_budget.field_co_budget_line__variance
+msgid "Planned minus Actual. Positive = under budget."
+msgstr ""
+
+#. module: co_budget
+#: model_terms:ir.ui.view,arch_db:co_budget.co_budget_line_view_search
+msgid "Position"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields,field_description:co_budget.field_co_budget_position__name
+msgid "Position Name"
+msgstr ""
+
+#. module: co_budget
+#: model_terms:ir.ui.view,arch_db:co_budget.co_budget_report_document
+msgid "Presupuestado"
+msgstr ""
+
+#. module: co_budget
+#: model_terms:ir.ui.view,arch_db:co_budget.co_budget_view_form
+msgid "Print Report"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields.selection,name:co_budget.selection__co_budget__period_type__quarterly
+msgid "Quarterly"
+msgstr ""
+
+#. module: co_budget
+#: model_terms:ir.ui.view,arch_db:co_budget.co_budget_view_form
+msgid "Recompute Actuals"
+msgstr ""
+
+#. module: co_budget
+#: model_terms:ir.ui.view,arch_db:co_budget.co_budget_view_form
+msgid "Reset to Draft"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields,field_description:co_budget.field_co_budget__responsible_id
+#: model_terms:ir.ui.view,arch_db:co_budget.co_budget_view_search
+msgid "Responsible"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields,field_description:co_budget.field_co_budget__activity_user_id
+msgid "Responsible User"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields,field_description:co_budget.field_co_budget__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields,field_description:co_budget.field_co_budget__date_from
+#: model:ir.model.fields,field_description:co_budget.field_co_budget_line__date_from
+msgid "Start Date"
+msgstr ""
+
+#. module: co_budget
+#. odoo-python
+#: code:addons/co_budget/models/co_budget.py:0
+#: code:addons/co_budget/models/co_budget_line.py:0
+msgid "Start date must be before end date."
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields,field_description:co_budget.field_co_budget__state
+#: model_terms:ir.ui.view,arch_db:co_budget.co_budget_view_search
+msgid "State"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields,help:co_budget.field_co_budget__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+
+#. module: co_budget
+#: model_terms:ir.ui.view,arch_db:co_budget.co_budget_view_form
+msgid "Summary"
+msgstr ""
+
+#. module: co_budget
+#: model_terms:ir.ui.view,arch_db:co_budget.co_budget_report_document
+msgid "TOTAL"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.constraint,message:co_budget.constraint_co_budget_position_code_company_uniq
+msgid "The budget position code must be unique per company."
+msgstr ""
+
+#. module: co_budget
+#: model_terms:ir.ui.view,arch_db:co_budget.co_budget_view_form
+msgid "This will replace existing lines with period-split lines. Continue?"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields,field_description:co_budget.field_co_budget__total_actual
+#: model_terms:ir.ui.view,arch_db:co_budget.co_budget_line_view_list
+#: model_terms:ir.ui.view,arch_db:co_budget.co_budget_view_form
+#: model_terms:ir.ui.view,arch_db:co_budget.co_budget_view_list
+msgid "Total Actual"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields,field_description:co_budget.field_co_budget__total_percentage
+msgid "Total Executed (%)"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields,field_description:co_budget.field_co_budget__total_planned
+#: model_terms:ir.ui.view,arch_db:co_budget.co_budget_line_view_list
+#: model_terms:ir.ui.view,arch_db:co_budget.co_budget_view_form
+#: model_terms:ir.ui.view,arch_db:co_budget.co_budget_view_list
+msgid "Total Planned"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields,field_description:co_budget.field_co_budget__total_variance
+#: model_terms:ir.ui.view,arch_db:co_budget.co_budget_line_view_list
+#: model_terms:ir.ui.view,arch_db:co_budget.co_budget_view_form
+#: model_terms:ir.ui.view,arch_db:co_budget.co_budget_view_list
+msgid "Total Variance"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields,help:co_budget.field_co_budget__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr ""
+
+#. module: co_budget
+#: model_terms:ir.ui.view,arch_db:co_budget.co_budget_report_document
+msgid "Variacion"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields,field_description:co_budget.field_co_budget_line__variance
+msgid "Variance"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields.selection,name:co_budget.selection__co_budget_line__alert_level__warning
+#: model_terms:ir.ui.view,arch_db:co_budget.co_budget_line_view_search
+msgid "Warning"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields,field_description:co_budget.field_co_budget__website_message_ids
+msgid "Website Messages"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields,help:co_budget.field_co_budget__website_message_ids
+msgid "Website communication history"
+msgstr ""
+
+#. module: co_budget
+#: model:ir.model.fields.selection,name:co_budget.selection__co_budget__period_type__yearly
+msgid "Yearly"
+msgstr ""
+
+#. module: co_budget
+#: model_terms:ir.ui.view,arch_db:co_budget.co_budget_view_form
+msgid "e.g. Budget 2026"
+msgstr ""
+
+#. module: co_budget
+#: model_terms:ir.ui.view,arch_db:co_budget.co_budget_position_view_form
+msgid "e.g. Operating Expenses"
+msgstr ""

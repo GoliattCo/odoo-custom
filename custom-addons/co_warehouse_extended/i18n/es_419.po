@@ -1,0 +1,985 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* co_warehouse_extended
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-03-23 00:31+0000\n"
+"PO-Revision-Date: 2026-03-22 00:00+0000\n"
+"Last-Translator: \n"
+"Language-Team: Spanish (Latin America)\n"
+"Language: es_419\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_purchase_request__message_needaction
+msgid "Action Needed"
+msgstr "Acción requerida"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_inventory_formula__active
+msgid "Active"
+msgstr "Activo"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_purchase_request__activity_ids
+msgid "Activities"
+msgstr "Actividades"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_purchase_request__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr "Decoración de excepción de actividad"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_purchase_request__activity_state
+msgid "Activity State"
+msgstr "Estado de actividad"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_purchase_request__activity_type_icon
+msgid "Activity Type Icon"
+msgstr "Ícono de tipo de actividad"
+
+#. module: co_warehouse_extended
+#: model:ir.ui.menu,name:co_warehouse_extended.menu_purchase_request_all
+msgid "All Requests"
+msgstr "Todas las solicitudes"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_inventory_formula__product_category_ids
+msgid "Applicable Product Categories"
+msgstr "Categorías de producto aplicables"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_purchase_request__date_approved
+msgid "Approval Date"
+msgstr "Fecha de aprobación"
+
+#. module: co_warehouse_extended
+#: model_terms:ir.ui.view,arch_db:co_warehouse_extended.co_purchase_request_view_form
+msgid "Approve"
+msgstr "Aprobar"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields.selection,name:co_warehouse_extended.selection__co_purchase_request__state__approved
+#: model_terms:ir.ui.view,arch_db:co_warehouse_extended.co_purchase_request_view_search
+msgid "Approved"
+msgstr "Aprobado"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_purchase_request__approver_id
+msgid "Approved By"
+msgstr "Aprobado por"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_purchase_request__message_attachment_count
+msgid "Attachment Count"
+msgstr "Cantidad de adjuntos"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_stock_warehouse_orderpoint__auto_purchase_request
+msgid "Auto Purchase Request"
+msgstr "Solicitud de compra automática"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_stock_picking__co_auto_invoice
+msgid "Auto-Create Invoice"
+msgstr "Crear factura automáticamente"
+
+#. module: co_warehouse_extended
+#. odoo-python
+#: code:addons/co_warehouse_extended/models/stock_warehouse_orderpoint.py:0
+msgid "Auto-generated from reorder point: %s"
+msgstr "Generado automáticamente desde punto de reorden: %s"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,help:co_warehouse_extended.field_stock_picking__co_auto_invoice
+msgid "Automatically create a vendor bill when this receipt is validated."
+msgstr "Crear automáticamente una factura de proveedor al validar esta recepción."
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,help:co_warehouse_extended.field_stock_warehouse_orderpoint__avg_daily_consumption
+msgid ""
+"Average daily consumption of this product. Used for safety stock "
+"calculation."
+msgstr ""
+"Consumo diario promedio de este producto. Utilizado para el cálculo del "
+"stock de seguridad."
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,help:co_warehouse_extended.field_stock_warehouse_orderpoint__supplier_lead_time
+msgid "Average number of days the supplier takes to deliver this product."
+msgstr "Número promedio de días que el proveedor tarda en entregar este producto."
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_stock_warehouse_orderpoint__avg_daily_consumption
+msgid "Avg Daily Consumption"
+msgstr "Consumo diario promedio"
+
+#. module: co_warehouse_extended
+#. odoo-python
+#: code:addons/co_warehouse_extended/models/stock_warehouse_orderpoint.py:0
+msgid ""
+"Below reorder point. Current: %(qty).2f, Min: %(min).2f, Max: %(max).2f"
+msgstr ""
+"Por debajo del punto de reorden. Actual: %(qty).2f, Mín: %(min).2f, Máx: %(max).2f"
+
+#. module: co_warehouse_extended
+#: model_terms:ir.ui.view,arch_db:co_warehouse_extended.stock_warehouse_view_form_inherit
+msgid "CO Extended"
+msgstr "CO Extendido"
+
+#. module: co_warehouse_extended
+#: model_terms:ir.ui.view,arch_db:co_warehouse_extended.stock_warehouse_orderpoint_form_inherit
+msgid "CO Extended Reorder Settings"
+msgstr "Configuración extendida de punto de reorden"
+
+#. module: co_warehouse_extended
+#: model_terms:ir.ui.view,arch_db:co_warehouse_extended.stock_picking_form_inherit
+msgid "CO Quality & Invoice"
+msgstr "CO Calidad y factura"
+
+#. module: co_warehouse_extended
+#: model:ir.module.category,name:co_warehouse_extended.module_category_co_warehouse
+msgid "CO Warehouse Extended"
+msgstr "CO Bodega extendida"
+
+#. module: co_warehouse_extended
+#: model_terms:ir.ui.view,arch_db:co_warehouse_extended.co_purchase_request_view_form
+#: model_terms:ir.ui.view,arch_db:co_warehouse_extended.co_warehouse_transfer_wizard_view_form
+msgid "Cancel"
+msgstr "Cancelar"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields.selection,name:co_warehouse_extended.selection__co_purchase_request__state__cancel
+msgid "Cancelled"
+msgstr "Cancelado"
+
+#. module: co_warehouse_extended
+#. odoo-python
+#: code:addons/co_warehouse_extended/models/co_purchase_request.py:0
+msgid ""
+"Cannot cancel a request that already has purchase orders. Cancel the "
+"purchase orders first."
+msgstr ""
+"No se puede cancelar una solicitud que ya tiene órdenes de compra. Cancele "
+"las órdenes de compra primero."
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,help:co_warehouse_extended.field_stock_warehouse__warehouse_type
+msgid "Classification of the warehouse for operational purposes."
+msgstr "Clasificación de la bodega para fines operativos."
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_inventory_formula__company_id
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_purchase_request__company_id
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_purchase_request_line__company_id
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_warehouse_transfer_wizard__company_id
+msgid "Company"
+msgstr "Compañía"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,help:co_warehouse_extended.field_stock_warehouse_orderpoint__safety_stock_qty
+msgid ""
+"Computed safety stock quantity based on average daily consumption and safety"
+" days."
+msgstr ""
+"Cantidad de stock de seguridad calculada con base en el consumo diario "
+"promedio y los días de seguridad."
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_inventory_formula__name
+msgid "Concept Name"
+msgstr "Nombre del concepto"
+
+#. module: co_warehouse_extended
+#: model_terms:ir.actions.act_window,help:co_warehouse_extended.action_co_inventory_formula
+msgid ""
+"Configure formulas for standard cost, weighted average,\n"
+"                and FIFO inventory valuation concepts."
+msgstr ""
+"Configure fórmulas para costo estándar, promedio ponderado\n"
+"                y conceptos de valorización de inventario PEPS."
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields.selection,name:co_warehouse_extended.selection__stock_warehouse__warehouse_type__consignment
+msgid "Consignment Warehouse"
+msgstr "Bodega de consignación"
+
+#. module: co_warehouse_extended
+#: model_terms:ir.ui.view,arch_db:co_warehouse_extended.co_purchase_request_view_form
+msgid "Create Purchase Order"
+msgstr "Crear Orden de Compra"
+
+#. module: co_warehouse_extended
+#: model_terms:ir.ui.view,arch_db:co_warehouse_extended.co_warehouse_transfer_wizard_view_form
+msgid "Create Transfer"
+msgstr "Crear transferencia"
+
+#. module: co_warehouse_extended
+#: model_terms:ir.actions.act_window,help:co_warehouse_extended.action_co_purchase_request
+msgid "Create your first purchase request"
+msgstr "Cree su primera solicitud de compra"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_inventory_formula__create_uid
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_purchase_request__create_uid
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_purchase_request_line__create_uid
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_warehouse_transfer_wizard__create_uid
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_warehouse_transfer_wizard_line__create_uid
+msgid "Created by"
+msgstr "Creado por"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_inventory_formula__create_date
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_purchase_request__create_date
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_purchase_request_line__create_date
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_warehouse_transfer_wizard__create_date
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_warehouse_transfer_wizard_line__create_date
+msgid "Created on"
+msgstr "Creado el"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,help:co_warehouse_extended.field_co_purchase_request_line__product_uom_id
+#: model:ir.model.fields,help:co_warehouse_extended.field_co_warehouse_transfer_wizard_line__product_uom_id
+msgid "Default unit of measure used for all stock operations."
+msgstr "Unidad de medida predeterminada utilizada para todas las operaciones de inventario."
+
+#. module: co_warehouse_extended
+#: model_terms:ir.actions.act_window,help:co_warehouse_extended.action_co_inventory_formula
+msgid "Define inventory valuation formulas"
+msgstr "Defina fórmulas de valorización de inventario"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_purchase_request__department_id
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_purchase_request_line__department_id
+#: model_terms:ir.ui.view,arch_db:co_warehouse_extended.co_purchase_request_view_search
+msgid "Department"
+msgstr "Departamento"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_warehouse_transfer_wizard__dest_warehouse_id
+msgid "Destination Warehouse"
+msgstr "Bodega destino"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_inventory_formula__display_name
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_purchase_request__display_name
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_purchase_request_line__display_name
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_warehouse_transfer_wizard__display_name
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_warehouse_transfer_wizard_line__display_name
+msgid "Display Name"
+msgstr "Nombre mostrado"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields.selection,name:co_warehouse_extended.selection__co_purchase_request__state__done
+msgid "Done"
+msgstr "Hecho"
+
+#. module: co_warehouse_extended
+#. odoo-python
+#: code:addons/co_warehouse_extended/models/stock_picking.py:0
+#: model:ir.model.fields.selection,name:co_warehouse_extended.selection__co_purchase_request__state__draft
+#: model_terms:ir.ui.view,arch_db:co_warehouse_extended.co_purchase_request_view_search
+msgid "Draft"
+msgstr "Borrador"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_purchase_request_line__estimated_price
+msgid "Estimated Price"
+msgstr "Precio estimado"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields.selection,name:co_warehouse_extended.selection__co_inventory_formula__method__fifo
+msgid "FIFO (First In First Out)"
+msgstr "PEPS (Primeras en Entrar, Primeras en Salir)"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_purchase_request__message_follower_ids
+msgid "Followers"
+msgstr "Seguidores"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_purchase_request__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Seguidores (contactos)"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,help:co_warehouse_extended.field_co_purchase_request__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr "Ícono de Font Awesome, ej. fa-tasks"
+
+#. module: co_warehouse_extended
+#: model_terms:ir.ui.view,arch_db:co_warehouse_extended.co_inventory_formula_view_form
+msgid "Formula"
+msgstr "Fórmula"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_inventory_formula__formula_description
+msgid "Formula Description"
+msgstr "Descripción de la fórmula"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_inventory_formula__formula_expression
+msgid "Formula Expression"
+msgstr "Expresión de la fórmula"
+
+#. module: co_warehouse_extended
+#: model_terms:ir.ui.view,arch_db:co_warehouse_extended.co_purchase_request_view_search
+msgid "Group By"
+msgstr "Agrupar por"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_purchase_request__has_message
+msgid "Has Message"
+msgstr "Tiene mensaje"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,help:co_warehouse_extended.field_co_inventory_formula__formula_description
+msgid ""
+"Human-readable description of the formula used for this valuation concept."
+msgstr ""
+"Descripción legible de la fórmula utilizada para este concepto de valorización."
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_inventory_formula__id
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_purchase_request__id
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_purchase_request_line__id
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_warehouse_transfer_wizard__id
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_warehouse_transfer_wizard_line__id
+msgid "ID"
+msgstr "ID"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_purchase_request__activity_exception_icon
+msgid "Icon"
+msgstr "Ícono"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,help:co_warehouse_extended.field_co_purchase_request__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr "Ícono para indicar una actividad de excepción."
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,help:co_warehouse_extended.field_co_purchase_request__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "Si está marcado, hay nuevos mensajes que requieren su atención."
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,help:co_warehouse_extended.field_co_purchase_request__message_has_error
+#: model:ir.model.fields,help:co_warehouse_extended.field_co_purchase_request__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "Si está marcado, algunos mensajes tienen un error de entrega."
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,help:co_warehouse_extended.field_co_inventory_formula__product_category_ids
+msgid "If empty, applies to all categories."
+msgstr "Si está vacío, aplica a todas las categorías."
+
+#. module: co_warehouse_extended
+#. odoo-python
+#: code:addons/co_warehouse_extended/wizard/co_warehouse_transfer_wizard.py:0
+#: model:ir.actions.act_window,name:co_warehouse_extended.action_co_warehouse_transfer_wizard
+#: model:ir.ui.menu,name:co_warehouse_extended.menu_co_warehouse_transfer
+#: model_terms:ir.ui.view,arch_db:co_warehouse_extended.co_warehouse_transfer_wizard_view_form
+msgid "Inter-Warehouse Transfer"
+msgstr "Transferencia entre Bodegas"
+
+#. module: co_warehouse_extended
+#: model:ir.model,name:co_warehouse_extended.model_co_warehouse_transfer_wizard
+msgid "Inter-Warehouse Transfer Wizard"
+msgstr "Asistente de transferencia entre bodegas"
+
+#. module: co_warehouse_extended
+#: model:ir.model,name:co_warehouse_extended.model_co_warehouse_transfer_wizard_line
+msgid "Inter-Warehouse Transfer Wizard Line"
+msgstr "Línea del asistente de transferencia entre bodegas"
+
+#. module: co_warehouse_extended
+#: model_terms:ir.ui.view,arch_db:co_warehouse_extended.stock_warehouse_view_form_inherit
+msgid "Internal notes about this warehouse..."
+msgstr "Notas internas sobre esta bodega..."
+
+#. module: co_warehouse_extended
+#: model:ir.model,name:co_warehouse_extended.model_co_inventory_formula
+#: model_terms:ir.ui.view,arch_db:co_warehouse_extended.co_inventory_formula_view_form
+msgid "Inventory Valuation Formula"
+msgstr "Fórmula de Valorización de Inventario"
+
+#. module: co_warehouse_extended
+#: model_terms:ir.ui.view,arch_db:co_warehouse_extended.stock_picking_form_inherit
+msgid "Invoice Link"
+msgstr "Enlace de factura"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_purchase_request__message_is_follower
+msgid "Is Follower"
+msgstr "Es seguidor"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_purchase_request__reason
+msgid "Justification"
+msgstr "Justificación"
+
+#. module: co_warehouse_extended
+#: model_terms:ir.ui.view,arch_db:co_warehouse_extended.co_purchase_request_view_form
+msgid "Justification for this purchase request..."
+msgstr "Justificación para esta solicitud de compra..."
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_inventory_formula__write_uid
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_purchase_request__write_uid
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_purchase_request_line__write_uid
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_warehouse_transfer_wizard__write_uid
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_warehouse_transfer_wizard_line__write_uid
+msgid "Last Updated by"
+msgstr "Última actualización por"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_inventory_formula__write_date
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_purchase_request__write_date
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_purchase_request_line__write_date
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_warehouse_transfer_wizard__write_date
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_warehouse_transfer_wizard_line__write_date
+msgid "Last Updated on"
+msgstr "Última actualización el"
+
+#. module: co_warehouse_extended
+#. odoo-python
+#: code:addons/co_warehouse_extended/models/co_purchase_request.py:0
+msgid ""
+"Line \"%s\" has no supplier. Please set a supplier on all lines before "
+"creating a purchase order."
+msgstr ""
+"La línea \"%s\" no tiene proveedor. Por favor establezca un proveedor en todas "
+"las líneas antes de crear una orden de compra."
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_stock_picking__co_invoice_id
+msgid "Linked Invoice"
+msgstr "Factura vinculada"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields.selection,name:co_warehouse_extended.selection__stock_warehouse__warehouse_type__main
+msgid "Main Warehouse"
+msgstr "Bodega principal"
+
+#. module: co_warehouse_extended
+#: model_terms:ir.ui.view,arch_db:co_warehouse_extended.co_purchase_request_view_form
+msgid "Mark Done"
+msgstr "Marcar como hecho"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_purchase_request__message_has_error
+msgid "Message Delivery error"
+msgstr "Error de entrega de mensaje"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_purchase_request__message_ids
+msgid "Messages"
+msgstr "Mensajes"
+
+#. module: co_warehouse_extended
+#: model:ir.model,name:co_warehouse_extended.model_stock_warehouse_orderpoint
+msgid "Minimum Inventory Rule"
+msgstr "Regla de inventario mínimo"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_purchase_request__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr "Fecha límite de mi actividad"
+
+#. module: co_warehouse_extended
+#: model_terms:ir.ui.view,arch_db:co_warehouse_extended.co_purchase_request_view_search
+msgid "My Requests"
+msgstr "Mis solicitudes"
+
+#. module: co_warehouse_extended
+#. odoo-python
+#: code:addons/co_warehouse_extended/models/co_purchase_request.py:0
+msgid "New"
+msgstr "Nuevo"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_purchase_request__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr "Próximo evento de calendario de actividad"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_purchase_request__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr "Fecha límite de próxima actividad"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_purchase_request__activity_summary
+msgid "Next Activity Summary"
+msgstr "Resumen de próxima actividad"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_purchase_request__activity_type_id
+msgid "Next Activity Type"
+msgstr "Tipo de próxima actividad"
+
+#. module: co_warehouse_extended
+#. odoo-python
+#: code:addons/co_warehouse_extended/wizard/co_warehouse_transfer_wizard.py:0
+msgid "No internal transfer operation type found for warehouse \"%s\"."
+msgstr "No se encontró tipo de operación de transferencia interna para la bodega \"%s\"."
+
+#. module: co_warehouse_extended
+#. odoo-python
+#: code:addons/co_warehouse_extended/models/stock_picking.py:0
+msgid "No invoice linked to this receipt."
+msgstr "No hay factura vinculada a esta recepción."
+
+#. module: co_warehouse_extended
+#. odoo-python
+#: code:addons/co_warehouse_extended/models/stock_picking.py:0
+msgid "No invoices"
+msgstr "Sin facturas"
+
+#. module: co_warehouse_extended
+#. odoo-python
+#: code:addons/co_warehouse_extended/models/stock_picking.py:0
+msgid "No purchase order linked to this receipt."
+msgstr "No hay orden de compra vinculada a esta recepción."
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields.selection,name:co_warehouse_extended.selection__co_purchase_request__priority__0
+msgid "Normal"
+msgstr "Normal"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_inventory_formula__notes
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_purchase_request__notes
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_warehouse_transfer_wizard__notes
+#: model_terms:ir.ui.view,arch_db:co_warehouse_extended.co_inventory_formula_view_form
+#: model_terms:ir.ui.view,arch_db:co_warehouse_extended.co_purchase_request_view_form
+msgid "Notes"
+msgstr "Notas"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,help:co_warehouse_extended.field_stock_picking__quality_check_notes
+msgid "Notes from quality inspection during goods receipt."
+msgstr "Notas de la inspección de calidad durante la recepción de mercancía."
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_purchase_request__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Número de acciones"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,help:co_warehouse_extended.field_stock_warehouse_orderpoint__safety_stock_days
+msgid "Number of days of safety stock to maintain above the minimum."
+msgstr "Número de días de stock de seguridad a mantener por encima del mínimo."
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_purchase_request__message_has_error_counter
+msgid "Number of errors"
+msgstr "Número de errores"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,help:co_warehouse_extended.field_co_purchase_request__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "Número de mensajes que requieren acción"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,help:co_warehouse_extended.field_co_purchase_request__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Número de mensajes con error de entrega"
+
+#. module: co_warehouse_extended
+#. odoo-python
+#: code:addons/co_warehouse_extended/models/co_purchase_request.py:0
+msgid "Only approved requests can be converted to purchase orders."
+msgstr "Solo las solicitudes aprobadas pueden convertirse en órdenes de compra."
+
+#. module: co_warehouse_extended
+#: model_terms:ir.ui.view,arch_db:co_warehouse_extended.co_purchase_request_view_search
+msgid "PO Created"
+msgstr "OC creada"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_purchase_order__co_payment_state_summary
+msgid "Payment Summary"
+msgstr "Resumen de pagos"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,help:co_warehouse_extended.field_stock_warehouse__responsible_user_id
+msgid "Person responsible for this warehouse."
+msgstr "Persona responsable de esta bodega."
+
+#. module: co_warehouse_extended
+#. odoo-python
+#: code:addons/co_warehouse_extended/wizard/co_warehouse_transfer_wizard.py:0
+msgid "Please add at least one product line."
+msgstr "Por favor agregue al menos una línea de producto."
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_purchase_request_line__supplier_id
+msgid "Preferred Supplier"
+msgstr "Proveedor preferido"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_purchase_request__priority
+msgid "Priority"
+msgstr "Prioridad"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_purchase_request_line__product_id
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_warehouse_transfer_wizard_line__product_id
+msgid "Product"
+msgstr "Producto"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_warehouse_transfer_wizard__line_ids
+msgid "Products"
+msgstr "Productos"
+
+#. module: co_warehouse_extended
+#: model:ir.model,name:co_warehouse_extended.model_purchase_order
+msgid "Purchase Order"
+msgstr "Orden de Compra"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_purchase_request__purchase_order_count
+msgid "Purchase Order Count"
+msgstr "Cantidad de órdenes de compra"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields.selection,name:co_warehouse_extended.selection__co_purchase_request__state__purchase
+msgid "Purchase Order Created"
+msgstr "Orden de Compra creada"
+
+#. module: co_warehouse_extended
+#. odoo-python
+#: code:addons/co_warehouse_extended/models/co_purchase_request.py:0
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_purchase_request__purchase_order_ids
+#: model_terms:ir.ui.view,arch_db:co_warehouse_extended.co_purchase_request_view_form
+msgid "Purchase Orders"
+msgstr "Órdenes de Compra"
+
+#. module: co_warehouse_extended
+#: model:ir.model,name:co_warehouse_extended.model_co_purchase_request
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_purchase_request_line__request_id
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_purchase_order__co_purchase_request_id
+#: model_terms:ir.ui.view,arch_db:co_warehouse_extended.co_purchase_request_view_form
+msgid "Purchase Request"
+msgstr "Solicitud de Compra"
+
+#. module: co_warehouse_extended
+#: model:ir.model,name:co_warehouse_extended.model_co_purchase_request_line
+msgid "Purchase Request Line"
+msgstr "Línea de Solicitud de Compra"
+
+#. module: co_warehouse_extended
+#: model:res.groups,name:co_warehouse_extended.group_purchase_request_manager
+msgid "Purchase Request Manager"
+msgstr "Administrador de Solicitudes de Compra"
+
+#. module: co_warehouse_extended
+#: model:res.groups,name:co_warehouse_extended.group_purchase_request_user
+msgid "Purchase Request User"
+msgstr "Usuario de Solicitudes de Compra"
+
+#. module: co_warehouse_extended
+#: model:ir.actions.act_window,name:co_warehouse_extended.action_co_purchase_request
+#: model:ir.ui.menu,name:co_warehouse_extended.menu_purchase_request_root
+#: model_terms:ir.ui.view,arch_db:co_warehouse_extended.co_purchase_request_view_list
+#: model_terms:ir.ui.view,arch_db:co_warehouse_extended.co_purchase_request_view_search
+msgid "Purchase Requests"
+msgstr "Solicitudes de Compra"
+
+#. module: co_warehouse_extended
+#: model_terms:ir.actions.act_window,help:co_warehouse_extended.action_co_purchase_request
+msgid ""
+"Purchase requests allow you to formalize internal purchase needs\n"
+"                before converting them to purchase orders."
+msgstr ""
+"Las solicitudes de compra le permiten formalizar necesidades internas de compra\n"
+"                antes de convertirlas en órdenes de compra."
+
+#. module: co_warehouse_extended
+#: model_terms:ir.ui.view,arch_db:co_warehouse_extended.stock_picking_form_inherit
+msgid "Quality Check"
+msgstr "Control de calidad"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_stock_picking__quality_check_notes
+msgid "Quality Check Notes"
+msgstr "Notas de control de calidad"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_stock_picking__quality_check_passed
+msgid "Quality Check Passed"
+msgstr "Control de calidad aprobado"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_purchase_request_line__quantity
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_warehouse_transfer_wizard_line__quantity
+msgid "Quantity"
+msgstr "Cantidad"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_purchase_request_line__reason
+msgid "Reason / Justification"
+msgstr "Razón / Justificación"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_purchase_request__date_request
+#: model_terms:ir.ui.view,arch_db:co_warehouse_extended.co_purchase_request_view_search
+msgid "Request Date"
+msgstr "Fecha de solicitud"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_purchase_request__line_ids
+#: model_terms:ir.ui.view,arch_db:co_warehouse_extended.co_purchase_request_view_form
+msgid "Request Lines"
+msgstr "Líneas de solicitud"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_purchase_request__name
+msgid "Request Number"
+msgstr "Número de solicitud"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_purchase_request__user_id
+#: model_terms:ir.ui.view,arch_db:co_warehouse_extended.co_purchase_request_view_search
+msgid "Requested By"
+msgstr "Solicitado por"
+
+#. module: co_warehouse_extended
+#: model:ir.actions.act_window,name:co_warehouse_extended.action_co_purchase_request_to_approve
+msgid "Requests to Approve"
+msgstr "Solicitudes por aprobar"
+
+#. module: co_warehouse_extended
+#: model_terms:ir.ui.view,arch_db:co_warehouse_extended.co_purchase_request_view_form
+msgid "Reset to Draft"
+msgstr "Restablecer a borrador"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_stock_warehouse__responsible_user_id
+msgid "Responsible Person"
+msgstr "Persona responsable"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_purchase_request__activity_user_id
+msgid "Responsible User"
+msgstr "Usuario responsable"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_purchase_request__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "Error de entrega de SMS"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_stock_warehouse_orderpoint__safety_stock_days
+msgid "Safety Stock Days"
+msgstr "Días de stock de seguridad"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_stock_warehouse_orderpoint__safety_stock_qty
+msgid "Safety Stock Qty"
+msgstr "Cantidad de stock de seguridad"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_warehouse_transfer_wizard__scheduled_date
+msgid "Scheduled Date"
+msgstr "Fecha programada"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_inventory_formula__sequence
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_purchase_request_line__sequence
+msgid "Sequence"
+msgstr "Secuencia"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_warehouse_transfer_wizard__source_warehouse_id
+msgid "Source Warehouse"
+msgstr "Bodega origen"
+
+#. module: co_warehouse_extended
+#. odoo-python
+#: code:addons/co_warehouse_extended/wizard/co_warehouse_transfer_wizard.py:0
+msgid "Source and destination warehouses must be different."
+msgstr "Las bodegas de origen y destino deben ser diferentes."
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields.selection,name:co_warehouse_extended.selection__co_inventory_formula__method__standard
+msgid "Standard Cost"
+msgstr "Costo estándar"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_purchase_request__state
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_purchase_request_line__state
+#: model_terms:ir.ui.view,arch_db:co_warehouse_extended.co_purchase_request_view_search
+msgid "Status"
+msgstr "Estado"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,help:co_warehouse_extended.field_co_purchase_request__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+"Estado basado en actividades\n"
+"Vencida: La fecha límite ya pasó\n"
+"Hoy: La fecha de la actividad es hoy\n"
+"Planificada: Actividades futuras."
+
+#. module: co_warehouse_extended
+#: model_terms:ir.ui.view,arch_db:co_warehouse_extended.co_purchase_request_view_form
+msgid "Submit"
+msgstr "Enviar"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields.selection,name:co_warehouse_extended.selection__co_purchase_request__state__submitted
+#: model_terms:ir.ui.view,arch_db:co_warehouse_extended.co_purchase_request_view_search
+msgid "Submitted"
+msgstr "Enviado"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_purchase_request_line__subtotal
+msgid "Subtotal"
+msgstr "Subtotal"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_stock_warehouse_orderpoint__supplier_lead_time
+msgid "Supplier Lead Time (days)"
+msgstr "Tiempo de entrega del proveedor (días)"
+
+#. module: co_warehouse_extended
+#: model_terms:ir.ui.view,arch_db:co_warehouse_extended.purchase_order_form_inherit
+msgid "Supplier Payment Tracking"
+msgstr "Seguimiento de pagos al proveedor"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,help:co_warehouse_extended.field_co_inventory_formula__formula_expression
+msgid ""
+"Technical expression for the formula. For display/documentation purposes. "
+"Example: \"Unit Cost = Total Cost / Total Quantity\""
+msgstr ""
+"Expresión técnica de la fórmula. Para fines de visualización/documentación. "
+"Ejemplo: \"Costo Unitario = Costo Total / Cantidad Total\""
+
+#. module: co_warehouse_extended
+#: model:ir.ui.menu,name:co_warehouse_extended.menu_purchase_request_approve
+msgid "To Approve"
+msgstr "Por aprobar"
+
+#. module: co_warehouse_extended
+#: model:ir.model,name:co_warehouse_extended.model_stock_picking
+msgid "Transfer"
+msgstr "Transferencia"
+
+#. module: co_warehouse_extended
+#: model_terms:ir.ui.view,arch_db:co_warehouse_extended.co_warehouse_transfer_wizard_view_form
+msgid "Transfer notes..."
+msgstr "Notas de la transferencia..."
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields.selection,name:co_warehouse_extended.selection__stock_warehouse__warehouse_type__transit
+msgid "Transit Warehouse"
+msgstr "Bodega de tránsito"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,help:co_warehouse_extended.field_co_purchase_request__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr "Tipo de la actividad de excepción en el registro."
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_purchase_request_line__product_uom_id
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_warehouse_transfer_wizard_line__product_uom_id
+msgid "Unit of Measure"
+msgstr "Unidad de medida"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields.selection,name:co_warehouse_extended.selection__co_purchase_request__priority__1
+msgid "Urgent"
+msgstr "Urgente"
+
+#. module: co_warehouse_extended
+#: model:ir.actions.act_window,name:co_warehouse_extended.action_co_inventory_formula
+#: model:ir.ui.menu,name:co_warehouse_extended.menu_co_inventory_formula
+#: model_terms:ir.ui.view,arch_db:co_warehouse_extended.co_inventory_formula_view_list
+msgid "Valuation Formulas"
+msgstr "Fórmulas de Valorización"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_inventory_formula__method
+msgid "Valuation Method"
+msgstr "Método de valorización"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,help:co_warehouse_extended.field_stock_picking__co_invoice_id
+msgid "Vendor invoice linked to this receipt."
+msgstr "Factura de proveedor vinculada a esta recepción."
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields.selection,name:co_warehouse_extended.selection__co_purchase_request__priority__2
+msgid "Very Urgent"
+msgstr "Muy urgente"
+
+#. module: co_warehouse_extended
+#: model_terms:ir.ui.view,arch_db:co_warehouse_extended.stock_picking_form_inherit
+msgid "View Invoice"
+msgstr "Ver factura"
+
+#. module: co_warehouse_extended
+#: model:ir.model,name:co_warehouse_extended.model_stock_warehouse
+msgid "Warehouse"
+msgstr "Bodega"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_stock_warehouse__warehouse_notes
+msgid "Warehouse Notes"
+msgstr "Notas de la bodega"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_stock_warehouse__warehouse_type
+msgid "Warehouse Type"
+msgstr "Tipo de bodega"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_purchase_request__website_message_ids
+msgid "Website Messages"
+msgstr "Mensajes del sitio web"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,help:co_warehouse_extended.field_co_purchase_request__website_message_ids
+msgid "Website communication history"
+msgstr "Historial de comunicación del sitio web"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields.selection,name:co_warehouse_extended.selection__co_inventory_formula__method__average
+msgid "Weighted Average"
+msgstr "Promedio ponderado"
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,help:co_warehouse_extended.field_stock_warehouse_orderpoint__auto_purchase_request
+msgid ""
+"When checked, generate a purchase request instead of an RFQ when below "
+"reorder point."
+msgstr ""
+"Cuando está marcado, genera una solicitud de compra en lugar de una solicitud "
+"de cotización cuando está por debajo del punto de reorden."
+
+#. module: co_warehouse_extended
+#: model:ir.model.fields,field_description:co_warehouse_extended.field_co_warehouse_transfer_wizard_line__wizard_id
+msgid "Wizard"
+msgstr "Asistente"
+
+#. module: co_warehouse_extended
+#. odoo-python
+#: code:addons/co_warehouse_extended/models/co_purchase_request.py:0
+msgid "You cannot submit a request without lines."
+msgstr "No puede enviar una solicitud sin líneas."

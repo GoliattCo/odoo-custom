@@ -1,0 +1,1063 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* co_bank_reconciliation
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-03-23 00:31+0000\n"
+"PO-Revision-Date: 2026-03-23 00:31+0000\n"
+"Last-Translator: \n"
+"Language-Team: Spanish (Latin America)\n"
+"Language: es_419\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_statement_import__message_needaction
+msgid "Action Needed"
+msgstr "Acción requerida"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_format__active
+msgid "Active"
+msgstr "Activo"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_statement_import__activity_ids
+msgid "Activities"
+msgstr "Actividades"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_statement_import__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr "Decoración de excepción de actividad"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_statement_import__activity_state
+msgid "Activity State"
+msgstr "Estado de actividad"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_statement_import__activity_type_icon
+msgid "Activity Type Icon"
+msgstr "Icono de tipo de actividad"
+
+#. module: co_bank_reconciliation
+#: model_terms:ir.ui.view,arch_db:co_bank_reconciliation.view_co_bank_format_form
+msgid "Additional notes about this format..."
+msgstr "Notas adicionales sobre este formato..."
+
+#. module: co_bank_reconciliation
+#: model:ir.ui.menu,name:co_bank_reconciliation.menu_co_bank_statement_line
+msgid "All Lines"
+msgstr "Todas las líneas"
+
+#. module: co_bank_reconciliation
+#: model:ir.actions.act_window,name:co_bank_reconciliation.action_co_bank_statement_line
+msgid "All Statement Lines"
+msgstr "Todas las líneas del extracto"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_statement_line__amount
+msgid "Amount"
+msgstr "Monto"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_format__col_amount
+msgid "Amount Column"
+msgstr "Columna de monto"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_statement_import__message_attachment_count
+msgid "Attachment Count"
+msgstr "Cantidad de adjuntos"
+
+#. module: co_bank_reconciliation
+#: model_terms:ir.ui.view,arch_db:co_bank_reconciliation.view_co_bank_statement_import_form
+msgid "Auto-Reconcile"
+msgstr "Conciliar automáticamente"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_import_wizard__auto_reconcile
+msgid "Auto-Reconcile After Import"
+msgstr "Conciliar automáticamente después de importar"
+
+#. module: co_bank_reconciliation
+#: model_terms:ir.ui.view,arch_db:co_bank_reconciliation.view_co_bank_statement_import_form
+msgid "Auto-Reconciliation Settings"
+msgstr "Configuración de conciliación automática"
+
+#. module: co_bank_reconciliation
+#. odoo-python
+#: code:addons/co_bank_reconciliation/models/co_bank_statement_import.py:0
+msgid "Auto-reconciliation complete: %d of %d lines matched."
+msgstr "Conciliación automática completada: %d de %d líneas conciliadas."
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields.selection,name:co_bank_reconciliation.selection__co_bank_statement_line__match_type__auto_amount
+msgid "Auto: Amount"
+msgstr "Auto: Monto"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields.selection,name:co_bank_reconciliation.selection__co_bank_statement_line__match_type__auto_ref
+msgid "Auto: Reference"
+msgstr "Auto: Referencia"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_format__col_balance
+msgid "Balance Column"
+msgstr "Columna de saldo"
+
+#. module: co_bank_reconciliation
+#: model:co.bank.format,name:co_bank_reconciliation.format_bancolombia_csv
+msgid "Bancolombia - CSV"
+msgstr "Bancolombia - CSV"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_import_wizard__file_data
+msgid "Bank File"
+msgstr "Archivo bancario"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_import_wizard__format_id
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_statement_import__format_id
+#: model_terms:ir.ui.view,arch_db:co_bank_reconciliation.view_co_bank_format_form
+msgid "Bank Format"
+msgstr "Formato bancario"
+
+#. module: co_bank_reconciliation
+#: model:ir.actions.act_window,name:co_bank_reconciliation.action_co_bank_format
+#: model:ir.ui.menu,name:co_bank_reconciliation.menu_co_bank_format
+#: model_terms:ir.ui.view,arch_db:co_bank_reconciliation.view_co_bank_format_list
+msgid "Bank Formats"
+msgstr "Formatos bancarios"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_import_wizard__journal_id
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_statement_import__journal_id
+msgid "Bank Journal"
+msgstr "Diario bancario"
+
+#. module: co_bank_reconciliation
+#: model:ir.ui.menu,name:co_bank_reconciliation.menu_co_bank_reconciliation_root
+msgid "Bank Reconciliation"
+msgstr "Conciliación Bancaria"
+
+#. module: co_bank_reconciliation
+#. odoo-python
+#: code:addons/co_bank_reconciliation/wizard/co_bank_import_wizard.py:0
+msgid "Bank Statement"
+msgstr "Extracto Bancario"
+
+#. module: co_bank_reconciliation
+#: model_terms:ir.ui.view,arch_db:co_bank_reconciliation.view_co_bank_statement_import_form
+msgid "Bank Statement Import"
+msgstr "Importación de extracto bancario"
+
+#. module: co_bank_reconciliation
+#: model_terms:ir.ui.view,arch_db:co_bank_reconciliation.view_co_bank_statement_import_list
+#: model_terms:ir.ui.view,arch_db:co_bank_reconciliation.view_co_bank_statement_import_search
+msgid "Bank Statement Imports"
+msgstr "Importaciones de extractos bancarios"
+
+#. module: co_bank_reconciliation
+#: model:ir.actions.act_window,name:co_bank_reconciliation.action_co_bank_statement_import
+msgid "Bank Statements"
+msgstr "Extractos Bancarios"
+
+#. module: co_bank_reconciliation
+#. odoo-python
+#: code:addons/co_bank_reconciliation/models/co_bank_statement_import.py:0
+msgid "Can only reconcile imported statements."
+msgstr "Solo se pueden conciliar extractos importados."
+
+#. module: co_bank_reconciliation
+#: model_terms:ir.ui.view,arch_db:co_bank_reconciliation.view_co_bank_import_wizard_form
+#: model_terms:ir.ui.view,arch_db:co_bank_reconciliation.view_co_bank_statement_import_form
+msgid "Cancel"
+msgstr "Cancelar"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields.selection,name:co_bank_reconciliation.selection__co_bank_statement_import__state__cancelled
+msgid "Cancelled"
+msgstr "Cancelado"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_format__code
+msgid "Code"
+msgstr "Código"
+
+#. module: co_bank_reconciliation
+#: model:ir.model,name:co_bank_reconciliation.model_co_bank_format
+msgid "Colombian Bank File Format"
+msgstr "Formato de archivo bancario colombiano"
+
+#. module: co_bank_reconciliation
+#: model:ir.model,name:co_bank_reconciliation.model_co_bank_statement_import
+msgid "Colombian Bank Statement Import"
+msgstr "Importación de extracto bancario colombiano"
+
+#. module: co_bank_reconciliation
+#: model:ir.model,name:co_bank_reconciliation.model_co_bank_statement_line
+msgid "Colombian Bank Statement Line"
+msgstr "Línea de extracto bancario colombiano"
+
+#. module: co_bank_reconciliation
+#: model_terms:ir.ui.view,arch_db:co_bank_reconciliation.view_co_bank_format_form
+msgid "Column Mapping (0-based index)"
+msgstr "Mapeo de columnas (índice basado en 0)"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields.selection,name:co_bank_reconciliation.selection__co_bank_format__delimiter__comma
+msgid "Comma (,)"
+msgstr "Coma (,)"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields.selection,name:co_bank_reconciliation.selection__co_bank_format__thousands_separator__comma
+msgid "Comma (1,000,000)"
+msgstr "Coma (1,000,000)"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields.selection,name:co_bank_reconciliation.selection__co_bank_format__decimal_separator__comma
+msgid "Comma (1000,50)"
+msgstr "Coma (1000,50)"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_statement_import__company_id
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_statement_line__company_id
+msgid "Company"
+msgstr "Compañía"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_statement_import__company_currency_id
+msgid "Company Currency"
+msgstr "Moneda de la compañía"
+
+#. module: co_bank_reconciliation
+#: model:ir.ui.menu,name:co_bank_reconciliation.menu_co_bank_config
+msgid "Configuration"
+msgstr "Configuración"
+
+#. module: co_bank_reconciliation
+#: model_terms:ir.actions.act_window,help:co_bank_reconciliation.action_co_bank_format
+msgid ""
+"Configure column mappings, delimiters, encodings, and number formats\n"
+"                for each bank's flat file export."
+msgstr ""
+"Configure el mapeo de columnas, delimitadores, codificaciones y formatos numéricos\n"
+"                para la exportación de archivos planos de cada banco."
+
+#. module: co_bank_reconciliation
+#. odoo-python
+#: code:addons/co_bank_reconciliation/wizard/co_bank_import_wizard.py:0
+msgid "Could not decode the file. Tried encodings: %s"
+msgstr "No se pudo decodificar el archivo. Codificaciones intentadas: %s"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_format__create_uid
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_import_wizard__create_uid
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_statement_import__create_uid
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_statement_line__create_uid
+msgid "Created by"
+msgstr "Creado por"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_format__create_date
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_import_wizard__create_date
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_statement_import__create_date
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_statement_line__create_date
+msgid "Created on"
+msgstr "Creado el"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_format__col_credit
+msgid "Credit Column"
+msgstr "Columna de crédito"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_statement_import__currency_id
+msgid "Currency"
+msgstr "Moneda"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_statement_line__date
+#: model_terms:ir.ui.view,arch_db:co_bank_reconciliation.view_co_bank_statement_line_search
+msgid "Date"
+msgstr "Fecha"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_format__col_date
+msgid "Date Column"
+msgstr "Columna de fecha"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_format__date_format
+msgid "Date Format"
+msgstr "Formato de fecha"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_statement_import__match_date_tolerance
+msgid "Date Tolerance (days)"
+msgstr "Tolerancia de fecha (días)"
+
+#. module: co_bank_reconciliation
+#: model:co.bank.format,name:co_bank_reconciliation.format_davivienda_csv
+msgid "Davivienda - CSV"
+msgstr "Davivienda - CSV"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_format__col_debit
+msgid "Debit Column"
+msgstr "Columna de débito"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_format__decimal_separator
+msgid "Decimal Separator"
+msgstr "Separador decimal"
+
+#. module: co_bank_reconciliation
+#: model_terms:ir.actions.act_window,help:co_bank_reconciliation.action_co_bank_format
+msgid "Define a new bank file format"
+msgstr "Defina un nuevo formato de archivo bancario"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_format__delimiter
+msgid "Delimiter"
+msgstr "Delimitador"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_statement_line__description
+msgid "Description"
+msgstr "Descripción"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_format__col_description
+msgid "Description Column"
+msgstr "Columna de descripción"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_format__display_name
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_import_wizard__display_name
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_statement_import__display_name
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_statement_line__display_name
+msgid "Display Name"
+msgstr "Nombre a mostrar"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields.selection,name:co_bank_reconciliation.selection__co_bank_statement_import__state__done
+#: model_terms:ir.ui.view,arch_db:co_bank_reconciliation.view_co_bank_statement_import_search
+msgid "Done"
+msgstr "Hecho"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields.selection,name:co_bank_reconciliation.selection__co_bank_format__thousands_separator__dot
+msgid "Dot (1.000.000)"
+msgstr "Punto (1.000.000)"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields.selection,name:co_bank_reconciliation.selection__co_bank_format__decimal_separator__dot
+msgid "Dot (1000.50)"
+msgstr "Punto (1000.50)"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields.selection,name:co_bank_reconciliation.selection__co_bank_statement_import__state__draft
+#: model_terms:ir.ui.view,arch_db:co_bank_reconciliation.view_co_bank_statement_import_search
+msgid "Draft"
+msgstr "Borrador"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_statement_import__effective_currency_id
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_statement_line__currency_id
+msgid "Effective Currency"
+msgstr "Moneda efectiva"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_statement_import__date_end
+#: model_terms:ir.ui.view,arch_db:co_bank_reconciliation.view_co_bank_statement_import_search
+msgid "End Date"
+msgstr "Fecha final"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_statement_import__balance_end
+msgid "Ending Balance"
+msgstr "Saldo final"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_format__encoding
+msgid "File Encoding"
+msgstr "Codificación de archivo"
+
+#. module: co_bank_reconciliation
+#: model_terms:ir.ui.view,arch_db:co_bank_reconciliation.view_co_bank_format_form
+msgid "File Structure"
+msgstr "Estructura del archivo"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_import_wizard__filename
+msgid "Filename"
+msgstr "Nombre de archivo"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_statement_import__message_follower_ids
+msgid "Followers"
+msgstr "Seguidores"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_statement_import__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Seguidores (Contactos)"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,help:co_bank_reconciliation.field_co_bank_statement_import__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr "Icono de Font Awesome, ej. fa-tasks"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_format__skip_footer_lines
+msgid "Footer Lines to Skip"
+msgstr "Líneas de pie a omitir"
+
+#. module: co_bank_reconciliation
+#: model_terms:ir.ui.view,arch_db:co_bank_reconciliation.view_co_bank_statement_import_search
+msgid "Format"
+msgstr "Formato"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_format__name
+msgid "Format Name"
+msgstr "Nombre del formato"
+
+#. module: co_bank_reconciliation
+#: model_terms:ir.ui.view,arch_db:co_bank_reconciliation.view_co_bank_format_form
+msgid "General"
+msgstr "General"
+
+#. module: co_bank_reconciliation
+#: model:co.bank.format,name:co_bank_reconciliation.format_generic_csv
+msgid "Generic CSV"
+msgstr "CSV Genérico"
+
+#. module: co_bank_reconciliation
+#: model_terms:ir.ui.view,arch_db:co_bank_reconciliation.view_co_bank_statement_import_search
+#: model_terms:ir.ui.view,arch_db:co_bank_reconciliation.view_co_bank_statement_line_search
+msgid "Group By"
+msgstr "Agrupar por"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_statement_import__has_message
+msgid "Has Message"
+msgstr "Tiene mensaje"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_format__skip_header_lines
+msgid "Header Lines to Skip"
+msgstr "Líneas de encabezado a omitir"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_format__id
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_import_wizard__id
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_statement_import__id
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_statement_line__id
+msgid "ID"
+msgstr "ID"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_statement_import__activity_exception_icon
+msgid "Icon"
+msgstr "Icono"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,help:co_bank_reconciliation.field_co_bank_statement_import__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr "Icono para indicar una actividad de excepción."
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,help:co_bank_reconciliation.field_co_bank_statement_import__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "Si está marcado, hay nuevos mensajes que requieren su atención."
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,help:co_bank_reconciliation.field_co_bank_statement_import__message_has_error
+#: model:ir.model.fields,help:co_bank_reconciliation.field_co_bank_statement_import__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "Si está marcado, algunos mensajes tienen un error de entrega."
+
+#. module: co_bank_reconciliation
+#: model_terms:ir.ui.view,arch_db:co_bank_reconciliation.view_co_bank_import_wizard_form
+msgid "Import"
+msgstr "Importar"
+
+#. module: co_bank_reconciliation
+#: model:ir.actions.act_window,name:co_bank_reconciliation.action_co_bank_import_wizard
+#: model_terms:ir.ui.view,arch_db:co_bank_reconciliation.view_co_bank_import_wizard_form
+msgid "Import Bank Statement"
+msgstr "Importar extracto bancario"
+
+#. module: co_bank_reconciliation
+#: model:ir.model,name:co_bank_reconciliation.model_co_bank_import_wizard
+msgid "Import Colombian Bank Statement File"
+msgstr "Importar archivo de extracto bancario colombiano"
+
+#. module: co_bank_reconciliation
+#: model:ir.ui.menu,name:co_bank_reconciliation.menu_co_bank_import_wizard
+msgid "Import Statement"
+msgstr "Importar extracto"
+
+#. module: co_bank_reconciliation
+#: model_terms:ir.actions.act_window,help:co_bank_reconciliation.action_co_bank_statement_line
+msgid "Import a bank statement to see individual transaction lines here."
+msgstr "Importe un extracto bancario para ver aquí las líneas de transacción individuales."
+
+#. module: co_bank_reconciliation
+#: model_terms:ir.actions.act_window,help:co_bank_reconciliation.action_co_bank_statement_import
+msgid "Import your first bank statement"
+msgstr "Importe su primer extracto bancario"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields.selection,name:co_bank_reconciliation.selection__co_bank_statement_import__state__imported
+#: model_terms:ir.ui.view,arch_db:co_bank_reconciliation.view_co_bank_statement_import_search
+msgid "Imported"
+msgstr "Importado"
+
+#. module: co_bank_reconciliation
+#. odoo-python
+#: code:addons/co_bank_reconciliation/wizard/co_bank_import_wizard.py:0
+msgid "Imported %d lines from file: %s"
+msgstr "Se importaron %d líneas del archivo: %s"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_statement_import__filename
+msgid "Imported Filename"
+msgstr "Nombre de archivo importado"
+
+#. module: co_bank_reconciliation
+#: model_terms:ir.ui.view,arch_db:co_bank_reconciliation.view_co_bank_statement_line_search
+msgid "Incoming"
+msgstr "Entrante"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,help:co_bank_reconciliation.field_co_bank_format__code
+msgid "Internal code for this format (e.g. bancolombia_csv)"
+msgstr "Código interno para este formato (ej. bancolombia_csv)"
+
+#. module: co_bank_reconciliation
+#: model_terms:ir.ui.view,arch_db:co_bank_reconciliation.view_co_bank_statement_import_form
+msgid "Internal notes..."
+msgstr "Notas internas..."
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_statement_import__message_is_follower
+msgid "Is Follower"
+msgstr "Es seguidor"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_statement_line__journal_id
+#: model_terms:ir.ui.view,arch_db:co_bank_reconciliation.view_co_bank_statement_import_search
+msgid "Journal"
+msgstr "Diario"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_format__write_uid
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_import_wizard__write_uid
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_statement_import__write_uid
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_statement_line__write_uid
+msgid "Last Updated by"
+msgstr "Última actualización por"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_format__write_date
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_import_wizard__write_date
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_statement_import__write_date
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_statement_line__write_date
+msgid "Last Updated on"
+msgstr "Última actualización el"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields.selection,name:co_bank_reconciliation.selection__co_bank_format__encoding__latin-1
+msgid "Latin-1 (ISO 8859-1)"
+msgstr "Latin-1 (ISO 8859-1)"
+
+#. module: co_bank_reconciliation
+#: model_terms:ir.ui.view,arch_db:co_bank_reconciliation.view_co_bank_statement_import_form
+msgid "Lines"
+msgstr "Líneas"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields.selection,name:co_bank_reconciliation.selection__co_bank_statement_line__match_type__manual
+msgid "Manual"
+msgstr "Manual"
+
+#. module: co_bank_reconciliation
+#. odoo-python
+#: code:addons/co_bank_reconciliation/models/co_bank_statement_line.py:0
+msgid "Manual Reconciliation"
+msgstr "Conciliación manual"
+
+#. module: co_bank_reconciliation
+#: model_terms:ir.ui.view,arch_db:co_bank_reconciliation.view_co_bank_statement_import_form
+msgid "Mark as Done"
+msgstr "Marcar como hecho"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_statement_line__match_type
+msgid "Match Type"
+msgstr "Tipo de conciliación"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_statement_import__match_amount
+msgid "Match by Amount"
+msgstr "Conciliar por monto"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_statement_import__match_reference
+msgid "Match by Reference"
+msgstr "Conciliar por referencia"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_statement_line__move_id
+msgid "Matched Journal Entry"
+msgstr "Asiento contable conciliado"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_statement_line__payment_id
+msgid "Matched Payment"
+msgstr "Pago conciliado"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_statement_import__message_has_error
+msgid "Message Delivery error"
+msgstr "Error de entrega del mensaje"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_statement_import__message_ids
+msgid "Messages"
+msgstr "Mensajes"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_statement_import__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr "Fecha límite de mi actividad"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_statement_import__name
+msgid "Name"
+msgstr "Nombre"
+
+#. module: co_bank_reconciliation
+#. odoo-python
+#: code:addons/co_bank_reconciliation/models/co_bank_statement_import.py:0
+msgid "New"
+msgstr "Nuevo"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_statement_import__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr "Próximo evento de calendario de actividad"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_statement_import__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr "Fecha límite de próxima actividad"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_statement_import__activity_summary
+msgid "Next Activity Summary"
+msgstr "Resumen de próxima actividad"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_statement_import__activity_type_id
+msgid "Next Activity Type"
+msgstr "Tipo de próxima actividad"
+
+#. module: co_bank_reconciliation
+#. odoo-python
+#: code:addons/co_bank_reconciliation/wizard/co_bank_import_wizard.py:0
+msgid "No data lines found in the file. Check the format configuration."
+msgstr "No se encontraron líneas de datos en el archivo. Verifique la configuración del formato."
+
+#. module: co_bank_reconciliation
+#. odoo-python
+#: code:addons/co_bank_reconciliation/models/co_bank_statement_line.py:0
+msgid "No matched entry found."
+msgstr "No se encontró asiento conciliado."
+
+#. module: co_bank_reconciliation
+#: model_terms:ir.actions.act_window,help:co_bank_reconciliation.action_co_bank_statement_line
+msgid "No statement lines yet"
+msgstr "Aún no hay líneas de extracto"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields.selection,name:co_bank_reconciliation.selection__co_bank_format__thousands_separator__none
+msgid "None"
+msgstr "Ninguno"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_format__notes
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_statement_import__notes
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_statement_line__notes
+#: model_terms:ir.ui.view,arch_db:co_bank_reconciliation.view_co_bank_statement_import_form
+msgid "Notes"
+msgstr "Notas"
+
+#. module: co_bank_reconciliation
+#: model_terms:ir.ui.view,arch_db:co_bank_reconciliation.view_co_bank_format_form
+msgid "Number Format"
+msgstr "Formato numérico"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_statement_import__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Número de acciones"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,help:co_bank_reconciliation.field_co_bank_statement_import__match_date_tolerance
+msgid "Number of days tolerance when matching by date."
+msgstr "Número de días de tolerancia al conciliar por fecha."
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_statement_import__message_has_error_counter
+msgid "Number of errors"
+msgstr "Número de errores"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,help:co_bank_reconciliation.field_co_bank_format__skip_footer_lines
+msgid "Number of lines at the bottom of the file to skip (e.g. totals row)."
+msgstr "Número de líneas al final del archivo a omitir (ej. fila de totales)."
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,help:co_bank_reconciliation.field_co_bank_format__skip_header_lines
+msgid "Number of lines at the top of the file to skip (e.g. column headers)."
+msgstr "Número de líneas al inicio del archivo a omitir (ej. encabezados de columna)."
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,help:co_bank_reconciliation.field_co_bank_statement_import__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "Número de mensajes que requieren acción"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,help:co_bank_reconciliation.field_co_bank_statement_import__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Número de mensajes con error de entrega"
+
+#. module: co_bank_reconciliation
+#: model_terms:ir.ui.view,arch_db:co_bank_reconciliation.view_co_bank_statement_line_form
+msgid "Open Matched Entry"
+msgstr "Abrir asiento conciliado"
+
+#. module: co_bank_reconciliation
+#: model_terms:ir.ui.view,arch_db:co_bank_reconciliation.view_co_bank_statement_line_search
+msgid "Outgoing"
+msgstr "Saliente"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_statement_line__partner_id
+#: model_terms:ir.ui.view,arch_db:co_bank_reconciliation.view_co_bank_statement_line_search
+msgid "Partner"
+msgstr "Contacto"
+
+#. module: co_bank_reconciliation
+#: model_terms:ir.ui.view,arch_db:co_bank_reconciliation.view_co_bank_statement_import_form
+msgid "Period & Balances"
+msgstr "Período y saldos"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields.selection,name:co_bank_reconciliation.selection__co_bank_format__delimiter__pipe
+msgid "Pipe (|)"
+msgstr "Barra vertical (|)"
+
+#. module: co_bank_reconciliation
+#. odoo-python
+#: code:addons/co_bank_reconciliation/wizard/co_bank_import_wizard.py:0
+msgid "Please upload a file."
+msgstr "Por favor suba un archivo."
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,help:co_bank_reconciliation.field_co_bank_statement_line__amount
+msgid ""
+"Positive = money in (credit to bank in statement), Negative = money out "
+"(debit from bank in statement)."
+msgstr ""
+"Positivo = ingreso (crédito al banco en el extracto), Negativo = egreso "
+"(débito del banco en el extracto)."
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields.selection,name:co_bank_reconciliation.selection__co_bank_statement_import__state__processing
+#: model_terms:ir.ui.view,arch_db:co_bank_reconciliation.view_co_bank_statement_import_search
+msgid "Processing"
+msgstr "Procesando"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,help:co_bank_reconciliation.field_co_bank_format__date_format
+msgid "Python strftime format. Common: %d/%m/%Y, %Y-%m-%d, %Y%m%d"
+msgstr "Formato strftime de Python. Comunes: %d/%m/%Y, %Y-%m-%d, %Y%m%d"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_statement_import__reconciled_count
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_statement_line__reconciled
+#: model:ir.model.fields.selection,name:co_bank_reconciliation.selection__co_bank_statement_import__state__reconciled
+#: model_terms:ir.ui.view,arch_db:co_bank_reconciliation.view_co_bank_statement_import_search
+#: model_terms:ir.ui.view,arch_db:co_bank_reconciliation.view_co_bank_statement_line_search
+msgid "Reconciled"
+msgstr "Conciliado"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_statement_import__reconciled_pct
+msgid "Reconciled %"
+msgstr "% conciliado"
+
+#. module: co_bank_reconciliation
+#: model_terms:ir.ui.view,arch_db:co_bank_reconciliation.view_co_bank_statement_line_form
+msgid "Reconciliation"
+msgstr "Conciliación"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_statement_line__reference
+msgid "Reference"
+msgstr "Referencia"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_format__col_reference
+msgid "Reference Column"
+msgstr "Columna de referencia"
+
+#. module: co_bank_reconciliation
+#: model_terms:ir.ui.view,arch_db:co_bank_reconciliation.view_co_bank_statement_line_form
+msgid "Remove the reconciliation for this line?"
+msgstr "¿Desea eliminar la conciliación de esta línea?"
+
+#. module: co_bank_reconciliation
+#: model_terms:ir.ui.view,arch_db:co_bank_reconciliation.view_co_bank_statement_import_form
+msgid "Reset to Draft"
+msgstr "Restablecer a borrador"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_statement_import__activity_user_id
+msgid "Responsible User"
+msgstr "Usuario responsable"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_statement_line__balance
+msgid "Running Balance"
+msgstr "Saldo acumulado"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,help:co_bank_reconciliation.field_co_bank_format__col_balance
+msgid "Running balance column. Set to -1 if not present."
+msgstr "Columna de saldo acumulado. Establezca -1 si no está presente."
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_statement_import__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "Error de entrega de SMS"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields.selection,name:co_bank_reconciliation.selection__co_bank_format__delimiter__semicolon
+msgid "Semicolon (;)"
+msgstr "Punto y coma (;)"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_format__sequence
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_statement_line__sequence
+msgid "Sequence"
+msgstr "Secuencia"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,help:co_bank_reconciliation.field_co_bank_format__col_credit
+#: model:ir.model.fields,help:co_bank_reconciliation.field_co_bank_format__col_debit
+msgid "Set to -1 if not present (uses amount column instead)."
+msgstr "Establezca -1 si no está presente (usa la columna de monto en su lugar)."
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,help:co_bank_reconciliation.field_co_bank_format__col_amount
+msgid ""
+"Single amount column (positive=credit, negative=debit). Set to -1 if using "
+"separate debit/credit columns."
+msgstr ""
+"Columna de monto único (positivo=crédito, negativo=débito). Establezca -1 si usa "
+"columnas separadas de débito/crédito."
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_statement_import__date_start
+msgid "Start Date"
+msgstr "Fecha inicial"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_statement_import__balance_start
+msgid "Starting Balance"
+msgstr "Saldo inicial"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_statement_line__statement_id
+#: model_terms:ir.ui.view,arch_db:co_bank_reconciliation.view_co_bank_statement_import_form
+#: model_terms:ir.ui.view,arch_db:co_bank_reconciliation.view_co_bank_statement_line_search
+msgid "Statement"
+msgstr "Extracto"
+
+#. module: co_bank_reconciliation
+#: model_terms:ir.ui.view,arch_db:co_bank_reconciliation.view_co_bank_statement_line_form
+msgid "Statement Line"
+msgstr "Línea de extracto"
+
+#. module: co_bank_reconciliation
+#. odoo-python
+#: code:addons/co_bank_reconciliation/models/co_bank_statement_import.py:0
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_statement_import__line_ids
+#: model_terms:ir.ui.view,arch_db:co_bank_reconciliation.view_co_bank_statement_import_form
+#: model_terms:ir.ui.view,arch_db:co_bank_reconciliation.view_co_bank_statement_line_list
+#: model_terms:ir.ui.view,arch_db:co_bank_reconciliation.view_co_bank_statement_line_search
+msgid "Statement Lines"
+msgstr "Líneas de extracto"
+
+#. module: co_bank_reconciliation
+#: model:ir.ui.menu,name:co_bank_reconciliation.menu_co_bank_statement_import
+msgid "Statements"
+msgstr "Extractos"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_statement_import__state
+#: model_terms:ir.ui.view,arch_db:co_bank_reconciliation.view_co_bank_statement_import_search
+msgid "Status"
+msgstr "Estado"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,help:co_bank_reconciliation.field_co_bank_statement_import__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+"Estado basado en actividades\n"
+"Vencida: La fecha límite ya pasó\n"
+"Hoy: La fecha de actividad es hoy\n"
+"Planificada: Actividades futuras."
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields.selection,name:co_bank_reconciliation.selection__co_bank_format__delimiter__tab
+msgid "Tab"
+msgstr "Tabulador"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,help:co_bank_reconciliation.field_co_bank_statement_import__currency_id
+msgid "The currency used to enter statement"
+msgstr "La moneda utilizada para registrar el extracto"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.constraint,message:co_bank_reconciliation.constraint_co_bank_format_code_uniq
+msgid "The format code must be unique."
+msgstr "El código de formato debe ser único."
+
+#. module: co_bank_reconciliation
+#. odoo-python
+#: code:addons/co_bank_reconciliation/models/co_bank_statement_line.py:0
+msgid "This line is already reconciled."
+msgstr "Esta línea ya está conciliada."
+
+#. module: co_bank_reconciliation
+#: model_terms:ir.ui.view,arch_db:co_bank_reconciliation.view_co_bank_statement_import_form
+msgid "This will delete all imported lines. Continue?"
+msgstr "Esto eliminará todas las líneas importadas. ¿Desea continuar?"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_format__thousands_separator
+msgid "Thousands Separator"
+msgstr "Separador de miles"
+
+#. module: co_bank_reconciliation
+#: model_terms:ir.ui.view,arch_db:co_bank_reconciliation.view_co_bank_statement_line_list
+msgid "Total"
+msgstr "Total"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_statement_import__line_count
+msgid "Total Lines"
+msgstr "Total de líneas"
+
+#. module: co_bank_reconciliation
+#: model_terms:ir.ui.view,arch_db:co_bank_reconciliation.view_co_bank_statement_line_form
+msgid "Transaction"
+msgstr "Transacción"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,help:co_bank_reconciliation.field_co_bank_statement_import__match_amount
+msgid "Try to match by exact amount."
+msgstr "Intentar conciliar por monto exacto."
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,help:co_bank_reconciliation.field_co_bank_statement_import__match_reference
+msgid "Try to match statement lines to payments/invoices by reference."
+msgstr "Intentar conciliar las líneas del extracto con pagos/facturas por referencia."
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,help:co_bank_reconciliation.field_co_bank_statement_import__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr "Tipo de actividad de excepción en el registro."
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields.selection,name:co_bank_reconciliation.selection__co_bank_format__encoding__utf-8
+msgid "UTF-8"
+msgstr "UTF-8"
+
+#. module: co_bank_reconciliation
+#: model_terms:ir.ui.view,arch_db:co_bank_reconciliation.view_co_bank_statement_line_form
+msgid "Un-reconcile"
+msgstr "Desconciliar"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_statement_import__unreconciled_count
+#: model_terms:ir.ui.view,arch_db:co_bank_reconciliation.view_co_bank_statement_import_form
+#: model_terms:ir.ui.view,arch_db:co_bank_reconciliation.view_co_bank_statement_line_search
+msgid "Unreconciled"
+msgstr "Sin conciliar"
+
+#. module: co_bank_reconciliation
+#. odoo-python
+#: code:addons/co_bank_reconciliation/models/co_bank_statement_import.py:0
+msgid "Unreconciled Lines"
+msgstr "Líneas sin conciliar"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,help:co_bank_reconciliation.field_co_bank_import_wizard__file_data
+msgid "Upload the flat file (CSV or TXT) from your bank."
+msgstr "Suba el archivo plano (CSV o TXT) de su banco."
+
+#. module: co_bank_reconciliation
+#: model_terms:ir.actions.act_window,help:co_bank_reconciliation.action_co_bank_statement_import
+msgid ""
+"Use the Import wizard to upload flat files from Colombian banks\n"
+"                and reconcile them with your journal entries."
+msgstr ""
+"Use el asistente de importación para subir archivos planos de bancos colombianos\n"
+"                y conciliarlos con sus asientos contables."
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,field_description:co_bank_reconciliation.field_co_bank_statement_import__website_message_ids
+msgid "Website Messages"
+msgstr "Mensajes del sitio web"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields,help:co_bank_reconciliation.field_co_bank_statement_import__website_message_ids
+msgid "Website communication history"
+msgstr "Historial de comunicación del sitio web"
+
+#. module: co_bank_reconciliation
+#: model:ir.model.fields.selection,name:co_bank_reconciliation.selection__co_bank_format__encoding__cp1252
+msgid "Windows CP1252"
+msgstr "Windows CP1252"
+
+#. module: co_bank_reconciliation
+#. odoo-python
+#: code:addons/co_bank_reconciliation/models/co_bank_format.py:0
+msgid ""
+"You must configure either Debit/Credit columns or a single Amount column."
+msgstr ""
+"Debe configurar columnas de Débito/Crédito o una sola columna de Monto."
+
+#. module: co_bank_reconciliation
+#: model_terms:ir.ui.view,arch_db:co_bank_reconciliation.view_co_bank_format_form
+msgid "e.g. Bancolombia - CSV"
+msgstr "ej. Bancolombia - CSV"
