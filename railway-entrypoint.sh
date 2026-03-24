@@ -23,6 +23,19 @@ if [ -n "$INIT_MODULES" ]; then
     INIT_FLAG="--init=$INIT_MODULES"
 fi
 
+# UPDATE_MODULES: comma-separated list of modules to update (e.g., "account,sale")
+UPDATE_MODULES="${UPDATE_MODULES:-}"
+UPDATE_FLAG=""
+if [ -n "$UPDATE_MODULES" ]; then
+    UPDATE_FLAG="--update=$UPDATE_MODULES"
+fi
+
+# STOP_AFTER_INIT: set to "1" to exit after init/update (useful for one-shot migrations)
+STOP_FLAG=""
+if [ "${STOP_AFTER_INIT:-}" = "1" ]; then
+    STOP_FLAG="--stop-after-init"
+fi
+
 exec /odoo/odoo-bin \
     --config=/etc/odoo/odoo.conf \
     --db_host="$DB_HOST" \
@@ -35,4 +48,6 @@ exec /odoo/odoo-bin \
     --no-database-list \
     --db-filter="^${DB_NAME}$" \
     $INIT_FLAG \
+    $UPDATE_FLAG \
+    $STOP_FLAG \
     "$@"
