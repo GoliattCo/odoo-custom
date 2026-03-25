@@ -8,3 +8,6 @@ access_club_guest_member,club.guest member,model_club_guest,club_core.group_club
 access_club_guest_visit_admin,club.guest.visit admin,model_club_guest_visit,club_core.group_club_admin,1,1,1,1
 access_club_guest_visit_staff,club.guest.visit staff,model_club_guest_visit,club_guests.group_guest_staff,1,1,1,1
 access_club_guest_visit_member,club.guest.visit member,model_club_guest_visit,club_core.group_club_member,1,0,1,0
+access_club_guest_visit_party_admin,club.guest.visit.party admin,model_club_guest_visit_party,club_core.group_club_admin,1,1,1,1
+access_club_guest_visit_party_staff,club.guest.visit.party staff,model_club_guest_visit_party,club_guests.group_guest_staff,1,1,1,1
+access_club_guest_visit_party_member,club.guest.visit.party member,model_club_guest_visit_party,club_core.group_club_member,1,0,1,0

@@ -50,7 +50,33 @@ class ClubGuestVisit(models.Model):
     policy_id = fields.Many2one(
         'club.guest.policy', string='Guest Policy',
     )
+    allow_independent_access = fields.Boolean(
+        string='Guest May Enter Without Affiliate',
+        default=False,
+        help='If checked, the guest and party members can access the club '
+             'without the host affiliate being present.',
+    )
+    vehicle_plate = fields.Char(
+        string='Vehicle Plate',
+        help='Optional vehicle plate for the guest party.',
+    )
+    party_member_ids = fields.One2many(
+        'club.guest.visit.party', 'visit_id',
+        string='Party Members',
+        help='Additional people accompanying this guest.',
+    )
+    party_count = fields.Integer(
+        string='Party Size',
+        compute='_compute_party_count',
+        store=True,
+    )
     notes = fields.Text(string='Notes')
+
+    @api.depends('party_member_ids')
+    def _compute_party_count(self):
+        for visit in self:
+            # +1 for the main guest
+            visit.party_count = 1 + len(visit.party_member_ids)
 
     @api.model_create_multi
     def create(self, vals_list):

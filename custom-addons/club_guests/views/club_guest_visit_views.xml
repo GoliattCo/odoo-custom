@@ -54,6 +54,9 @@
                 <field name="check_in_time" widget="float_time"/>
                 <field name="check_out_time" widget="float_time"/>
                 <field name="areas_accessed"/>
+                <field name="party_count" optional="show"/>
+                <field name="allow_independent_access" optional="hide"/>
+                <field name="vehicle_plate" optional="hide"/>
                 <field name="status" widget="badge"
                     decoration-success="status == 'checked_out'"
                     decoration-info="status == 'checked_in'"
@@ -95,9 +98,25 @@
                             <field name="check_in_time" widget="float_time"/>
                             <field name="check_out_time" widget="float_time"/>
                             <field name="areas_accessed"/>
+                            <field name="vehicle_plate"/>
+                            <field name="allow_independent_access"/>
                         </group>
                     </group>
                     <notebook>
+                        <page string="Party Members" name="party_members">
+                            <field name="party_member_ids">
+                                <list editable="bottom">
+                                    <field name="name"/>
+                                    <field name="identification"/>
+                                    <field name="relationship"/>
+                                    <field name="age_group"/>
+                                    <field name="notes"/>
+                                </list>
+                            </field>
+                            <group>
+                                <field name="party_count" readonly="1"/>
+                            </group>
+                        </page>
                         <page string="Notes" name="notes">
                             <field name="notes"
                                 placeholder="Additional notes about this visit..."/>

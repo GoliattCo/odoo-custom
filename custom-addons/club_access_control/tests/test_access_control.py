@@ -128,6 +128,7 @@ class TestAccessControl(TransactionCase):
                 'guest_id': cls.guest.id,
                 'date': fields.Date.today(),
                 'status': 'registered',
+                'allow_independent_access': True,
             })
 
         # ── Supplier + staff ────────────────────────────────────────

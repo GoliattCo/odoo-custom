@@ -376,33 +376,44 @@ class ClubAccessEntry(models.Model):
         }
 
     def _lookup_by_vehicle_plate(self, val):
-        """Search club.access.vehicle by plate_number."""
+        """Search club.access.vehicle by plate_number, then guest visits."""
+        # 1. Check affiliate vehicles
         vehicle = self.env['club.access.vehicle'].search(
             [('plate_number', '=ilike', val), ('active', '=', True)], limit=1,
         )
-        if not vehicle:
-            return False
+        if vehicle:
+            affiliate = vehicle.affiliate_id
+            access_allowed = affiliate.membership_status == 'active'
+            reason = ''
+            if not access_allowed:
+                reason = _('Affiliate "%s" membership is not active (status: %s)') % (
+                    affiliate.name, affiliate.membership_status or 'none',
+                )
 
-        affiliate = vehicle.affiliate_id
-        access_allowed = affiliate.membership_status == 'active'
-        reason = ''
-        if not access_allowed:
-            reason = _('Affiliate "%s" membership is not active (status: %s)') % (
-                affiliate.name, affiliate.membership_status or 'none',
-            )
+            person_type = 'affiliate'
+            if affiliate.membership_type == 'family_dependent':
+                person_type = 'family_member'
 
-        person_type = 'affiliate'
-        if affiliate.membership_type == 'family_dependent':
-            person_type = 'family_member'
+            return {
+                'person_type': person_type,
+                'person_field': 'affiliate_id',
+                'person_id': affiliate.id,
+                'vehicle_id': vehicle.id,
+                'access_allowed': access_allowed,
+                'reason': reason,
+            }
 
-        return {
-            'person_type': person_type,
-            'person_field': 'affiliate_id',
-            'person_id': affiliate.id,
-            'vehicle_id': vehicle.id,
-            'access_allowed': access_allowed,
-            'reason': reason,
-        }
+        # 2. Check guest visits with matching vehicle plate for today
+        today = fields.Date.context_today(self)
+        visit = self.env['club.guest.visit'].search([
+            ('vehicle_plate', '=ilike', val),
+            ('date', '=', today),
+            ('status', 'in', ('registered', 'checked_in')),
+        ], limit=1)
+        if visit:
+            return self._resolve_guest_visit_access(visit)
+
+        return False
 
     def _lookup_by_gov_id(self, val):
         """Search by government ID across multiple models in priority order."""
@@ -462,18 +473,26 @@ class ClubAccessEntry(models.Model):
                 ('date', '=', today),
                 ('status', 'in', ('registered', 'checked_in')),
             ], limit=1)
-            result = {
-                'person_type': 'guest',
-                'person_field': 'guest_id',
-                'person_id': guest.id,
-                'access_allowed': bool(visit),
-                'reason': '' if visit else _(
-                    'No visit registered for today for guest "%s"'
-                ) % guest.name,
-            }
-            if visit:
-                result['guest_visit_id'] = visit.id
-            return result
+            if not visit:
+                return {
+                    'person_type': 'guest',
+                    'person_field': 'guest_id',
+                    'person_id': guest.id,
+                    'access_allowed': False,
+                    'reason': _(
+                        'No visit registered for today for guest "%s"'
+                    ) % guest.name,
+                }
+            return self._resolve_guest_visit_access(visit)
+
+        # 3b. Check if ID matches a guest visit party member
+        party_member = self.env['club.guest.visit.party'].search([
+            ('identification', '=', val),
+            ('visit_id.date', '=', fields.Date.context_today(self)),
+            ('visit_id.status', 'in', ('registered', 'checked_in')),
+        ], limit=1)
+        if party_member:
+            return self._resolve_guest_visit_access(party_member.visit_id)
 
         # 4. Supplier staff by identification_number
         staff = self.env['club.access.supplier.staff'].search(
@@ -510,6 +529,41 @@ class ClubAccessEntry(models.Model):
             }
 
         return False
+
+    def _resolve_guest_visit_access(self, visit):
+        """Check guest visit access rules including independent access.
+
+        If the visit does NOT allow independent access, verify that the host
+        affiliate has already checked in today (has an active access entry).
+        """
+        guest = visit.guest_id
+        result = {
+            'person_type': 'guest',
+            'person_field': 'guest_id',
+            'person_id': guest.id,
+            'guest_visit_id': visit.id,
+            'access_allowed': True,
+            'reason': '',
+        }
+
+        if not visit.allow_independent_access:
+            # Check if the host affiliate has an active entry today
+            today = fields.Date.context_today(self)
+            host_entry = self.search([
+                ('affiliate_id', '=', visit.affiliate_id.id),
+                ('access_status', '=', 'granted'),
+                ('entry_datetime', '>=', fields.Datetime.to_string(
+                    fields.Datetime.now().replace(hour=0, minute=0, second=0)
+                )),
+            ], limit=1)
+            if not host_entry:
+                result['access_allowed'] = False
+                result['reason'] = _(
+                    'Guest "%s" requires host affiliate "%s" to be present '
+                    'in the club. The affiliate has not checked in today.'
+                ) % (guest.name, visit.affiliate_id.name)
+
+        return result
 
     def _lookup_by_name(self, val):
         """Search by name across models, open wizard for guard to choose."""
