@@ -1,3 +1,7 @@
+import hashlib
+import json
+import uuid
+
 from odoo import api, fields, models, _
 from odoo.exceptions import ValidationError
 
@@ -11,6 +15,14 @@ class ClubGuestVisit(models.Model):
     name = fields.Char(
         string='Visit Number', readonly=True, copy=False, index=True,
         default=lambda self: _('New'),
+    )
+    qr_token = fields.Char(
+        string='QR Token', readonly=True, copy=False, index=True,
+        help='Unique token embedded in the QR code for gate scanning.',
+    )
+    qr_code = fields.Binary(
+        string='QR Code', compute='_compute_qr_code', store=True,
+        help='Scannable QR code containing visit data for gate access.',
     )
     affiliate_id = fields.Many2one(
         'club.affiliate', string='Host Affiliate', required=True,
@@ -78,6 +90,52 @@ class ClubGuestVisit(models.Model):
             # +1 for the main guest
             visit.party_count = 1 + len(visit.party_member_ids)
 
+    @api.depends('qr_token')
+    def _compute_qr_code(self):
+        try:
+            import qrcode
+            import io
+            import base64
+            has_qrcode = True
+        except ImportError:
+            has_qrcode = False
+
+        for visit in self:
+            if not visit.qr_token or not has_qrcode:
+                visit.qr_code = False
+                continue
+            qr_data = visit._get_qr_payload()
+            qr = qrcode.QRCode(version=1, box_size=6, border=2)
+            qr.add_data(json.dumps(qr_data))
+            qr.make(fit=True)
+            img = qr.make_image(fill_color='black', back_color='white')
+            buf = io.BytesIO()
+            img.save(buf, format='PNG')
+            visit.qr_code = base64.b64encode(buf.getvalue())
+
+    def _get_qr_payload(self):
+        """Build the JSON payload embedded in the QR code."""
+        self.ensure_one()
+        return {
+            'type': 'club_guest_visit',
+            'token': self.qr_token,
+            'visit': self.name,
+            'guest': self.guest_id.name,
+            'guest_id_number': self.guest_id.identification or '',
+            'host': self.affiliate_id.name,
+            'host_number': self.affiliate_id.affiliate_number or '',
+            'date': str(self.date),
+            'party_size': self.party_count,
+            'independent': self.allow_independent_access,
+            'vehicle': self.vehicle_plate or '',
+        }
+
+    def _generate_qr_token(self):
+        """Generate a unique, hard-to-guess token for QR scanning."""
+        self.ensure_one()
+        raw = '%s-%s-%s' % (self.id, self.name, uuid.uuid4().hex[:8])
+        return hashlib.sha256(raw.encode()).hexdigest()[:24]
+
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
@@ -85,7 +143,11 @@ class ClubGuestVisit(models.Model):
                 vals['name'] = self.env['ir.sequence'].next_by_code(
                     'club.guest.visit'
                 ) or _('New')
-        return super().create(vals_list)
+        records = super().create(vals_list)
+        for visit in records:
+            if not visit.qr_token:
+                visit.qr_token = visit._generate_qr_token()
+        return records
 
     @api.constrains('affiliate_id', 'date', 'policy_id')
     def _check_max_guests_per_visit(self):

@@ -93,6 +93,7 @@ class ClubAccessEntry(models.Model):
             ('access_card', 'Access Card'),
             ('gov_id', 'Government ID'),
             ('vehicle_plate', 'Vehicle Plate'),
+            ('qr_code', 'QR Code'),
             ('manual_lookup', 'Manual Lookup'),
         ],
         string='Identification Method',
@@ -233,6 +234,8 @@ class ClubAccessEntry(models.Model):
             result = self._lookup_by_vehicle_plate(val)
         elif method == 'gov_id':
             result = self._lookup_by_gov_id(val)
+        elif method == 'qr_code':
+            result = self._lookup_by_qr_code(val)
         elif method == 'manual_lookup':
             return self._lookup_by_name(val)
 
@@ -529,6 +532,53 @@ class ClubAccessEntry(models.Model):
             }
 
         return False
+
+    def _lookup_by_qr_code(self, val):
+        """Resolve a QR code scan to a guest visit.
+
+        The scanned value can be either:
+        - The raw JSON payload from the QR (parsed to extract the token)
+        - Just the token string itself
+        """
+        import json as _json
+
+        token = val.strip()
+        # Try to parse as JSON to extract the token
+        try:
+            data = _json.loads(token)
+            if isinstance(data, dict) and data.get('token'):
+                token = data['token']
+        except (ValueError, TypeError):
+            pass
+
+        # Look up by qr_token
+        today = fields.Date.context_today(self)
+        visit = self.env['club.guest.visit'].search([
+            ('qr_token', '=', token),
+            ('date', '=', today),
+            ('status', 'in', ('registered', 'checked_in')),
+        ], limit=1)
+
+        if not visit:
+            # Try without date filter in case the token is valid but date mismatch
+            visit_any = self.env['club.guest.visit'].search([
+                ('qr_token', '=', token),
+            ], limit=1)
+            if visit_any:
+                return {
+                    'person_type': 'guest',
+                    'person_field': 'guest_id',
+                    'person_id': visit_any.guest_id.id,
+                    'guest_visit_id': visit_any.id,
+                    'access_allowed': False,
+                    'reason': _(
+                        'QR code is valid but the visit is scheduled for %s '
+                        '(today is %s) or has status "%s".'
+                    ) % (visit_any.date, today, visit_any.status),
+                }
+            return False
+
+        return self._resolve_guest_visit_access(visit)
 
     def _resolve_guest_visit_access(self, visit):
         """Check guest visit access rules including independent access.
