@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="goliatt_pms.PlannerView">
+        <div class="pms-planner">
+            <!-- Toolbar -->
+            <div class="pms-planner-toolbar">
+                <button class="btn-primary" t-on-click="onPrevPeriod">◀ Anterior</button>
+                <button t-on-click="onToday">Hoy</button>
+                <button class="btn-primary" t-on-click="onNextPeriod">Siguiente ▶</button>
+                <span class="period-label">
+                    <t t-esc="state.periodLabel"/>
+                </span>
+                <button t-on-click="onRefresh">↻ Actualizar</button>
+                <span style="flex:1"/>
+                <span style="font-size:12px; color:#888;">
+                    <t t-esc="state.rooms.length"/> habitaciones |
+                    <t t-esc="state.reservations.length"/> reservas
+                </span>
+            </div>
+
+            <!-- Grid -->
+            <div class="pms-planner-grid"
+                 t-attf-style="grid-template-columns: 140px repeat({{ state.dates.length }}, 1fr);"
+                 t-on-mouseup="onGridMouseUp"
+                 t-on-mousemove="onGridMouseMove">
+
+                <!-- Header row -->
+                <div class="pms-planner-header">
+                    <div class="pms-planner-header-corner">Habitación</div>
+                    <t t-foreach="state.dates" t-as="d" t-key="d.iso">
+                        <div t-attf-class="pms-planner-header-cell {{ d.isWeekend ? 'weekend' : '' }} {{ d.isToday ? 'today' : '' }}">
+                            <div><t t-esc="d.dayName"/></div>
+                            <div><t t-esc="d.dayNum"/></div>
+                        </div>
+                    </t>
+                </div>
+
+                <!-- Room rows -->
+                <t t-foreach="state.rooms" t-as="room" t-key="room.id">
+                    <!-- Room label -->
+                    <div class="pms-planner-room-label">
+                        <span class="room-number"><t t-esc="room.name"/></span>
+                        <span class="room-type"><t t-esc="room.room_type"/></span>
+                    </div>
+                    <!-- Date cells for this room -->
+                    <t t-foreach="state.dates" t-as="d" t-key="d.iso">
+                        <div t-attf-class="pms-planner-cell {{ d.isWeekend ? 'weekend' : '' }} {{ d.isToday ? 'today' : '' }}"
+                             t-att-data-room-id="room.id"
+                             t-att-data-date="d.iso"
+                             t-on-click="onCellClick"
+                             t-on-mousedown="onCellMouseDown">
+                        </div>
+                    </t>
+                </t>
+            </div>
+
+            <!-- Reservation bars (positioned absolutely over the grid) -->
+            <div class="pms-reservation-bars" t-ref="barsContainer">
+                <t t-foreach="state.bars" t-as="bar" t-key="bar.id">
+                    <div t-attf-class="pms-reservation-bar state-{{ bar.state }}"
+                         t-attf-style="left: {{ bar.left }}px; top: {{ bar.top }}px; width: {{ bar.width }}px;"
+                         t-att-data-res-id="bar.id"
+                         t-on-mousedown="onBarMouseDown"
+                         t-on-click.stop="onBarClick"
+                         t-att-title="bar.guestName + ' (' + bar.nights + 'N)'">
+                        <span><t t-esc="bar.guestName"/></span>
+                        <div class="resize-handle" t-on-mousedown.stop="onResizeMouseDown" t-att-data-res-id="bar.id"/>
+                    </div>
+                </t>
+            </div>
+
+            <!-- Legend -->
+            <div class="pms-planner-legend">
+                <div class="legend-item"><div class="legend-dot" style="background:#28a745"/><span>Confirmada</span></div>
+                <div class="legend-item"><div class="legend-dot" style="background:#17a2b8"/><span>Garantizada</span></div>
+                <div class="legend-item"><div class="legend-dot" style="background:#714B67"/><span>Check-In</span></div>
+                <div class="legend-item"><div class="legend-dot" style="background:#6c757d"/><span>Check-Out</span></div>
+                <div class="legend-item"><div class="legend-dot" style="background:#dc3545"/><span>Cancelada</span></div>
+            </div>
+        </div>
+    </t>
+
+</templates>

@@ -19,6 +19,18 @@
         action="action_pms_reservation"
         sequence="10"/>
 
+    <!-- Interactive Planner -->
+    <record id="action_pms_planner" model="ir.actions.client">
+        <field name="name">Interactive Planner</field>
+        <field name="tag">pms_planner</field>
+    </record>
+
+    <menuitem id="menu_pms_planner"
+        name="Interactive Planner"
+        parent="menu_pms_front_desk"
+        action="action_pms_planner"
+        sequence="5"/>
+
     <menuitem id="menu_pms_arrivals"
         name="Arrivals Today"
         parent="menu_pms_front_desk"

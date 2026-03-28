@@ -1,0 +1,234 @@
+.pms-planner {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    overflow: auto;
+    height: calc(100vh - 140px);
+    padding: 0;
+    position: relative;
+}
+
+.pms-planner-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: #fff;
+    border-bottom: 1px solid #dee2e6;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.pms-planner-toolbar button {
+    padding: 6px 14px;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    background: #fff;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.pms-planner-toolbar button:hover {
+    background: #f0f0f0;
+}
+
+.pms-planner-toolbar .btn-primary {
+    background: #714B67;
+    color: #fff;
+    border-color: #714B67;
+}
+
+.pms-planner-toolbar .btn-primary:hover {
+    background: #5a3c53;
+}
+
+.pms-planner-toolbar .period-label {
+    font-weight: 600;
+    font-size: 15px;
+    min-width: 200px;
+    text-align: center;
+}
+
+.pms-planner-grid {
+    display: grid;
+    position: relative;
+    min-width: max-content;
+}
+
+.pms-planner-header {
+    display: contents;
+}
+
+.pms-planner-header-cell {
+    padding: 6px 4px;
+    text-align: center;
+    font-size: 11px;
+    font-weight: 600;
+    background: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+    border-right: 1px solid #eee;
+    position: sticky;
+    top: 52px;
+    z-index: 5;
+    min-width: 44px;
+}
+
+.pms-planner-header-cell.weekend {
+    background: #eef0f2;
+}
+
+.pms-planner-header-cell.today {
+    background: #714B67;
+    color: #fff;
+}
+
+.pms-planner-header-corner {
+    padding: 6px 8px;
+    font-weight: 700;
+    font-size: 12px;
+    background: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+    border-right: 2px solid #dee2e6;
+    position: sticky;
+    left: 0;
+    top: 52px;
+    z-index: 6;
+    min-width: 120px;
+}
+
+.pms-planner-room-label {
+    padding: 4px 8px;
+    font-size: 12px;
+    font-weight: 500;
+    background: #fff;
+    border-bottom: 1px solid #eee;
+    border-right: 2px solid #dee2e6;
+    position: sticky;
+    left: 0;
+    z-index: 3;
+    min-width: 120px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.pms-planner-room-label .room-number {
+    font-weight: 700;
+}
+
+.pms-planner-room-label .room-type {
+    color: #888;
+    font-size: 10px;
+}
+
+.pms-planner-cell {
+    border-bottom: 1px solid #eee;
+    border-right: 1px solid #f0f0f0;
+    min-height: 32px;
+    position: relative;
+    cursor: pointer;
+    min-width: 44px;
+}
+
+.pms-planner-cell:hover {
+    background: #f5f0f3;
+}
+
+.pms-planner-cell.weekend {
+    background: #fafafa;
+}
+
+.pms-planner-cell.today {
+    background: #fdf2f8;
+}
+
+/* Reservation bars */
+.pms-reservation-bar {
+    position: absolute;
+    top: 2px;
+    height: 28px;
+    border-radius: 4px;
+    padding: 2px 8px;
+    font-size: 11px;
+    font-weight: 500;
+    color: #fff;
+    cursor: grab;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+    user-select: none;
+    transition: box-shadow 0.15s;
+}
+
+.pms-reservation-bar:hover {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+    z-index: 4;
+}
+
+.pms-reservation-bar.dragging {
+    opacity: 0.7;
+    cursor: grabbing;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.pms-reservation-bar.state-confirmed { background: #28a745; }
+.pms-reservation-bar.state-guaranteed { background: #17a2b8; }
+.pms-reservation-bar.state-checked_in { background: #714B67; }
+.pms-reservation-bar.state-checked_out { background: #6c757d; }
+.pms-reservation-bar.state-cancelled { background: #dc3545; opacity: 0.5; }
+.pms-reservation-bar.state-no_show { background: #fd7e14; opacity: 0.6; }
+
+.pms-reservation-bar .resize-handle {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 8px;
+    height: 100%;
+    cursor: ew-resize;
+    border-radius: 0 4px 4px 0;
+    background: rgba(255,255,255,0.2);
+}
+
+.pms-reservation-bar .resize-handle:hover {
+    background: rgba(255,255,255,0.4);
+}
+
+/* Status legend */
+.pms-planner-legend {
+    display: flex;
+    gap: 16px;
+    padding: 8px 16px;
+    font-size: 11px;
+    border-top: 1px solid #dee2e6;
+    background: #fff;
+}
+
+.pms-planner-legend .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.pms-planner-legend .legend-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+}
+
+/* Tooltip */
+.pms-tooltip {
+    position: fixed;
+    background: #333;
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    z-index: 100;
+    pointer-events: none;
+    max-width: 250px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
