@@ -165,7 +165,37 @@ class PmsReservation(models.Model):
         for rec in records:
             if rec.guest_id and not rec.guest_id.is_hotel_guest:
                 rec.guest_id.is_hotel_guest = True
+            # Auto-assign room if not set
+            if not rec.room_id and rec.room_type_id:
+                rec._auto_assign_room()
         return records
+
+    def _auto_assign_room(self):
+        """Assign a random available room matching the reservation's room type."""
+        self.ensure_one()
+        if self.room_id or not self.room_type_id:
+            return
+        # Find rooms of the correct type that are not occupied during this period
+        Room = self.env['pms.room']
+        all_rooms = Room.search([
+            ('room_type_id', '=', self.room_type_id.id),
+            ('status', 'in', ('available', 'occupied')),
+            ('active', '=', True),
+        ])
+        if not all_rooms:
+            return
+        # Exclude rooms with overlapping reservations
+        occupied_room_ids = self.env['pms.reservation'].search([
+            ('id', '!=', self.id),
+            ('room_id', 'in', all_rooms.ids),
+            ('checkin_date', '<', self.checkout_date),
+            ('checkout_date', '>', self.checkin_date),
+            ('state', 'not in', ['cancelled', 'no_show']),
+        ]).mapped('room_id').ids
+        free_rooms = all_rooms.filtered(lambda r: r.id not in occupied_room_ids)
+        if free_rooms:
+            import random
+            self.room_id = random.choice(free_rooms)
 
     @api.depends('checkin_date', 'checkout_date')
     def _compute_nights(self):
