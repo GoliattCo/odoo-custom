@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- List view -->
+    <record id="view_pms_night_audit_list" model="ir.ui.view">
+        <field name="name">pms.night.audit.list</field>
+        <field name="model">pms.night.audit</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name" decoration-bf="1"/>
+                <field name="property_id"/>
+                <field name="audit_date"/>
+                <field name="auditor_id"/>
+                <field name="rooms_sold"/>
+                <field name="occupancy_pct" widget="progressbar"/>
+                <field name="total_revenue"/>
+                <field name="adr"/>
+                <field name="revpar"/>
+                <field name="state" widget="badge"
+                    decoration-success="state == 'completed'"
+                    decoration-info="state == 'in_progress'"
+                    decoration-muted="state == 'pending'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form view -->
+    <record id="view_pms_night_audit_form" model="ir.ui.view">
+        <field name="name">pms.night.audit.form</field>
+        <field name="model">pms.night.audit</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_run" string="Run Night Audit"
+                        type="object" class="btn-primary"
+                        invisible="state == 'completed'"
+                        confirm="This will post room charges and process no-shows. Continue?"/>
+                    <field name="state" widget="statusbar"
+                        statusbar_visible="pending,in_progress,completed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="property_id"/>
+                            <field name="audit_date"/>
+                            <field name="auditor_id"/>
+                        </group>
+                        <group>
+                            <field name="rooms_sold"/>
+                            <field name="occupancy_pct" widget="progressbar"/>
+                            <field name="total_revenue"/>
+                            <field name="adr"/>
+                            <field name="revpar"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="notes" nolabel="1"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search view -->
+    <record id="view_pms_night_audit_search" model="ir.ui.view">
+        <field name="name">pms.night.audit.search</field>
+        <field name="model">pms.night.audit</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="property_id"/>
+                <field name="audit_date"/>
+                <filter name="pending" string="Pending"
+                    domain="[('state','=','pending')]"/>
+                <filter name="completed" string="Completed"
+                    domain="[('state','=','completed')]"/>
+                <group>
+                    <filter name="group_property" string="Property"
+                        context="{'group_by': 'property_id'}"/>
+                    <filter name="group_state" string="State"
+                        context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_pms_night_audit" model="ir.actions.act_window">
+        <field name="name">Night Audit</field>
+        <field name="res_model">pms.night.audit</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_pms_night_audit_search"/>
+        <field name="path">pms-night-audit</field>
+    </record>
+
+</odoo>

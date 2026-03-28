@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ── Top-level App Menu ─────────────────────────────────────── -->
+    <menuitem id="menu_pms_root"
+        name="Goliatt PMS"
+        web_icon="goliatt_pms,static/description/icon.png"
+        sequence="50"/>
+
+    <!-- ── Front Desk ─────────────────────────────────────────────── -->
+    <menuitem id="menu_pms_front_desk"
+        name="Front Desk"
+        parent="menu_pms_root"
+        sequence="10"/>
+
+    <menuitem id="menu_pms_reservations"
+        name="Reservations"
+        parent="menu_pms_front_desk"
+        action="action_pms_reservation"
+        sequence="10"/>
+
+    <menuitem id="menu_pms_arrivals"
+        name="Arrivals Today"
+        parent="menu_pms_front_desk"
+        action="action_pms_reservation_arrivals"
+        sequence="20"/>
+
+    <menuitem id="menu_pms_departures"
+        name="Departures Today"
+        parent="menu_pms_front_desk"
+        action="action_pms_reservation_departures"
+        sequence="30"/>
+
+    <menuitem id="menu_pms_in_house"
+        name="In-House Guests"
+        parent="menu_pms_front_desk"
+        action="action_pms_reservation_in_house"
+        sequence="40"/>
+
+    <menuitem id="menu_pms_walkin"
+        name="Walk-In"
+        parent="menu_pms_front_desk"
+        action="action_pms_reservation_walkin"
+        sequence="50"/>
+
+    <!-- ── Rooms ──────────────────────────────────────────────────── -->
+    <menuitem id="menu_pms_rooms"
+        name="Rooms"
+        parent="menu_pms_root"
+        sequence="20"/>
+
+    <menuitem id="menu_pms_room_rack"
+        name="Room Rack"
+        parent="menu_pms_rooms"
+        action="action_pms_room_rack"
+        sequence="10"/>
+
+    <menuitem id="menu_pms_room_all"
+        name="All Rooms"
+        parent="menu_pms_rooms"
+        action="action_pms_room_all"
+        sequence="20"/>
+
+    <!-- ── Housekeeping ───────────────────────────────────────────── -->
+    <menuitem id="menu_pms_housekeeping"
+        name="Housekeeping"
+        parent="menu_pms_root"
+        sequence="30"/>
+
+    <menuitem id="menu_pms_housekeeping_today"
+        name="Today's Tasks"
+        parent="menu_pms_housekeeping"
+        action="action_pms_housekeeping_today"
+        sequence="10"/>
+
+    <menuitem id="menu_pms_housekeeping_all"
+        name="All Tasks"
+        parent="menu_pms_housekeeping"
+        action="action_pms_housekeeping_all"
+        sequence="20"/>
+
+    <!-- ── Billing ────────────────────────────────────────────────── -->
+    <menuitem id="menu_pms_billing"
+        name="Billing"
+        parent="menu_pms_root"
+        sequence="40"/>
+
+    <menuitem id="menu_pms_folios"
+        name="Folios"
+        parent="menu_pms_billing"
+        action="action_pms_folio"
+        sequence="10"/>
+
+    <menuitem id="menu_pms_night_audit"
+        name="Night Audit"
+        parent="menu_pms_billing"
+        action="action_pms_night_audit"
+        sequence="20"/>
+
+    <!-- ── Revenue ────────────────────────────────────────────────── -->
+    <menuitem id="menu_pms_revenue"
+        name="Revenue"
+        parent="menu_pms_root"
+        sequence="50"/>
+
+    <menuitem id="menu_pms_rate_plans"
+        name="Rate Plans"
+        parent="menu_pms_revenue"
+        action="action_pms_rate_plan"
+        sequence="10"/>
+
+    <menuitem id="menu_pms_availability"
+        name="Availability"
+        parent="menu_pms_revenue"
+        action="action_pms_availability"
+        sequence="20"/>
+
+    <menuitem id="menu_pms_channels_revenue"
+        name="Channels"
+        parent="menu_pms_revenue"
+        action="action_pms_channel"
+        sequence="30"/>
+
+    <!-- ── Reports (placeholder) ──────────────────────────────────── -->
+    <menuitem id="menu_pms_reports"
+        name="Reports"
+        parent="menu_pms_root"
+        sequence="60"/>
+
+    <!-- ── Configuration ──────────────────────────────────────────── -->
+    <menuitem id="menu_pms_config"
+        name="Configuration"
+        parent="menu_pms_root"
+        sequence="100"
+        groups="goliatt_pms.group_pms_manager"/>
+
+    <menuitem id="menu_pms_config_properties"
+        name="Properties"
+        parent="menu_pms_config"
+        action="action_pms_property"
+        sequence="10"/>
+
+    <menuitem id="menu_pms_config_room_types"
+        name="Room Types"
+        parent="menu_pms_config"
+        action="action_pms_room_type"
+        sequence="20"/>
+
+    <menuitem id="menu_pms_config_amenities"
+        name="Amenities"
+        parent="menu_pms_config"
+        action="action_pms_amenity"
+        sequence="30"/>
+
+    <menuitem id="menu_pms_config_channels"
+        name="Channels"
+        parent="menu_pms_config"
+        action="action_pms_channel"
+        sequence="40"
+        groups="goliatt_pms.group_pms_admin"/>
+
+</odoo>

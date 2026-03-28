@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- List view -->
+    <record id="view_pms_availability_list" model="ir.ui.view">
+        <field name="name">pms.availability.list</field>
+        <field name="model">pms.availability</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="property_id"/>
+                <field name="room_type_id" domain="[('property_id','=',property_id)]"/>
+                <field name="date"/>
+                <field name="total_inventory"/>
+                <field name="sold"/>
+                <field name="out_of_order"/>
+                <field name="available" decoration-danger="available &lt;= 0"
+                    decoration-warning="available == 1"
+                    decoration-success="available > 1"/>
+                <field name="rate"/>
+                <field name="min_stay"/>
+                <field name="stop_sell"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form view -->
+    <record id="view_pms_availability_form" model="ir.ui.view">
+        <field name="name">pms.availability.form</field>
+        <field name="model">pms.availability</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="property_id"/>
+                            <field name="room_type_id"
+                                domain="[('property_id','=',property_id)]"/>
+                            <field name="date"/>
+                        </group>
+                        <group>
+                            <field name="total_inventory"/>
+                            <field name="sold"/>
+                            <field name="out_of_order"/>
+                            <field name="available"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="rate"/>
+                            <field name="min_stay"/>
+                            <field name="stop_sell"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search view -->
+    <record id="view_pms_availability_search" model="ir.ui.view">
+        <field name="name">pms.availability.search</field>
+        <field name="model">pms.availability</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="property_id"/>
+                <field name="room_type_id"/>
+                <field name="date"/>
+                <filter name="stop_sell" string="Stop Sell"
+                    domain="[('stop_sell','=',True)]"/>
+                <filter name="no_avail" string="Sold Out"
+                    domain="[('available','&lt;=',0)]"/>
+                <group>
+                    <filter name="group_property" string="Property"
+                        context="{'group_by': 'property_id'}"/>
+                    <filter name="group_room_type" string="Room Type"
+                        context="{'group_by': 'room_type_id'}"/>
+                    <filter name="group_date" string="Date"
+                        context="{'group_by': 'date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_pms_availability" model="ir.actions.act_window">
+        <field name="name">Availability</field>
+        <field name="res_model">pms.availability</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_pms_availability_search"/>
+        <field name="path">pms-availability</field>
+    </record>
+
+</odoo>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- List view -->
+    <record id="view_pms_channel_list" model="ir.ui.view">
+        <field name="name">pms.channel.list</field>
+        <field name="model">pms.channel</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="channel_type"/>
+                <field name="commission_pct"/>
+                <field name="is_active" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form view -->
+    <record id="view_pms_channel_form" model="ir.ui.view">
+        <field name="name">pms.channel.form</field>
+        <field name="model">pms.channel</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="e.g. Booking.com"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="channel_type"/>
+                            <field name="commission_pct"/>
+                            <field name="is_active"/>
+                        </group>
+                        <group>
+                            <field name="api_url"/>
+                            <field name="api_key" password="True"/>
+                            <field name="api_secret" password="True"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="notes" nolabel="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search view -->
+    <record id="view_pms_channel_search" model="ir.ui.view">
+        <field name="name">pms.channel.search</field>
+        <field name="model">pms.channel</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <filter name="active" string="Active" domain="[('is_active','=',True)]"/>
+                <group>
+                    <filter name="group_type" string="Channel Type"
+                        context="{'group_by': 'channel_type'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_pms_channel" model="ir.actions.act_window">
+        <field name="name">Channels</field>
+        <field name="res_model">pms.channel</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_pms_channel_search"/>
+        <field name="path">pms-channels</field>
+    </record>
+
+</odoo>

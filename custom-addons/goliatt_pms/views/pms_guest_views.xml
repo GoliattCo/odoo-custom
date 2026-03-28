@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Inherit partner form to add hotel guest fields -->
+    <record id="view_partner_form_inherit_pms_guest" model="ir.ui.view">
+        <field name="name">res.partner.form.inherit.pms.guest</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <notebook position="inside">
+                <page string="Hotel Guest" name="hotel_guest"
+                    invisible="not is_hotel_guest">
+                    <group>
+                        <group>
+                            <field name="is_hotel_guest"/>
+                            <field name="guest_id_type"/>
+                            <field name="guest_id_number"/>
+                            <field name="guest_id_expiry"/>
+                            <field name="nationality_id"/>
+                        </group>
+                        <group>
+                            <field name="date_of_birth"/>
+                            <field name="gender"/>
+                            <field name="vip_level" widget="badge"
+                                decoration-info="vip_level == 'silver'"
+                                decoration-warning="vip_level == 'gold'"
+                                decoration-success="vip_level == 'platinum'"
+                                decoration-danger="vip_level == 'diamond'"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="total_stays"/>
+                            <field name="total_nights"/>
+                        </group>
+                        <group>
+                            <field name="total_revenue"/>
+                            <field name="last_stay_date"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="preference_notes" nolabel="1"
+                            placeholder="Pillow type, floor preference, allergies..."/>
+                    </group>
+                    <group>
+                        <field name="reservation_ids" nolabel="1">
+                            <list>
+                                <field name="name"/>
+                                <field name="property_id"/>
+                                <field name="checkin_date"/>
+                                <field name="checkout_date"/>
+                                <field name="room_type_id"/>
+                                <field name="state" widget="badge"
+                                    decoration-success="state == 'checked_in'"
+                                    decoration-info="state in ('confirmed','guaranteed')"
+                                    decoration-muted="state == 'checked_out'"
+                                    decoration-danger="state in ('cancelled','no_show')"/>
+                            </list>
+                        </field>
+                    </group>
+                </page>
+            </notebook>
+        </field>
+    </record>
+
+    <!-- Add is_hotel_guest toggle on the top of partner form -->
+    <record id="view_partner_form_inherit_pms_toggle" model="ir.ui.view">
+        <field name="name">res.partner.form.inherit.pms.toggle</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <field name="category_id" position="before">
+                <field name="is_hotel_guest"/>
+            </field>
+        </field>
+    </record>
+
+    <!-- Search filter for hotel guests -->
+    <record id="view_partner_search_inherit_pms" model="ir.ui.view">
+        <field name="name">res.partner.search.inherit.pms</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_res_partner_filter"/>
+        <field name="arch" type="xml">
+            <filter name="type_company" position="after">
+                <filter name="hotel_guests" string="Hotel Guests"
+                    domain="[('is_hotel_guest','=',True)]"/>
+            </filter>
+        </field>
+    </record>
+
+    <!-- Action for hotel guests -->
+    <record id="action_pms_guest" model="ir.actions.act_window">
+        <field name="name">Guests</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('is_hotel_guest','=',True)]</field>
+        <field name="context">{'default_is_hotel_guest': True}</field>
+        <field name="path">pms-guests</field>
+    </record>
+
+</odoo>

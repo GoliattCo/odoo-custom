@@ -1,0 +1,889 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# * goliatt_pms
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-03-28 00:00+0000\n"
+"PO-Revision-Date: 2026-03-28 00:00+0000\n"
+"Last-Translator: Manuel Caro\n"
+"Language-Team: Spanish\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. module: goliatt_pms
+#: model:ir.model,name:goliatt_pms.model_pms_property
+msgid "Hotel / Property"
+msgstr "Hotel / Propiedad"
+
+#. module: goliatt_pms
+#: model:ir.model,name:goliatt_pms.model_pms_room_type
+msgid "Room Type"
+msgstr "Tipo de Habitacion"
+
+#. module: goliatt_pms
+#: model:ir.model,name:goliatt_pms.model_pms_amenity
+msgid "Room Amenity"
+msgstr "Amenidad de Habitacion"
+
+#. module: goliatt_pms
+#: model:ir.model,name:goliatt_pms.model_pms_room
+msgid "Room"
+msgstr "Habitacion"
+
+#. module: goliatt_pms
+#: model:ir.model,name:goliatt_pms.model_pms_reservation
+msgid "Reservation"
+msgstr "Reserva"
+
+#. module: goliatt_pms
+#: model:ir.model,name:goliatt_pms.model_pms_rate_plan
+msgid "Rate Plan"
+msgstr "Plan Tarifario"
+
+#. module: goliatt_pms
+#: model:ir.model,name:goliatt_pms.model_pms_folio
+msgid "Folio"
+msgstr "Folio"
+
+#. module: goliatt_pms
+#: model:ir.model,name:goliatt_pms.model_pms_folio_charge
+msgid "Folio Charge"
+msgstr "Cargo de Folio"
+
+#. module: goliatt_pms
+#: model:ir.model,name:goliatt_pms.model_pms_folio_payment
+msgid "Folio Payment"
+msgstr "Pago de Folio"
+
+#. module: goliatt_pms
+#: model:ir.model,name:goliatt_pms.model_pms_housekeeping_task
+msgid "Housekeeping Task"
+msgstr "Tarea de Ama de Llaves"
+
+#. module: goliatt_pms
+#: model:ir.model,name:goliatt_pms.model_pms_channel
+msgid "Distribution Channel"
+msgstr "Canal de Distribucion"
+
+#. module: goliatt_pms
+#: model:ir.model,name:goliatt_pms.model_pms_availability
+msgid "Daily Availability"
+msgstr "Disponibilidad Diaria"
+
+#. module: goliatt_pms
+#: model:ir.model,name:goliatt_pms.model_pms_night_audit
+msgid "Night Audit"
+msgstr "Auditoria Nocturna"
+
+#. module: goliatt_pms
+#: model:ir.model.fields,field_description:goliatt_pms.field_pms_property__name
+msgid "Name"
+msgstr "Nombre"
+
+#. module: goliatt_pms
+#: model:ir.model.fields,field_description:goliatt_pms.field_pms_property__code
+msgid "Short Code"
+msgstr "Codigo Corto"
+
+#. module: goliatt_pms
+#: model:ir.model.fields,field_description:goliatt_pms.field_pms_property__property_type
+msgid "Property Type"
+msgstr "Tipo de Propiedad"
+
+#. module: goliatt_pms
+#: model:ir.model.fields.selection,name:goliatt_pms.field_pms_property__property_type__hotel
+msgid "Hotel"
+msgstr "Hotel"
+
+#. module: goliatt_pms
+#: model:ir.model.fields.selection,name:goliatt_pms.field_pms_property__property_type__resort
+msgid "Resort"
+msgstr "Resort"
+
+#. module: goliatt_pms
+#: model:ir.model.fields.selection,name:goliatt_pms.field_pms_property__property_type__hostel
+msgid "Hostel"
+msgstr "Hostal"
+
+#. module: goliatt_pms
+#: model:ir.model.fields.selection,name:goliatt_pms.field_pms_property__property_type__apartment
+msgid "Apartment"
+msgstr "Apartamento"
+
+#. module: goliatt_pms
+#: model:ir.model.fields.selection,name:goliatt_pms.field_pms_property__property_type__boutique
+msgid "Boutique"
+msgstr "Boutique"
+
+#. module: goliatt_pms
+#: model:ir.model.fields.selection,name:goliatt_pms.field_pms_property__property_type__villa
+msgid "Villa"
+msgstr "Villa"
+
+#. module: goliatt_pms
+#: model:ir.model.fields,field_description:goliatt_pms.field_pms_property__star_rating
+msgid "Star Rating"
+msgstr "Clasificacion por Estrellas"
+
+#. module: goliatt_pms
+#: model:ir.model.fields,field_description:goliatt_pms.field_pms_property__check_in_time
+msgid "Check-in Time"
+msgstr "Hora de Check-in"
+
+#. module: goliatt_pms
+#: model:ir.model.fields,field_description:goliatt_pms.field_pms_property__check_out_time
+msgid "Check-out Time"
+msgstr "Hora de Check-out"
+
+#. module: goliatt_pms
+#: model:ir.model.fields,field_description:goliatt_pms.field_pms_property__total_rooms
+msgid "Total Rooms"
+msgstr "Total de Habitaciones"
+
+#. module: goliatt_pms
+#: model:ir.model.fields,field_description:goliatt_pms.field_pms_room_type__base_rate
+msgid "Base Rate"
+msgstr "Tarifa Base"
+
+#. module: goliatt_pms
+#: model:ir.model.fields,field_description:goliatt_pms.field_pms_room_type__max_adults
+msgid "Max Adults"
+msgstr "Adultos Maximo"
+
+#. module: goliatt_pms
+#: model:ir.model.fields,field_description:goliatt_pms.field_pms_room_type__max_children
+msgid "Max Children"
+msgstr "Ninos Maximo"
+
+#. module: goliatt_pms
+#: model:ir.model.fields,field_description:goliatt_pms.field_pms_room_type__max_occupancy
+msgid "Max Occupancy"
+msgstr "Ocupacion Maxima"
+
+#. module: goliatt_pms
+#: model:ir.model.fields,field_description:goliatt_pms.field_pms_room_type__bed_type
+msgid "Bed Type"
+msgstr "Tipo de Cama"
+
+#. module: goliatt_pms
+#: model:ir.model.fields.selection,name:goliatt_pms.field_pms_room_type__bed_type__king
+msgid "King"
+msgstr "King"
+
+#. module: goliatt_pms
+#: model:ir.model.fields.selection,name:goliatt_pms.field_pms_room_type__bed_type__queen
+msgid "Queen"
+msgstr "Queen"
+
+#. module: goliatt_pms
+#: model:ir.model.fields.selection,name:goliatt_pms.field_pms_room_type__bed_type__twin
+msgid "Twin"
+msgstr "Twin"
+
+#. module: goliatt_pms
+#: model:ir.model.fields.selection,name:goliatt_pms.field_pms_room_type__bed_type__double
+msgid "Double"
+msgstr "Doble"
+
+#. module: goliatt_pms
+#: model:ir.model.fields.selection,name:goliatt_pms.field_pms_room_type__bed_type__single
+msgid "Single"
+msgstr "Sencilla"
+
+#. module: goliatt_pms
+#: model:ir.model.fields,field_description:goliatt_pms.field_pms_room_type__view_type
+msgid "View Type"
+msgstr "Tipo de Vista"
+
+#. module: goliatt_pms
+#: model:ir.model.fields,field_description:goliatt_pms.field_pms_room__name
+msgid "Room Number"
+msgstr "Numero de Habitacion"
+
+#. module: goliatt_pms
+#: model:ir.model.fields,field_description:goliatt_pms.field_pms_room__status
+msgid "Status"
+msgstr "Estado"
+
+#. module: goliatt_pms
+#: model:ir.model.fields.selection,name:goliatt_pms.field_pms_room__status__available
+msgid "Available"
+msgstr "Disponible"
+
+#. module: goliatt_pms
+#: model:ir.model.fields.selection,name:goliatt_pms.field_pms_room__status__occupied
+msgid "Occupied"
+msgstr "Ocupada"
+
+#. module: goliatt_pms
+#: model:ir.model.fields.selection,name:goliatt_pms.field_pms_room__status__out_of_order
+msgid "Out of Order"
+msgstr "Fuera de Servicio"
+
+#. module: goliatt_pms
+#: model:ir.model.fields.selection,name:goliatt_pms.field_pms_room__status__out_of_service
+msgid "Out of Service"
+msgstr "Fuera de Operacion"
+
+#. module: goliatt_pms
+#: model:ir.model.fields,field_description:goliatt_pms.field_pms_room__housekeeping_status
+msgid "Housekeeping"
+msgstr "Ama de Llaves"
+
+#. module: goliatt_pms
+#: model:ir.model.fields.selection,name:goliatt_pms.field_pms_room__housekeeping_status__clean
+msgid "Clean"
+msgstr "Limpia"
+
+#. module: goliatt_pms
+#: model:ir.model.fields.selection,name:goliatt_pms.field_pms_room__housekeeping_status__dirty
+msgid "Dirty"
+msgstr "Sucia"
+
+#. module: goliatt_pms
+#: model:ir.model.fields.selection,name:goliatt_pms.field_pms_room__housekeeping_status__cleaning
+msgid "Cleaning"
+msgstr "En Limpieza"
+
+#. module: goliatt_pms
+#: model:ir.model.fields.selection,name:goliatt_pms.field_pms_room__housekeeping_status__inspected
+msgid "Inspected"
+msgstr "Inspeccionada"
+
+#. module: goliatt_pms
+#: model:ir.model.fields,field_description:goliatt_pms.field_pms_room__floor
+msgid "Floor"
+msgstr "Piso"
+
+#. module: goliatt_pms
+#: model:ir.model.fields,field_description:goliatt_pms.field_pms_room__is_smoking
+msgid "Smoking Room"
+msgstr "Habitacion para Fumadores"
+
+#. module: goliatt_pms
+#: model:ir.model.fields,field_description:goliatt_pms.field_pms_room__is_accessible
+msgid "Accessible Room"
+msgstr "Habitacion Accesible"
+
+#. module: goliatt_pms
+#: model:ir.model.fields,field_description:goliatt_pms.field_pms_reservation__name
+msgid "Reservation No."
+msgstr "No. de Reserva"
+
+#. module: goliatt_pms
+#: model:ir.model.fields,field_description:goliatt_pms.field_pms_reservation__guest_id
+msgid "Guest"
+msgstr "Huesped"
+
+#. module: goliatt_pms
+#: model:ir.model.fields,field_description:goliatt_pms.field_pms_reservation__checkin_date
+msgid "Check-in"
+msgstr "Check-in"
+
+#. module: goliatt_pms
+#: model:ir.model.fields,field_description:goliatt_pms.field_pms_reservation__checkout_date
+msgid "Check-out"
+msgstr "Check-out"
+
+#. module: goliatt_pms
+#: model:ir.model.fields,field_description:goliatt_pms.field_pms_reservation__nights
+msgid "Nights"
+msgstr "Noches"
+
+#. module: goliatt_pms
+#: model:ir.model.fields,field_description:goliatt_pms.field_pms_reservation__adults
+msgid "Adults"
+msgstr "Adultos"
+
+#. module: goliatt_pms
+#: model:ir.model.fields,field_description:goliatt_pms.field_pms_reservation__children
+msgid "Children"
+msgstr "Ninos"
+
+#. module: goliatt_pms
+#: model:ir.model.fields,field_description:goliatt_pms.field_pms_reservation__daily_rate
+msgid "Daily Rate"
+msgstr "Tarifa Diaria"
+
+#. module: goliatt_pms
+#: model:ir.model.fields,field_description:goliatt_pms.field_pms_reservation__total_amount
+msgid "Total Amount"
+msgstr "Monto Total"
+
+#. module: goliatt_pms
+#: model:ir.model.fields,field_description:goliatt_pms.field_pms_reservation__state
+msgid "State"
+msgstr "Estado"
+
+#. module: goliatt_pms
+#: model:ir.model.fields.selection,name:goliatt_pms.field_pms_reservation__state__confirmed
+msgid "Confirmed"
+msgstr "Confirmada"
+
+#. module: goliatt_pms
+#: model:ir.model.fields.selection,name:goliatt_pms.field_pms_reservation__state__guaranteed
+msgid "Guaranteed"
+msgstr "Garantizada"
+
+#. module: goliatt_pms
+#: model:ir.model.fields.selection,name:goliatt_pms.field_pms_reservation__state__checked_in
+msgid "Checked In"
+msgstr "Checked In"
+
+#. module: goliatt_pms
+#: model:ir.model.fields.selection,name:goliatt_pms.field_pms_reservation__state__checked_out
+msgid "Checked Out"
+msgstr "Checked Out"
+
+#. module: goliatt_pms
+#: model:ir.model.fields.selection,name:goliatt_pms.field_pms_reservation__state__cancelled
+msgid "Cancelled"
+msgstr "Cancelada"
+
+#. module: goliatt_pms
+#: model:ir.model.fields.selection,name:goliatt_pms.field_pms_reservation__state__no_show
+msgid "No Show"
+msgstr "No Show"
+
+#. module: goliatt_pms
+#: model:ir.model.fields,field_description:goliatt_pms.field_pms_reservation__source
+msgid "Source / Channel"
+msgstr "Fuente / Canal"
+
+#. module: goliatt_pms
+#: model:ir.model.fields.selection,name:goliatt_pms.field_pms_reservation__source__direct
+msgid "Direct"
+msgstr "Directo"
+
+#. module: goliatt_pms
+#: model:ir.model.fields.selection,name:goliatt_pms.field_pms_reservation__source__phone
+msgid "Phone"
+msgstr "Telefono"
+
+#. module: goliatt_pms
+#: model:ir.model.fields.selection,name:goliatt_pms.field_pms_reservation__source__walk_in
+msgid "Walk-in"
+msgstr "Walk-in"
+
+#. module: goliatt_pms
+#: model:ir.model.fields,field_description:goliatt_pms.field_pms_reservation__special_requests
+msgid "Special Requests"
+msgstr "Solicitudes Especiales"
+
+#. module: goliatt_pms
+#: model:ir.model.fields,field_description:goliatt_pms.field_pms_reservation__guarantee_type
+msgid "Guarantee Type"
+msgstr "Tipo de Garantia"
+
+#. module: goliatt_pms
+#: model:ir.model.fields,field_description:goliatt_pms.field_pms_folio__name
+msgid "Folio No."
+msgstr "No. de Folio"
+
+#. module: goliatt_pms
+#: model:ir.model.fields,field_description:goliatt_pms.field_pms_folio__total_charges
+msgid "Total Charges"
+msgstr "Total Cargos"
+
+#. module: goliatt_pms
+#: model:ir.model.fields,field_description:goliatt_pms.field_pms_folio__total_payments
+msgid "Total Payments"
+msgstr "Total Pagos"
+
+#. module: goliatt_pms
+#: model:ir.model.fields,field_description:goliatt_pms.field_pms_folio__balance
+msgid "Balance"
+msgstr "Saldo"
+
+#. module: goliatt_pms
+#: model:ir.model.fields,field_description:goliatt_pms.field_pms_folio_charge__description
+msgid "Description"
+msgstr "Descripcion"
+
+#. module: goliatt_pms
+#: model:ir.model.fields,field_description:goliatt_pms.field_pms_folio_charge__quantity
+msgid "Quantity"
+msgstr "Cantidad"
+
+#. module: goliatt_pms
+#: model:ir.model.fields,field_description:goliatt_pms.field_pms_folio_charge__unit_price
+msgid "Unit Price"
+msgstr "Precio Unitario"
+
+#. module: goliatt_pms
+#: model:ir.model.fields,field_description:goliatt_pms.field_pms_folio_charge__amount
+msgid "Amount"
+msgstr "Monto"
+
+#. module: goliatt_pms
+#: model:ir.model.fields,field_description:goliatt_pms.field_pms_folio_charge__department
+msgid "Department"
+msgstr "Departamento"
+
+#. module: goliatt_pms
+#: model:ir.model.fields.selection,name:goliatt_pms.field_pms_folio_charge__department__rooms
+msgid "Rooms"
+msgstr "Habitaciones"
+
+#. module: goliatt_pms
+#: model:ir.model.fields.selection,name:goliatt_pms.field_pms_folio_charge__department__food_beverage
+msgid "Food & Beverage"
+msgstr "Alimentos y Bebidas"
+
+#. module: goliatt_pms
+#: model:ir.model.fields.selection,name:goliatt_pms.field_pms_folio_charge__department__spa
+msgid "Spa"
+msgstr "Spa"
+
+#. module: goliatt_pms
+#: model:ir.model.fields.selection,name:goliatt_pms.field_pms_folio_charge__department__minibar
+msgid "Minibar"
+msgstr "Minibar"
+
+#. module: goliatt_pms
+#: model:ir.model.fields.selection,name:goliatt_pms.field_pms_folio_charge__department__laundry
+msgid "Laundry"
+msgstr "Lavanderia"
+
+#. module: goliatt_pms
+#: model:ir.model.fields,field_description:goliatt_pms.field_pms_folio_payment__payment_method
+msgid "Payment Method"
+msgstr "Metodo de Pago"
+
+#. module: goliatt_pms
+#: model:ir.model.fields.selection,name:goliatt_pms.field_pms_folio_payment__payment_method__cash
+msgid "Cash"
+msgstr "Efectivo"
+
+#. module: goliatt_pms
+#: model:ir.model.fields.selection,name:goliatt_pms.field_pms_folio_payment__payment_method__credit_card
+msgid "Credit Card"
+msgstr "Tarjeta de Credito"
+
+#. module: goliatt_pms
+#: model:ir.model.fields.selection,name:goliatt_pms.field_pms_folio_payment__payment_method__debit_card
+msgid "Debit Card"
+msgstr "Tarjeta Debito"
+
+#. module: goliatt_pms
+#: model:ir.model.fields.selection,name:goliatt_pms.field_pms_folio_payment__payment_method__bank_transfer
+msgid "Bank Transfer"
+msgstr "Transferencia Bancaria"
+
+#. module: goliatt_pms
+#: model:ir.model.fields,field_description:goliatt_pms.field_pms_housekeeping_task__task_type
+msgid "Task Type"
+msgstr "Tipo de Tarea"
+
+#. module: goliatt_pms
+#: model:ir.model.fields.selection,name:goliatt_pms.field_pms_housekeeping_task__task_type__checkout_clean
+msgid "Check-out Clean"
+msgstr "Limpieza de Salida"
+
+#. module: goliatt_pms
+#: model:ir.model.fields.selection,name:goliatt_pms.field_pms_housekeeping_task__task_type__stayover
+msgid "Stayover"
+msgstr "Ocupada"
+
+#. module: goliatt_pms
+#: model:ir.model.fields.selection,name:goliatt_pms.field_pms_housekeeping_task__task_type__deep_clean
+msgid "Deep Clean"
+msgstr "Limpieza Profunda"
+
+#. module: goliatt_pms
+#: model:ir.model.fields.selection,name:goliatt_pms.field_pms_housekeeping_task__task_type__turndown
+msgid "Turndown"
+msgstr "Cobertura"
+
+#. module: goliatt_pms
+#: model:ir.model.fields.selection,name:goliatt_pms.field_pms_housekeeping_task__task_type__inspection
+msgid "Inspection"
+msgstr "Inspeccion"
+
+#. module: goliatt_pms
+#: model:ir.model.fields,field_description:goliatt_pms.field_pms_housekeeping_task__attendant_id
+msgid "Attendant"
+msgstr "Camarera"
+
+#. module: goliatt_pms
+#: model:ir.model.fields,field_description:goliatt_pms.field_pms_housekeeping_task__supervisor_id
+msgid "Supervisor"
+msgstr "Supervisor"
+
+#. module: goliatt_pms
+#: model:ir.model.fields,field_description:goliatt_pms.field_pms_housekeeping_task__priority
+msgid "Priority"
+msgstr "Prioridad"
+
+#. module: goliatt_pms
+#: model:ir.model.fields.selection,name:goliatt_pms.field_pms_housekeeping_task__priority__normal
+msgid "Normal"
+msgstr "Normal"
+
+#. module: goliatt_pms
+#: model:ir.model.fields.selection,name:goliatt_pms.field_pms_housekeeping_task__priority__rush
+msgid "Rush"
+msgstr "Urgente"
+
+#. module: goliatt_pms
+#: model:ir.model.fields.selection,name:goliatt_pms.field_pms_housekeeping_task__priority__vip
+msgid "VIP"
+msgstr "VIP"
+
+#. module: goliatt_pms
+#: model:ir.model.fields,field_description:goliatt_pms.field_pms_channel__commission_pct
+msgid "Commission %"
+msgstr "Comision %"
+
+#. module: goliatt_pms
+#: model:ir.model.fields,field_description:goliatt_pms.field_pms_availability__total_inventory
+msgid "Total Inventory"
+msgstr "Inventario Total"
+
+#. module: goliatt_pms
+#: model:ir.model.fields,field_description:goliatt_pms.field_pms_availability__sold
+msgid "Sold"
+msgstr "Vendidas"
+
+#. module: goliatt_pms
+#: model:ir.model.fields,field_description:goliatt_pms.field_pms_availability__out_of_order
+msgid "Out of Order"
+msgstr "Fuera de Orden"
+
+#. module: goliatt_pms
+#: model:ir.model.fields,field_description:goliatt_pms.field_pms_availability__stop_sell
+msgid "Stop Sell"
+msgstr "Parar Venta"
+
+#. module: goliatt_pms
+#: model:ir.model.fields,field_description:goliatt_pms.field_pms_night_audit__audit_date
+msgid "Audit Date"
+msgstr "Fecha de Auditoria"
+
+#. module: goliatt_pms
+#: model:ir.model.fields,field_description:goliatt_pms.field_pms_night_audit__rooms_sold
+msgid "Rooms Sold"
+msgstr "Habitaciones Vendidas"
+
+#. module: goliatt_pms
+#: model:ir.model.fields,field_description:goliatt_pms.field_pms_night_audit__occupancy_pct
+msgid "Occupancy %"
+msgstr "Ocupacion %"
+
+#. module: goliatt_pms
+#: model:ir.model.fields,field_description:goliatt_pms.field_pms_night_audit__total_revenue
+msgid "Total Revenue"
+msgstr "Ingreso Total"
+
+#. module: goliatt_pms
+#: model:ir.model.fields,field_description:goliatt_pms.field_pms_night_audit__adr
+msgid "ADR"
+msgstr "ADR (Tarifa Promedio Diaria)"
+
+#. module: goliatt_pms
+#: model:ir.model.fields,field_description:goliatt_pms.field_pms_night_audit__revpar
+msgid "RevPAR"
+msgstr "RevPAR"
+
+#. module: goliatt_pms
+#: model:ir.model.fields,field_description:goliatt_pms.field_pms_rate_plan__rate_type
+msgid "Rate Type"
+msgstr "Tipo de Tarifa"
+
+#. module: goliatt_pms
+#: model:ir.model.fields,field_description:goliatt_pms.field_pms_rate_plan__meal_plan
+msgid "Meal Plan"
+msgstr "Plan de Comidas"
+
+#. module: goliatt_pms
+#: model:ir.model.fields.selection,name:goliatt_pms.field_pms_rate_plan__meal_plan__room_only
+msgid "Room Only"
+msgstr "Solo Habitacion"
+
+#. module: goliatt_pms
+#: model:ir.model.fields.selection,name:goliatt_pms.field_pms_rate_plan__meal_plan__bed_breakfast
+msgid "Bed & Breakfast"
+msgstr "Alojamiento y Desayuno"
+
+#. module: goliatt_pms
+#: model:ir.model.fields.selection,name:goliatt_pms.field_pms_rate_plan__meal_plan__half_board
+msgid "Half Board"
+msgstr "Media Pension"
+
+#. module: goliatt_pms
+#: model:ir.model.fields.selection,name:goliatt_pms.field_pms_rate_plan__meal_plan__full_board
+msgid "Full Board"
+msgstr "Pension Completa"
+
+#. module: goliatt_pms
+#: model:ir.model.fields.selection,name:goliatt_pms.field_pms_rate_plan__meal_plan__all_inclusive
+msgid "All Inclusive"
+msgstr "Todo Incluido"
+
+#. module: goliatt_pms
+#: model:ir.model.fields,field_description:goliatt_pms.field_pms_rate_plan__min_stay
+msgid "Minimum Stay (nights)"
+msgstr "Estancia Minima (noches)"
+
+#. module: goliatt_pms
+#: model:res.groups,name:goliatt_pms.group_pms_user
+msgid "Front Desk Agent"
+msgstr "Agente de Recepcion"
+
+#. module: goliatt_pms
+#: model:res.groups,name:goliatt_pms.group_pms_manager
+msgid "Hotel Manager"
+msgstr "Gerente de Hotel"
+
+#. module: goliatt_pms
+#: model:res.groups,name:goliatt_pms.group_pms_admin
+msgid "PMS Administrator"
+msgstr "Administrador PMS"
+
+#. module: goliatt_pms
+#: model:ir.ui.menu,name:goliatt_pms.menu_pms_root
+msgid "Goliatt PMS"
+msgstr "Goliatt PMS"
+
+#. module: goliatt_pms
+#: model:ir.ui.menu,name:goliatt_pms.menu_pms_front_desk
+msgid "Front Desk"
+msgstr "Recepcion"
+
+#. module: goliatt_pms
+#: model:ir.ui.menu,name:goliatt_pms.menu_pms_reservations
+msgid "Reservations"
+msgstr "Reservas"
+
+#. module: goliatt_pms
+#: model:ir.ui.menu,name:goliatt_pms.menu_pms_arrivals
+msgid "Arrivals Today"
+msgstr "Llegadas Hoy"
+
+#. module: goliatt_pms
+#: model:ir.ui.menu,name:goliatt_pms.menu_pms_departures
+msgid "Departures Today"
+msgstr "Salidas Hoy"
+
+#. module: goliatt_pms
+#: model:ir.ui.menu,name:goliatt_pms.menu_pms_in_house
+msgid "In-House Guests"
+msgstr "Huespedes In-House"
+
+#. module: goliatt_pms
+#: model:ir.ui.menu,name:goliatt_pms.menu_pms_walkin
+msgid "Walk-In"
+msgstr "Walk-In"
+
+#. module: goliatt_pms
+#: model:ir.ui.menu,name:goliatt_pms.menu_pms_rooms
+msgid "Rooms"
+msgstr "Habitaciones"
+
+#. module: goliatt_pms
+#: model:ir.ui.menu,name:goliatt_pms.menu_pms_room_rack
+msgid "Room Rack"
+msgstr "Rack de Habitaciones"
+
+#. module: goliatt_pms
+#: model:ir.ui.menu,name:goliatt_pms.menu_pms_housekeeping
+msgid "Housekeeping"
+msgstr "Ama de Llaves"
+
+#. module: goliatt_pms
+#: model:ir.ui.menu,name:goliatt_pms.menu_pms_billing
+msgid "Billing"
+msgstr "Facturacion"
+
+#. module: goliatt_pms
+#: model:ir.ui.menu,name:goliatt_pms.menu_pms_folios
+msgid "Folios"
+msgstr "Folios"
+
+#. module: goliatt_pms
+#: model:ir.ui.menu,name:goliatt_pms.menu_pms_revenue
+msgid "Revenue"
+msgstr "Ingresos"
+
+#. module: goliatt_pms
+#: model:ir.ui.menu,name:goliatt_pms.menu_pms_rate_plans
+msgid "Rate Plans"
+msgstr "Planes Tarifarios"
+
+#. module: goliatt_pms
+#: model:ir.ui.menu,name:goliatt_pms.menu_pms_availability
+msgid "Availability"
+msgstr "Disponibilidad"
+
+#. module: goliatt_pms
+#: model:ir.ui.menu,name:goliatt_pms.menu_pms_config
+msgid "Configuration"
+msgstr "Configuracion"
+
+#. module: goliatt_pms
+#: model:ir.ui.menu,name:goliatt_pms.menu_pms_config_properties
+msgid "Properties"
+msgstr "Propiedades"
+
+#. module: goliatt_pms
+#: model:ir.ui.menu,name:goliatt_pms.menu_pms_config_room_types
+msgid "Room Types"
+msgstr "Tipos de Habitacion"
+
+#. module: goliatt_pms
+#: model:ir.ui.menu,name:goliatt_pms.menu_pms_config_amenities
+msgid "Amenities"
+msgstr "Amenidades"
+
+#. module: goliatt_pms
+#: model:ir.ui.menu,name:goliatt_pms.menu_pms_config_channels
+msgid "Channels"
+msgstr "Canales"
+
+#. module: goliatt_pms
+#: model:ir.ui.menu,name:goliatt_pms.menu_pms_reports
+msgid "Reports"
+msgstr "Reportes"
+
+#. module: goliatt_pms
+#: model:ir.ui.menu,name:goliatt_pms.menu_pms_night_audit
+msgid "Night Audit"
+msgstr "Auditoria Nocturna"
+
+#. module: goliatt_pms
+#. odoo-python
+#: code:addons/goliatt_pms/models/pms_reservation.py:0
+msgid "New"
+msgstr "Nuevo"
+
+#. module: goliatt_pms
+#. odoo-python
+#: code:addons/goliatt_pms/models/pms_reservation.py:0
+msgid "Please assign a room before checking in."
+msgstr "Por favor asigne una habitacion antes de hacer check-in."
+
+#. module: goliatt_pms
+#. odoo-python
+#: code:addons/goliatt_pms/models/pms_reservation.py:0
+msgid "Only confirmed or guaranteed reservations can be checked in."
+msgstr "Solo reservas confirmadas o garantizadas pueden hacer check-in."
+
+#. module: goliatt_pms
+#. odoo-python
+#: code:addons/goliatt_pms/models/pms_reservation.py:0
+msgid "Only checked-in reservations can be checked out."
+msgstr "Solo reservas con check-in pueden hacer check-out."
+
+#. module: goliatt_pms
+#. odoo-python
+#: code:addons/goliatt_pms/models/pms_reservation.py:0
+msgid "Cannot cancel a reservation that is already checked in or out."
+msgstr "No se puede cancelar una reserva que ya tiene check-in o check-out."
+
+#. module: goliatt_pms
+#. odoo-python
+#: code:addons/goliatt_pms/models/pms_reservation.py:0
+msgid "Only confirmed / guaranteed reservations can be marked as no-show."
+msgstr "Solo reservas confirmadas / garantizadas pueden marcarse como no-show."
+
+#. module: goliatt_pms
+#. odoo-python
+#: code:addons/goliatt_pms/models/pms_reservation.py:0
+msgid "Check-out date must be after check-in date."
+msgstr "La fecha de check-out debe ser posterior a la fecha de check-in."
+
+#. module: goliatt_pms
+#. odoo-python
+#: code:addons/goliatt_pms/models/pms_folio.py:0
+msgid "An invoice already exists for this folio."
+msgstr "Ya existe una factura para este folio."
+
+#. module: goliatt_pms
+#. odoo-python
+#: code:addons/goliatt_pms/models/pms_folio.py:0
+msgid "Cannot close folio with outstanding balance of %s."
+msgstr "No se puede cerrar el folio con saldo pendiente de %s."
+
+#. module: goliatt_pms
+#. odoo-python
+#: code:addons/goliatt_pms/models/pms_housekeeping.py:0
+msgid "Task must be in progress to complete."
+msgstr "La tarea debe estar en progreso para completarla."
+
+#. module: goliatt_pms
+#. odoo-python
+#: code:addons/goliatt_pms/models/pms_housekeeping.py:0
+msgid "Task must be completed to inspect."
+msgstr "La tarea debe estar completada para inspeccionarla."
+
+#. module: goliatt_pms
+#. odoo-python
+#: code:addons/goliatt_pms/models/pms_night_audit.py:0
+msgid "This audit has already been completed."
+msgstr "Esta auditoria ya fue completada."
+
+#. module: goliatt_pms
+#: model:ir.model.fields,field_description:goliatt_pms.field_res_partner__is_hotel_guest
+msgid "Is Hotel Guest"
+msgstr "Es Huesped de Hotel"
+
+#. module: goliatt_pms
+#: model:ir.model.fields,field_description:goliatt_pms.field_res_partner__guest_id_type
+msgid "ID Document Type"
+msgstr "Tipo de Documento"
+
+#. module: goliatt_pms
+#: model:ir.model.fields,field_description:goliatt_pms.field_res_partner__guest_id_number
+msgid "ID Document Number"
+msgstr "Numero de Documento"
+
+#. module: goliatt_pms
+#: model:ir.model.fields,field_description:goliatt_pms.field_res_partner__nationality_id
+msgid "Nationality"
+msgstr "Nacionalidad"
+
+#. module: goliatt_pms
+#: model:ir.model.fields,field_description:goliatt_pms.field_res_partner__date_of_birth
+msgid "Date of Birth"
+msgstr "Fecha de Nacimiento"
+
+#. module: goliatt_pms
+#: model:ir.model.fields,field_description:goliatt_pms.field_res_partner__gender
+msgid "Gender"
+msgstr "Genero"
+
+#. module: goliatt_pms
+#: model:ir.model.fields,field_description:goliatt_pms.field_res_partner__vip_level
+msgid "VIP Level"
+msgstr "Nivel VIP"
+
+#. module: goliatt_pms
+#: model:ir.model.fields,field_description:goliatt_pms.field_res_partner__total_stays
+msgid "Total Stays"
+msgstr "Total Estadias"
+
+#. module: goliatt_pms
+#: model:ir.model.fields,field_description:goliatt_pms.field_res_partner__total_nights
+msgid "Total Nights"
+msgstr "Total Noches"
+
+#. module: goliatt_pms
+#: model:ir.model.fields,field_description:goliatt_pms.field_res_partner__total_revenue
+msgid "Total Revenue"
+msgstr "Ingreso Total"
+
+#. module: goliatt_pms
+#: model:ir.model.fields,field_description:goliatt_pms.field_res_partner__last_stay_date
+msgid "Last Stay"
+msgstr "Ultima Estadia"
+
+#. module: goliatt_pms
+#: model:ir.model.fields,field_description:goliatt_pms.field_res_partner__preference_notes
+msgid "Guest Preferences"
+msgstr "Preferencias del Huesped"

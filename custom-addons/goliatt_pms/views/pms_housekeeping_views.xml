@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Kanban view — Housekeeping Board grouped by state -->
+    <record id="view_pms_housekeeping_kanban" model="ir.ui.view">
+        <field name="name">pms.housekeeping.task.kanban</field>
+        <field name="model">pms.housekeeping.task</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state">
+                <field name="name"/>
+                <field name="room_id"/>
+                <field name="task_type"/>
+                <field name="priority"/>
+                <field name="attendant_id"/>
+                <field name="state"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_global_click">
+                            <div class="d-flex justify-content-between">
+                                <strong><field name="name"/></strong>
+                                <field name="priority" widget="badge"
+                                    decoration-danger="priority == 'vip'"
+                                    decoration-warning="priority == 'rush'"
+                                    decoration-info="priority == 'normal'"/>
+                            </div>
+                            <div>
+                                <i class="fa fa-bed"/> Room <field name="room_id"/>
+                            </div>
+                            <div class="text-muted">
+                                <field name="task_type"/>
+                            </div>
+                            <div t-if="record.attendant_id.raw_value" class="text-muted">
+                                <i class="fa fa-user"/> <field name="attendant_id"/>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- List view -->
+    <record id="view_pms_housekeeping_list" model="ir.ui.view">
+        <field name="name">pms.housekeeping.task.list</field>
+        <field name="model">pms.housekeeping.task</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name" decoration-bf="1"/>
+                <field name="room_id"/>
+                <field name="property_id"/>
+                <field name="date"/>
+                <field name="task_type"/>
+                <field name="priority" widget="badge"
+                    decoration-danger="priority == 'vip'"
+                    decoration-warning="priority == 'rush'"
+                    decoration-info="priority == 'normal'"/>
+                <field name="attendant_id"/>
+                <field name="supervisor_id" optional="hide"/>
+                <field name="state" widget="badge"
+                    decoration-success="state in ('completed','inspected')"
+                    decoration-info="state == 'in_progress'"
+                    decoration-danger="state == 'failed'"
+                    decoration-muted="state == 'pending'"/>
+                <field name="duration_minutes" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form view -->
+    <record id="view_pms_housekeeping_form" model="ir.ui.view">
+        <field name="name">pms.housekeeping.task.form</field>
+        <field name="model">pms.housekeeping.task</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_start" string="Start"
+                        type="object" class="btn-primary"
+                        invisible="state != 'pending'"/>
+                    <button name="action_complete" string="Complete"
+                        type="object" class="btn-primary"
+                        invisible="state != 'in_progress'"/>
+                    <button name="action_inspect" string="Pass Inspection"
+                        type="object" class="btn-success"
+                        invisible="state != 'completed'"/>
+                    <button name="action_fail" string="Fail Inspection"
+                        type="object" class="btn-danger"
+                        invisible="state != 'completed'"/>
+                    <field name="state" widget="statusbar"
+                        statusbar_visible="pending,in_progress,completed,inspected"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="room_id"/>
+                            <field name="property_id"/>
+                            <field name="date"/>
+                            <field name="task_type"/>
+                            <field name="priority"/>
+                        </group>
+                        <group>
+                            <field name="attendant_id"/>
+                            <field name="supervisor_id"/>
+                            <field name="start_time"/>
+                            <field name="end_time"/>
+                            <field name="duration_minutes"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Notes" name="notes">
+                            <field name="notes" placeholder="Task notes..."/>
+                        </page>
+                        <page string="Inspection" name="inspection">
+                            <field name="inspection_notes"
+                                placeholder="Inspection remarks..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search view -->
+    <record id="view_pms_housekeeping_search" model="ir.ui.view">
+        <field name="name">pms.housekeeping.task.search</field>
+        <field name="model">pms.housekeeping.task</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="room_id"/>
+                <field name="attendant_id"/>
+                <separator/>
+                <filter name="today" string="Today"
+                    domain="[('date','=',context_today().strftime('%Y-%m-%d'))]"/>
+                <filter name="pending" string="Pending"
+                    domain="[('state','=','pending')]"/>
+                <filter name="in_progress" string="In Progress"
+                    domain="[('state','=','in_progress')]"/>
+                <filter name="completed" string="Completed"
+                    domain="[('state','in',('completed','inspected'))]"/>
+                <filter name="failed" string="Failed"
+                    domain="[('state','=','failed')]"/>
+                <separator/>
+                <filter name="vip" string="VIP"
+                    domain="[('priority','=','vip')]"/>
+                <filter name="rush" string="Rush"
+                    domain="[('priority','=','rush')]"/>
+                <group>
+                    <filter name="group_state" string="State"
+                        context="{'group_by': 'state'}"/>
+                    <filter name="group_type" string="Task Type"
+                        context="{'group_by': 'task_type'}"/>
+                    <filter name="group_attendant" string="Attendant"
+                        context="{'group_by': 'attendant_id'}"/>
+                    <filter name="group_date" string="Date"
+                        context="{'group_by': 'date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Actions -->
+    <record id="action_pms_housekeeping_today" model="ir.actions.act_window">
+        <field name="name">Today's Tasks</field>
+        <field name="res_model">pms.housekeeping.task</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="search_view_id" ref="view_pms_housekeeping_search"/>
+        <field name="context">{'search_default_today': 1}</field>
+        <field name="path">pms-housekeeping-today</field>
+    </record>
+
+    <record id="action_pms_housekeeping_all" model="ir.actions.act_window">
+        <field name="name">All Tasks</field>
+        <field name="res_model">pms.housekeeping.task</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="view_pms_housekeeping_search"/>
+        <field name="path">pms-housekeeping</field>
+    </record>
+
+</odoo>

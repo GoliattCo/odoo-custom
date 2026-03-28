@@ -1,0 +1,834 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- ══════════════════════════════════════════════════════════
+             AMENITIES
+             ══════════════════════════════════════════════════════════ -->
+        <record id="amenity_wifi" model="pms.amenity">
+            <field name="name">WiFi</field>
+            <field name="icon">fa-wifi</field>
+            <field name="category">technology</field>
+        </record>
+        <record id="amenity_minibar" model="pms.amenity">
+            <field name="name">Mini Bar</field>
+            <field name="icon">fa-glass</field>
+            <field name="category">room</field>
+        </record>
+        <record id="amenity_safe" model="pms.amenity">
+            <field name="name">In-Room Safe</field>
+            <field name="icon">fa-lock</field>
+            <field name="category">room</field>
+        </record>
+        <record id="amenity_balcony" model="pms.amenity">
+            <field name="name">Balcony</field>
+            <field name="icon">fa-building</field>
+            <field name="category">room</field>
+        </record>
+        <record id="amenity_jacuzzi" model="pms.amenity">
+            <field name="name">Jacuzzi</field>
+            <field name="icon">fa-tint</field>
+            <field name="category">bathroom</field>
+        </record>
+        <record id="amenity_tv" model="pms.amenity">
+            <field name="name">Smart TV</field>
+            <field name="icon">fa-tv</field>
+            <field name="category">entertainment</field>
+        </record>
+        <record id="amenity_ac" model="pms.amenity">
+            <field name="name">Air Conditioning</field>
+            <field name="icon">fa-snowflake-o</field>
+            <field name="category">room</field>
+        </record>
+        <record id="amenity_bathrobe" model="pms.amenity">
+            <field name="name">Bathrobes &amp; Slippers</field>
+            <field name="icon">fa-user</field>
+            <field name="category">bathroom</field>
+        </record>
+        <record id="amenity_coffee" model="pms.amenity">
+            <field name="name">Coffee Maker</field>
+            <field name="icon">fa-coffee</field>
+            <field name="category">room</field>
+        </record>
+        <record id="amenity_workspace" model="pms.amenity">
+            <field name="name">Work Desk</field>
+            <field name="icon">fa-desktop</field>
+            <field name="category">technology</field>
+        </record>
+
+        <!-- ══════════════════════════════════════════════════════════
+             PROPERTY
+             ══════════════════════════════════════════════════════════ -->
+        <record id="property_bogota" model="pms.property">
+            <field name="name">Hotel Goliatt Bogota</field>
+            <field name="code">HGB01</field>
+            <field name="property_type">hotel</field>
+            <field name="star_rating">5</field>
+            <field name="check_in_time">15.0</field>
+            <field name="check_out_time">11.0</field>
+            <field name="timezone">America/Bogota</field>
+        </record>
+
+        <!-- ══════════════════════════════════════════════════════════
+             ROOM TYPES
+             ══════════════════════════════════════════════════════════ -->
+        <record id="room_type_std" model="pms.room.type">
+            <field name="name">Standard</field>
+            <field name="code">STD</field>
+            <field name="property_id" ref="property_bogota"/>
+            <field name="max_adults">2</field>
+            <field name="max_children">1</field>
+            <field name="bed_type">queen</field>
+            <field name="room_size_sqm">28</field>
+            <field name="view_type">city</field>
+            <field name="base_rate">250000</field>
+            <field name="amenity_ids" eval="[(6, 0, [
+                ref('amenity_wifi'),
+                ref('amenity_ac'),
+                ref('amenity_tv'),
+                ref('amenity_safe'),
+                ref('amenity_coffee'),
+            ])]"/>
+            <field name="sequence">10</field>
+        </record>
+
+        <record id="room_type_sup" model="pms.room.type">
+            <field name="name">Superior</field>
+            <field name="code">SUP</field>
+            <field name="property_id" ref="property_bogota"/>
+            <field name="max_adults">2</field>
+            <field name="max_children">2</field>
+            <field name="bed_type">king</field>
+            <field name="room_size_sqm">35</field>
+            <field name="view_type">city</field>
+            <field name="base_rate">350000</field>
+            <field name="amenity_ids" eval="[(6, 0, [
+                ref('amenity_wifi'),
+                ref('amenity_ac'),
+                ref('amenity_tv'),
+                ref('amenity_safe'),
+                ref('amenity_coffee'),
+                ref('amenity_minibar'),
+                ref('amenity_workspace'),
+            ])]"/>
+            <field name="sequence">20</field>
+        </record>
+
+        <record id="room_type_dlx" model="pms.room.type">
+            <field name="name">Deluxe</field>
+            <field name="code">DLX</field>
+            <field name="property_id" ref="property_bogota"/>
+            <field name="max_adults">2</field>
+            <field name="max_children">2</field>
+            <field name="bed_type">king</field>
+            <field name="room_size_sqm">45</field>
+            <field name="view_type">mountain</field>
+            <field name="base_rate">450000</field>
+            <field name="amenity_ids" eval="[(6, 0, [
+                ref('amenity_wifi'),
+                ref('amenity_ac'),
+                ref('amenity_tv'),
+                ref('amenity_safe'),
+                ref('amenity_coffee'),
+                ref('amenity_minibar'),
+                ref('amenity_workspace'),
+                ref('amenity_bathrobe'),
+                ref('amenity_balcony'),
+            ])]"/>
+            <field name="sequence">30</field>
+        </record>
+
+        <record id="room_type_jrs" model="pms.room.type">
+            <field name="name">Junior Suite</field>
+            <field name="code">JRS</field>
+            <field name="property_id" ref="property_bogota"/>
+            <field name="max_adults">3</field>
+            <field name="max_children">2</field>
+            <field name="bed_type">king</field>
+            <field name="room_size_sqm">60</field>
+            <field name="view_type">mountain</field>
+            <field name="base_rate">650000</field>
+            <field name="amenity_ids" eval="[(6, 0, [
+                ref('amenity_wifi'),
+                ref('amenity_ac'),
+                ref('amenity_tv'),
+                ref('amenity_safe'),
+                ref('amenity_coffee'),
+                ref('amenity_minibar'),
+                ref('amenity_workspace'),
+                ref('amenity_bathrobe'),
+                ref('amenity_balcony'),
+                ref('amenity_jacuzzi'),
+            ])]"/>
+            <field name="sequence">40</field>
+        </record>
+
+        <record id="room_type_prs" model="pms.room.type">
+            <field name="name">Presidential Suite</field>
+            <field name="code">PRS</field>
+            <field name="property_id" ref="property_bogota"/>
+            <field name="max_adults">4</field>
+            <field name="max_children">2</field>
+            <field name="bed_type">king</field>
+            <field name="room_size_sqm">120</field>
+            <field name="view_type">mountain</field>
+            <field name="base_rate">1500000</field>
+            <field name="amenity_ids" eval="[(6, 0, [
+                ref('amenity_wifi'),
+                ref('amenity_ac'),
+                ref('amenity_tv'),
+                ref('amenity_safe'),
+                ref('amenity_coffee'),
+                ref('amenity_minibar'),
+                ref('amenity_workspace'),
+                ref('amenity_bathrobe'),
+                ref('amenity_balcony'),
+                ref('amenity_jacuzzi'),
+            ])]"/>
+            <field name="sequence">50</field>
+        </record>
+
+        <!-- ══════════════════════════════════════════════════════════
+             ROOMS — 30 rooms across 3 floors
+             Floor 1: 101-110 (Standard x6, Superior x4)
+             Floor 2: 201-210 (Superior x2, Deluxe x5, Jr Suite x3)
+             Floor 3: 301-310 (Deluxe x3, Jr Suite x4, Presidential x3)
+             ══════════════════════════════════════════════════════════ -->
+        <!-- Floor 1 — Standard -->
+        <record id="room_101" model="pms.room"><field name="name">101</field><field name="room_type_id" ref="room_type_std"/><field name="floor">1</field></record>
+        <record id="room_102" model="pms.room"><field name="name">102</field><field name="room_type_id" ref="room_type_std"/><field name="floor">1</field></record>
+        <record id="room_103" model="pms.room"><field name="name">103</field><field name="room_type_id" ref="room_type_std"/><field name="floor">1</field></record>
+        <record id="room_104" model="pms.room"><field name="name">104</field><field name="room_type_id" ref="room_type_std"/><field name="floor">1</field></record>
+        <record id="room_105" model="pms.room"><field name="name">105</field><field name="room_type_id" ref="room_type_std"/><field name="floor">1</field></record>
+        <record id="room_106" model="pms.room"><field name="name">106</field><field name="room_type_id" ref="room_type_std"/><field name="floor">1</field></record>
+        <!-- Floor 1 — Superior -->
+        <record id="room_107" model="pms.room"><field name="name">107</field><field name="room_type_id" ref="room_type_sup"/><field name="floor">1</field></record>
+        <record id="room_108" model="pms.room"><field name="name">108</field><field name="room_type_id" ref="room_type_sup"/><field name="floor">1</field></record>
+        <record id="room_109" model="pms.room"><field name="name">109</field><field name="room_type_id" ref="room_type_sup"/><field name="floor">1</field></record>
+        <record id="room_110" model="pms.room"><field name="name">110</field><field name="room_type_id" ref="room_type_sup"/><field name="floor">1</field></record>
+
+        <!-- Floor 2 — Superior -->
+        <record id="room_201" model="pms.room"><field name="name">201</field><field name="room_type_id" ref="room_type_sup"/><field name="floor">2</field></record>
+        <record id="room_202" model="pms.room"><field name="name">202</field><field name="room_type_id" ref="room_type_sup"/><field name="floor">2</field></record>
+        <!-- Floor 2 — Deluxe -->
+        <record id="room_203" model="pms.room"><field name="name">203</field><field name="room_type_id" ref="room_type_dlx"/><field name="floor">2</field></record>
+        <record id="room_204" model="pms.room"><field name="name">204</field><field name="room_type_id" ref="room_type_dlx"/><field name="floor">2</field></record>
+        <record id="room_205" model="pms.room"><field name="name">205</field><field name="room_type_id" ref="room_type_dlx"/><field name="floor">2</field></record>
+        <record id="room_206" model="pms.room"><field name="name">206</field><field name="room_type_id" ref="room_type_dlx"/><field name="floor">2</field></record>
+        <record id="room_207" model="pms.room"><field name="name">207</field><field name="room_type_id" ref="room_type_dlx"/><field name="floor">2</field></record>
+        <!-- Floor 2 — Junior Suite -->
+        <record id="room_208" model="pms.room"><field name="name">208</field><field name="room_type_id" ref="room_type_jrs"/><field name="floor">2</field></record>
+        <record id="room_209" model="pms.room"><field name="name">209</field><field name="room_type_id" ref="room_type_jrs"/><field name="floor">2</field></record>
+        <record id="room_210" model="pms.room"><field name="name">210</field><field name="room_type_id" ref="room_type_jrs"/><field name="floor">2</field></record>
+
+        <!-- Floor 3 — Deluxe -->
+        <record id="room_301" model="pms.room"><field name="name">301</field><field name="room_type_id" ref="room_type_dlx"/><field name="floor">3</field></record>
+        <record id="room_302" model="pms.room"><field name="name">302</field><field name="room_type_id" ref="room_type_dlx"/><field name="floor">3</field></record>
+        <record id="room_303" model="pms.room"><field name="name">303</field><field name="room_type_id" ref="room_type_dlx"/><field name="floor">3</field></record>
+        <!-- Floor 3 — Junior Suite -->
+        <record id="room_304" model="pms.room"><field name="name">304</field><field name="room_type_id" ref="room_type_jrs"/><field name="floor">3</field></record>
+        <record id="room_305" model="pms.room"><field name="name">305</field><field name="room_type_id" ref="room_type_jrs"/><field name="floor">3</field></record>
+        <record id="room_306" model="pms.room"><field name="name">306</field><field name="room_type_id" ref="room_type_jrs"/><field name="floor">3</field></record>
+        <record id="room_307" model="pms.room"><field name="name">307</field><field name="room_type_id" ref="room_type_jrs"/><field name="floor">3</field></record>
+        <!-- Floor 3 — Presidential -->
+        <record id="room_308" model="pms.room"><field name="name">308</field><field name="room_type_id" ref="room_type_prs"/><field name="floor">3</field></record>
+        <record id="room_309" model="pms.room"><field name="name">309</field><field name="room_type_id" ref="room_type_prs"/><field name="floor">3</field></record>
+        <record id="room_310" model="pms.room"><field name="name">310</field><field name="room_type_id" ref="room_type_prs"/><field name="floor">3</field></record>
+
+        <!-- ══════════════════════════════════════════════════════════
+             RATE PLANS
+             ══════════════════════════════════════════════════════════ -->
+        <record id="rate_bar" model="pms.rate.plan">
+            <field name="name">Best Available Rate</field>
+            <field name="code">BAR</field>
+            <field name="property_id" ref="property_bogota"/>
+            <field name="rate_type">public</field>
+            <field name="meal_plan">bed_breakfast</field>
+        </record>
+        <record id="rate_corporate" model="pms.rate.plan">
+            <field name="name">Corporate Rate</field>
+            <field name="code">CORP</field>
+            <field name="property_id" ref="property_bogota"/>
+            <field name="rate_type">corporate</field>
+            <field name="meal_plan">bed_breakfast</field>
+            <field name="is_derived">True</field>
+            <field name="parent_rate_plan_id" ref="rate_bar"/>
+            <field name="derivation_type">percentage</field>
+            <field name="derivation_value">-15</field>
+        </record>
+        <record id="rate_weekend" model="pms.rate.plan">
+            <field name="name">Weekend Special</field>
+            <field name="code">WKND</field>
+            <field name="property_id" ref="property_bogota"/>
+            <field name="rate_type">promotional</field>
+            <field name="meal_plan">half_board</field>
+            <field name="min_stay">2</field>
+        </record>
+        <record id="rate_longstay" model="pms.rate.plan">
+            <field name="name">Long Stay (7+ nights)</field>
+            <field name="code">LONG</field>
+            <field name="property_id" ref="property_bogota"/>
+            <field name="rate_type">promotional</field>
+            <field name="meal_plan">room_only</field>
+            <field name="min_stay">7</field>
+            <field name="is_derived">True</field>
+            <field name="parent_rate_plan_id" ref="rate_bar"/>
+            <field name="derivation_type">percentage</field>
+            <field name="derivation_value">-25</field>
+        </record>
+        <record id="rate_package" model="pms.rate.plan">
+            <field name="name">Romance Package</field>
+            <field name="code">RPKG</field>
+            <field name="property_id" ref="property_bogota"/>
+            <field name="rate_type">package</field>
+            <field name="meal_plan">full_board</field>
+            <field name="min_stay">2</field>
+        </record>
+
+        <!-- ══════════════════════════════════════════════════════════
+             CHANNELS
+             ══════════════════════════════════════════════════════════ -->
+        <record id="channel_booking" model="pms.channel">
+            <field name="name">Booking.com</field>
+            <field name="channel_type">ota</field>
+            <field name="commission_pct">15</field>
+        </record>
+        <record id="channel_expedia" model="pms.channel">
+            <field name="name">Expedia</field>
+            <field name="channel_type">ota</field>
+            <field name="commission_pct">18</field>
+        </record>
+        <record id="channel_direct" model="pms.channel">
+            <field name="name">Direct / Website</field>
+            <field name="channel_type">direct</field>
+            <field name="commission_pct">0</field>
+        </record>
+
+        <!-- ══════════════════════════════════════════════════════════
+             GUESTS (as res.partner)
+             ══════════════════════════════════════════════════════════ -->
+        <record id="guest_carlos" model="res.partner">
+            <field name="name">Carlos Andres Martinez</field>
+            <field name="email">carlos.martinez@example.com</field>
+            <field name="phone">+57 310 555 0001</field>
+            <field name="is_hotel_guest">True</field>
+            <field name="guest_id_type">national_id</field>
+            <field name="guest_id_number">1023456789</field>
+            <field name="nationality_id" ref="base.co"/>
+            <field name="gender">male</field>
+            <field name="vip_level">gold</field>
+            <field name="preference_notes">High floor, extra pillows, hypoallergenic bedding</field>
+        </record>
+        <record id="guest_maria" model="res.partner">
+            <field name="name">Maria Fernanda Lopez</field>
+            <field name="email">mflopez@example.com</field>
+            <field name="phone">+57 315 555 0002</field>
+            <field name="is_hotel_guest">True</field>
+            <field name="guest_id_type">national_id</field>
+            <field name="guest_id_number">52987654</field>
+            <field name="nationality_id" ref="base.co"/>
+            <field name="gender">female</field>
+            <field name="vip_level">platinum</field>
+            <field name="preference_notes">Quiet room, no feather pillows, vegan breakfast</field>
+        </record>
+        <record id="guest_john" model="res.partner">
+            <field name="name">John Smith</field>
+            <field name="email">john.smith@example.com</field>
+            <field name="phone">+1 212 555 0003</field>
+            <field name="is_hotel_guest">True</field>
+            <field name="guest_id_type">passport</field>
+            <field name="guest_id_number">US12345678</field>
+            <field name="nationality_id" ref="base.us"/>
+            <field name="gender">male</field>
+            <field name="vip_level">none</field>
+        </record>
+        <record id="guest_elena" model="res.partner">
+            <field name="name">Elena Rodriguez Vega</field>
+            <field name="email">elena.rv@example.com</field>
+            <field name="phone">+57 320 555 0004</field>
+            <field name="is_hotel_guest">True</field>
+            <field name="guest_id_type">national_id</field>
+            <field name="guest_id_number">39876543</field>
+            <field name="nationality_id" ref="base.co"/>
+            <field name="gender">female</field>
+            <field name="vip_level">silver</field>
+        </record>
+        <record id="guest_pierre" model="res.partner">
+            <field name="name">Pierre Dubois</field>
+            <field name="email">pierre.dubois@example.com</field>
+            <field name="phone">+33 6 55 55 0005</field>
+            <field name="is_hotel_guest">True</field>
+            <field name="guest_id_type">passport</field>
+            <field name="guest_id_number">FR87654321</field>
+            <field name="nationality_id" ref="base.fr"/>
+            <field name="gender">male</field>
+            <field name="vip_level">diamond</field>
+            <field name="preference_notes">French press coffee, Le Monde newspaper, late check-out</field>
+        </record>
+        <record id="guest_ana" model="res.partner">
+            <field name="name">Ana Gabriela Perez</field>
+            <field name="email">agperez@example.com</field>
+            <field name="phone">+57 300 555 0006</field>
+            <field name="is_hotel_guest">True</field>
+            <field name="guest_id_type">national_id</field>
+            <field name="guest_id_number">1098765432</field>
+            <field name="nationality_id" ref="base.co"/>
+            <field name="gender">female</field>
+            <field name="vip_level">none</field>
+        </record>
+        <record id="guest_james" model="res.partner">
+            <field name="name">James Wilson</field>
+            <field name="email">j.wilson@example.com</field>
+            <field name="phone">+44 20 7555 0007</field>
+            <field name="is_hotel_guest">True</field>
+            <field name="guest_id_type">passport</field>
+            <field name="guest_id_number">GB11223344</field>
+            <field name="nationality_id" ref="base.gb"/>
+            <field name="gender">male</field>
+            <field name="vip_level">gold</field>
+        </record>
+        <record id="guest_sofia" model="res.partner">
+            <field name="name">Sofia Hernandez</field>
+            <field name="email">sofia.h@example.com</field>
+            <field name="phone">+52 55 5555 0008</field>
+            <field name="is_hotel_guest">True</field>
+            <field name="guest_id_type">passport</field>
+            <field name="guest_id_number">MX99887766</field>
+            <field name="nationality_id" ref="base.mx"/>
+            <field name="gender">female</field>
+            <field name="vip_level">none</field>
+        </record>
+        <record id="guest_diego" model="res.partner">
+            <field name="name">Diego Alejandro Torres</field>
+            <field name="email">diego.torres@example.com</field>
+            <field name="phone">+57 311 555 0009</field>
+            <field name="is_hotel_guest">True</field>
+            <field name="guest_id_type">national_id</field>
+            <field name="guest_id_number">79876543</field>
+            <field name="nationality_id" ref="base.co"/>
+            <field name="gender">male</field>
+            <field name="vip_level">none</field>
+        </record>
+        <record id="guest_laura" model="res.partner">
+            <field name="name">Laura Camila Gutierrez</field>
+            <field name="email">lcgutierrez@example.com</field>
+            <field name="phone">+57 316 555 0010</field>
+            <field name="is_hotel_guest">True</field>
+            <field name="guest_id_type">national_id</field>
+            <field name="guest_id_number">53219876</field>
+            <field name="nationality_id" ref="base.co"/>
+            <field name="gender">female</field>
+            <field name="vip_level">silver</field>
+            <field name="preference_notes">Ocean view when available, firm mattress</field>
+        </record>
+
+        <!-- ══════════════════════════════════════════════════════════
+             RESERVATIONS — 15 in various states
+             Using fixed dates relative to a baseline
+             ══════════════════════════════════════════════════════════ -->
+
+        <!-- Confirmed reservations (future) -->
+        <record id="res_001" model="pms.reservation">
+            <field name="property_id" ref="property_bogota"/>
+            <field name="guest_id" ref="guest_carlos"/>
+            <field name="checkin_date" eval="(DateTime.today() + relativedelta(days=3)).strftime('%Y-%m-%d')"/>
+            <field name="checkout_date" eval="(DateTime.today() + relativedelta(days=6)).strftime('%Y-%m-%d')"/>
+            <field name="room_type_id" ref="room_type_dlx"/>
+            <field name="room_id" ref="room_203"/>
+            <field name="adults">2</field>
+            <field name="daily_rate">450000</field>
+            <field name="state">confirmed</field>
+            <field name="source">direct</field>
+            <field name="rate_plan_id" ref="rate_bar"/>
+        </record>
+        <record id="res_002" model="pms.reservation">
+            <field name="property_id" ref="property_bogota"/>
+            <field name="guest_id" ref="guest_john"/>
+            <field name="checkin_date" eval="(DateTime.today() + relativedelta(days=5)).strftime('%Y-%m-%d')"/>
+            <field name="checkout_date" eval="(DateTime.today() + relativedelta(days=10)).strftime('%Y-%m-%d')"/>
+            <field name="room_type_id" ref="room_type_jrs"/>
+            <field name="room_id" ref="room_208"/>
+            <field name="adults">2</field>
+            <field name="children">1</field>
+            <field name="daily_rate">650000</field>
+            <field name="state">confirmed</field>
+            <field name="source">booking_com</field>
+            <field name="channel_reservation_id">BK-9876543</field>
+            <field name="rate_plan_id" ref="rate_bar"/>
+        </record>
+        <record id="res_003" model="pms.reservation">
+            <field name="property_id" ref="property_bogota"/>
+            <field name="guest_id" ref="guest_sofia"/>
+            <field name="checkin_date" eval="(DateTime.today() + relativedelta(days=7)).strftime('%Y-%m-%d')"/>
+            <field name="checkout_date" eval="(DateTime.today() + relativedelta(days=9)).strftime('%Y-%m-%d')"/>
+            <field name="room_type_id" ref="room_type_sup"/>
+            <field name="adults">1</field>
+            <field name="daily_rate">350000</field>
+            <field name="state">confirmed</field>
+            <field name="source">expedia</field>
+            <field name="channel_reservation_id">EX-1234567</field>
+        </record>
+
+        <!-- Guaranteed -->
+        <record id="res_004" model="pms.reservation">
+            <field name="property_id" ref="property_bogota"/>
+            <field name="guest_id" ref="guest_pierre"/>
+            <field name="checkin_date" eval="(DateTime.today() + relativedelta(days=1)).strftime('%Y-%m-%d')"/>
+            <field name="checkout_date" eval="(DateTime.today() + relativedelta(days=8)).strftime('%Y-%m-%d')"/>
+            <field name="room_type_id" ref="room_type_prs"/>
+            <field name="room_id" ref="room_308"/>
+            <field name="adults">2</field>
+            <field name="daily_rate">1500000</field>
+            <field name="state">guaranteed</field>
+            <field name="guarantee_type">credit_card</field>
+            <field name="source">direct</field>
+            <field name="rate_plan_id" ref="rate_package"/>
+            <field name="special_requests">Champagne on arrival, late check-out until 2 PM</field>
+        </record>
+        <record id="res_005" model="pms.reservation">
+            <field name="property_id" ref="property_bogota"/>
+            <field name="guest_id" ref="guest_laura"/>
+            <field name="checkin_date" eval="(DateTime.today() + relativedelta(days=2)).strftime('%Y-%m-%d')"/>
+            <field name="checkout_date" eval="(DateTime.today() + relativedelta(days=4)).strftime('%Y-%m-%d')"/>
+            <field name="room_type_id" ref="room_type_dlx"/>
+            <field name="room_id" ref="room_204"/>
+            <field name="adults">2</field>
+            <field name="daily_rate">450000</field>
+            <field name="state">guaranteed</field>
+            <field name="guarantee_type">deposit</field>
+            <field name="source">phone</field>
+            <field name="rate_plan_id" ref="rate_weekend"/>
+        </record>
+
+        <!-- Checked In (in-house) -->
+        <record id="res_006" model="pms.reservation">
+            <field name="property_id" ref="property_bogota"/>
+            <field name="guest_id" ref="guest_maria"/>
+            <field name="checkin_date" eval="(DateTime.today() - relativedelta(days=2)).strftime('%Y-%m-%d')"/>
+            <field name="checkout_date" eval="(DateTime.today() + relativedelta(days=2)).strftime('%Y-%m-%d')"/>
+            <field name="room_type_id" ref="room_type_jrs"/>
+            <field name="room_id" ref="room_209"/>
+            <field name="adults">1</field>
+            <field name="daily_rate">650000</field>
+            <field name="state">checked_in</field>
+            <field name="source">direct</field>
+            <field name="rate_plan_id" ref="rate_bar"/>
+        </record>
+        <record id="res_007" model="pms.reservation">
+            <field name="property_id" ref="property_bogota"/>
+            <field name="guest_id" ref="guest_elena"/>
+            <field name="checkin_date" eval="(DateTime.today() - relativedelta(days=1)).strftime('%Y-%m-%d')"/>
+            <field name="checkout_date" eval="(DateTime.today() + relativedelta(days=3)).strftime('%Y-%m-%d')"/>
+            <field name="room_type_id" ref="room_type_sup"/>
+            <field name="room_id" ref="room_107"/>
+            <field name="adults">2</field>
+            <field name="daily_rate">350000</field>
+            <field name="state">checked_in</field>
+            <field name="source">booking_com</field>
+            <field name="channel_reservation_id">BK-5554321</field>
+            <field name="rate_plan_id" ref="rate_corporate"/>
+        </record>
+        <record id="res_008" model="pms.reservation">
+            <field name="property_id" ref="property_bogota"/>
+            <field name="guest_id" ref="guest_james"/>
+            <field name="checkin_date" eval="(DateTime.today() - relativedelta(days=3)).strftime('%Y-%m-%d')"/>
+            <field name="checkout_date" eval="(DateTime.today() + relativedelta(days=1)).strftime('%Y-%m-%d')"/>
+            <field name="room_type_id" ref="room_type_dlx"/>
+            <field name="room_id" ref="room_205"/>
+            <field name="adults">1</field>
+            <field name="daily_rate">450000</field>
+            <field name="state">checked_in</field>
+            <field name="source">direct</field>
+            <field name="rate_plan_id" ref="rate_bar"/>
+        </record>
+        <record id="res_009" model="pms.reservation">
+            <field name="property_id" ref="property_bogota"/>
+            <field name="guest_id" ref="guest_diego"/>
+            <field name="checkin_date" eval="(DateTime.today() - relativedelta(days=1)).strftime('%Y-%m-%d')"/>
+            <field name="checkout_date" eval="(DateTime.today() + relativedelta(days=2)).strftime('%Y-%m-%d')"/>
+            <field name="room_type_id" ref="room_type_std"/>
+            <field name="room_id" ref="room_101"/>
+            <field name="adults">2</field>
+            <field name="children">1</field>
+            <field name="daily_rate">250000</field>
+            <field name="state">checked_in</field>
+            <field name="source">walk_in</field>
+        </record>
+        <record id="res_010" model="pms.reservation">
+            <field name="property_id" ref="property_bogota"/>
+            <field name="guest_id" ref="guest_ana"/>
+            <field name="checkin_date" eval="(DateTime.today() - relativedelta(days=2)).strftime('%Y-%m-%d')"/>
+            <field name="checkout_date" eval="(DateTime.today() + relativedelta(days=1)).strftime('%Y-%m-%d')"/>
+            <field name="room_type_id" ref="room_type_std"/>
+            <field name="room_id" ref="room_102"/>
+            <field name="adults">1</field>
+            <field name="daily_rate">250000</field>
+            <field name="state">checked_in</field>
+            <field name="source">phone</field>
+        </record>
+
+        <!-- Checked Out (past) -->
+        <record id="res_011" model="pms.reservation">
+            <field name="property_id" ref="property_bogota"/>
+            <field name="guest_id" ref="guest_carlos"/>
+            <field name="checkin_date" eval="(DateTime.today() - relativedelta(days=10)).strftime('%Y-%m-%d')"/>
+            <field name="checkout_date" eval="(DateTime.today() - relativedelta(days=7)).strftime('%Y-%m-%d')"/>
+            <field name="room_type_id" ref="room_type_sup"/>
+            <field name="room_id" ref="room_108"/>
+            <field name="adults">2</field>
+            <field name="daily_rate">350000</field>
+            <field name="state">checked_out</field>
+            <field name="source">direct</field>
+        </record>
+        <record id="res_012" model="pms.reservation">
+            <field name="property_id" ref="property_bogota"/>
+            <field name="guest_id" ref="guest_maria"/>
+            <field name="checkin_date" eval="(DateTime.today() - relativedelta(days=15)).strftime('%Y-%m-%d')"/>
+            <field name="checkout_date" eval="(DateTime.today() - relativedelta(days=12)).strftime('%Y-%m-%d')"/>
+            <field name="room_type_id" ref="room_type_dlx"/>
+            <field name="room_id" ref="room_206"/>
+            <field name="adults">1</field>
+            <field name="daily_rate">450000</field>
+            <field name="state">checked_out</field>
+            <field name="source">direct</field>
+        </record>
+
+        <!-- Cancelled -->
+        <record id="res_013" model="pms.reservation">
+            <field name="property_id" ref="property_bogota"/>
+            <field name="guest_id" ref="guest_sofia"/>
+            <field name="checkin_date" eval="(DateTime.today() + relativedelta(days=10)).strftime('%Y-%m-%d')"/>
+            <field name="checkout_date" eval="(DateTime.today() + relativedelta(days=12)).strftime('%Y-%m-%d')"/>
+            <field name="room_type_id" ref="room_type_std"/>
+            <field name="adults">1</field>
+            <field name="daily_rate">250000</field>
+            <field name="state">cancelled</field>
+            <field name="source">expedia</field>
+            <field name="cancellation_reason">Change of travel plans</field>
+        </record>
+
+        <!-- No Show -->
+        <record id="res_014" model="pms.reservation">
+            <field name="property_id" ref="property_bogota"/>
+            <field name="guest_id" ref="guest_diego"/>
+            <field name="checkin_date" eval="(DateTime.today() - relativedelta(days=5)).strftime('%Y-%m-%d')"/>
+            <field name="checkout_date" eval="(DateTime.today() - relativedelta(days=3)).strftime('%Y-%m-%d')"/>
+            <field name="room_type_id" ref="room_type_std"/>
+            <field name="adults">1</field>
+            <field name="daily_rate">250000</field>
+            <field name="state">no_show</field>
+            <field name="source">booking_com</field>
+        </record>
+
+        <!-- One more confirmed -->
+        <record id="res_015" model="pms.reservation">
+            <field name="property_id" ref="property_bogota"/>
+            <field name="guest_id" ref="guest_ana"/>
+            <field name="checkin_date" eval="(DateTime.today() + relativedelta(days=14)).strftime('%Y-%m-%d')"/>
+            <field name="checkout_date" eval="(DateTime.today() + relativedelta(days=21)).strftime('%Y-%m-%d')"/>
+            <field name="room_type_id" ref="room_type_jrs"/>
+            <field name="room_id" ref="room_304"/>
+            <field name="adults">2</field>
+            <field name="children">2</field>
+            <field name="daily_rate">650000</field>
+            <field name="state">confirmed</field>
+            <field name="source">direct</field>
+            <field name="rate_plan_id" ref="rate_longstay"/>
+            <field name="special_requests">Extra bed for children, baby crib</field>
+        </record>
+
+        <!-- ══════════════════════════════════════════════════════════
+             FOLIOS + CHARGES + PAYMENTS
+             ══════════════════════════════════════════════════════════ -->
+
+        <!-- Folio for in-house guest Maria (res_006) -->
+        <record id="folio_006" model="pms.folio">
+            <field name="reservation_id" ref="res_006"/>
+            <field name="state">open</field>
+        </record>
+        <record id="charge_006_1" model="pms.folio.charge">
+            <field name="folio_id" ref="folio_006"/>
+            <field name="description">Room charge - Junior Suite 209</field>
+            <field name="quantity">1</field>
+            <field name="unit_price">650000</field>
+            <field name="department">rooms</field>
+        </record>
+        <record id="charge_006_2" model="pms.folio.charge">
+            <field name="folio_id" ref="folio_006"/>
+            <field name="description">Room charge - Junior Suite 209</field>
+            <field name="quantity">1</field>
+            <field name="unit_price">650000</field>
+            <field name="department">rooms</field>
+        </record>
+        <record id="charge_006_3" model="pms.folio.charge">
+            <field name="folio_id" ref="folio_006"/>
+            <field name="description">Minibar</field>
+            <field name="quantity">1</field>
+            <field name="unit_price">85000</field>
+            <field name="department">minibar</field>
+        </record>
+        <record id="payment_006_1" model="pms.folio.payment">
+            <field name="folio_id" ref="folio_006"/>
+            <field name="amount">650000</field>
+            <field name="payment_method">credit_card</field>
+            <field name="reference">VISA ****4532</field>
+        </record>
+
+        <!-- Folio for in-house guest Elena (res_007) -->
+        <record id="folio_007" model="pms.folio">
+            <field name="reservation_id" ref="res_007"/>
+            <field name="state">open</field>
+        </record>
+        <record id="charge_007_1" model="pms.folio.charge">
+            <field name="folio_id" ref="folio_007"/>
+            <field name="description">Room charge - Superior 107</field>
+            <field name="quantity">1</field>
+            <field name="unit_price">350000</field>
+            <field name="department">rooms</field>
+        </record>
+        <record id="charge_007_2" model="pms.folio.charge">
+            <field name="folio_id" ref="folio_007"/>
+            <field name="description">Room Service - Dinner</field>
+            <field name="quantity">1</field>
+            <field name="unit_price">120000</field>
+            <field name="department">food_beverage</field>
+        </record>
+
+        <!-- Folio for checked-out guest Carlos (res_011) — closed -->
+        <record id="folio_011" model="pms.folio">
+            <field name="reservation_id" ref="res_011"/>
+            <field name="state">closed</field>
+        </record>
+        <record id="charge_011_1" model="pms.folio.charge">
+            <field name="folio_id" ref="folio_011"/>
+            <field name="description">Room charge - Superior 108 (3 nights)</field>
+            <field name="quantity">3</field>
+            <field name="unit_price">350000</field>
+            <field name="department">rooms</field>
+        </record>
+        <record id="charge_011_2" model="pms.folio.charge">
+            <field name="folio_id" ref="folio_011"/>
+            <field name="description">Spa treatment</field>
+            <field name="quantity">1</field>
+            <field name="unit_price">180000</field>
+            <field name="department">spa</field>
+        </record>
+        <record id="payment_011_1" model="pms.folio.payment">
+            <field name="folio_id" ref="folio_011"/>
+            <field name="amount">1230000</field>
+            <field name="payment_method">credit_card</field>
+            <field name="reference">AMEX ****1234</field>
+        </record>
+
+        <!-- Folio for James (res_008) -->
+        <record id="folio_008" model="pms.folio">
+            <field name="reservation_id" ref="res_008"/>
+            <field name="state">open</field>
+        </record>
+        <record id="charge_008_1" model="pms.folio.charge">
+            <field name="folio_id" ref="folio_008"/>
+            <field name="description">Room charge - Deluxe 205 (3 nights)</field>
+            <field name="quantity">3</field>
+            <field name="unit_price">450000</field>
+            <field name="department">rooms</field>
+        </record>
+        <record id="charge_008_2" model="pms.folio.charge">
+            <field name="folio_id" ref="folio_008"/>
+            <field name="description">Laundry</field>
+            <field name="quantity">1</field>
+            <field name="unit_price">45000</field>
+            <field name="department">laundry</field>
+        </record>
+        <record id="payment_008_1" model="pms.folio.payment">
+            <field name="folio_id" ref="folio_008"/>
+            <field name="amount">900000</field>
+            <field name="payment_method">bank_transfer</field>
+            <field name="reference">TRF-2026-0320</field>
+        </record>
+
+        <!-- Folio for checked-out Maria (res_012) — closed -->
+        <record id="folio_012" model="pms.folio">
+            <field name="reservation_id" ref="res_012"/>
+            <field name="state">closed</field>
+        </record>
+        <record id="charge_012_1" model="pms.folio.charge">
+            <field name="folio_id" ref="folio_012"/>
+            <field name="description">Room charge - Deluxe 206 (3 nights)</field>
+            <field name="quantity">3</field>
+            <field name="unit_price">450000</field>
+            <field name="department">rooms</field>
+        </record>
+        <record id="payment_012_1" model="pms.folio.payment">
+            <field name="folio_id" ref="folio_012"/>
+            <field name="amount">1350000</field>
+            <field name="payment_method">credit_card</field>
+            <field name="reference">MC ****8765</field>
+        </record>
+
+        <!-- ══════════════════════════════════════════════════════════
+             HOUSEKEEPING TASKS
+             ══════════════════════════════════════════════════════════ -->
+        <record id="hk_001" model="pms.housekeeping.task">
+            <field name="room_id" ref="room_103"/>
+            <field name="task_type">stayover</field>
+            <field name="state">pending</field>
+            <field name="priority">normal</field>
+        </record>
+        <record id="hk_002" model="pms.housekeeping.task">
+            <field name="room_id" ref="room_104"/>
+            <field name="task_type">stayover</field>
+            <field name="state">pending</field>
+            <field name="priority">normal</field>
+        </record>
+        <record id="hk_003" model="pms.housekeeping.task">
+            <field name="room_id" ref="room_209"/>
+            <field name="task_type">stayover</field>
+            <field name="state">in_progress</field>
+            <field name="priority">vip</field>
+        </record>
+        <record id="hk_004" model="pms.housekeeping.task">
+            <field name="room_id" ref="room_107"/>
+            <field name="task_type">stayover</field>
+            <field name="state">pending</field>
+            <field name="priority">normal</field>
+        </record>
+        <record id="hk_005" model="pms.housekeeping.task">
+            <field name="room_id" ref="room_301"/>
+            <field name="task_type">checkout_clean</field>
+            <field name="state">completed</field>
+            <field name="priority">normal</field>
+        </record>
+        <record id="hk_006" model="pms.housekeeping.task">
+            <field name="room_id" ref="room_302"/>
+            <field name="task_type">checkout_clean</field>
+            <field name="state">inspected</field>
+            <field name="priority">normal</field>
+        </record>
+        <record id="hk_007" model="pms.housekeeping.task">
+            <field name="room_id" ref="room_308"/>
+            <field name="task_type">deep_clean</field>
+            <field name="state">pending</field>
+            <field name="priority">vip</field>
+        </record>
+        <record id="hk_008" model="pms.housekeeping.task">
+            <field name="room_id" ref="room_205"/>
+            <field name="task_type">turndown</field>
+            <field name="state">pending</field>
+            <field name="priority">normal</field>
+        </record>
+        <record id="hk_009" model="pms.housekeeping.task">
+            <field name="room_id" ref="room_101"/>
+            <field name="task_type">stayover</field>
+            <field name="state">pending</field>
+            <field name="priority">normal</field>
+        </record>
+        <record id="hk_010" model="pms.housekeeping.task">
+            <field name="room_id" ref="room_102"/>
+            <field name="task_type">stayover</field>
+            <field name="state">failed</field>
+            <field name="priority">rush</field>
+            <field name="inspection_notes">Bathroom not properly cleaned, redo required.</field>
+        </record>
+
+    </data>
+</odoo>

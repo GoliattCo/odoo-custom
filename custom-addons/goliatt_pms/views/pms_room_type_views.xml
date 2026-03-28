@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Kanban view -->
+    <record id="view_pms_room_type_kanban" model="ir.ui.view">
+        <field name="name">pms.room.type.kanban</field>
+        <field name="model">pms.room.type</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="bed_type"/>
+                <field name="base_rate"/>
+                <field name="room_count"/>
+                <field name="max_occupancy"/>
+                <templates>
+                    <t t-name="card">
+                        <field name="image" widget="image" options="{'preview_image': 'image'}"/>
+                        <div>
+                            <strong><field name="name"/></strong>
+                            <span class="text-muted ms-1">[<field name="code"/>]</span>
+                        </div>
+                        <div class="text-muted">
+                            <field name="bed_type"/> | Max <field name="max_occupancy"/> guests
+                        </div>
+                        <div>
+                            <strong>Rate:</strong> <field name="base_rate" widget="monetary"/>
+                        </div>
+                        <div class="text-muted">
+                            <field name="room_count"/> rooms
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- List view -->
+    <record id="view_pms_room_type_list" model="ir.ui.view">
+        <field name="name">pms.room.type.list</field>
+        <field name="model">pms.room.type</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="sequence" widget="handle"/>
+                <field name="code"/>
+                <field name="name"/>
+                <field name="property_id"/>
+                <field name="bed_type"/>
+                <field name="max_adults"/>
+                <field name="max_children"/>
+                <field name="max_occupancy"/>
+                <field name="view_type"/>
+                <field name="base_rate"/>
+                <field name="room_count"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form view -->
+    <record id="view_pms_room_type_form" model="ir.ui.view">
+        <field name="name">pms.room.type.form</field>
+        <field name="model">pms.room.type</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <field name="image" widget="image" class="oe_avatar"
+                        options="{'preview_image': 'image'}"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="e.g. Deluxe Room"/></h1>
+                        <h4 class="text-muted">
+                            <field name="code" placeholder="DLX"/>
+                        </h4>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="property_id"/>
+                            <field name="product_id"/>
+                            <field name="sequence"/>
+                        </group>
+                        <group>
+                            <field name="bed_type"/>
+                            <field name="max_adults"/>
+                            <field name="max_children"/>
+                            <field name="max_occupancy"/>
+                            <field name="room_size_sqm"/>
+                            <field name="view_type"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="base_rate"/>
+                    </group>
+                    <notebook>
+                        <page string="Amenities" name="amenities">
+                            <field name="amenity_ids" widget="many2many_tags"/>
+                        </page>
+                        <page string="Rooms" name="rooms">
+                            <field name="room_ids">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="floor"/>
+                                    <field name="status" widget="badge"
+                                        decoration-success="status == 'available'"
+                                        decoration-info="status == 'occupied'"
+                                        decoration-warning="status == 'out_of_service'"
+                                        decoration-danger="status == 'out_of_order'"/>
+                                    <field name="housekeeping_status" widget="badge"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Description" name="description">
+                            <field name="description"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search view -->
+    <record id="view_pms_room_type_search" model="ir.ui.view">
+        <field name="name">pms.room.type.search</field>
+        <field name="model">pms.room.type</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="property_id"/>
+                <group>
+                    <filter name="group_property" string="Property"
+                        context="{'group_by': 'property_id'}"/>
+                    <filter name="group_bed" string="Bed Type"
+                        context="{'group_by': 'bed_type'}"/>
+                    <filter name="group_view" string="View Type"
+                        context="{'group_by': 'view_type'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_pms_room_type" model="ir.actions.act_window">
+        <field name="name">Room Types</field>
+        <field name="res_model">pms.room.type</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="search_view_id" ref="view_pms_room_type_search"/>
+        <field name="path">pms-room-types</field>
+    </record>
+
+</odoo>

@@ -1,0 +1,46 @@
+{
+    'name': 'Goliatt PMS',
+    'version': '19.0.1.0.0',
+    'summary': 'Full-featured Property Management System for hotels, resorts, and hospitality',
+    'description': (
+        'Goliatt PMS — Full-featured Property Management System for hotels, '
+        'resorts, and hospitality. Inspired by Opera, Cloudbeds, Mews.'
+    ),
+    'category': 'Hotel Management',
+    'author': 'Manuel Caro',
+    'license': 'LGPL-3',
+    'depends': [
+        'base',
+        'mail',
+        'account',
+        'product',
+        'stock',
+        'point_of_sale',
+        'event',
+        'contacts',
+        'hr',
+    ],
+    'data': [
+        'security/pms_security.xml',
+        'security/ir.model.access.csv',
+        'data/sequences.xml',
+        'views/pms_property_views.xml',
+        'views/pms_amenity_views.xml',
+        'views/pms_room_type_views.xml',
+        'views/pms_room_views.xml',
+        'views/pms_guest_views.xml',
+        'views/pms_reservation_views.xml',
+        'views/pms_rate_plan_views.xml',
+        'views/pms_folio_views.xml',
+        'views/pms_housekeeping_views.xml',
+        'views/pms_channel_views.xml',
+        'views/pms_availability_views.xml',
+        'views/pms_night_audit_views.xml',
+        'views/pms_menus.xml',
+    ],
+    'demo': [
+        'data/demo_data.xml',
+    ],
+    'installable': True,
+    'application': True,
+}
