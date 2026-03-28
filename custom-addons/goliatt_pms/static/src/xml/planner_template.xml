@@ -62,7 +62,7 @@
                          t-attf-style="left: {{ bar.left }}px; top: {{ bar.top }}px; width: {{ bar.width }}px;"
                          t-att-data-res-id="bar.id"
                          t-on-mousedown="onBarMouseDown"
-                         t-on-click.stop="onBarClick"
+                         t-on-dblclick.stop="onBarDblClick"
                          t-att-title="bar.guestName + ' (' + bar.nights + 'N)'">
                         <span><t t-esc="bar.guestName"/></span>
                         <div class="resize-handle" t-on-mousedown.stop="onResizeMouseDown" t-att-data-res-id="bar.id"/>
