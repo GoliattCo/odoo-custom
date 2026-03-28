@@ -1,6 +1,6 @@
 {
     'name': 'Club Golf',
-    'version': '18.0.1.0.0',
+    'version': '19.0.1.0.0',
     'summary': 'Social Country Club — Golf Management',
     'description': 'Golf module: tee times, courses, scorecards, handicaps, caddies, carts, bags.',
     'category': 'Club Management',

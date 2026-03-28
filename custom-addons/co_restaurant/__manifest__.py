@@ -1,6 +1,6 @@
 {
     'name': 'Restaurant Management (Colombia)',
-    'version': '18.0.1.0.0',
+    'version': '19.0.1.0.0',
     'summary': 'Recipes, production, kardex, waste tracking and cost analysis for restaurants',
     'description': """
 Restaurant Management Module

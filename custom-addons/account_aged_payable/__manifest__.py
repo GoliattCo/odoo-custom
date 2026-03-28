@@ -1,6 +1,6 @@
 {
     'name': 'Aged Payable Report',
-    'version': '18.0.1.0.0',
+    'version': '19.0.1.0.0',
     'summary': 'Aged payable report with aging buckets and PDF export',
     'category': 'Accounting',
     'depends': ['account'],

@@ -134,7 +134,7 @@
                 <filter name="date_found_this_month" string="Found This Month"
                     domain="[('date_found','&gt;=', (context_today() - relativedelta(day=1)).strftime('%%Y-%%m-%%d')),
                              ('date_found','&lt;=', context_today().strftime('%%Y-%%m-%%d'))]"/>
-                <group expand="0" string="Group By">
+                <group>
                     <filter name="group_category" string="Category"
                         context="{'group_by': 'category'}"/>
                     <filter name="group_status" string="Status"

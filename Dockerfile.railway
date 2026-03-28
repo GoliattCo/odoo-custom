@@ -45,9 +45,9 @@ RUN ARCH=$(dpkg --print-architecture) \
 # less CSS compiler
 RUN npm install -g less
 
-# Clone Odoo 18.0 from GitHub (pinned to exact commit)
-ARG ODOO_COMMIT=a91dbced90cdc012da8dc40ade180b59c9d41c5d
-RUN git clone --depth 1 --branch 18.0 https://github.com/odoo/odoo.git /odoo \
+# Clone Odoo 19.0 from GitHub (pinned to exact commit)
+ARG ODOO_COMMIT=36251c03d81188c04faca77f9d14abe782486b49
+RUN git clone --depth 1 --branch 19.0 https://github.com/odoo/odoo.git /odoo \
     && cd /odoo && git fetch --depth 1 origin $ODOO_COMMIT && git checkout $ODOO_COMMIT \
     && rm -rf /odoo/.git
 

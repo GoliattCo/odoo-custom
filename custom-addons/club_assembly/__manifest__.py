@@ -1,6 +1,6 @@
 {
     'name': 'Club Assembly',
-    'version': '18.0.1.0.0',
+    'version': '19.0.1.0.0',
     'summary': 'Asamblea de Socios — schedule assemblies, voting, transcripts',
     'description': 'Schedule affiliate assemblies, manage members, send mass '
                    'invitations, define topics with voting, record votes, '

@@ -64,7 +64,7 @@
             <search>
                 <field name="name"/>
                 <field name="tournament_id"/>
-                <group expand="0" string="Group By">
+                <group>
                     <filter name="group_tournament" string="Tournament"
                         context="{'group_by': 'tournament_id'}"/>
                 </group>

@@ -170,7 +170,7 @@
                     domain="[('start_date', '&gt;=', (context_today()).strftime('%Y-%m-01'))]"/>
                 <filter name="filter_my_tournaments" string="My Tournaments"
                     domain="[('organizer_id', '=', uid)]"/>
-                <group expand="0" string="Group By">
+                <group>
                     <filter name="group_sport" string="Sport"
                         context="{'group_by': 'sport'}"/>
                     <filter name="group_status" string="Status"

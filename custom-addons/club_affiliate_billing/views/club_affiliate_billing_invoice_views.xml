@@ -95,7 +95,7 @@
                 <filter name="filter_error" string="Error"
                         domain="[('invoice_status', '=', 'error')]"/>
                 <separator/>
-                <group expand="0" string="Group By">
+                <group>
                     <filter name="groupby_status" string="Invoice Status"
                             context="{'group_by': 'invoice_status'}"/>
                     <filter name="groupby_affiliate" string="Affiliate"

@@ -137,7 +137,7 @@
                 <filter name="inactive_employees" string="Inactive"
                     domain="[('status', '=', 'inactive')]"/>
                 <separator/>
-                <group expand="0" string="Group By">
+                <group>
                     <filter name="group_type" string="Employee Type"
                         context="{'group_by': 'employee_type_id'}"/>
                     <filter name="group_status" string="Status"

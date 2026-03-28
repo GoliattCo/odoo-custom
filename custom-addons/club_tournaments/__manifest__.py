@@ -1,6 +1,6 @@
 {
     'name': 'Club Tournaments',
-    'version': '18.0.1.0.0',
+    'version': '19.0.1.0.0',
     'summary': 'Cross-sport tournament management for the club',
     'description': 'Manage tournaments, participants, rounds, matches, results and prizes across all club sports.',
     'category': 'Club Management',

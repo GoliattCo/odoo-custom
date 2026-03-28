@@ -1,6 +1,6 @@
 {
     'name': 'Club Job Offers',
-    'version': '18.0.1.0.0',
+    'version': '19.0.1.0.0',
     'summary': 'Job marketplace among club affiliates',
     'description': 'Affiliates post job offers and other affiliates apply or recommend candidates.',
     'category': 'Club Management',

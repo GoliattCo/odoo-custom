@@ -212,7 +212,7 @@
                         ('date', '&gt;=', (context_today()).strftime('%Y-01-01')),
                         ('date', '&lt;', (context_today() + relativedelta(years=1)).strftime('%Y-01-01')),
                     ]"/>
-                <group expand="0" string="Group By">
+                <group>
                     <filter name="group_status" string="Status"
                         context="{'group_by': 'status'}"/>
                     <filter name="group_type" string="Type"

@@ -65,7 +65,7 @@
                     domain="[('status', '=', 'active')]"/>
                 <filter name="suspended_staff" string="Suspended"
                     domain="[('status', '=', 'suspended')]"/>
-                <group expand="0" string="Group By">
+                <group>
                     <filter name="group_supplier" string="Supplier"
                         context="{'group_by': 'supplier_id'}"/>
                     <filter name="group_status" string="Status"

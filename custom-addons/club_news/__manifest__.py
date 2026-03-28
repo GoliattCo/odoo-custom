@@ -1,6 +1,6 @@
 {
     'name': 'Club News',
-    'version': '18.0.1.0.0',
+    'version': '19.0.1.0.0',
     'summary': 'Club news & announcements — articles, categories, publish/draft workflow',
     'description': 'Manage club news articles with categories, tags, featured/pinned flags, and publish lifecycle.',
     'category': 'Club Management',

@@ -49,7 +49,7 @@
         <field name="arch" type="xml">
             <search>
                 <field name="name"/>
-                <group expand="0" string="Group By">
+                <group>
                     <filter name="group_holes" string="Holes"
                         context="{'group_by': 'holes'}"/>
                 </group>

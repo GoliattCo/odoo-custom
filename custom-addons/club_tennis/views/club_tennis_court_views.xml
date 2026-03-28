@@ -70,7 +70,7 @@
                     domain="[('under_maintenance','=',True)]"/>
                 <filter name="indoor" string="Indoor"
                     domain="[('indoor','=',True)]"/>
-                <group expand="0" string="Group By">
+                <group>
                     <filter name="group_surface" string="Surface"
                         context="{'group_by': 'surface'}"/>
                 </group>

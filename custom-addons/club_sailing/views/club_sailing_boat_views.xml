@@ -98,7 +98,7 @@
                     domain="[('status','=','in_use')]"/>
                 <filter name="maintenance" string="Maintenance"
                     domain="[('status','=','maintenance')]"/>
-                <group expand="0" string="Group By">
+                <group>
                     <filter name="group_type" string="Boat Type"
                         context="{'group_by': 'boat_type'}"/>
                     <filter name="group_status" string="Status"

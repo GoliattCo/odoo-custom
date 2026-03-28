@@ -13,7 +13,6 @@ class ClubAffiliate(models.Model):
         required=True,
         ondelete='cascade',
         string='Partner',
-        auto_join=True,
     )
     membership_type = fields.Selection(
         [

@@ -95,7 +95,7 @@
                 <separator/>
                 <filter name="filter_category" string="Category"
                     context="{'group_by': 'category_id'}"/>
-                <group expand="0" string="Group By">
+                <group>
                     <filter name="group_category" string="Category"
                         context="{'group_by': 'category_id'}"/>
                     <filter name="group_author" string="Author"

@@ -1,6 +1,6 @@
 {
     'name': 'General Ledger Report',
-    'version': '18.0.1.0.0',
+    'version': '19.0.1.0.0',
     'summary': 'General ledger with running balance per account and PDF export',
     'category': 'Accounting',
     'depends': ['account'],

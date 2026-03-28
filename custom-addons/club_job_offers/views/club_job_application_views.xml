@@ -69,7 +69,7 @@
                 <field name="applicant_name"/>
                 <field name="offer_id"/>
                 <field name="applicant_affiliate_id"/>
-                <group expand="0" string="Group By">
+                <group>
                     <filter name="group_status" string="Status"
                         context="{'group_by': 'status'}"/>
                     <filter name="group_offer" string="Offer"

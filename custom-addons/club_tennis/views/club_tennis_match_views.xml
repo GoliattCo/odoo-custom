@@ -58,7 +58,7 @@
                 <field name="booking_id"/>
                 <field name="winner_id"/>
                 <field name="player_ids"/>
-                <group expand="0" string="Group By">
+                <group>
                     <filter name="group_winner" string="Winner"
                         context="{'group_by': 'winner_id'}"/>
                 </group>

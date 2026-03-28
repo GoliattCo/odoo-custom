@@ -67,7 +67,7 @@
                 <field name="name"/>
                 <field name="pool_id"/>
                 <field name="instructor_id"/>
-                <group expand="0" string="Group By">
+                <group>
                     <filter name="group_level" string="Level"
                         context="{'group_by': 'level'}"/>
                     <filter name="group_day" string="Day of Week"

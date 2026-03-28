@@ -62,7 +62,7 @@
                     domain="[('status', '=', 'active')]"/>
                 <filter name="filter_winners" string="Winners"
                     domain="[('status', '=', 'winner')]"/>
-                <group expand="0" string="Group By">
+                <group>
                     <filter name="group_tournament" string="Tournament"
                         context="{'group_by': 'tournament_id'}"/>
                     <filter name="group_status" string="Status"

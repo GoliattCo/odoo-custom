@@ -98,7 +98,7 @@
                 <filter name="date_lost_this_month" string="Lost This Month"
                     domain="[('date_lost','&gt;=', (context_today() - relativedelta(day=1)).strftime('%%Y-%%m-%%d')),
                              ('date_lost','&lt;=', context_today().strftime('%%Y-%%m-%%d'))]"/>
-                <group expand="0" string="Group By">
+                <group>
                     <filter name="group_category" string="Category"
                         context="{'group_by': 'category'}"/>
                     <filter name="group_status" string="Status"

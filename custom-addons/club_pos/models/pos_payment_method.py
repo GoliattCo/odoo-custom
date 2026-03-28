@@ -24,7 +24,7 @@ class PosPaymentMethod(models.Model):
             self.receivable_account_id = self.cargo_socio_account_id
 
     @api.model
-    def _load_pos_data_fields(self, config_id):
-        fields = super()._load_pos_data_fields(config_id)
+    def _load_pos_data_fields(self, config):
+        fields = super()._load_pos_data_fields(config)
         fields.append('is_cargo_socio')
         return fields

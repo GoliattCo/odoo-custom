@@ -75,7 +75,7 @@
                 <filter name="suspended" string="Suspended" domain="[('status','=','suspended')]"/>
                 <filter name="expiring_soon" string="Expiring (7 days)"
                     domain="[('status','=','active'),('end_date','&lt;=', (context_today() + datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
-                <group expand="0" string="Group By">
+                <group>
                     <filter name="group_plan" string="Plan" context="{'group_by': 'plan_id'}"/>
                     <filter name="group_status" string="Status" context="{'group_by': 'status'}"/>
                 </group>

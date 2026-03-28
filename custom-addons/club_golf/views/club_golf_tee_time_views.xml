@@ -110,7 +110,7 @@
                     domain="[('status','=','booked')]"/>
                 <filter name="today" string="Today"
                     domain="[('date','=', context_today().strftime('%Y-%m-%d'))]"/>
-                <group expand="0" string="Group By">
+                <group>
                     <filter name="group_course" string="Course"
                         context="{'group_by': 'course_id'}"/>
                     <filter name="group_date" string="Date"

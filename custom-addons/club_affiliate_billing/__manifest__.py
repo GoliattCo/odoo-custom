@@ -1,6 +1,6 @@
 {
     'name': 'Club Affiliate Billing',
-    'version': '18.0.1.0.0',
+    'version': '19.0.1.0.0',
     'summary': 'Facturacion Masiva de Socios — Monthly batch invoicing for Cargo a Socio charges',
     'description': (
         'Monthly batch invoicing for all POS "Cargo a Socio" charges.\n'

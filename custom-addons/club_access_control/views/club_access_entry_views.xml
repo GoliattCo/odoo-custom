@@ -223,7 +223,7 @@
                     domain="[('person_type', '=', 'tournament_participant')]"/>
                 <filter name="type_supplier" string="Supplier Staff"
                     domain="[('person_type', '=', 'supplier_staff')]"/>
-                <group expand="0" string="Group By">
+                <group>
                     <filter name="group_person_type" string="Person Type"
                         context="{'group_by': 'person_type'}"/>
                     <filter name="group_checkpoint" string="Checkpoint"

@@ -63,7 +63,7 @@
             <search>
                 <field name="affiliate_id"/>
                 <field name="course_id"/>
-                <group expand="0" string="Group By">
+                <group>
                     <filter name="group_affiliate" string="Affiliate"
                         context="{'group_by': 'affiliate_id'}"/>
                     <filter name="group_course" string="Course"

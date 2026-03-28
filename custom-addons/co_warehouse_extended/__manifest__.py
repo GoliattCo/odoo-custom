@@ -1,6 +1,6 @@
 {
     'name': 'Colombia - Warehouse Extended',
-    'version': '18.0.1.0.0',
+    'version': '19.0.1.0.0',
     'summary': 'Extended warehouse, inventory & purchase features for Colombian businesses',
     'description': (
         'Purchase requests with approval workflow, enhanced goods receipt, '

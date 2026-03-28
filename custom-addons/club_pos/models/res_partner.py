@@ -24,8 +24,8 @@ class ResPartner(models.Model):
             partner.club_membership_status = aff.membership_status if aff else ''
 
     @api.model
-    def _load_pos_data_fields(self, config_id):
-        fields = super()._load_pos_data_fields(config_id)
+    def _load_pos_data_fields(self, config):
+        fields = super()._load_pos_data_fields(config)
         fields.extend([
             'is_club_affiliate',
             'club_affiliate_number',
@@ -34,8 +34,8 @@ class ResPartner(models.Model):
         return fields
 
     @api.model
-    def _load_pos_data_domain(self, data):
-        domain = super()._load_pos_data_domain(data)
+    def _load_pos_data_domain(self, data, config):
+        domain = super()._load_pos_data_domain(data, config)
         # Ensure all active club affiliates are available in POS
         affiliate_partner_ids = self.env['club.affiliate'].search([
             ('membership_status', '=', 'active'),

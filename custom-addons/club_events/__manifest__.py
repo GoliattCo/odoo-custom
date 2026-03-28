@@ -1,6 +1,6 @@
 {
     'name': 'Club Events',
-    'version': '18.0.1.0.0',
+    'version': '19.0.1.0.0',
     'summary': 'Social Country Club — Event Management',
     'description': 'Club events module: internal/external events, member pricing, registration with affiliate linking.',
     'category': 'Club Management',

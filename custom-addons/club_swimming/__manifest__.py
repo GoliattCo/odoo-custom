@@ -1,6 +1,6 @@
 {
     'name': 'Club Swimming',
-    'version': '18.0.1.0.0',
+    'version': '19.0.1.0.0',
     'summary': 'Social Country Club — Swimming Pool Management',
     'description': 'Swimming pool management: pools, lanes, bookings, lifeguards, swim classes.',
     'category': 'Club Management',

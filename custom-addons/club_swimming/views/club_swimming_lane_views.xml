@@ -53,7 +53,7 @@
                 <field name="pool_id"/>
                 <filter name="available" string="Available"
                     domain="[('status', '=', 'available')]"/>
-                <group expand="0" string="Group By">
+                <group>
                     <filter name="group_pool" string="Pool"
                         context="{'group_by': 'pool_id'}"/>
                     <filter name="group_type" string="Lane Type"

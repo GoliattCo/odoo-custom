@@ -1,6 +1,6 @@
 {
     'name': 'Club Object Loans',
-    'version': '18.0.1.0.0',
+    'version': '19.0.1.0.0',
     'summary': 'Object & equipment lending for the club',
     'description': 'Catalog of loanable items, loan records, due dates, and returns.',
     'category': 'Club Management',

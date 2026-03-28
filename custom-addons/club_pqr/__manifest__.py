@@ -1,6 +1,6 @@
 {
     'name': 'Club PQR',
-    'version': '18.0.1.0.0',
+    'version': '19.0.1.0.0',
     'summary': 'PQR — Petitions, Complaints & Claims for Club Affiliates',
     'description': 'Request/complaint/claim management (Peticiones, Quejas, Reclamos) for club affiliates.',
     'category': 'Club Management',

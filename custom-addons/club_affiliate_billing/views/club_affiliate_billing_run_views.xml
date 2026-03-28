@@ -123,7 +123,7 @@
                 <filter name="filter_cancelled" string="Cancelled"
                         domain="[('status', '=', 'cancelled')]"/>
                 <separator/>
-                <group expand="0" string="Group By">
+                <group>
                     <filter name="groupby_status" string="Status"
                             context="{'group_by': 'status'}"/>
                     <filter name="groupby_period" string="Period Start"

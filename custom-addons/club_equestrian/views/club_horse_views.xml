@@ -99,7 +99,7 @@
                 <field name="registration_number"/>
                 <field name="breed"/>
                 <field name="owner_id"/>
-                <group expand="0" string="Group By">
+                <group>
                     <filter name="group_breed" string="Breed"
                         context="{'group_by': 'breed'}"/>
                     <filter name="group_owner" string="Owner"

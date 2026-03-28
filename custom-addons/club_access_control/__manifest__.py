@@ -1,6 +1,6 @@
 {
     'name': 'Club Access Control',
-    'version': '18.0.1.0.0',
+    'version': '19.0.1.0.0',
     'summary': 'Unified access control — validate affiliates, employees, guests, '
                'event attendees, tournament participants, and suppliers at entry points',
     'description': 'Unified access control for the club: validates affiliates, family members, '

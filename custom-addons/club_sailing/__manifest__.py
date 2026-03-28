@@ -1,6 +1,6 @@
 {
     'name': 'Club Sailing',
-    'version': '18.0.1.0.0',
+    'version': '19.0.1.0.0',
     'summary': 'Social Country Club — Sailing Management',
     'description': 'Sailing module: boats, docks, bookings, crew.',
     'category': 'Club Management',

@@ -102,7 +102,7 @@
                     domain="[('status','=','available')]"/>
                 <filter name="maintenance" string="In Maintenance"
                     domain="[('status','=','maintenance')]"/>
-                <group expand="0" string="Group By">
+                <group>
                     <filter name="group_type" string="Cart Type"
                         context="{'group_by': 'cart_type'}"/>
                     <filter name="group_status" string="Status"

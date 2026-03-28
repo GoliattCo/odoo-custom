@@ -160,7 +160,7 @@
                 <filter name="priority_high" string="High Priority"
                     domain="[('priority', 'in', ('high', 'urgent'))]"/>
                 <separator/>
-                <group expand="0" string="Group By">
+                <group>
                     <filter name="group_status" string="Status"
                         context="{'group_by': 'status'}"/>
                     <filter name="group_category" string="Category"

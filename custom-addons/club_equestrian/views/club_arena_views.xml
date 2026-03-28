@@ -68,7 +68,7 @@
                     domain="[('under_maintenance', '=', False)]"/>
                 <filter name="maintenance" string="Under Maintenance"
                     domain="[('under_maintenance', '=', True)]"/>
-                <group expand="0" string="Group By">
+                <group>
                     <filter name="group_type" string="Type"
                         context="{'group_by': 'arena_type'}"/>
                 </group>

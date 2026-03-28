@@ -1,6 +1,6 @@
 {
     'name': 'Colombian Payroll (Nómina Colombiana)',
-    'version': '18.0.1.0.0',
+    'version': '19.0.1.0.0',
     'summary': 'Colombian payroll management compliant with Colombian labor law',
     'description': """
         Colombian Payroll Management

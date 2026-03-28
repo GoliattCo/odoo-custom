@@ -1,6 +1,6 @@
 {
     'name': 'Account Ledger Report',
-    'version': '18.0.1.0.0',
+    'version': '19.0.1.0.0',
     'summary': 'Live account ledger report with PDF and Excel export',
     'category': 'Accounting',
     'depends': ['account'],

@@ -50,7 +50,7 @@
                 <field name="name"/>
                 <field name="location"/>
                 <filter name="active" string="Active" domain="[('active', '=', True)]"/>
-                <group expand="0" string="Group By">
+                <group>
                     <filter name="group_type" string="Type"
                         context="{'group_by': 'checkpoint_type'}"/>
                 </group>

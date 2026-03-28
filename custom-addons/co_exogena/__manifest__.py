@@ -1,6 +1,6 @@
 {
     'name': 'Exogena - Informacion Exogena DIAN',
-    'version': '18.0.1.0.0',
+    'version': '19.0.1.0.0',
     'summary': 'Generacion de archivos de Informacion Exogena para la DIAN (Formatos 1001-1012)',
     'description': """
         Modulo para la generacion de archivos de Informacion Exogena

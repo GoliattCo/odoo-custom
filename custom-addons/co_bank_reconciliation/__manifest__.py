@@ -1,6 +1,6 @@
 {
     'name': 'Colombian Bank Reconciliation',
-    'version': '18.0.1.0.0',
+    'version': '19.0.1.0.0',
     'summary': 'Bank reconciliation via flat file import from Colombian banks',
     'description': """
 Colombian Bank Reconciliation

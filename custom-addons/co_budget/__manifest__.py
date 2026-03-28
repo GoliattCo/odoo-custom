@@ -1,6 +1,6 @@
 {
     'name': 'Budget Management (Colombia)',
-    'version': '18.0.1.0.0',
+    'version': '19.0.1.0.0',
     'summary': 'Budget management with planned vs actual tracking and alerts',
     'description': """
         Budget management module for Colombian companies.

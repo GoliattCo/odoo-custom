@@ -1,6 +1,6 @@
 {
     'name': 'Cash Flow Statement',
-    'version': '18.0.1.0.0',
+    'version': '19.0.1.0.0',
     'summary': 'Cash flow statement - direct method with PDF export',
     'category': 'Accounting',
     'depends': ['account'],

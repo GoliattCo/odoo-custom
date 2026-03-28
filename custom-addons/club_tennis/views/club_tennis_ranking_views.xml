@@ -58,7 +58,7 @@
                     domain="[('category','=','senior')]"/>
                 <filter name="mixed" string="Mixed"
                     domain="[('category','=','mixed')]"/>
-                <group expand="0" string="Group By">
+                <group>
                     <filter name="group_category" string="Category"
                         context="{'group_by': 'category'}"/>
                 </group>

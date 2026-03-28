@@ -1,6 +1,6 @@
 {
     'name': 'Club POS',
-    'version': '18.0.1.0.0',
+    'version': '19.0.1.0.0',
     'summary': 'POS integration for Club - Cargo a Socio payment, affiliate search, signed receipts',
     'description': (
         'Point of Sale integration for social country club management.\n'

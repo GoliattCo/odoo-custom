@@ -1,6 +1,6 @@
 {
     'name': 'Balance Sheet Report',
-    'version': '18.0.1.0.0',
+    'version': '19.0.1.0.0',
     'summary': 'Live balance sheet report with PDF and Excel export',
     'category': 'Accounting',
     'depends': ['account'],

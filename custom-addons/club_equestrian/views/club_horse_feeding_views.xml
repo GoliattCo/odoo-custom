@@ -63,7 +63,7 @@
                     domain="[('schedule', '=', 'afternoon')]"/>
                 <filter name="evening" string="Evening"
                     domain="[('schedule', '=', 'evening')]"/>
-                <group expand="0" string="Group By">
+                <group>
                     <filter name="group_schedule" string="Schedule"
                         context="{'group_by': 'schedule'}"/>
                     <filter name="group_horse" string="Horse"

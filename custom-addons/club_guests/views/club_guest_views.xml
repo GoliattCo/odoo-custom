@@ -75,7 +75,7 @@
                 <field name="name"/>
                 <field name="identification"/>
                 <field name="email"/>
-                <group expand="0" string="Group By">
+                <group>
                     <filter name="group_relationship" string="Relationship"
                         context="{'group_by': 'relationship'}"/>
                 </group>

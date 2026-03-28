@@ -1,6 +1,6 @@
 {
     'name': 'Club Guests',
-    'version': '18.0.1.0.0',
+    'version': '19.0.1.0.0',
     'summary': 'Affiliate guest management — registration, visit tracking, access control',
     'description': 'Guest management for social country club: guest registration, visit tracking, '
                    'check-in/check-out, policy enforcement, and guest limits per affiliate.',

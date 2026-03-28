@@ -1,6 +1,6 @@
 {
     'name': 'Club Tennis',
-    'version': '18.0.1.0.0',
+    'version': '19.0.1.0.0',
     'summary': 'Social Country Club — Tennis Management',
     'description': 'Tennis module: courts, bookings, caddies, matches, rankings.',
     'category': 'Club Management',

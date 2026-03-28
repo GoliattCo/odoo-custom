@@ -105,7 +105,7 @@
                     domain="[('status', '=', 'approved')]"/>
                 <filter name="filter_rejected" string="Rejected"
                     domain="[('status', '=', 'rejected')]"/>
-                <group expand="0" string="Group By">
+                <group>
                     <filter name="group_assembly" string="Assembly"
                         context="{'group_by': 'assembly_id'}"/>
                     <filter name="group_type" string="Type"

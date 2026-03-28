@@ -70,7 +70,7 @@
                     domain="[('status', '=', 'absent')]"/>
                 <filter name="filter_excused" string="Excused"
                     domain="[('status', '=', 'excused')]"/>
-                <group expand="0" string="Group By">
+                <group>
                     <filter name="group_assembly" string="Assembly"
                         context="{'group_by': 'assembly_id'}"/>
                     <filter name="group_status" string="Status"

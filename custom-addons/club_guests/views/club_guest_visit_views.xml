@@ -160,7 +160,7 @@
                 <filter name="checked_in" string="Checked In"
                     domain="[('status', '=', 'checked_in')]"/>
                 <separator/>
-                <group expand="0" string="Group By">
+                <group>
                     <filter name="group_status" string="Status"
                         context="{'group_by': 'status'}"/>
                     <filter name="group_date" string="Visit Date"

@@ -60,7 +60,7 @@
                 <field name="brand"/>
                 <filter name="active" string="Active" domain="[('active', '=', True)]"/>
                 <filter name="archived" string="Archived" domain="[('active', '=', False)]"/>
-                <group expand="0" string="Group By">
+                <group>
                     <filter name="group_affiliate" string="Affiliate"
                         context="{'group_by': 'affiliate_id'}"/>
                     <filter name="group_type" string="Vehicle Type"

@@ -1,6 +1,6 @@
 {
     'name': 'Colombian Accounting Extended',
-    'version': '18.0.1.0.0',
+    'version': '19.0.1.0.0',
     'summary': 'Cost centers, business units, auto-posting rules, year-close, and formulated concepts for Colombian accounting',
     'category': 'Accounting',
     'author': 'Custom',

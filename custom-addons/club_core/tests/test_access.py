@@ -10,15 +10,17 @@ class TestClubAccessRights(TransactionCase):
         super().setUp()
         # Create a portal user linked to an affiliate
         self.portal_partner = self.env['res.partner'].create({'name': 'Portal User'})
-        self.portal_user = self.env['res.users'].create({
+        self.portal_user = self.env['res.users'].with_context(
+            no_reset_password=True
+        ).create({
             'name': 'Portal User',
             'login': 'portaluser@test.com',
             'partner_id': self.portal_partner.id,
-            'groups_id': [(6, 0, [
+            'group_ids': [(6, 0, [
                 self.env.ref('base.group_portal').id,
-                self.env.ref('club_core.group_club_member').id,
             ])],
         })
+        self.portal_user.group_ids += self.env.ref('club_core.group_club_member')
         # Create the affiliate for this portal user
         self.own_affiliate = self.env['club.affiliate'].create({
             'partner_id': self.portal_partner.id,
@@ -60,7 +62,7 @@ class TestClubAccessRights(TransactionCase):
         staff_user = self.env['res.users'].create({
             'name': 'Staff',
             'login': 'staff@test.com',
-            'groups_id': [(6, 0, [
+            'group_ids': [(6, 0, [
                 self.env.ref('club_core.group_club_staff').id
             ])],
         })

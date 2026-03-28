@@ -75,7 +75,7 @@
                     domain="[('status','=','completed')]"/>
                 <filter name="cancelled" string="Cancelled"
                     domain="[('status','=','cancelled')]"/>
-                <group expand="0" string="Group By">
+                <group>
                     <filter name="group_boat" string="Boat"
                         context="{'group_by': 'boat_id'}"/>
                     <filter name="group_date" string="Date"

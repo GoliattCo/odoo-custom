@@ -54,7 +54,7 @@
                     domain="[('active','=',True)]"/>
                 <filter name="inactive" string="Archived"
                     domain="[('active','=',False)]"/>
-                <group expand="0" string="Group By">
+                <group>
                     <filter name="group_role" string="Role"
                         context="{'group_by': 'role'}"/>
                 </group>

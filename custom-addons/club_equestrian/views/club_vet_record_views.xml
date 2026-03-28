@@ -53,7 +53,7 @@
                 <field name="vet_name"/>
                 <filter name="upcoming" string="Upcoming Visits"
                     domain="[('next_visit_date', '>=', context_today().strftime('%Y-%m-%d'))]"/>
-                <group expand="0" string="Group By">
+                <group>
                     <filter name="group_horse" string="Horse"
                         context="{'group_by': 'horse_id'}"/>
                     <filter name="group_vet" string="Veterinarian"

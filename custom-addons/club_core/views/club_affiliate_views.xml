@@ -119,7 +119,7 @@
                     domain="[('membership_status','=','active')]"/>
                 <filter name="suspended" string="Suspended"
                     domain="[('membership_status','=','suspended')]"/>
-                <group expand="0" string="Group By">
+                <group>
                     <filter name="group_type" string="Membership Type"
                         context="{'group_by': 'membership_type'}"/>
                     <filter name="group_status" string="Status"

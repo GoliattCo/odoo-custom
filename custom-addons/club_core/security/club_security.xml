@@ -6,19 +6,16 @@
 
         <record id="group_club_admin" model="res.groups">
             <field name="name">Club Administrator</field>
-            <field name="category_id" ref="base.module_category_hidden"/>
             <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
         </record>
 
         <record id="group_club_staff" model="res.groups">
             <field name="name">Club Staff</field>
-            <field name="category_id" ref="base.module_category_hidden"/>
             <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
         </record>
 
         <record id="group_club_member" model="res.groups">
             <field name="name">Club Member (Portal)</field>
-            <field name="category_id" ref="base.module_category_hidden"/>
             <field name="implied_ids" eval="[(4, ref('base.group_portal'))]"/>
         </record>
 

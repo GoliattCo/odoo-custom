@@ -1,6 +1,6 @@
 {
     'name': 'Fixed Assets (Colombia)',
-    'version': '18.0.1.0.0',
+    'version': '19.0.1.0.0',
     'summary': 'Fixed asset management with depreciation, maintenance, and disposal for Colombian companies',
     'description': """
         Manage fixed assets with:

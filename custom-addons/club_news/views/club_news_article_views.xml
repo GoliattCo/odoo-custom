@@ -171,7 +171,7 @@
                         ('publish_date', '&gt;=', (context_today() - relativedelta(months=1, day=1)).strftime('%Y-%m-%d')),
                         ('publish_date', '&lt;', (context_today() - relativedelta(day=1)).strftime('%Y-%m-%d')),
                     ]"/>
-                <group expand="0" string="Group By">
+                <group>
                     <filter name="group_category" string="Category"
                         context="{'group_by': 'category_id'}"/>
                     <filter name="group_status" string="Status"

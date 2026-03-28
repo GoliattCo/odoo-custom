@@ -1,6 +1,6 @@
 {
     'name': 'Club Core',
-    'version': '18.0.1.0.0',
+    'version': '19.0.1.0.0',
     'summary': 'Social Country Club — Affiliates & Memberships',
     'description': 'Core module for social country club management: affiliates, membership plans, billing.',
     'category': 'Club Management',

@@ -18,6 +18,5 @@ docs/
 odoo-filestore/
 node_modules/
 .claude/
-# Large directories cloned at build time — exclude from upload
-odoo/
-addons/
+# Addons submodule (jorels available via COPY in docker-compose volumes)
+# NOTE: odoo/ and addons/ excluded in .railwayignore, not here (local build needs them)

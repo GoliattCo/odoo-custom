@@ -1,6 +1,6 @@
 {
     'name': 'Club Affiliate Employees',
-    'version': '18.0.1.0.0',
+    'version': '19.0.1.0.0',
     'summary': 'Affiliate household staff — nannies, nurses, chauffeurs, etc. registered for club access',
     'description': 'Manage affiliate household employees with schedules, access cards, and entry logs.',
     'category': 'Club Management',

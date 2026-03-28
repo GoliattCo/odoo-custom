@@ -1,6 +1,6 @@
 {
     'name': 'Club Lost & Found',
-    'version': '18.0.1.0.0',
+    'version': '19.0.1.0.0',
     'summary': 'Social Country Club — Lost & Found Item Management',
     'description': 'Track lost and found items within the club, match them, and manage claims.',
     'category': 'Club Management',

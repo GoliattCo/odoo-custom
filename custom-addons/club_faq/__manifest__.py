@@ -1,6 +1,6 @@
 {
     'name': 'Club FAQ',
-    'version': '18.0.1.0.0',
+    'version': '19.0.1.0.0',
     'summary': 'FAQ system with multilanguage support for the Club',
     'description': 'FAQ system with categories, Q&A, ordering, and EN/ES multilanguage support.',
     'category': 'Club Management',
