@@ -23,7 +23,7 @@
     'license': 'LGPL-3',
     'depends': [
         'hr',
-        'hr_contract',
+        'hr_contract_community',
         'hr_attendance',
         'account',
         'mail',
