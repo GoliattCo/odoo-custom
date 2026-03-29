@@ -19,6 +19,15 @@ class PmsPlanner extends Component {
         this.action = useService("action");
         this.notification = useService("notification");
 
+        this.STATUS_CONFIG = [
+            { key: "confirmed", label: "Confirmada", color: "#28a745" },
+            { key: "guaranteed", label: "Garantizada", color: "#17a2b8" },
+            { key: "checked_in", label: "Check-In", color: "#714B67" },
+            { key: "checked_out", label: "Check-Out", color: "#6c757d" },
+            { key: "no_show", label: "No Show", color: "#fd7e14" },
+            { key: "cancelled", label: "Cancelada", color: "#dc3545" },
+        ];
+
         this.state = useState({
             dates: [],
             rooms: [],
@@ -26,6 +35,8 @@ class PmsPlanner extends Component {
             bars: [],
             periodLabel: "",
             startDate: null,
+            activeFilters: [],
+            statusFilters: this.STATUS_CONFIG.map(s => ({ ...s, active: false, count: 0 })),
         });
 
         this._dragging = null;
@@ -88,11 +99,18 @@ class PmsPlanner extends Component {
             floor: r.floor, status: r.status,
         }));
 
+        // Load all reservations (including cancelled) so we can count per status
         const reservations = await this.orm.searchRead("pms.reservation",
-            [["checkin_date", "<", endISO], ["checkout_date", ">", startISO], ["state", "not in", ["cancelled"]]],
+            [["checkin_date", "<", endISO], ["checkout_date", ">", startISO]],
             ["name", "guest_id", "checkin_date", "checkout_date", "room_id", "room_type_id", "state", "adults", "nights", "daily_rate"],
             { order: "checkin_date", limit: 500 });
         this.state.reservations = reservations;
+
+        // Update status counts
+        for (const sf of this.state.statusFilters) {
+            sf.count = reservations.filter(r => r.state === sf.key).length;
+        }
+
         this._computeBars();
     }
 
@@ -139,8 +157,17 @@ class PmsPlanner extends Component {
             }
         }
 
+        // Determine which states to show
+        const activeKeys = this.state.activeFilters;
+        const showAll = activeKeys.length === 0;
+
         for (const res of this.state.reservations) {
             if (!res.room_id) continue;
+            // Apply status filter
+            if (!showAll && !activeKeys.includes(res.state)) continue;
+            // Hide cancelled by default unless explicitly filtered
+            if (showAll && res.state === "cancelled") continue;
+
             const roomId = res.room_id[0];
             const rp = roomPositions[roomId];
             if (!rp) continue;
@@ -178,6 +205,22 @@ class PmsPlanner extends Component {
     onNextPeriod() { this._setStartDate(this._addDays(this.state.startDate, 14)); this._loadData(); }
     onToday() { this._setStartDate(this._addDays(this._today(), -3)); this._loadData(); }
     onRefresh() { this._loadData(); }
+
+    // ── Status filter toggles ─────────────────────────────
+
+    onToggleStatusFilter(key) {
+        const sf = this.state.statusFilters.find(s => s.key === key);
+        if (!sf) return;
+        sf.active = !sf.active;
+        this.state.activeFilters = this.state.statusFilters.filter(s => s.active).map(s => s.key);
+        this._computeBars();
+    }
+
+    onClearFilters() {
+        for (const sf of this.state.statusFilters) { sf.active = false; }
+        this.state.activeFilters = [];
+        this._computeBars();
+    }
 
     // ── Cell click → create reservation ───────────────────
 

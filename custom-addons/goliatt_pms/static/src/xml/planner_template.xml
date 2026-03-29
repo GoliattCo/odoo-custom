@@ -19,6 +19,24 @@
                 </span>
             </div>
 
+            <!-- Legend / Status Filters -->
+            <div class="pms-planner-legend">
+                <t t-foreach="state.statusFilters" t-as="sf" t-key="sf.key">
+                    <div t-attf-class="legend-item {{ sf.active ? 'legend-active' : '' }}"
+                         t-on-click="() => this.onToggleStatusFilter(sf.key)">
+                        <div t-attf-class="legend-dot" t-attf-style="background:{{ sf.color }}">
+                            <t t-if="sf.active"><span class="legend-x">✕</span></t>
+                        </div>
+                        <span><t t-esc="sf.label"/></span>
+                        <span class="legend-count">(<t t-esc="sf.count"/>)</span>
+                    </div>
+                </t>
+                <div class="legend-item legend-clear" t-on-click="onClearFilters"
+                     t-if="state.activeFilters.length > 0">
+                    <span>✕ Limpiar filtros</span>
+                </div>
+            </div>
+
             <!-- Grid -->
             <div class="pms-planner-grid"
                  t-attf-style="grid-template-columns: 140px repeat({{ state.dates.length }}, 1fr);"
@@ -70,14 +88,7 @@
                 </t>
             </div>
 
-            <!-- Legend -->
-            <div class="pms-planner-legend">
-                <div class="legend-item"><div class="legend-dot" style="background:#28a745"/><span>Confirmada</span></div>
-                <div class="legend-item"><div class="legend-dot" style="background:#17a2b8"/><span>Garantizada</span></div>
-                <div class="legend-item"><div class="legend-dot" style="background:#714B67"/><span>Check-In</span></div>
-                <div class="legend-item"><div class="legend-dot" style="background:#6c757d"/><span>Check-Out</span></div>
-                <div class="legend-item"><div class="legend-dot" style="background:#dc3545"/><span>Cancelada</span></div>
-            </div>
+            <!-- (legend moved to top) -->
         </div>
     </t>
 

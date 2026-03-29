@@ -202,26 +202,67 @@
     background: rgba(255,255,255,0.4);
 }
 
-/* Status legend */
+/* Status legend / filters */
 .pms-planner-legend {
     display: flex;
-    gap: 16px;
+    gap: 12px;
     padding: 8px 16px;
-    font-size: 11px;
-    border-top: 1px solid #dee2e6;
+    font-size: 12px;
+    border-bottom: 1px solid #dee2e6;
     background: #fff;
+    flex-wrap: wrap;
+    align-items: center;
 }
 
 .pms-planner-legend .legend-item {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 5px;
+    cursor: pointer;
+    padding: 3px 8px;
+    border-radius: 4px;
+    transition: background 0.15s;
+    user-select: none;
+}
+
+.pms-planner-legend .legend-item:hover {
+    background: #f0f0f0;
+}
+
+.pms-planner-legend .legend-item.legend-active {
+    background: #e8e0e5;
+    font-weight: 600;
 }
 
 .pms-planner-legend .legend-dot {
-    width: 12px;
-    height: 12px;
+    width: 16px;
+    height: 16px;
     border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.pms-planner-legend .legend-dot .legend-x {
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.pms-planner-legend .legend-count {
+    color: #999;
+    font-size: 11px;
+}
+
+.pms-planner-legend .legend-clear {
+    color: #714B67;
+    font-weight: 600;
+    font-size: 11px;
+    margin-left: 8px;
+    border-left: 1px solid #dee2e6;
+    padding-left: 12px;
 }
 
 /* Tooltip */
