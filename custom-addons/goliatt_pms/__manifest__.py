@@ -55,6 +55,8 @@
             'goliatt_pms/static/src/css/planner.css',
             'goliatt_pms/static/src/xml/planner_template.xml',
             'goliatt_pms/static/src/js/planner.js',
+            'goliatt_pms/static/src/xml/dark_mode_toggle.xml',
+            'goliatt_pms/static/src/js/dark_mode_toggle.js',
         ],
     },
     'installable': True,

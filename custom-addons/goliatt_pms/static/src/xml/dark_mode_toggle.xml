@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="goliatt_pms.DarkModeToggle">
+        <div class="o_dark_mode_toggle d-flex align-items-center mx-1"
+             t-on-click="toggleTheme"
+             t-att-title="state.isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'"
+             style="cursor: pointer; font-size: 20px; opacity: 0.8; transition: opacity 0.2s;"
+             t-att-aria-label="state.isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'">
+            <t t-if="state.isDark">☀️</t>
+            <t t-else="">🌙</t>
+        </div>
+    </t>
+
+</templates>
