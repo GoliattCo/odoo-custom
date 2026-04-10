@@ -25,7 +25,9 @@
         'security/ir.model.access.csv',
         # data
         'data/sequences.xml',
+        'data/product_request_sequence.xml',
         # views
+        'views/co_product_request_views.xml',
         'views/co_purchase_request_views.xml',
         'views/co_inventory_formula_views.xml',
         'views/stock_warehouse_views.xml',

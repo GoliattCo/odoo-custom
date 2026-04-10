@@ -5,6 +5,12 @@
     <!--              Purchase Menus                                  -->
     <!-- ============================================================ -->
 
+    <menuitem id="menu_product_request"
+              name="Product Requests"
+              parent="purchase.menu_purchase_root"
+              action="action_co_product_request"
+              sequence="3"/>
+
     <!-- Parent menu under Purchase -->
     <menuitem id="menu_purchase_request_root"
               name="Purchase Requests"

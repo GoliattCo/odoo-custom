@@ -1,3 +1,5 @@
+from . import co_product_request
+from . import co_product_request_line
 from . import co_purchase_request
 from . import co_purchase_request_line
 from . import co_inventory_formula
