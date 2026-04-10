@@ -12,6 +12,10 @@
             <xpath expr="//page[@name='purchase_delivery_invoice']" position="inside">
                 <group string="Supplier Payment Tracking">
                     <field name="co_purchase_request_id" readonly="1"/>
+                    <field name="co_fulfillment_pct" widget="progressbar"/>
+                    <field name="co_fulfillment_state" widget="badge"
+                           decoration-warning="co_fulfillment_state == 'partial'"
+                           decoration-success="co_fulfillment_state == 'complete'"/>
                     <field name="co_payment_state_summary" readonly="1"/>
                 </group>
             </xpath>
