@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================ -->
+    <!-- KPI 1: Solicitudes de Compra por Estado                      -->
+    <!-- ============================================================ -->
+    <record id="view_dashboard_purchase_requests_graph" model="ir.ui.view">
+        <field name="name">co.purchase.request.dashboard.graph</field>
+        <field name="model">co.purchase.request</field>
+        <field name="arch" type="xml">
+            <graph string="Solicitudes de Compra por Estado" type="bar">
+                <field name="state" type="row"/>
+                <field name="estimated_amount" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_dashboard_purchase_requests_pivot" model="ir.ui.view">
+        <field name="name">co.purchase.request.dashboard.pivot</field>
+        <field name="model">co.purchase.request</field>
+        <field name="arch" type="xml">
+            <pivot string="Solicitudes de Compra por Estado">
+                <field name="state" type="row"/>
+                <field name="estimated_amount" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_dashboard_purchase_requests_search" model="ir.ui.view">
+        <field name="name">co.purchase.request.dashboard.search</field>
+        <field name="model">co.purchase.request</field>
+        <field name="arch" type="xml">
+            <search string="Solicitudes de Compra">
+                <field name="department_id"/>
+                <filter name="this_month" string="Este Mes"
+                        domain="[('date_request', '&gt;=', (context_today() - relativedelta(day=1)).strftime('%Y-%m-%d')),
+                                 ('date_request', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter name="this_quarter" string="Este Trimestre"
+                        domain="[('date_request', '&gt;=', (context_today() - relativedelta(month=((context_today().month - 1) // 3) * 3 + 1, day=1)).strftime('%Y-%m-%d')),
+                                 ('date_request', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter name="this_year" string="Este Año"
+                        domain="[('date_request', '&gt;=', (context_today() - relativedelta(month=1, day=1)).strftime('%Y-%m-%d')),
+                                 ('date_request', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_dashboard_purchase_requests" model="ir.actions.act_window">
+        <field name="name">Solicitudes de Compra por Estado</field>
+        <field name="res_model">co.purchase.request</field>
+        <field name="view_mode">graph,pivot</field>
+        <field name="search_view_id" ref="view_dashboard_purchase_requests_search"/>
+        <field name="context">{'search_default_this_year': 1}</field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- KPI 2: Solicitudes de Producto por Estado                    -->
+    <!-- ============================================================ -->
+    <record id="view_dashboard_product_requests_graph" model="ir.ui.view">
+        <field name="name">co.product.request.dashboard.graph</field>
+        <field name="model">co.product.request</field>
+        <field name="arch" type="xml">
+            <graph string="Solicitudes de Producto por Estado" type="bar">
+                <field name="state" type="row"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_dashboard_product_requests_pivot" model="ir.ui.view">
+        <field name="name">co.product.request.dashboard.pivot</field>
+        <field name="model">co.product.request</field>
+        <field name="arch" type="xml">
+            <pivot string="Solicitudes de Producto por Estado">
+                <field name="state" type="row"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_dashboard_product_requests_search" model="ir.ui.view">
+        <field name="name">co.product.request.dashboard.search</field>
+        <field name="model">co.product.request</field>
+        <field name="arch" type="xml">
+            <search string="Solicitudes de Producto">
+                <field name="warehouse_id"/>
+                <filter name="this_month" string="Este Mes"
+                        domain="[('date_request', '&gt;=', (context_today() - relativedelta(day=1)).strftime('%Y-%m-%d')),
+                                 ('date_request', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter name="this_quarter" string="Este Trimestre"
+                        domain="[('date_request', '&gt;=', (context_today() - relativedelta(month=((context_today().month - 1) // 3) * 3 + 1, day=1)).strftime('%Y-%m-%d')),
+                                 ('date_request', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter name="this_year" string="Este Año"
+                        domain="[('date_request', '&gt;=', (context_today() - relativedelta(month=1, day=1)).strftime('%Y-%m-%d')),
+                                 ('date_request', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_dashboard_product_requests" model="ir.actions.act_window">
+        <field name="name">Solicitudes de Producto por Estado</field>
+        <field name="res_model">co.product.request</field>
+        <field name="view_mode">graph,pivot</field>
+        <field name="search_view_id" ref="view_dashboard_product_requests_search"/>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- KPI 3: Puntuación de Proveedores                             -->
+    <!-- ============================================================ -->
+    <record id="view_dashboard_supplier_scores_graph" model="ir.ui.view">
+        <field name="name">co.supplier.score.dashboard.graph</field>
+        <field name="model">co.supplier.score</field>
+        <field name="arch" type="xml">
+            <graph string="Puntuación de Proveedores" type="bar">
+                <field name="partner_id" type="row"/>
+                <field name="score_price" type="measure"/>
+                <field name="score_delivery" type="measure"/>
+                <field name="score_quality" type="measure"/>
+                <field name="score_compliance" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_dashboard_supplier_scores_pivot" model="ir.ui.view">
+        <field name="name">co.supplier.score.dashboard.pivot</field>
+        <field name="model">co.supplier.score</field>
+        <field name="arch" type="xml">
+            <pivot string="Puntuación de Proveedores">
+                <field name="partner_id" type="row"/>
+                <field name="score_price" type="measure"/>
+                <field name="score_delivery" type="measure"/>
+                <field name="score_quality" type="measure"/>
+                <field name="score_compliance" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="action_dashboard_supplier_scores" model="ir.actions.act_window">
+        <field name="name">Puntuación de Proveedores</field>
+        <field name="res_model">co.supplier.score</field>
+        <field name="view_mode">graph,pivot</field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- KPI 4: Cumplimiento de Órdenes de Compra                     -->
+    <!-- ============================================================ -->
+    <record id="view_dashboard_po_fulfillment_graph" model="ir.ui.view">
+        <field name="name">purchase.order.fulfillment.dashboard.graph</field>
+        <field name="model">purchase.order</field>
+        <field name="arch" type="xml">
+            <graph string="Cumplimiento de Órdenes de Compra" type="pie">
+                <field name="co_fulfillment_state" type="row"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_dashboard_po_fulfillment_pivot" model="ir.ui.view">
+        <field name="name">purchase.order.fulfillment.dashboard.pivot</field>
+        <field name="model">purchase.order</field>
+        <field name="arch" type="xml">
+            <pivot string="Cumplimiento de Órdenes de Compra">
+                <field name="co_fulfillment_state" type="row"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_dashboard_po_fulfillment_search" model="ir.ui.view">
+        <field name="name">purchase.order.fulfillment.dashboard.search</field>
+        <field name="model">purchase.order</field>
+        <field name="arch" type="xml">
+            <search string="Cumplimiento OC">
+                <filter name="confirmed" string="Confirmadas"
+                        domain="[('state', '=', 'purchase')]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_dashboard_po_fulfillment" model="ir.actions.act_window">
+        <field name="name">Cumplimiento de Órdenes de Compra</field>
+        <field name="res_model">purchase.order</field>
+        <field name="view_mode">graph,pivot</field>
+        <field name="search_view_id" ref="view_dashboard_po_fulfillment_search"/>
+        <field name="domain">[('state', '=', 'purchase')]</field>
+        <field name="context">{'search_default_confirmed': 1}</field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- KPI 5: Compras por Departamento                              -->
+    <!-- ============================================================ -->
+    <record id="view_dashboard_purchases_by_dept_graph" model="ir.ui.view">
+        <field name="name">co.purchase.request.by.dept.dashboard.graph</field>
+        <field name="model">co.purchase.request</field>
+        <field name="arch" type="xml">
+            <graph string="Compras por Departamento" type="bar">
+                <field name="department_id" type="row"/>
+                <field name="estimated_amount" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_dashboard_purchases_by_dept_pivot" model="ir.ui.view">
+        <field name="name">co.purchase.request.by.dept.dashboard.pivot</field>
+        <field name="model">co.purchase.request</field>
+        <field name="arch" type="xml">
+            <pivot string="Compras por Departamento">
+                <field name="department_id" type="row"/>
+                <field name="estimated_amount" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_dashboard_purchases_by_dept_search" model="ir.ui.view">
+        <field name="name">co.purchase.request.by.dept.dashboard.search</field>
+        <field name="model">co.purchase.request</field>
+        <field name="arch" type="xml">
+            <search string="Compras por Departamento">
+                <field name="state"/>
+                <filter name="approved_states" string="Aprobadas"
+                        domain="[('state', 'in', ('approved', 'purchase', 'done'))]"/>
+                <filter name="this_month" string="Este Mes"
+                        domain="[('date_request', '&gt;=', (context_today() - relativedelta(day=1)).strftime('%Y-%m-%d')),
+                                 ('date_request', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter name="this_quarter" string="Este Trimestre"
+                        domain="[('date_request', '&gt;=', (context_today() - relativedelta(month=((context_today().month - 1) // 3) * 3 + 1, day=1)).strftime('%Y-%m-%d')),
+                                 ('date_request', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter name="this_year" string="Este Año"
+                        domain="[('date_request', '&gt;=', (context_today() - relativedelta(month=1, day=1)).strftime('%Y-%m-%d')),
+                                 ('date_request', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_dashboard_purchases_by_dept" model="ir.actions.act_window">
+        <field name="name">Compras por Departamento</field>
+        <field name="res_model">co.purchase.request</field>
+        <field name="view_mode">graph,pivot</field>
+        <field name="search_view_id" ref="view_dashboard_purchases_by_dept_search"/>
+        <field name="context">{'search_default_this_year': 1}</field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- KPI 6: Solicitudes por Prioridad                             -->
+    <!-- ============================================================ -->
+    <record id="view_dashboard_requests_priority_graph" model="ir.ui.view">
+        <field name="name">co.purchase.request.priority.dashboard.graph</field>
+        <field name="model">co.purchase.request</field>
+        <field name="arch" type="xml">
+            <graph string="Solicitudes por Prioridad" type="pie">
+                <field name="priority" type="row"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_dashboard_requests_priority_pivot" model="ir.ui.view">
+        <field name="name">co.purchase.request.priority.dashboard.pivot</field>
+        <field name="model">co.purchase.request</field>
+        <field name="arch" type="xml">
+            <pivot string="Solicitudes por Prioridad">
+                <field name="priority" type="row"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_dashboard_requests_priority_search" model="ir.ui.view">
+        <field name="name">co.purchase.request.priority.dashboard.search</field>
+        <field name="model">co.purchase.request</field>
+        <field name="arch" type="xml">
+            <search string="Solicitudes por Prioridad">
+                <filter name="this_month" string="Este Mes"
+                        domain="[('date_request', '&gt;=', (context_today() - relativedelta(day=1)).strftime('%Y-%m-%d')),
+                                 ('date_request', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter name="this_quarter" string="Este Trimestre"
+                        domain="[('date_request', '&gt;=', (context_today() - relativedelta(month=((context_today().month - 1) // 3) * 3 + 1, day=1)).strftime('%Y-%m-%d')),
+                                 ('date_request', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter name="this_year" string="Este Año"
+                        domain="[('date_request', '&gt;=', (context_today() - relativedelta(month=1, day=1)).strftime('%Y-%m-%d')),
+                                 ('date_request', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_dashboard_requests_priority" model="ir.actions.act_window">
+        <field name="name">Solicitudes por Prioridad</field>
+        <field name="res_model">co.purchase.request</field>
+        <field name="view_mode">graph,pivot</field>
+        <field name="search_view_id" ref="view_dashboard_requests_priority_search"/>
+    </record>
+
+</odoo>

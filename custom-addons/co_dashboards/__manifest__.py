@@ -17,6 +17,7 @@
         'co_budget',
         'co_fixed_assets',
         'co_payroll',
+        'co_warehouse_extended',
     ],
     'data': [
         'security/ir.model.access.csv',
@@ -24,6 +25,8 @@
         'views/finance_board_view.xml',
         'views/payroll_dashboard_views.xml',
         'views/payroll_board_view.xml',
+        'views/purchase_dashboard_views.xml',
+        'views/purchase_board_view.xml',
         'views/co_menus.xml',
     ],
     'installable': True,
