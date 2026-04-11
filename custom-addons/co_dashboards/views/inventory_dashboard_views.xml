@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================ -->
+    <!-- KPI 1: Stock por Categoría de Producto                       -->
+    <!-- ============================================================ -->
+    <record id="view_dashboard_stock_category_graph" model="ir.ui.view">
+        <field name="name">stock.quant.category.dashboard.graph</field>
+        <field name="model">stock.quant</field>
+        <field name="arch" type="xml">
+            <graph string="Stock por Categoría de Producto" type="bar">
+                <field name="product_categ_id" type="row"/>
+                <field name="quantity" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_dashboard_stock_category_pivot" model="ir.ui.view">
+        <field name="name">stock.quant.category.dashboard.pivot</field>
+        <field name="model">stock.quant</field>
+        <field name="arch" type="xml">
+            <pivot string="Stock por Categoría de Producto">
+                <field name="product_categ_id" type="row"/>
+                <field name="quantity" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="action_dashboard_stock_category" model="ir.actions.act_window">
+        <field name="name">Stock por Categoría de Producto</field>
+        <field name="res_model">stock.quant</field>
+        <field name="view_mode">graph,pivot</field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- KPI 2: Movimientos de Stock por Tipo                         -->
+    <!-- ============================================================ -->
+    <record id="view_dashboard_stock_moves_graph" model="ir.ui.view">
+        <field name="name">stock.move.type.dashboard.graph</field>
+        <field name="model">stock.move</field>
+        <field name="arch" type="xml">
+            <graph string="Movimientos de Stock por Tipo" type="bar">
+                <field name="picking_type_id" type="row"/>
+                <field name="product_uom_qty" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_dashboard_stock_moves_pivot" model="ir.ui.view">
+        <field name="name">stock.move.type.dashboard.pivot</field>
+        <field name="model">stock.move</field>
+        <field name="arch" type="xml">
+            <pivot string="Movimientos de Stock por Tipo">
+                <field name="picking_type_id" type="row"/>
+                <field name="product_uom_qty" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_dashboard_stock_moves_search" model="ir.ui.view">
+        <field name="name">stock.move.type.dashboard.search</field>
+        <field name="model">stock.move</field>
+        <field name="arch" type="xml">
+            <search string="Movimientos de Stock">
+                <field name="picking_type_id"/>
+                <filter name="done" string="Realizados"
+                        domain="[('state', '=', 'done')]"/>
+                <separator/>
+                <filter name="this_month" string="Este Mes"
+                        domain="[('date', '&gt;=', (context_today() - relativedelta(day=1)).strftime('%Y-%m-%d')),
+                                 ('date', '&lt;', (context_today() + relativedelta(months=1, day=1)).strftime('%Y-%m-%d'))]"/>
+                <filter name="this_quarter" string="Este Trimestre"
+                        domain="[('date', '&gt;=', (context_today() - relativedelta(month=((context_today().month - 1) // 3) * 3 + 1, day=1)).strftime('%Y-%m-%d')),
+                                 ('date', '&lt;', (context_today() + relativedelta(months=1, day=1)).strftime('%Y-%m-%d'))]"/>
+                <filter name="this_year" string="Este Año"
+                        domain="[('date', '&gt;=', (context_today() - relativedelta(month=1, day=1)).strftime('%Y-%m-%d')),
+                                 ('date', '&lt;', (context_today() + relativedelta(months=1, day=1)).strftime('%Y-%m-%d'))]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_dashboard_stock_moves" model="ir.actions.act_window">
+        <field name="name">Movimientos de Stock por Tipo</field>
+        <field name="res_model">stock.move</field>
+        <field name="view_mode">graph,pivot</field>
+        <field name="search_view_id" ref="view_dashboard_stock_moves_search"/>
+        <field name="context">{'search_default_this_month': 1, 'search_default_done': 1}</field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- KPI 3: Transferencias por Estado                             -->
+    <!-- ============================================================ -->
+    <record id="view_dashboard_pickings_state_graph" model="ir.ui.view">
+        <field name="name">stock.picking.state.dashboard.graph</field>
+        <field name="model">stock.picking</field>
+        <field name="arch" type="xml">
+            <graph string="Transferencias por Estado" type="pie">
+                <field name="state" type="row"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_dashboard_pickings_state_pivot" model="ir.ui.view">
+        <field name="name">stock.picking.state.dashboard.pivot</field>
+        <field name="model">stock.picking</field>
+        <field name="arch" type="xml">
+            <pivot string="Transferencias por Estado">
+                <field name="state" type="row"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_dashboard_pickings_state_search" model="ir.ui.view">
+        <field name="name">stock.picking.state.dashboard.search</field>
+        <field name="model">stock.picking</field>
+        <field name="arch" type="xml">
+            <search string="Transferencias">
+                <filter name="this_month" string="Este Mes"
+                        domain="[('scheduled_date', '&gt;=', (context_today() - relativedelta(day=1)).strftime('%Y-%m-%d')),
+                                 ('scheduled_date', '&lt;', (context_today() + relativedelta(months=1, day=1)).strftime('%Y-%m-%d'))]"/>
+                <filter name="this_quarter" string="Este Trimestre"
+                        domain="[('scheduled_date', '&gt;=', (context_today() - relativedelta(month=((context_today().month - 1) // 3) * 3 + 1, day=1)).strftime('%Y-%m-%d')),
+                                 ('scheduled_date', '&lt;', (context_today() + relativedelta(months=1, day=1)).strftime('%Y-%m-%d'))]"/>
+                <filter name="this_year" string="Este Año"
+                        domain="[('scheduled_date', '&gt;=', (context_today() - relativedelta(month=1, day=1)).strftime('%Y-%m-%d')),
+                                 ('scheduled_date', '&lt;', (context_today() + relativedelta(months=1, day=1)).strftime('%Y-%m-%d'))]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_dashboard_pickings_state" model="ir.actions.act_window">
+        <field name="name">Transferencias por Estado</field>
+        <field name="res_model">stock.picking</field>
+        <field name="view_mode">graph,pivot</field>
+        <field name="search_view_id" ref="view_dashboard_pickings_state_search"/>
+        <field name="context">{'search_default_this_month': 1}</field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- KPI 4: Valoración de Inventario                              -->
+    <!-- ============================================================ -->
+    <record id="view_dashboard_stock_valuation_graph" model="ir.ui.view">
+        <field name="name">stock.move.valuation.dashboard.graph</field>
+        <field name="model">stock.move</field>
+        <field name="arch" type="xml">
+            <graph string="Valoración de Inventario" type="bar">
+                <field name="product_id" type="row"/>
+                <field name="value" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_dashboard_stock_valuation_pivot" model="ir.ui.view">
+        <field name="name">stock.move.valuation.dashboard.pivot</field>
+        <field name="model">stock.move</field>
+        <field name="arch" type="xml">
+            <pivot string="Valoración de Inventario">
+                <field name="product_id" type="row"/>
+                <field name="value" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_dashboard_stock_valuation_search" model="ir.ui.view">
+        <field name="name">stock.move.valuation.dashboard.search</field>
+        <field name="model">stock.move</field>
+        <field name="arch" type="xml">
+            <search string="Valoración de Inventario">
+                <filter name="done" string="Realizados"
+                        domain="[('state', '=', 'done')]"/>
+                <filter name="incoming" string="Entradas"
+                        domain="[('is_in', '=', True)]"/>
+                <separator/>
+                <filter name="this_month" string="Este Mes"
+                        domain="[('date', '&gt;=', (context_today() - relativedelta(day=1)).strftime('%Y-%m-%d')),
+                                 ('date', '&lt;', (context_today() + relativedelta(months=1, day=1)).strftime('%Y-%m-%d'))]"/>
+                <filter name="this_quarter" string="Este Trimestre"
+                        domain="[('date', '&gt;=', (context_today() - relativedelta(month=((context_today().month - 1) // 3) * 3 + 1, day=1)).strftime('%Y-%m-%d')),
+                                 ('date', '&lt;', (context_today() + relativedelta(months=1, day=1)).strftime('%Y-%m-%d'))]"/>
+                <filter name="this_year" string="Este Año"
+                        domain="[('date', '&gt;=', (context_today() - relativedelta(month=1, day=1)).strftime('%Y-%m-%d')),
+                                 ('date', '&lt;', (context_today() + relativedelta(months=1, day=1)).strftime('%Y-%m-%d'))]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_dashboard_stock_valuation" model="ir.actions.act_window">
+        <field name="name">Valoración de Inventario</field>
+        <field name="res_model">stock.move</field>
+        <field name="view_mode">graph,pivot</field>
+        <field name="search_view_id" ref="view_dashboard_stock_valuation_search"/>
+        <field name="context">{'search_default_this_year': 1, 'search_default_done': 1}</field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- KPI 5: Kardex - Entradas y Salidas                           -->
+    <!-- ============================================================ -->
+    <record id="view_dashboard_kardex_graph" model="ir.ui.view">
+        <field name="name">co.restaurant.kardex.dashboard.graph</field>
+        <field name="model">co.restaurant.kardex</field>
+        <field name="arch" type="xml">
+            <graph string="Kardex - Entradas y Salidas" type="line">
+                <field name="date" interval="month" type="row"/>
+                <field name="qty_in" type="measure"/>
+                <field name="qty_out" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_dashboard_kardex_pivot" model="ir.ui.view">
+        <field name="name">co.restaurant.kardex.dashboard.pivot</field>
+        <field name="model">co.restaurant.kardex</field>
+        <field name="arch" type="xml">
+            <pivot string="Kardex - Entradas y Salidas">
+                <field name="date" interval="month" type="row"/>
+                <field name="qty_in" type="measure"/>
+                <field name="qty_out" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_dashboard_kardex_search" model="ir.ui.view">
+        <field name="name">co.restaurant.kardex.dashboard.search</field>
+        <field name="model">co.restaurant.kardex</field>
+        <field name="arch" type="xml">
+            <search string="Kardex">
+                <field name="warehouse_id"/>
+                <filter name="this_month" string="Este Mes"
+                        domain="[('date', '&gt;=', (context_today() - relativedelta(day=1)).strftime('%Y-%m-%d')),
+                                 ('date', '&lt;', (context_today() + relativedelta(months=1, day=1)).strftime('%Y-%m-%d'))]"/>
+                <filter name="this_quarter" string="Este Trimestre"
+                        domain="[('date', '&gt;=', (context_today() - relativedelta(month=((context_today().month - 1) // 3) * 3 + 1, day=1)).strftime('%Y-%m-%d')),
+                                 ('date', '&lt;', (context_today() + relativedelta(months=1, day=1)).strftime('%Y-%m-%d'))]"/>
+                <filter name="this_year" string="Este Año"
+                        domain="[('date', '&gt;=', (context_today() - relativedelta(month=1, day=1)).strftime('%Y-%m-%d')),
+                                 ('date', '&lt;', (context_today() + relativedelta(months=1, day=1)).strftime('%Y-%m-%d'))]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_dashboard_kardex" model="ir.actions.act_window">
+        <field name="name">Kardex - Entradas y Salidas</field>
+        <field name="res_model">co.restaurant.kardex</field>
+        <field name="view_mode">graph,pivot</field>
+        <field name="search_view_id" ref="view_dashboard_kardex_search"/>
+        <field name="context">{'search_default_this_year': 1}</field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- KPI 6: Productos por Reabastecer                             -->
+    <!-- ============================================================ -->
+    <record id="view_dashboard_reorder_graph" model="ir.ui.view">
+        <field name="name">stock.warehouse.orderpoint.dashboard.graph</field>
+        <field name="model">stock.warehouse.orderpoint</field>
+        <field name="arch" type="xml">
+            <graph string="Productos por Reabastecer" type="bar">
+                <field name="product_id" type="row"/>
+                <field name="qty_to_order_computed" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_dashboard_reorder_pivot" model="ir.ui.view">
+        <field name="name">stock.warehouse.orderpoint.dashboard.pivot</field>
+        <field name="model">stock.warehouse.orderpoint</field>
+        <field name="arch" type="xml">
+            <pivot string="Productos por Reabastecer">
+                <field name="product_id" type="row"/>
+                <field name="qty_to_order_computed" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_dashboard_reorder_search" model="ir.ui.view">
+        <field name="name">stock.warehouse.orderpoint.dashboard.search</field>
+        <field name="model">stock.warehouse.orderpoint</field>
+        <field name="arch" type="xml">
+            <search string="Productos por Reabastecer">
+                <filter name="active_rules" string="Reglas Activas"
+                        domain="[('active', '=', True)]"/>
+                <filter name="to_reorder" string="Por Reabastecer"
+                        domain="[('qty_to_order_computed', '&gt;', 0)]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_dashboard_reorder" model="ir.actions.act_window">
+        <field name="name">Productos por Reabastecer</field>
+        <field name="res_model">stock.warehouse.orderpoint</field>
+        <field name="view_mode">graph,pivot</field>
+        <field name="search_view_id" ref="view_dashboard_reorder_search"/>
+        <field name="context">{'search_default_active_rules': 1, 'search_default_to_reorder': 1}</field>
+    </record>
+
+</odoo>

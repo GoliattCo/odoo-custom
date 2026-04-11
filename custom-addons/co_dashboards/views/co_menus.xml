@@ -35,4 +35,10 @@
               parent="co_restaurant.menu_co_restaurant_root"
               action="action_restaurant_board"
               sequence="0"/>
+
+    <menuitem id="menu_inventory_dashboard"
+              name="Tablero de Inventario"
+              parent="stock.menu_stock_root"
+              action="action_inventory_board"
+              sequence="0"/>
 </odoo>
