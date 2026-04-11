@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================ -->
+    <!-- 1. P&L SUMMARY                                                -->
+    <!-- ============================================================ -->
+    <record id="dashboard_pnl_search" model="ir.ui.view">
+        <field name="name">dashboard.pnl.search</field>
+        <field name="model">account.profit.loss</field>
+        <field name="arch" type="xml">
+            <search string="Estado de Resultados">
+                <field name="account_class"/>
+                <field name="account_id"/>
+                <separator/>
+                <filter name="this_month" string="Este Mes"
+                        domain="[('date', '&gt;=', (context_today() - relativedelta(day=1)).strftime('%Y-%m-%d')),
+                                 ('date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter name="this_quarter" string="Este Trimestre"
+                        domain="[('date', '&gt;=', (context_today() - relativedelta(month=((context_today().month - 1) // 3) * 3 + 1, day=1)).strftime('%Y-%m-%d')),
+                                 ('date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter name="this_year" string="Este Año"
+                        domain="[('date', '&gt;=', (context_today() - relativedelta(month=1, day=1)).strftime('%Y-%m-%d')),
+                                 ('date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="dashboard_pnl_graph" model="ir.ui.view">
+        <field name="name">dashboard.pnl.graph</field>
+        <field name="model">account.profit.loss</field>
+        <field name="arch" type="xml">
+            <graph string="Estado de Resultados" type="bar">
+                <field name="account_class" type="row"/>
+                <field name="balance" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_dashboard_pnl" model="ir.actions.act_window">
+        <field name="name">Estado de Resultados</field>
+        <field name="res_model">account.profit.loss</field>
+        <field name="view_mode">graph</field>
+        <field name="view_id" ref="dashboard_pnl_graph"/>
+        <field name="search_view_id" ref="dashboard_pnl_search"/>
+        <field name="context">{'search_default_this_year': 1}</field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- 2. CASH FLOW                                                  -->
+    <!-- ============================================================ -->
+    <record id="dashboard_cashflow_search" model="ir.ui.view">
+        <field name="name">dashboard.cashflow.search</field>
+        <field name="model">account.cash.flow</field>
+        <field name="arch" type="xml">
+            <search string="Flujo de Caja">
+                <field name="journal_id"/>
+                <separator/>
+                <filter name="this_month" string="Este Mes"
+                        domain="[('date', '&gt;=', (context_today() - relativedelta(day=1)).strftime('%Y-%m-%d')),
+                                 ('date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter name="this_quarter" string="Este Trimestre"
+                        domain="[('date', '&gt;=', (context_today() - relativedelta(month=((context_today().month - 1) // 3) * 3 + 1, day=1)).strftime('%Y-%m-%d')),
+                                 ('date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter name="this_year" string="Este Año"
+                        domain="[('date', '&gt;=', (context_today() - relativedelta(month=1, day=1)).strftime('%Y-%m-%d')),
+                                 ('date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="dashboard_cashflow_graph" model="ir.ui.view">
+        <field name="name">dashboard.cashflow.graph</field>
+        <field name="model">account.cash.flow</field>
+        <field name="arch" type="xml">
+            <graph string="Flujo de Caja" type="line">
+                <field name="date" interval="month" type="row"/>
+                <field name="cash_in" type="measure"/>
+                <field name="cash_out" type="measure"/>
+                <field name="net_flow" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_dashboard_cashflow" model="ir.actions.act_window">
+        <field name="name">Flujo de Caja</field>
+        <field name="res_model">account.cash.flow</field>
+        <field name="view_mode">graph</field>
+        <field name="view_id" ref="dashboard_cashflow_graph"/>
+        <field name="search_view_id" ref="dashboard_cashflow_search"/>
+        <field name="context">{'search_default_this_year': 1}</field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- 3. AGED RECEIVABLES                                           -->
+    <!-- ============================================================ -->
+    <record id="dashboard_aged_receivable_graph" model="ir.ui.view">
+        <field name="name">dashboard.aged.receivable.graph</field>
+        <field name="model">account.aged.receivable</field>
+        <field name="arch" type="xml">
+            <graph string="Cartera por Cobrar" type="bar">
+                <field name="aging_bucket" type="row"/>
+                <field name="amount_residual" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_dashboard_aged_receivable" model="ir.actions.act_window">
+        <field name="name">Cartera por Cobrar</field>
+        <field name="res_model">account.aged.receivable</field>
+        <field name="view_mode">graph</field>
+        <field name="view_id" ref="dashboard_aged_receivable_graph"/>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- 4. AGED PAYABLES                                              -->
+    <!-- ============================================================ -->
+    <record id="dashboard_aged_payable_graph" model="ir.ui.view">
+        <field name="name">dashboard.aged.payable.graph</field>
+        <field name="model">account.aged.payable</field>
+        <field name="arch" type="xml">
+            <graph string="Cartera por Pagar" type="bar">
+                <field name="aging_bucket" type="row"/>
+                <field name="amount_residual" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_dashboard_aged_payable" model="ir.actions.act_window">
+        <field name="name">Cartera por Pagar</field>
+        <field name="res_model">account.aged.payable</field>
+        <field name="view_mode">graph</field>
+        <field name="view_id" ref="dashboard_aged_payable_graph"/>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- 5. BUDGET VS ACTUAL                                           -->
+    <!-- ============================================================ -->
+    <record id="dashboard_budget_search" model="ir.ui.view">
+        <field name="name">dashboard.budget.search</field>
+        <field name="model">co.budget.line</field>
+        <field name="arch" type="xml">
+            <search string="Presupuesto vs Real">
+                <field name="budget_id"/>
+                <field name="budget_position_id"/>
+                <field name="account_id"/>
+                <separator/>
+                <filter name="active_budget" string="Presupuesto Activo"
+                        domain="[('budget_state', '=', 'confirmed')]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="dashboard_budget_graph" model="ir.ui.view">
+        <field name="name">dashboard.budget.graph</field>
+        <field name="model">co.budget.line</field>
+        <field name="arch" type="xml">
+            <graph string="Presupuesto vs Real" type="bar">
+                <field name="budget_position_id" type="row"/>
+                <field name="planned_amount" type="measure"/>
+                <field name="actual_amount" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_dashboard_budget" model="ir.actions.act_window">
+        <field name="name">Presupuesto vs Real</field>
+        <field name="res_model">co.budget.line</field>
+        <field name="view_mode">graph</field>
+        <field name="view_id" ref="dashboard_budget_graph"/>
+        <field name="search_view_id" ref="dashboard_budget_search"/>
+        <field name="context">{'search_default_active_budget': 1}</field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- 6. BALANCE SHEET SUMMARY                                      -->
+    <!-- ============================================================ -->
+    <record id="dashboard_balance_sheet_search" model="ir.ui.view">
+        <field name="name">dashboard.balance.sheet.search</field>
+        <field name="model">account.balance.sheet</field>
+        <field name="arch" type="xml">
+            <search string="Balance General">
+                <field name="account_class"/>
+                <separator/>
+                <filter name="this_month" string="Este Mes"
+                        domain="[('date', '&gt;=', (context_today() - relativedelta(day=1)).strftime('%Y-%m-%d')),
+                                 ('date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter name="this_quarter" string="Este Trimestre"
+                        domain="[('date', '&gt;=', (context_today() - relativedelta(month=((context_today().month - 1) // 3) * 3 + 1, day=1)).strftime('%Y-%m-%d')),
+                                 ('date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter name="this_year" string="Este Año"
+                        domain="[('date', '&gt;=', (context_today() - relativedelta(month=1, day=1)).strftime('%Y-%m-%d')),
+                                 ('date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="dashboard_balance_sheet_graph" model="ir.ui.view">
+        <field name="name">dashboard.balance.sheet.graph</field>
+        <field name="model">account.balance.sheet</field>
+        <field name="arch" type="xml">
+            <graph string="Balance General" type="bar">
+                <field name="account_class" type="row"/>
+                <field name="balance" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_dashboard_balance_sheet" model="ir.actions.act_window">
+        <field name="name">Balance General</field>
+        <field name="res_model">account.balance.sheet</field>
+        <field name="view_mode">graph</field>
+        <field name="view_id" ref="dashboard_balance_sheet_graph"/>
+        <field name="search_view_id" ref="dashboard_balance_sheet_search"/>
+        <field name="context">{'search_default_this_year': 1}</field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- 7. BANK/CASH BALANCES                                         -->
+    <!-- ============================================================ -->
+    <record id="dashboard_bank_balance_graph" model="ir.ui.view">
+        <field name="name">dashboard.bank.balance.graph</field>
+        <field name="model">co.dashboard.bank.balance</field>
+        <field name="arch" type="xml">
+            <graph string="Saldos Bancarios" type="pie">
+                <field name="journal_name" type="row"/>
+                <field name="balance" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_dashboard_bank_balance" model="ir.actions.act_window">
+        <field name="name">Saldos Bancarios</field>
+        <field name="res_model">co.dashboard.bank.balance</field>
+        <field name="view_mode">graph</field>
+        <field name="view_id" ref="dashboard_bank_balance_graph"/>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- 8. FIXED ASSETS                                               -->
+    <!-- ============================================================ -->
+    <record id="dashboard_fixed_assets_search" model="ir.ui.view">
+        <field name="name">dashboard.fixed.assets.search</field>
+        <field name="model">co.fixed.asset</field>
+        <field name="arch" type="xml">
+            <search string="Activos Fijos">
+                <field name="category_id"/>
+                <field name="state"/>
+                <separator/>
+                <filter name="running" string="En Uso"
+                        domain="[('state', '=', 'running')]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="dashboard_fixed_assets_graph" model="ir.ui.view">
+        <field name="name">dashboard.fixed.assets.graph</field>
+        <field name="model">co.fixed.asset</field>
+        <field name="arch" type="xml">
+            <graph string="Activos Fijos" type="bar">
+                <field name="category_id" type="row"/>
+                <field name="purchase_value" type="measure"/>
+                <field name="accumulated_depreciation" type="measure"/>
+                <field name="book_value" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_dashboard_fixed_assets" model="ir.actions.act_window">
+        <field name="name">Activos Fijos</field>
+        <field name="res_model">co.fixed.asset</field>
+        <field name="view_mode">graph</field>
+        <field name="view_id" ref="dashboard_fixed_assets_graph"/>
+        <field name="search_view_id" ref="dashboard_fixed_assets_search"/>
+        <field name="context">{'search_default_running': 1}</field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- 9. TOP RECEIVABLE/PAYABLE PARTNERS                            -->
+    <!-- ============================================================ -->
+    <record id="dashboard_top_partners_search" model="ir.ui.view">
+        <field name="name">dashboard.top.partners.search</field>
+        <field name="model">account.move.line</field>
+        <field name="arch" type="xml">
+            <search string="Principales Terceros">
+                <field name="partner_id"/>
+                <separator/>
+                <filter name="posted" string="Publicados"
+                        domain="[('parent_state', '=', 'posted')]"/>
+                <filter name="receivable_payable" string="Por Cobrar/Pagar"
+                        domain="[('account_type', 'in', ('asset_receivable', 'liability_payable'))]"/>
+                <filter name="open_items" string="Partidas Abiertas"
+                        domain="[('amount_residual', '!=', 0)]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="dashboard_top_partners_pivot" model="ir.ui.view">
+        <field name="name">dashboard.top.partners.pivot</field>
+        <field name="model">account.move.line</field>
+        <field name="arch" type="xml">
+            <pivot string="Principales Terceros">
+                <field name="partner_id" type="row"/>
+                <field name="account_type" type="col"/>
+                <field name="amount_residual" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="action_dashboard_top_partners" model="ir.actions.act_window">
+        <field name="name">Principales Terceros</field>
+        <field name="res_model">account.move.line</field>
+        <field name="view_mode">pivot</field>
+        <field name="view_id" ref="dashboard_top_partners_pivot"/>
+        <field name="search_view_id" ref="dashboard_top_partners_search"/>
+        <field name="context">{'search_default_posted': 1, 'search_default_receivable_payable': 1, 'search_default_open_items': 1}</field>
+    </record>
+
+</odoo>

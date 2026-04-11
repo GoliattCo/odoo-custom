@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="finance_board_view" model="ir.ui.view">
+        <field name="name">Tablero Financiero</field>
+        <field name="model">board.board</field>
+        <field name="arch" type="xml">
+            <form string="Tablero Financiero">
+                <board style="2-1">
+                    <column>
+                        <action name="%(co_dashboards.action_dashboard_pnl)d"
+                                string="Estado de Resultados"/>
+                        <action name="%(co_dashboards.action_dashboard_budget)d"
+                                string="Presupuesto vs Real"/>
+                        <action name="%(co_dashboards.action_dashboard_aged_receivable)d"
+                                string="Cartera por Cobrar"/>
+                        <action name="%(co_dashboards.action_dashboard_aged_payable)d"
+                                string="Cartera por Pagar"/>
+                    </column>
+                    <column>
+                        <action name="%(co_dashboards.action_dashboard_cashflow)d"
+                                string="Flujo de Caja"/>
+                        <action name="%(co_dashboards.action_dashboard_bank_balance)d"
+                                string="Saldos Bancarios"/>
+                        <action name="%(co_dashboards.action_dashboard_balance_sheet)d"
+                                string="Balance General"/>
+                        <action name="%(co_dashboards.action_dashboard_fixed_assets)d"
+                                string="Activos Fijos"/>
+                        <action name="%(co_dashboards.action_dashboard_top_partners)d"
+                                string="Principales Terceros"/>
+                    </column>
+                </board>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_finance_board" model="ir.actions.act_window">
+        <field name="name">Tablero Financiero</field>
+        <field name="res_model">board.board</field>
+        <field name="view_mode">form</field>
+        <field name="context">{'disable_toolbar': True}</field>
+        <field name="usage">menu</field>
+        <field name="view_id" ref="finance_board_view"/>
+    </record>
+</odoo>

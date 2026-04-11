@@ -1,0 +1,37 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* co_dashboards
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-04-10 00:00+0000\n"
+"PO-Revision-Date: 2026-04-10 00:00+0000\n"
+"Last-Translator: \n"
+"Language-Team: Spanish (Latin America)\n"
+"Language: es_419\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. module: co_dashboards
+#: model:ir.model,name:co_dashboards.model_co_dashboard_bank_balance
+msgid "Bank/Cash Balance"
+msgstr "Saldo Bancario/Efectivo"
+
+#. module: co_dashboards
+#: model:ir.model.fields,field_description:co_dashboards.field_co_dashboard_bank_balance__journal_id
+msgid "Journal"
+msgstr "Diario"
+
+#. module: co_dashboards
+#: model:ir.model.fields,field_description:co_dashboards.field_co_dashboard_bank_balance__journal_name
+msgid "Journal Name"
+msgstr "Nombre del Diario"
+
+#. module: co_dashboards
+#: model:ir.model.fields,field_description:co_dashboards.field_co_dashboard_bank_balance__balance
+msgid "Balance"
+msgstr "Saldo"

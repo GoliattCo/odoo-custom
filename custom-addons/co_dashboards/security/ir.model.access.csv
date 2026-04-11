@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_co_dashboard_bank_balance_user,co.dashboard.bank.balance user,model_co_dashboard_bank_balance,account.group_account_user,1,0,0,0
+access_co_dashboard_bank_balance_manager,co.dashboard.bank.balance manager,model_co_dashboard_bank_balance,account.group_account_manager,1,1,1,1
