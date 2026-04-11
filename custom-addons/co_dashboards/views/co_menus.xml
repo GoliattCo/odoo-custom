@@ -41,4 +41,10 @@
               parent="stock.menu_stock_root"
               action="action_inventory_board"
               sequence="0"/>
+
+    <menuitem id="menu_pos_dashboard"
+              name="Tablero POS"
+              parent="point_of_sale.menu_point_root"
+              action="action_pos_board"
+              sequence="0"/>
 </odoo>

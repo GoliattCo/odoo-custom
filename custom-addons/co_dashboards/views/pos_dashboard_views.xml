@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================ -->
+    <!-- Búsqueda compartida para todos los KPIs de POS               -->
+    <!-- ============================================================ -->
+    <record id="dashboard_pos_search" model="ir.ui.view">
+        <field name="name">dashboard.pos.search</field>
+        <field name="model">report.pos.order</field>
+        <field name="arch" type="xml">
+            <search string="Punto de Venta">
+                <field name="product_id"/>
+                <field name="config_id"/>
+                <field name="user_id"/>
+                <separator/>
+                <filter name="paid_done" string="Pagados"
+                        domain="[('state', 'in', ('paid', 'done'))]"/>
+                <separator/>
+                <filter name="this_month" string="Este Mes"
+                        domain="[('date', '&gt;=', (context_today() - relativedelta(day=1)).strftime('%Y-%m-%d')),
+                                 ('date', '&lt;', (context_today() + relativedelta(months=1, day=1)).strftime('%Y-%m-%d'))]"/>
+                <filter name="this_quarter" string="Este Trimestre"
+                        domain="[('date', '&gt;=', (context_today() - relativedelta(month=((context_today().month - 1) // 3) * 3 + 1, day=1)).strftime('%Y-%m-%d')),
+                                 ('date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter name="this_year" string="Este Año"
+                        domain="[('date', '&gt;=', (context_today() - relativedelta(month=1, day=1)).strftime('%Y-%m-%d')),
+                                 ('date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- KPI 1: Ventas por Categoría                                  -->
+    <!-- ============================================================ -->
+    <record id="view_dashboard_pos_category_graph" model="ir.ui.view">
+        <field name="name">report.pos.order.category.dashboard.graph</field>
+        <field name="model">report.pos.order</field>
+        <field name="arch" type="xml">
+            <graph string="Ventas por Categoría" type="bar">
+                <field name="product_categ_id" type="row"/>
+                <field name="price_total" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_dashboard_pos_category_pivot" model="ir.ui.view">
+        <field name="name">report.pos.order.category.dashboard.pivot</field>
+        <field name="model">report.pos.order</field>
+        <field name="arch" type="xml">
+            <pivot string="Ventas por Categoría">
+                <field name="product_categ_id" type="row"/>
+                <field name="price_total" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="action_dashboard_pos_category" model="ir.actions.act_window">
+        <field name="name">Ventas por Categoría</field>
+        <field name="res_model">report.pos.order</field>
+        <field name="view_mode">graph,pivot</field>
+        <field name="search_view_id" ref="dashboard_pos_search"/>
+        <field name="context">{'search_default_this_month': 1, 'search_default_paid_done': 1}</field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- KPI 2: Ventas por Punto de Venta                             -->
+    <!-- ============================================================ -->
+    <record id="view_dashboard_pos_config_graph" model="ir.ui.view">
+        <field name="name">report.pos.order.config.dashboard.graph</field>
+        <field name="model">report.pos.order</field>
+        <field name="arch" type="xml">
+            <graph string="Ventas por Punto de Venta" type="bar">
+                <field name="config_id" type="row"/>
+                <field name="price_total" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_dashboard_pos_config_pivot" model="ir.ui.view">
+        <field name="name">report.pos.order.config.dashboard.pivot</field>
+        <field name="model">report.pos.order</field>
+        <field name="arch" type="xml">
+            <pivot string="Ventas por Punto de Venta">
+                <field name="config_id" type="row"/>
+                <field name="price_total" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="action_dashboard_pos_config" model="ir.actions.act_window">
+        <field name="name">Ventas por Punto de Venta</field>
+        <field name="res_model">report.pos.order</field>
+        <field name="view_mode">graph,pivot</field>
+        <field name="search_view_id" ref="dashboard_pos_search"/>
+        <field name="context">{'search_default_this_month': 1, 'search_default_paid_done': 1}</field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- KPI 3: Ventas por Método de Pago                             -->
+    <!-- ============================================================ -->
+    <record id="view_dashboard_pos_payment_graph" model="ir.ui.view">
+        <field name="name">report.pos.order.payment.dashboard.graph</field>
+        <field name="model">report.pos.order</field>
+        <field name="arch" type="xml">
+            <graph string="Ventas por Método de Pago" type="pie">
+                <field name="payment_method_id" type="row"/>
+                <field name="price_total" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_dashboard_pos_payment_pivot" model="ir.ui.view">
+        <field name="name">report.pos.order.payment.dashboard.pivot</field>
+        <field name="model">report.pos.order</field>
+        <field name="arch" type="xml">
+            <pivot string="Ventas por Método de Pago">
+                <field name="payment_method_id" type="row"/>
+                <field name="price_total" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="action_dashboard_pos_payment" model="ir.actions.act_window">
+        <field name="name">Ventas por Método de Pago</field>
+        <field name="res_model">report.pos.order</field>
+        <field name="view_mode">graph,pivot</field>
+        <field name="search_view_id" ref="dashboard_pos_search"/>
+        <field name="context">{'search_default_this_month': 1, 'search_default_paid_done': 1}</field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- KPI 4: Tendencia de Ventas                                   -->
+    <!-- ============================================================ -->
+    <record id="view_dashboard_pos_trend_graph" model="ir.ui.view">
+        <field name="name">report.pos.order.trend.dashboard.graph</field>
+        <field name="model">report.pos.order</field>
+        <field name="arch" type="xml">
+            <graph string="Tendencia de Ventas" type="line">
+                <field name="date" interval="day" type="row"/>
+                <field name="price_total" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_dashboard_pos_trend_pivot" model="ir.ui.view">
+        <field name="name">report.pos.order.trend.dashboard.pivot</field>
+        <field name="model">report.pos.order</field>
+        <field name="arch" type="xml">
+            <pivot string="Tendencia de Ventas">
+                <field name="date" interval="day" type="row"/>
+                <field name="price_total" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="action_dashboard_pos_trend" model="ir.actions.act_window">
+        <field name="name">Tendencia de Ventas</field>
+        <field name="res_model">report.pos.order</field>
+        <field name="view_mode">graph,pivot</field>
+        <field name="search_view_id" ref="dashboard_pos_search"/>
+        <field name="context">{'search_default_this_month': 1, 'search_default_paid_done': 1}</field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- KPI 5: Productos Más Vendidos                                -->
+    <!-- ============================================================ -->
+    <record id="view_dashboard_pos_top_products_graph" model="ir.ui.view">
+        <field name="name">report.pos.order.top.products.dashboard.graph</field>
+        <field name="model">report.pos.order</field>
+        <field name="arch" type="xml">
+            <graph string="Productos Más Vendidos" type="bar">
+                <field name="product_id" type="row"/>
+                <field name="product_qty" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_dashboard_pos_top_products_pivot" model="ir.ui.view">
+        <field name="name">report.pos.order.top.products.dashboard.pivot</field>
+        <field name="model">report.pos.order</field>
+        <field name="arch" type="xml">
+            <pivot string="Productos Más Vendidos">
+                <field name="product_id" type="row"/>
+                <field name="product_qty" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="action_dashboard_pos_top_products" model="ir.actions.act_window">
+        <field name="name">Productos Más Vendidos</field>
+        <field name="res_model">report.pos.order</field>
+        <field name="view_mode">graph,pivot</field>
+        <field name="search_view_id" ref="dashboard_pos_search"/>
+        <field name="context">{'search_default_this_month': 1, 'search_default_paid_done': 1}</field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- KPI 6: Margen por Categoría                                  -->
+    <!-- ============================================================ -->
+    <record id="view_dashboard_pos_margin_graph" model="ir.ui.view">
+        <field name="name">report.pos.order.margin.dashboard.graph</field>
+        <field name="model">report.pos.order</field>
+        <field name="arch" type="xml">
+            <graph string="Margen por Categoría" type="bar">
+                <field name="product_categ_id" type="row"/>
+                <field name="price_total" type="measure"/>
+                <field name="margin" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_dashboard_pos_margin_pivot" model="ir.ui.view">
+        <field name="name">report.pos.order.margin.dashboard.pivot</field>
+        <field name="model">report.pos.order</field>
+        <field name="arch" type="xml">
+            <pivot string="Margen por Categoría">
+                <field name="product_categ_id" type="row"/>
+                <field name="price_total" type="measure"/>
+                <field name="margin" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="action_dashboard_pos_margin" model="ir.actions.act_window">
+        <field name="name">Margen por Categoría</field>
+        <field name="res_model">report.pos.order</field>
+        <field name="view_mode">graph,pivot</field>
+        <field name="search_view_id" ref="dashboard_pos_search"/>
+        <field name="context">{'search_default_this_month': 1, 'search_default_paid_done': 1}</field>
+    </record>
+
+</odoo>
