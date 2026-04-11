@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="pms_board_view" model="ir.ui.view">
+        <field name="name">Tablero PMS</field>
+        <field name="model">board.board</field>
+        <field name="arch" type="xml">
+            <form string="Tablero PMS">
+                <board style="2-1">
+                    <column>
+                        <action name="%(co_dashboards.action_dashboard_reservations_state)d"
+                                string="Reservas por Estado"/>
+                        <action name="%(co_dashboards.action_dashboard_revenue_channel)d"
+                                string="Ingresos por Canal"/>
+                        <action name="%(co_dashboards.action_dashboard_occupancy_revpar)d"
+                                string="Ocupación y RevPAR"/>
+                        <action name="%(co_dashboards.action_dashboard_reservations_roomtype)d"
+                                string="Reservas por Tipo de Habitación"/>
+                    </column>
+                    <column>
+                        <action name="%(co_dashboards.action_dashboard_revenue_department)d"
+                                string="Ingresos por Departamento"/>
+                        <action name="%(co_dashboards.action_dashboard_housekeeping)d"
+                                string="Tareas de Housekeeping"/>
+                        <action name="%(co_dashboards.action_dashboard_daily_adr)d"
+                                string="ADR Diario"/>
+                    </column>
+                </board>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_pms_board" model="ir.actions.act_window">
+        <field name="name">Tablero PMS</field>
+        <field name="res_model">board.board</field>
+        <field name="view_mode">form</field>
+        <field name="context">{'disable_toolbar': True}</field>
+        <field name="usage">menu</field>
+        <field name="view_id" ref="pms_board_view"/>
+    </record>
+</odoo>

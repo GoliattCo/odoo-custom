@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ════════════════════════════════════════════════════════════════
+         KPI 1 – Reservas por Estado
+         ════════════════════════════════════════════════════════════════ -->
+    <record id="view_dashboard_reservations_state_graph" model="ir.ui.view">
+        <field name="name">pms.reservation.dashboard.state.graph</field>
+        <field name="model">pms.reservation</field>
+        <field name="arch" type="xml">
+            <graph string="Reservas por Estado" type="bar">
+                <field name="state" type="row"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_dashboard_reservations_state_search" model="ir.ui.view">
+        <field name="name">pms.reservation.dashboard.state.search</field>
+        <field name="model">pms.reservation</field>
+        <field name="arch" type="xml">
+            <search string="Reservas por Estado">
+                <filter name="this_month" string="Este Mes"
+                        domain="[('checkin_date', '&gt;=', (context_today() - relativedelta(day=1)).strftime('%Y-%m-%d')),
+                                 ('checkin_date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter name="this_quarter" string="Este Trimestre"
+                        domain="[('checkin_date', '&gt;=', (context_today() - relativedelta(month=((context_today().month - 1) // 3) * 3 + 1, day=1)).strftime('%Y-%m-%d')),
+                                 ('checkin_date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter name="this_year" string="Este Año"
+                        domain="[('checkin_date', '&gt;=', (context_today() - relativedelta(month=1, day=1)).strftime('%Y-%m-%d')),
+                                 ('checkin_date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_dashboard_reservations_state" model="ir.actions.act_window">
+        <field name="name">Reservas por Estado</field>
+        <field name="res_model">pms.reservation</field>
+        <field name="view_mode">graph</field>
+        <field name="view_id" ref="view_dashboard_reservations_state_graph"/>
+        <field name="search_view_id" ref="view_dashboard_reservations_state_search"/>
+        <field name="context">{'search_default_this_month': 1}</field>
+    </record>
+
+    <!-- ════════════════════════════════════════════════════════════════
+         KPI 2 – Ingresos por Canal
+         ════════════════════════════════════════════════════════════════ -->
+    <record id="view_dashboard_revenue_channel_graph" model="ir.ui.view">
+        <field name="name">pms.reservation.dashboard.revenue.channel.graph</field>
+        <field name="model">pms.reservation</field>
+        <field name="arch" type="xml">
+            <graph string="Ingresos por Canal" type="bar">
+                <field name="source" type="row"/>
+                <field name="total_amount" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_dashboard_revenue_channel_search" model="ir.ui.view">
+        <field name="name">pms.reservation.dashboard.revenue.channel.search</field>
+        <field name="model">pms.reservation</field>
+        <field name="arch" type="xml">
+            <search string="Ingresos por Canal">
+                <filter name="this_month" string="Este Mes"
+                        domain="[('checkin_date', '&gt;=', (context_today() - relativedelta(day=1)).strftime('%Y-%m-%d')),
+                                 ('checkin_date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter name="this_quarter" string="Este Trimestre"
+                        domain="[('checkin_date', '&gt;=', (context_today() - relativedelta(month=((context_today().month - 1) // 3) * 3 + 1, day=1)).strftime('%Y-%m-%d')),
+                                 ('checkin_date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter name="this_year" string="Este Año"
+                        domain="[('checkin_date', '&gt;=', (context_today() - relativedelta(month=1, day=1)).strftime('%Y-%m-%d')),
+                                 ('checkin_date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_dashboard_revenue_channel" model="ir.actions.act_window">
+        <field name="name">Ingresos por Canal</field>
+        <field name="res_model">pms.reservation</field>
+        <field name="view_mode">graph</field>
+        <field name="view_id" ref="view_dashboard_revenue_channel_graph"/>
+        <field name="search_view_id" ref="view_dashboard_revenue_channel_search"/>
+        <field name="context">{'search_default_this_year': 1}</field>
+    </record>
+
+    <!-- ════════════════════════════════════════════════════════════════
+         KPI 3 – Ocupación y RevPAR
+         ════════════════════════════════════════════════════════════════ -->
+    <record id="view_dashboard_occupancy_revpar_graph" model="ir.ui.view">
+        <field name="name">pms.night.audit.dashboard.occupancy.graph</field>
+        <field name="model">pms.night.audit</field>
+        <field name="arch" type="xml">
+            <graph string="Ocupación y RevPAR" type="line">
+                <field name="audit_date" interval="month" type="row"/>
+                <field name="occupancy_pct" type="measure"/>
+                <field name="revpar" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_dashboard_occupancy_revpar_search" model="ir.ui.view">
+        <field name="name">pms.night.audit.dashboard.occupancy.search</field>
+        <field name="model">pms.night.audit</field>
+        <field name="arch" type="xml">
+            <search string="Ocupación y RevPAR">
+                <filter name="completed" string="Completado"
+                        domain="[('state', '=', 'completed')]"/>
+                <filter name="this_month" string="Este Mes"
+                        domain="[('audit_date', '&gt;=', (context_today() - relativedelta(day=1)).strftime('%Y-%m-%d')),
+                                 ('audit_date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter name="this_quarter" string="Este Trimestre"
+                        domain="[('audit_date', '&gt;=', (context_today() - relativedelta(month=((context_today().month - 1) // 3) * 3 + 1, day=1)).strftime('%Y-%m-%d')),
+                                 ('audit_date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter name="this_year" string="Este Año"
+                        domain="[('audit_date', '&gt;=', (context_today() - relativedelta(month=1, day=1)).strftime('%Y-%m-%d')),
+                                 ('audit_date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_dashboard_occupancy_revpar" model="ir.actions.act_window">
+        <field name="name">Ocupación y RevPAR</field>
+        <field name="res_model">pms.night.audit</field>
+        <field name="view_mode">graph</field>
+        <field name="view_id" ref="view_dashboard_occupancy_revpar_graph"/>
+        <field name="search_view_id" ref="view_dashboard_occupancy_revpar_search"/>
+        <field name="context">{'search_default_this_year': 1, 'search_default_completed': 1}</field>
+    </record>
+
+    <!-- ════════════════════════════════════════════════════════════════
+         KPI 4 – Ingresos por Departamento
+         ════════════════════════════════════════════════════════════════ -->
+    <record id="view_dashboard_revenue_department_graph" model="ir.ui.view">
+        <field name="name">pms.folio.charge.dashboard.department.graph</field>
+        <field name="model">pms.folio.charge</field>
+        <field name="arch" type="xml">
+            <graph string="Ingresos por Departamento" type="pie">
+                <field name="department" type="row"/>
+                <field name="amount" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_dashboard_revenue_department_search" model="ir.ui.view">
+        <field name="name">pms.folio.charge.dashboard.department.search</field>
+        <field name="model">pms.folio.charge</field>
+        <field name="arch" type="xml">
+            <search string="Ingresos por Departamento">
+                <filter name="this_month" string="Este Mes"
+                        domain="[('date', '&gt;=', (context_today() - relativedelta(day=1)).strftime('%Y-%m-%d')),
+                                 ('date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter name="this_quarter" string="Este Trimestre"
+                        domain="[('date', '&gt;=', (context_today() - relativedelta(month=((context_today().month - 1) // 3) * 3 + 1, day=1)).strftime('%Y-%m-%d')),
+                                 ('date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter name="this_year" string="Este Año"
+                        domain="[('date', '&gt;=', (context_today() - relativedelta(month=1, day=1)).strftime('%Y-%m-%d')),
+                                 ('date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_dashboard_revenue_department" model="ir.actions.act_window">
+        <field name="name">Ingresos por Departamento</field>
+        <field name="res_model">pms.folio.charge</field>
+        <field name="view_mode">graph</field>
+        <field name="view_id" ref="view_dashboard_revenue_department_graph"/>
+        <field name="search_view_id" ref="view_dashboard_revenue_department_search"/>
+        <field name="context">{'search_default_this_month': 1}</field>
+    </record>
+
+    <!-- ════════════════════════════════════════════════════════════════
+         KPI 5 – Tareas de Housekeeping
+         ════════════════════════════════════════════════════════════════ -->
+    <record id="view_dashboard_housekeeping_graph" model="ir.ui.view">
+        <field name="name">pms.housekeeping.task.dashboard.graph</field>
+        <field name="model">pms.housekeeping.task</field>
+        <field name="arch" type="xml">
+            <graph string="Tareas de Housekeeping" type="bar">
+                <field name="state" type="row"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_dashboard_housekeeping_search" model="ir.ui.view">
+        <field name="name">pms.housekeeping.task.dashboard.search</field>
+        <field name="model">pms.housekeeping.task</field>
+        <field name="arch" type="xml">
+            <search string="Tareas de Housekeeping">
+                <filter name="today" string="Hoy"
+                        domain="[('date', '=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter name="task_type" string="Tipo de Tarea"/>
+                <filter name="this_month" string="Este Mes"
+                        domain="[('date', '&gt;=', (context_today() - relativedelta(day=1)).strftime('%Y-%m-%d')),
+                                 ('date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_dashboard_housekeeping" model="ir.actions.act_window">
+        <field name="name">Tareas de Housekeeping</field>
+        <field name="res_model">pms.housekeeping.task</field>
+        <field name="view_mode">graph</field>
+        <field name="view_id" ref="view_dashboard_housekeeping_graph"/>
+        <field name="search_view_id" ref="view_dashboard_housekeeping_search"/>
+        <field name="context">{'search_default_today': 1}</field>
+    </record>
+
+    <!-- ════════════════════════════════════════════════════════════════
+         KPI 6 – Reservas por Tipo de Habitación
+         ════════════════════════════════════════════════════════════════ -->
+    <record id="view_dashboard_reservations_roomtype_graph" model="ir.ui.view">
+        <field name="name">pms.reservation.dashboard.roomtype.graph</field>
+        <field name="model">pms.reservation</field>
+        <field name="arch" type="xml">
+            <graph string="Reservas por Tipo de Habitación" type="bar">
+                <field name="room_type_id" type="row"/>
+                <field name="nights" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_dashboard_reservations_roomtype_search" model="ir.ui.view">
+        <field name="name">pms.reservation.dashboard.roomtype.search</field>
+        <field name="model">pms.reservation</field>
+        <field name="arch" type="xml">
+            <search string="Reservas por Tipo de Habitación">
+                <filter name="this_month" string="Este Mes"
+                        domain="[('checkin_date', '&gt;=', (context_today() - relativedelta(day=1)).strftime('%Y-%m-%d')),
+                                 ('checkin_date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter name="this_quarter" string="Este Trimestre"
+                        domain="[('checkin_date', '&gt;=', (context_today() - relativedelta(month=((context_today().month - 1) // 3) * 3 + 1, day=1)).strftime('%Y-%m-%d')),
+                                 ('checkin_date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter name="this_year" string="Este Año"
+                        domain="[('checkin_date', '&gt;=', (context_today() - relativedelta(month=1, day=1)).strftime('%Y-%m-%d')),
+                                 ('checkin_date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_dashboard_reservations_roomtype" model="ir.actions.act_window">
+        <field name="name">Reservas por Tipo de Habitación</field>
+        <field name="res_model">pms.reservation</field>
+        <field name="view_mode">graph</field>
+        <field name="view_id" ref="view_dashboard_reservations_roomtype_graph"/>
+        <field name="search_view_id" ref="view_dashboard_reservations_roomtype_search"/>
+        <field name="context">{'search_default_this_month': 1}</field>
+    </record>
+
+    <!-- ════════════════════════════════════════════════════════════════
+         KPI 7 – ADR Diario
+         ════════════════════════════════════════════════════════════════ -->
+    <record id="view_dashboard_daily_adr_graph" model="ir.ui.view">
+        <field name="name">pms.night.audit.dashboard.adr.graph</field>
+        <field name="model">pms.night.audit</field>
+        <field name="arch" type="xml">
+            <graph string="ADR Diario" type="line">
+                <field name="audit_date" interval="day" type="row"/>
+                <field name="adr" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_dashboard_daily_adr_search" model="ir.ui.view">
+        <field name="name">pms.night.audit.dashboard.adr.search</field>
+        <field name="model">pms.night.audit</field>
+        <field name="arch" type="xml">
+            <search string="ADR Diario">
+                <filter name="completed" string="Completado"
+                        domain="[('state', '=', 'completed')]"/>
+                <filter name="this_month" string="Este Mes"
+                        domain="[('audit_date', '&gt;=', (context_today() - relativedelta(day=1)).strftime('%Y-%m-%d')),
+                                 ('audit_date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter name="this_quarter" string="Este Trimestre"
+                        domain="[('audit_date', '&gt;=', (context_today() - relativedelta(month=((context_today().month - 1) // 3) * 3 + 1, day=1)).strftime('%Y-%m-%d')),
+                                 ('audit_date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter name="this_year" string="Este Año"
+                        domain="[('audit_date', '&gt;=', (context_today() - relativedelta(month=1, day=1)).strftime('%Y-%m-%d')),
+                                 ('audit_date', '&lt;=', context_today().strftime('%Y-%m-%d'))]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_dashboard_daily_adr" model="ir.actions.act_window">
+        <field name="name">ADR Diario</field>
+        <field name="res_model">pms.night.audit</field>
+        <field name="view_mode">graph</field>
+        <field name="view_id" ref="view_dashboard_daily_adr_graph"/>
+        <field name="search_view_id" ref="view_dashboard_daily_adr_search"/>
+        <field name="context">{'search_default_this_month': 1, 'search_default_completed': 1}</field>
+    </record>
+
+</odoo>
