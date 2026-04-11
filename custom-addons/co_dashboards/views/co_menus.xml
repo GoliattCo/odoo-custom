@@ -5,4 +5,10 @@
               parent="account.menu_finance"
               action="action_finance_board"
               sequence="0"/>
+
+    <menuitem id="menu_payroll_dashboard"
+              name="Tablero de Nómina"
+              parent="co_payroll.menu_co_payroll_root"
+              action="action_payroll_board"
+              sequence="0"/>
 </odoo>
