@@ -1,0 +1,51 @@
+# Fly.io app descriptor for the shared Odoo pool.
+#
+# Deploy with:
+#   fly deploy --config infra/fly/odoo/fly.toml --dockerfile Dockerfile --remote-only
+#
+# Secrets (set with `fly secrets set --app odoo-saas-odoo KEY=VALUE`):
+#   ADMIN_PASSWORD             — Odoo master password (entrypoint required)
+#   PGHOST, PGPORT, PGUSER     — connection details for the Postgres app
+#   PGPASSWORD                 — Postgres superuser password
+#
+# Note on process groups: the plan calls for `web` / `cron` / `live` split
+# for HTTP, scheduled jobs, and websocket workers. Phase 1 keeps a single
+# process group ("web") to validate the build path; the cron and live split
+# lands when Odoo's `--workers` and `--longpolling-port` are wired through
+# env vars in the entrypoint (TODO Phase 2).
+
+app            = "odoo-saas-odoo"
+primary_region = "iad"
+kill_signal    = "SIGINT"
+kill_timeout   = "30s"
+
+[build]
+  dockerfile = "../../../Dockerfile"
+
+[env]
+  PLATFORM = "fly"
+  # PORT picked up from Fly's automatic env injection (Fly Proxy binds 8080
+  # by default but our entrypoint defaults to 8069 — keep explicit).
+  PORT = "8069"
+
+[http_service]
+  internal_port       = 8069
+  force_https         = false   # Traefik (separate Fly app) terminates TLS
+  auto_start_machines = true
+  auto_stop_machines  = false
+  min_machines_running = 1
+
+  [[http_service.checks]]
+    interval     = "15s"
+    timeout      = "5s"
+    grace_period = "60s"
+    method       = "GET"
+    path         = "/saas/health"
+
+[processes]
+  web = ""  # Use the image's ENTRYPOINT (infra/odoo-entrypoint.sh)
+
+[[vm]]
+  size      = "shared-cpu-2x"
+  memory    = "2gb"
+  processes = ["web"]

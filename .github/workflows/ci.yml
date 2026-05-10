@@ -1,0 +1,233 @@
+# Cross-platform CI gate (Phase 1 step 11).
+#
+# What this workflow guarantees:
+#   1. Every PR builds all three platform-agnostic Dockerfiles successfully
+#      (Odoo, Postgres, Traefik). Catches Dockerfile regressions before
+#      they ever hit a real platform.
+#   2. Every PR runs the saas_tenant_gate addon test suite against a
+#      compose-managed Postgres. Catches addon regressions early.
+#   3. On push to main, the workflow deploys the Odoo service to BOTH
+#      Railway and Fly staging. The `cross-platform-gate` job at the
+#      bottom enforces parity: if Railway succeeds but Fly fails (or
+#      vice versa), the build is red.
+#
+# Required secrets (configure in repo Settings → Secrets and variables):
+#   RAILWAY_TOKEN              Railway team/project token, scoped to the
+#                              staging Odoo service.
+#   RAILWAY_ODOO_SERVICE_ID    Service ID inside Railway for the staging
+#                              Odoo pool.
+#   FLY_API_TOKEN              Personal or org-scoped Fly token with
+#                              deploy access to odoo-saas-odoo-staging.
+#
+# See .github/SECRETS.md for setup instructions.
+
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+
+  # ---------- Build validation (every PR + every push) ----------
+
+  build-odoo-image:
+    name: Build Odoo image
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 1
+      - uses: docker/setup-buildx-action@v3
+      - name: docker build Odoo
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          push: false
+          tags: odoo-saas:ci
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  build-postgres-image:
+    name: Build Postgres image
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - name: docker build Postgres
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./infra/postgres/Dockerfile
+          push: false
+          tags: odoo-saas-postgres:ci
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  build-traefik-image:
+    name: Build Traefik image
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - name: docker build Traefik
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./infra/traefik/Dockerfile
+          push: false
+          tags: odoo-saas-traefik:ci
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  # ---------- Addon tests ----------
+  # Runs the saas_tenant_gate test suite against a compose-managed Postgres.
+  # See custom-addons/saas_tenant_gate/tests/ for the 15 tests covering
+  # seat cap, telemetry HMAC, and feature flags.
+
+  test-addon:
+    name: saas_tenant_gate test suite
+    runs-on: ubuntu-latest
+    needs: [build-odoo-image]
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: odoo
+          POSTGRES_PASSWORD: odoo
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U odoo"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 1
+
+      - uses: docker/setup-buildx-action@v3
+      - name: docker build Odoo (for test run)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          push: false
+          load: true
+          tags: odoo-saas:test
+          cache-from: type=gha
+
+      - name: Run addon test suite
+        env:
+          PGHOST: postgres
+          PGPORT: '5432'
+          PGUSER: odoo
+          PGPASSWORD: odoo
+          ADMIN_PASSWORD: ci-admin-pw-not-for-prod
+          PLATFORM: compose
+          TARGET_DB: ci_saas_tenant_gate
+          INIT_MODULES: saas_tenant_gate
+          STOP_AFTER_INIT: '1'
+        run: |
+          docker run --rm \
+            --network host \
+            -e PGHOST -e PGPORT -e PGUSER -e PGPASSWORD \
+            -e ADMIN_PASSWORD -e PLATFORM \
+            -e TARGET_DB -e INIT_MODULES -e STOP_AFTER_INIT \
+            odoo-saas:test \
+            --test-enable --test-tags /saas_tenant_gate
+
+  # ---------- Cross-platform deploy (push to main only) ----------
+
+  deploy-railway:
+    name: Deploy → Railway staging
+    runs-on: ubuntu-latest
+    needs: [build-odoo-image, build-postgres-image, build-traefik-image, test-addon]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    environment: staging-railway
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 1
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install Railway CLI
+        run: npm install -g @railway/cli
+
+      - name: railway up (Odoo service)
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: |
+          if [ -z "${RAILWAY_TOKEN:-}" ]; then
+            echo "::error::RAILWAY_TOKEN is unset; configure repo secret first." >&2
+            exit 1
+          fi
+          railway up --service "${{ secrets.RAILWAY_ODOO_SERVICE_ID }}" --detach
+
+  deploy-fly:
+    name: Deploy → Fly staging
+    runs-on: ubuntu-latest
+    needs: [build-odoo-image, build-postgres-image, build-traefik-image, test-addon]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    environment: staging-fly
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 1
+
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+
+      - name: flyctl deploy (Odoo service)
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+        run: |
+          if [ -z "${FLY_API_TOKEN:-}" ]; then
+            echo "::error::FLY_API_TOKEN is unset; configure repo secret first." >&2
+            exit 1
+          fi
+          flyctl deploy \
+            --config infra/fly/odoo/fly.toml \
+            --dockerfile Dockerfile \
+            --remote-only \
+            --strategy rolling \
+            --wait-timeout 600
+
+  # ---------- The gate ----------
+  # This job is the cross-platform parity guarantee. If Railway succeeded
+  # but Fly failed (or vice versa), the build is red. Both succeeding —
+  # or both being legitimately skipped (e.g., PR builds) — is green.
+
+  cross-platform-gate:
+    name: Cross-platform parity gate
+    runs-on: ubuntu-latest
+    needs: [deploy-railway, deploy-fly]
+    if: always() && github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - name: Verify both platforms deployed
+        run: |
+          railway_result="${{ needs.deploy-railway.result }}"
+          fly_result="${{ needs.deploy-fly.result }}"
+          echo "Railway: $railway_result"
+          echo "Fly:     $fly_result"
+          if [ "$railway_result" != "success" ] || [ "$fly_result" != "success" ]; then
+            echo "::error::Cross-platform parity gate FAILED. One platform succeeded; the other did not."
+            exit 1
+          fi
+          echo "Cross-platform parity OK."
