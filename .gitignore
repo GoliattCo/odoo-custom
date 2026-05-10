@@ -12,6 +12,7 @@ odoo-filestore/
 # Environment
 .env
 .env.*
+!.env.example
 
 # Virtual environments
 .venv/
@@ -25,3 +26,6 @@ Thumbs.db
 # Docker
 *.override.yml
 .DS_Store
+
+# Local Claude Code state
+.claude/

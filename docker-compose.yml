@@ -22,7 +22,7 @@ services:
     env_file: .env
     volumes:
       - ./odoo:/odoo
-      - ./addons/jorels-odoo-addons:/mnt/jorels-addons
+      - ./jorels-addons:/mnt/jorels-addons
       - ./custom-addons:/mnt/custom-addons
       - ./config/odoo.conf:/etc/odoo/odoo.conf:ro
       - odoo-filestore:/var/lib/odoo
