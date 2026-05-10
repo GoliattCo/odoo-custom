@@ -70,20 +70,23 @@ secret. Rotate keys quarterly via `terraform taint`+`terraform apply`.
 
 ## MFA Delete on the compliance bucket
 
-Terraform cannot enable MFA Delete (S3 requires root credentials + MFA
-device serial at enable time). After `terraform apply` on the compliance
-environment:
+Terraform cannot enable MFA Delete (S3 requires root credentials + a live
+MFA token at enable time). After `terraform apply` on the compliance
+environment, run:
 
 ```
-aws s3api put-bucket-versioning \
-  --bucket <s3_compliance_bucket_name> \
-  --versioning-configuration Status=Enabled,MFADelete=Enabled \
-  --mfa "<MFA-serial> <one-time-code>" \
-  --profile <compliance-root-profile>
+infra/terraform/scripts/enable-mfa-delete.sh \
+  -b <s3_compliance_bucket_name> \
+  -s arn:aws:iam::<compliance-account-id>:mfa/<device> \
+  -c <6-digit-code> \
+  -p <compliance-root-profile>
 ```
 
-Then store the MFA device serial in the runbook so the on-call can rotate it
-if needed.
+Capture the script's `get-bucket-versioning` output in your deployment
+journal — auditors ask for proof MFA Delete was enabled, not just intent.
+
+Store the MFA device serial in the runbook so the on-call can rotate it
+if the device is lost.
 
 ## What's NOT in this Terraform
 
