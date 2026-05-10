@@ -1,0 +1,20 @@
+# Copy to terraform.tfvars (which is gitignored) and fill in real values.
+
+region        = "us-east-1"
+kms_key_alias = "odoo-saas/data-plane"
+
+# S3 bucket names must be globally unique. Prefix with your org name to avoid
+# collisions: "<org>-odoo-saas-<tier>".
+hot_bucket_name  = "EXAMPLE-odoo-saas-hot"
+warm_bucket_name = "EXAMPLE-odoo-saas-warm"
+
+# Predicted ARN of the compliance bucket. The bucket lives in a different
+# AWS account, but IAM policies can reference future ARNs as strings — it
+# doesn't have to exist yet at primary-apply time. Replace EXAMPLE and the
+# account suffix with the real names you'll use in the compliance composition.
+compliance_bucket_arn = "arn:aws:s3:::EXAMPLE-odoo-saas-compliance"
+
+# Your operator IAM user/role ARNs that may administer the KMS key.
+key_admin_arns = [
+  # "arn:aws:iam::111111111111:user/manuel.caro",
+]

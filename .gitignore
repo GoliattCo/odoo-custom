@@ -29,3 +29,11 @@ Thumbs.db
 
 # Local Claude Code state
 .claude/
+
+# Terraform
+**/.terraform/
+**/terraform.tfstate
+**/terraform.tfstate.*
+**/terraform.tfvars
+**/*.auto.tfvars
+**/.terraform.lock.hcl

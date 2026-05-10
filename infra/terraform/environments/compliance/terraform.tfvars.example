@@ -1,0 +1,16 @@
+# Copy to terraform.tfvars (which is gitignored) and fill in real values.
+
+region = "us-east-1"
+
+# Must match the bucket name baked into the primary composition's
+# compliance_bucket_arn variable. If you change it here you must reapply
+# primary to update the IAM policies.
+compliance_bucket_name = "EXAMPLE-odoo-saas-compliance"
+
+# From the primary composition's output:
+#   terraform -chdir=../primary output -raw control_plane_iam_user_arn
+writer_principal_arns = [
+  # "arn:aws:iam::111111111111:user/control-plane",
+]
+
+object_lock_years = 10
