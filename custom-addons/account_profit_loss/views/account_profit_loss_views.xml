@@ -49,6 +49,11 @@
                        filter_domain="[('date', '&lt;=', self)]"/>
                 <field name="account_id" string="Cuenta"/>
                 <field name="partner_id" string="Contacto"/>
+                <field name="company_id" string="Empresa"/>
+                <field name="cost_center_id" string="Centro de Costo"/>
+                <field name="business_unit_id" string="Unidad de Negocio"/>
+                <field name="item_code_id" string="Código de Ítem"/>
+                <field name="auxiliar_abierto" string="Auxiliar Abierto"/>
                 <separator/>
                 <filter name="date_this_year"
                         string="Año Actual"
@@ -70,6 +75,11 @@
                             context="{'group_by': 'account_id'}"/>
                     <filter name="group_by_partner" string="Contacto"
                             context="{'group_by': 'partner_id'}"/>
+                    <filter string="Empresa" name="group_by_company" context="{'group_by': 'company_id'}"/>
+                    <filter string="Centro de Costo" name="group_by_cost_center" context="{'group_by': 'cost_center_id'}"/>
+                    <filter string="Unidad de Negocio" name="group_by_business_unit" context="{'group_by': 'business_unit_id'}"/>
+                    <filter string="Código de Ítem" name="group_by_item_code" context="{'group_by': 'item_code_id'}"/>
+                    <filter string="Auxiliar Abierto" name="group_by_auxiliar" context="{'group_by': 'auxiliar_abierto'}"/>
                 </group>
             </search>
         </field>

@@ -5,39 +5,39 @@ class AccountAnalyticAccount(models.Model):
     _inherit = 'account.analytic.account'
 
     is_cost_center = fields.Boolean(
-        string='Is Cost Center',
+        string='Es Centro de Costo',
         default=False,
-        help='Mark this analytic account as a cost center.',
+        help='Marcar esta cuenta analítica como centro de costo.',
     )
     cost_center_parent_id = fields.Many2one(
         'account.analytic.account',
-        string='Parent Cost Center',
+        string='Centro de Costo Padre',
         domain="[('is_cost_center', '=', True)]",
-        help='Hierarchical parent cost center.',
+        help='Centro de costo padre jerárquico.',
     )
     cost_center_child_ids = fields.One2many(
         'account.analytic.account',
         'cost_center_parent_id',
-        string='Child Cost Centers',
+        string='Centros de Costo Hijos',
     )
     responsible_id = fields.Many2one(
         'res.users',
-        string='Responsible',
-        help='Person responsible for this cost center.',
+        string='Responsable',
+        help='Persona responsable de este centro de costo.',
     )
     budget_allocated = fields.Monetary(
-        string='Budget Allocated',
+        string='Presupuesto Asignado',
         currency_field='currency_id',
-        help='Annual budget allocated to this cost center.',
+        help='Presupuesto anual asignado a este centro de costo.',
     )
     budget_consumed = fields.Monetary(
-        string='Budget Consumed',
+        string='Presupuesto Consumido',
         currency_field='currency_id',
         compute='_compute_budget_consumed',
-        help='Total amount consumed from the allocated budget.',
+        help='Monto total consumido del presupuesto asignado.',
     )
     budget_remaining = fields.Monetary(
-        string='Budget Remaining',
+        string='Presupuesto Restante',
         currency_field='currency_id',
         compute='_compute_budget_consumed',
     )
@@ -46,7 +46,7 @@ class AccountAnalyticAccount(models.Model):
         related='company_id.currency_id',
         store=True,
     )
-    cost_center_notes = fields.Text(string='Cost Center Notes')
+    cost_center_notes = fields.Text(string='Notas del Centro de Costo')
 
     @api.depends('budget_allocated')
     def _compute_budget_consumed(self):
@@ -56,7 +56,6 @@ class AccountAnalyticAccount(models.Model):
                 rec.budget_consumed = 0.0
                 rec.budget_remaining = rec.budget_allocated
                 continue
-            # Sum debit amounts from posted journal items for this analytic account
             self.env.cr.execute("""
                 SELECT COALESCE(SUM(aml.debit), 0)
                 FROM account_move_line aml

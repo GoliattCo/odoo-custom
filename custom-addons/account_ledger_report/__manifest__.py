@@ -3,7 +3,7 @@
     'version': '19.0.1.0.0',
     'summary': 'Live account ledger report with PDF and Excel export',
     'category': 'Accounting',
-    'depends': ['account'],
+    'depends': ['account', 'co_accounting_extended'],
     'data': [
         'security/ir.model.access.csv',
         'views/account_ledger_report_views.xml',

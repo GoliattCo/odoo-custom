@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Inherit account form to add mandatory flags -->
+    <record id="view_account_form_inherit_co_ext" model="ir.ui.view">
+        <field name="name">account.account.form.inherit.co.ext</field>
+        <field name="model">account.account</field>
+        <field name="inherit_id" ref="account.view_account_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <separator string="Requisitos de Transacción"/>
+                <group>
+                    <group>
+                        <field name="requires_cost_center"/>
+                        <field name="requires_item_code"/>
+                    </group>
+                    <group>
+                        <field name="requires_auxiliar_abierto"/>
+                    </group>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Inherit account list to show mandatory flags -->
+    <record id="view_account_list_inherit_co_ext" model="ir.ui.view">
+        <field name="name">account.account.list.inherit.co.ext</field>
+        <field name="model">account.account</field>
+        <field name="inherit_id" ref="account.view_account_list"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="inside">
+                <field name="requires_cost_center" string="Req. CC" optional="hide"/>
+                <field name="requires_item_code" string="Req. Ítem" optional="hide"/>
+                <field name="requires_auxiliar_abierto" string="Req. Aux." optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

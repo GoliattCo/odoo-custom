@@ -1,0 +1,569 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ================================================================ -->
+    <!--  ROOT APP MENU: Goliatt - Contabilidad                           -->
+    <!-- ================================================================ -->
+    <menuitem id="menu_goliatt_root"
+              name="Goliatt - Contabilidad"
+              web_icon="goliatt_contabilidad,static/description/icon.png"
+              sequence="10"/>
+
+    <!-- ================================================================ -->
+    <!--  1. TABLERO (Dashboard)                                          -->
+    <!-- ================================================================ -->
+    <menuitem id="menu_goliatt_dashboard"
+              name="Tablero"
+              parent="menu_goliatt_root"
+              action="account.open_account_journal_dashboard_kanban"
+              sequence="1"/>
+
+    <!-- ================================================================ -->
+    <!--  2. CLIENTES (Customers)                                         -->
+    <!-- ================================================================ -->
+    <menuitem id="menu_goliatt_customers"
+              name="Clientes"
+              parent="menu_goliatt_root"
+              sequence="2"/>
+
+    <menuitem id="menu_goliatt_cust_invoices"
+              name="Facturas"
+              parent="menu_goliatt_customers"
+              action="account.action_move_out_invoice"
+              sequence="1"/>
+
+    <menuitem id="menu_goliatt_cust_credit_notes"
+              name="Notas de Crédito"
+              parent="menu_goliatt_customers"
+              action="account.action_move_out_refund_type_non_legacy"
+              sequence="2"/>
+
+    <menuitem id="menu_goliatt_cust_payments"
+              name="Pagos"
+              parent="menu_goliatt_customers"
+              action="account.action_account_payments"
+              sequence="15"/>
+
+    <menuitem id="menu_goliatt_cust_products"
+              name="Productos"
+              parent="menu_goliatt_customers"
+              action="account.product_product_action_sellable"
+              sequence="100"/>
+
+    <menuitem id="menu_goliatt_cust_partners"
+              name="Clientes"
+              parent="menu_goliatt_customers"
+              action="account.res_partner_action_customer"
+              sequence="110"/>
+
+    <!-- ================================================================ -->
+    <!--  3. PROVEEDORES (Vendors)                                        -->
+    <!-- ================================================================ -->
+    <menuitem id="menu_goliatt_vendors"
+              name="Proveedores"
+              parent="menu_goliatt_root"
+              sequence="3"/>
+
+    <menuitem id="menu_goliatt_vend_bills"
+              name="Facturas"
+              parent="menu_goliatt_vendors"
+              action="account.action_move_in_invoice"
+              sequence="1"/>
+
+    <menuitem id="menu_goliatt_vend_refunds"
+              name="Reembolsos"
+              parent="menu_goliatt_vendors"
+              action="account.action_move_in_refund_type"
+              sequence="2"/>
+
+    <menuitem id="menu_goliatt_vend_payments"
+              name="Pagos"
+              parent="menu_goliatt_vendors"
+              action="account.action_account_payments_payable"
+              sequence="20"/>
+
+    <menuitem id="menu_goliatt_vend_products"
+              name="Productos"
+              parent="menu_goliatt_vendors"
+              action="account.product_product_action_purchasable"
+              sequence="100"/>
+
+    <menuitem id="menu_goliatt_vend_partners"
+              name="Proveedores"
+              parent="menu_goliatt_vendors"
+              action="account.res_partner_action_supplier"
+              sequence="200"/>
+
+    <!-- ================================================================ -->
+    <!--  4. CONTABILIDAD (Accounting)                                    -->
+    <!-- ================================================================ -->
+    <menuitem id="menu_goliatt_accounting"
+              name="Contabilidad"
+              parent="menu_goliatt_root"
+              sequence="4"/>
+
+    <!-- 4.1 Transacciones -->
+    <menuitem id="menu_goliatt_acc_transactions"
+              name="Transacciones"
+              parent="menu_goliatt_accounting"
+              sequence="0"/>
+
+    <menuitem id="menu_goliatt_acc_journal_entries"
+              name="Asientos Contables"
+              parent="menu_goliatt_acc_transactions"
+              action="account.action_move_journal_line"
+              sequence="1"/>
+
+    <menuitem id="menu_goliatt_acc_analytic_items"
+              name="Apuntes Analíticos"
+              parent="menu_goliatt_acc_transactions"
+              action="analytic.account_analytic_line_action_entries"
+              sequence="31"/>
+
+    <!-- 4.2 Cierre -->
+    <menuitem id="menu_goliatt_acc_closing"
+              name="Cierre"
+              parent="menu_goliatt_accounting"
+              sequence="20"/>
+
+    <menuitem id="menu_goliatt_acc_secure_entries"
+              name="Proteger Asientos"
+              parent="menu_goliatt_acc_closing"
+              action="account.action_view_account_secure_entries_wizard"
+              sequence="80"/>
+
+    <!-- ================================================================ -->
+    <!--  5. REVISIÓN (Review)                                            -->
+    <!-- ================================================================ -->
+    <menuitem id="menu_goliatt_review"
+              name="Revisión"
+              parent="menu_goliatt_root"
+              sequence="7"/>
+
+    <!-- 5.1 Control -->
+    <menuitem id="menu_goliatt_rev_control"
+              name="Control"
+              parent="menu_goliatt_review"
+              sequence="20"/>
+
+    <menuitem id="menu_goliatt_rev_journal_items"
+              name="Apuntes Contables"
+              parent="menu_goliatt_rev_control"
+              action="account.action_account_moves_all"
+              sequence="6"/>
+
+    <!-- 5.2 Registros -->
+    <menuitem id="menu_goliatt_rev_logs"
+              name="Registros"
+              parent="menu_goliatt_review"
+              sequence="60"/>
+
+    <menuitem id="menu_goliatt_rev_audit_trail"
+              name="Pista de Auditoría"
+              parent="menu_goliatt_rev_logs"
+              action="account.action_account_audit_trail_report"
+              sequence="10"/>
+
+    <!-- ================================================================ -->
+    <!--  6. REPORTES (Reporting)                                         -->
+    <!-- ================================================================ -->
+    <menuitem id="menu_goliatt_reports"
+              name="Reportes"
+              parent="menu_goliatt_root"
+              sequence="20"/>
+
+    <!-- 6.1 Reportes de Estados de Cuenta -->
+    <menuitem id="menu_goliatt_rep_statements"
+              name="Reportes de Estados de Cuenta"
+              parent="menu_goliatt_reports"
+              sequence="1"/>
+
+    <!-- 6.2 Reportes del Contacto -->
+    <menuitem id="menu_goliatt_rep_partners"
+              name="Reportes del Contacto"
+              parent="menu_goliatt_reports"
+              sequence="3"/>
+
+    <!-- 6.3 Impuestos y Finanzas -->
+    <menuitem id="menu_goliatt_rep_taxes"
+              name="Impuestos y Finanzas"
+              parent="menu_goliatt_reports"
+              sequence="4"/>
+
+    <!-- 6.4 Gestión -->
+    <menuitem id="menu_goliatt_rep_management"
+              name="Gestión"
+              parent="menu_goliatt_reports"
+              sequence="5"/>
+
+    <menuitem id="menu_goliatt_rep_invoice_analysis"
+              name="Análisis de Facturas"
+              parent="menu_goliatt_rep_management"
+              action="account.action_account_invoice_report_all"
+              sequence="1"/>
+
+    <menuitem id="menu_goliatt_rep_analytic"
+              name="Reporte Analítico"
+              parent="menu_goliatt_rep_management"
+              action="account.action_analytic_reporting"
+              sequence="10"/>
+
+    <!-- 6.5 Colombia -->
+    <menuitem id="menu_goliatt_rep_colombia"
+              name="Colombia"
+              parent="menu_goliatt_reports"
+              sequence="6"/>
+
+    <!-- 6.6 Exogena Reports -->
+    <menuitem id="menu_goliatt_rep_exogena"
+              name="Información Exógena"
+              parent="menu_goliatt_reports"
+              sequence="90"/>
+
+    <menuitem id="menu_goliatt_rep_exogena_reports"
+              name="Reportes Información Exógena"
+              parent="menu_goliatt_rep_exogena"
+              action="co_exogena.co_exogena_report_action"
+              sequence="10"/>
+
+    <menuitem id="menu_goliatt_rep_exogena_formats"
+              name="Formatos"
+              parent="menu_goliatt_rep_exogena"
+              action="co_exogena.co_exogena_format_action"
+              sequence="20"/>
+
+    <menuitem id="menu_goliatt_rep_exogena_lines"
+              name="Líneas Detalle"
+              parent="menu_goliatt_rep_exogena"
+              action="co_exogena.co_exogena_line_action"
+              sequence="30"/>
+
+    <!-- 6.7 Custom Reports -->
+    <menuitem id="menu_goliatt_rep_ledger"
+              name="Mayor de Cuentas"
+              parent="menu_goliatt_reports"
+              action="account_ledger_report.action_account_ledger_report"
+              sequence="100"/>
+
+    <menuitem id="menu_goliatt_rep_balance_sheet"
+              name="Balance General"
+              parent="menu_goliatt_reports"
+              action="account_balance_sheet.action_account_balance_sheet"
+              sequence="101"/>
+
+    <menuitem id="menu_goliatt_rep_profit_loss"
+              name="Estado de Resultados"
+              parent="menu_goliatt_reports"
+              action="account_profit_loss.action_account_profit_loss"
+              sequence="102"/>
+
+    <menuitem id="menu_goliatt_rep_general_ledger"
+              name="Libro Mayor"
+              parent="menu_goliatt_reports"
+              action="account_general_ledger.action_account_general_ledger"
+              sequence="103"/>
+
+    <menuitem id="menu_goliatt_rep_aged_receivable"
+              name="Cartera por Cobrar"
+              parent="menu_goliatt_reports"
+              action="account_aged_receivable.action_account_aged_receivable"
+              sequence="104"/>
+
+    <menuitem id="menu_goliatt_rep_aged_payable"
+              name="Cartera por Pagar"
+              parent="menu_goliatt_reports"
+              action="account_aged_payable.action_account_aged_payable"
+              sequence="105"/>
+
+    <menuitem id="menu_goliatt_rep_cash_flow"
+              name="Flujo de Efectivo"
+              parent="menu_goliatt_reports"
+              action="account_cash_flow.action_account_cash_flow"
+              sequence="106"/>
+
+    <!-- ================================================================ -->
+    <!--  7. PRESUPUESTOS (Budgets)                                       -->
+    <!-- ================================================================ -->
+    <menuitem id="menu_goliatt_budgets"
+              name="Presupuestos"
+              parent="menu_goliatt_root"
+              sequence="30"/>
+
+    <menuitem id="menu_goliatt_budget_list"
+              name="Presupuestos"
+              parent="menu_goliatt_budgets"
+              action="co_budget.action_co_budget"
+              sequence="10"/>
+
+    <menuitem id="menu_goliatt_budget_lines"
+              name="Líneas de Presupuesto"
+              parent="menu_goliatt_budgets"
+              action="co_budget.action_co_budget_line"
+              sequence="20"/>
+
+    <menuitem id="menu_goliatt_budget_positions"
+              name="Posiciones Presupuestales"
+              parent="menu_goliatt_budgets"
+              action="co_budget.action_co_budget_position"
+              sequence="30"/>
+
+    <!-- ================================================================ -->
+    <!--  8. ACTIVOS FIJOS (Fixed Assets)                                 -->
+    <!-- ================================================================ -->
+    <menuitem id="menu_goliatt_assets"
+              name="Activos Fijos"
+              parent="menu_goliatt_root"
+              sequence="31"/>
+
+    <menuitem id="menu_goliatt_assets_list"
+              name="Activos"
+              parent="menu_goliatt_assets"
+              action="co_fixed_assets.co_fixed_asset_action"
+              sequence="10"/>
+
+    <menuitem id="menu_goliatt_assets_categories"
+              name="Categorías"
+              parent="menu_goliatt_assets"
+              action="co_fixed_assets.co_fixed_asset_category_action"
+              sequence="20"/>
+
+    <menuitem id="menu_goliatt_assets_depreciation"
+              name="Líneas de Depreciación"
+              parent="menu_goliatt_assets"
+              action="co_fixed_assets.co_fixed_asset_depreciation_line_action"
+              sequence="30"/>
+
+    <menuitem id="menu_goliatt_assets_maintenance"
+              name="Mantenimiento"
+              parent="menu_goliatt_assets"
+              action="co_fixed_assets.co_fixed_asset_maintenance_action"
+              sequence="40"/>
+
+    <!-- ================================================================ -->
+    <!--  9. CONCILIACIÓN BANCARIA (Bank Reconciliation)                  -->
+    <!-- ================================================================ -->
+    <menuitem id="menu_goliatt_bank"
+              name="Conciliación Bancaria"
+              parent="menu_goliatt_root"
+              sequence="35"/>
+
+    <menuitem id="menu_goliatt_bank_import"
+              name="Importar Extracto"
+              parent="menu_goliatt_bank"
+              action="co_bank_reconciliation.action_co_bank_import_wizard"
+              sequence="10"/>
+
+    <menuitem id="menu_goliatt_bank_statements"
+              name="Extractos"
+              parent="menu_goliatt_bank"
+              action="co_bank_reconciliation.action_co_bank_statement_import"
+              sequence="20"/>
+
+    <menuitem id="menu_goliatt_bank_lines"
+              name="Todas las Líneas"
+              parent="menu_goliatt_bank"
+              action="co_bank_reconciliation.action_co_bank_statement_line"
+              sequence="30"/>
+
+    <menuitem id="menu_goliatt_bank_config"
+              name="Configuración"
+              parent="menu_goliatt_bank"
+              sequence="90"/>
+
+    <menuitem id="menu_goliatt_bank_formats"
+              name="Formatos Bancarios"
+              parent="menu_goliatt_bank_config"
+              action="co_bank_reconciliation.action_co_bank_format"
+              sequence="10"/>
+
+    <!-- ================================================================ -->
+    <!--  10. OPERACIONES COLOMBIANAS                                     -->
+    <!-- ================================================================ -->
+    <menuitem id="menu_goliatt_co_operations"
+              name="Operaciones Colombianas"
+              parent="menu_goliatt_root"
+              sequence="90"/>
+
+    <menuitem id="menu_goliatt_co_year_close"
+              name="Asiento de Cierre Anual"
+              parent="menu_goliatt_co_operations"
+              action="co_accounting_extended.action_co_year_close_wizard"
+              sequence="10"/>
+
+    <!-- ================================================================ -->
+    <!--  11. CONFIGURACIÓN (Configuration)                               -->
+    <!-- ================================================================ -->
+    <menuitem id="menu_goliatt_config"
+              name="Configuración"
+              parent="menu_goliatt_root"
+              sequence="100"/>
+
+    <menuitem id="menu_goliatt_cfg_settings"
+              name="Ajustes"
+              parent="menu_goliatt_config"
+              action="account.action_account_config"
+              sequence="0"/>
+
+    <!-- 11.1 Contabilidad -->
+    <menuitem id="menu_goliatt_cfg_accounting"
+              name="Contabilidad"
+              parent="menu_goliatt_config"
+              sequence="10"/>
+
+    <menuitem id="menu_goliatt_cfg_chart"
+              name="Plan de Cuentas"
+              parent="menu_goliatt_cfg_accounting"
+              action="account.action_account_form"
+              sequence="1"/>
+
+    <menuitem id="menu_goliatt_cfg_taxes"
+              name="Impuestos"
+              parent="menu_goliatt_cfg_accounting"
+              action="account.action_tax_form"
+              sequence="2"/>
+
+    <menuitem id="menu_goliatt_cfg_journals"
+              name="Diarios"
+              parent="menu_goliatt_cfg_accounting"
+              action="account.action_account_journal_form"
+              sequence="3"/>
+
+    <menuitem id="menu_goliatt_cfg_currencies"
+              name="Monedas"
+              parent="menu_goliatt_cfg_accounting"
+              action="base.action_currency_form"
+              sequence="5"/>
+
+    <menuitem id="menu_goliatt_cfg_fiscal"
+              name="Posiciones Fiscales"
+              parent="menu_goliatt_cfg_accounting"
+              action="account.action_account_fiscal_position_form"
+              sequence="6"/>
+
+    <menuitem id="menu_goliatt_cfg_multiledger"
+              name="Varios Libros Mayores"
+              parent="menu_goliatt_cfg_accounting"
+              action="account.action_account_journal_group_list"
+              sequence="7"/>
+
+    <menuitem id="menu_goliatt_cfg_rounding"
+              name="Redondeos de Efectivo"
+              parent="menu_goliatt_cfg_accounting"
+              action="account.rounding_list_action"
+              sequence="9"/>
+
+    <!-- 11.2 Facturación -->
+    <menuitem id="menu_goliatt_cfg_invoicing"
+              name="Facturación"
+              parent="menu_goliatt_config"
+              sequence="20"/>
+
+    <menuitem id="menu_goliatt_cfg_payment_terms"
+              name="Términos de Pago"
+              parent="menu_goliatt_cfg_invoicing"
+              action="account.action_payment_term_form"
+              sequence="10"/>
+
+    <menuitem id="menu_goliatt_cfg_product_cats"
+              name="Categorías de Productos"
+              parent="menu_goliatt_cfg_invoicing"
+              action="product.product_category_action_form"
+              sequence="30"/>
+
+    <!-- 11.3 Pagos en línea -->
+    <menuitem id="menu_goliatt_cfg_payments"
+              name="Pagos en Línea"
+              parent="menu_goliatt_config"
+              sequence="30"/>
+
+    <menuitem id="menu_goliatt_cfg_providers"
+              name="Proveedores de Pago"
+              parent="menu_goliatt_cfg_payments"
+              action="payment.action_payment_provider"
+              sequence="10"/>
+
+    <menuitem id="menu_goliatt_cfg_pay_methods"
+              name="Métodos de Pago"
+              parent="menu_goliatt_cfg_payments"
+              action="payment.action_payment_method"
+              sequence="15"/>
+
+    <!-- 11.4 Contabilidad Analítica -->
+    <menuitem id="menu_goliatt_cfg_analytic"
+              name="Contabilidad Analítica"
+              parent="menu_goliatt_config"
+              sequence="40"/>
+
+    <menuitem id="menu_goliatt_cfg_analytic_models"
+              name="Modelos de Distribución Analítica"
+              parent="menu_goliatt_cfg_analytic"
+              action="analytic.action_analytic_distribution_model"
+              sequence="10"/>
+
+    <menuitem id="menu_goliatt_cfg_analytic_accounts"
+              name="Cuentas Analíticas"
+              parent="menu_goliatt_cfg_analytic"
+              action="analytic.action_account_analytic_account_form"
+              sequence="20"/>
+
+    <menuitem id="menu_goliatt_cfg_analytic_plans"
+              name="Planes Analíticos"
+              parent="menu_goliatt_cfg_analytic"
+              action="analytic.account_analytic_plan_action"
+              sequence="30"/>
+
+    <!-- 11.5 Extensiones Colombianas -->
+    <menuitem id="menu_goliatt_cfg_colombian"
+              name="Extensiones Colombianas"
+              parent="menu_goliatt_config"
+              sequence="90"/>
+
+    <menuitem id="menu_goliatt_cfg_cost_centers"
+              name="Centros de Costo"
+              parent="menu_goliatt_cfg_colombian"
+              action="co_accounting_extended.action_co_cost_center"
+              sequence="5"/>
+
+    <menuitem id="menu_goliatt_cfg_item_codes"
+              name="Códigos de Ítem"
+              parent="menu_goliatt_cfg_colombian"
+              action="co_accounting_extended.action_co_item_code"
+              sequence="7"/>
+
+    <menuitem id="menu_goliatt_cfg_business_units"
+              name="Unidades de Negocio"
+              parent="menu_goliatt_cfg_colombian"
+              action="co_accounting_extended.action_co_business_unit"
+              sequence="10"/>
+
+    <menuitem id="menu_goliatt_cfg_accounting_concepts"
+              name="Conceptos Contables"
+              parent="menu_goliatt_cfg_colombian"
+              action="co_accounting_extended.action_co_accounting_concept"
+              sequence="15"/>
+
+    <menuitem id="menu_goliatt_cfg_auto_posting"
+              name="Reglas de Contabilización Automática"
+              parent="menu_goliatt_cfg_colombian"
+              action="co_accounting_extended.action_co_auto_posting_rule"
+              sequence="20"/>
+
+    <menuitem id="menu_goliatt_cfg_formulated"
+              name="Conceptos Formulados"
+              parent="menu_goliatt_cfg_colombian"
+              action="co_accounting_extended.action_co_formulated_concept"
+              sequence="30"/>
+
+    <!-- 11.6 Exogena Config -->
+    <menuitem id="menu_goliatt_cfg_exogena"
+              name="Información Exógena"
+              parent="menu_goliatt_config"
+              sequence="91"/>
+
+    <menuitem id="menu_goliatt_cfg_exogena_concepts"
+              name="Conceptos Información Exógena"
+              parent="menu_goliatt_cfg_exogena"
+              action="co_exogena.co_exogena_concept_action"
+              sequence="10"/>
+
+</odoo>

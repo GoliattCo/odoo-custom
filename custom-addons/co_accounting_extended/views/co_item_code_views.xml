@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Tree View -->
+    <record id="co_item_code_view_list" model="ir.ui.view">
+        <field name="name">co.item.code.list</field>
+        <field name="model">co.item.code</field>
+        <field name="arch" type="xml">
+            <list string="Códigos de Ítem" default_order="code">
+                <field name="code"/>
+                <field name="name"/>
+                <field name="code_type" string="Tipo"/>
+                <field name="parent_id"/>
+                <field name="active" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="co_item_code_view_form" model="ir.ui.view">
+        <field name="name">co.item.code.form</field>
+        <field name="model">co.item.code</field>
+        <field name="arch" type="xml">
+            <form string="Código de Ítem">
+                <sheet>
+                    <widget name="web_ribbon" title="Archivado" bg_color="text-bg-danger"
+                            invisible="active"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="Ej: Útiles de Oficina"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="code"/>
+                            <field name="code_type"/>
+                            <field name="parent_id"/>
+                        </group>
+                        <group>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Códigos de Ítem Hijos" name="children"
+                              invisible="code_type != 'group'">
+                            <field name="child_ids">
+                                <list>
+                                    <field name="code"/>
+                                    <field name="name"/>
+                                    <field name="code_type"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Notas" name="notes">
+                            <field name="description" placeholder="Notas adicionales..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="co_item_code_view_search" model="ir.ui.view">
+        <field name="name">co.item.code.search</field>
+        <field name="model">co.item.code</field>
+        <field name="arch" type="xml">
+            <search string="Códigos de Ítem">
+                <field name="name" string="Nombre o Código"
+                       filter_domain="['|', ('name', 'ilike', self), ('code', 'ilike', self)]"/>
+                <field name="parent_id"/>
+                <filter name="group_codes" string="Códigos Grupo"
+                        domain="[('code_type', '=', 'group')]"/>
+                <filter name="detail_codes" string="Códigos Detalle"
+                        domain="[('code_type', '=', 'detail')]"/>
+                <separator/>
+                <filter name="archived" string="Archivados"
+                        domain="[('active', '=', False)]"/>
+                <group>
+                    <filter name="group_parent" string="Padre"
+                            context="{'group_by': 'parent_id'}"/>
+                    <filter name="group_type" string="Tipo"
+                            context="{'group_by': 'code_type'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_co_item_code" model="ir.actions.act_window">
+        <field name="name">Códigos de Ítem</field>
+        <field name="res_model">co.item.code</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="co_item_code_view_search"/>
+        <field name="path">co-item-codes</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Cree su primer código de ítem
+            </p>
+            <p>
+                Los códigos de ítem permiten clasificar asientos contables
+                por categorías de producto o servicio.
+                Use códigos Grupo para categorías y códigos Detalle para registros.
+            </p>
+        </field>
+    </record>
+
+</odoo>

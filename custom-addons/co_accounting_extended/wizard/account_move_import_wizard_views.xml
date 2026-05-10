@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="account_move_import_wizard_view_form" model="ir.ui.view">
+        <field name="name">account.move.import.wizard.form</field>
+        <field name="model">account.move.import.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Importar Líneas de Asiento Contable">
+                <group>
+                    <field name="move_id" readonly="1"/>
+                    <field name="import_file" filename="import_file_name"/>
+                    <field name="import_file_name" invisible="1"/>
+                    <field name="clear_existing"/>
+                </group>
+                <div class="alert alert-info" role="alert">
+                    <strong>Formato del archivo:</strong> CSV o XLSX con las siguientes columnas:
+                    <ul>
+                        <li><b>Código de Cuenta</b> (requerido) - Ej: 110505</li>
+                        <li><b>Etiqueta</b> - Descripción de la línea</li>
+                        <li><b>Tercero</b> - Nombre del tercero o NIT</li>
+                        <li><b>Código Centro de Costo</b> - Código del centro de costo</li>
+                        <li><b>Código de Ítem</b> - Código del ítem</li>
+                        <li><b>Auxiliar Abierto</b> - Auxiliar abierto</li>
+                        <li><b>Código Unidad de Negocio</b> - Código de unidad de negocio</li>
+                        <li><b>Débito</b> - Monto débito</li>
+                        <li><b>Crédito</b> - Monto crédito</li>
+                    </ul>
+                </div>
+                <footer>
+                    <button name="action_import" type="object" string="Importar" class="btn-primary"/>
+                    <button string="Cancelar" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_account_move_import_wizard" model="ir.actions.act_window">
+        <field name="name">Importar desde CSV/Excel</field>
+        <field name="res_model">account.move.import.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="account.model_account_move"/>
+        <field name="binding_view_types">form</field>
+    </record>
+
+</odoo>

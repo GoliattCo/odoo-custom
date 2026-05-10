@@ -60,6 +60,6 @@
             'goliatt_pms/static/src/js/dark_mode_toggle.js',
         ],
     },
-    'installable': True,
+    'installable': False,
     'application': True,
 }

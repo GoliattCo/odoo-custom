@@ -31,6 +31,10 @@ class AccountProfitLoss(models.Model):
     balance = fields.Monetary(string='Balance', currency_field='currency_id', readonly=True)
     company_id = fields.Many2one('res.company', string='Company', readonly=True)
     currency_id = fields.Many2one('res.currency', string='Currency', readonly=True)
+    cost_center_id = fields.Many2one('co.cost.center', string='Centro de Costo', readonly=True)
+    business_unit_id = fields.Many2one('co.business.unit', string='Unidad de Negocio', readonly=True)
+    item_code_id = fields.Many2one('co.item.code', string='Código de Ítem', readonly=True)
+    auxiliar_abierto = fields.Char(string='Auxiliar Abierto', readonly=True)
 
     def init(self):
         tools.drop_view_if_exists(self._cr, self._table)
@@ -55,7 +59,11 @@ class AccountProfitLoss(models.Model):
                 aml.credit                                                                AS credit,
                 aml.debit - aml.credit                                                    AS balance,
                 aml.company_id                                                            AS company_id,
-                rc.id                                                                     AS currency_id
+                rc.id                                                                     AS currency_id,
+                aml.cost_center_id                                                        AS cost_center_id,
+                aml.business_unit_id                                                      AS business_unit_id,
+                aml.item_code_id                                                          AS item_code_id,
+                aml.auxiliar_abierto                                                      AS auxiliar_abierto
             FROM account_move_line aml
             JOIN account_move    am  ON am.id  = aml.move_id
             JOIN account_account aa  ON aa.id  = aml.account_id

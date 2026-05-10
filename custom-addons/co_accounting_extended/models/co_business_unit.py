@@ -3,55 +3,55 @@ from odoo import api, fields, models
 
 class CoBusinessUnit(models.Model):
     _name = 'co.business.unit'
-    _description = 'Business Unit'
+    _description = 'Unidad de Negocio'
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'sequence, name'
 
     name = fields.Char(
-        string='Name',
+        string='Nombre',
         required=True,
         tracking=True,
         translate=True,
     )
     code = fields.Char(
-        string='Code',
+        string='Código',
         required=True,
         tracking=True,
     )
-    sequence = fields.Integer(string='Sequence', default=10)
-    active = fields.Boolean(string='Active', default=True, tracking=True)
+    sequence = fields.Integer(string='Secuencia', default=10)
+    active = fields.Boolean(string='Activo', default=True, tracking=True)
     company_id = fields.Many2one(
         'res.company',
-        string='Company',
+        string='Empresa',
         required=True,
         default=lambda self: self.env.company,
     )
     analytic_account_id = fields.Many2one(
         'account.analytic.account',
-        string='Analytic Account',
+        string='Cuenta Analítica',
         tracking=True,
-        help='Link this business unit to an analytic account for reporting.',
+        help='Vincular esta unidad de negocio a una cuenta analítica para reportes.',
     )
     responsible_id = fields.Many2one(
         'res.users',
-        string='Responsible',
+        string='Responsable',
         tracking=True,
     )
-    description = fields.Text(string='Description')
+    description = fields.Text(string='Descripción')
     move_line_ids = fields.One2many(
         'account.move.line',
         'business_unit_id',
-        string='Journal Items',
+        string='Apuntes Contables',
     )
     move_line_count = fields.Integer(
-        string='Journal Items Count',
+        string='Cantidad de Apuntes',
         compute='_compute_move_line_count',
     )
 
-    _sql_constraints = [
-        ('code_company_uniq', 'unique(code, company_id)',
-         'The code must be unique per company.'),
-    ]
+    _code_company_uniq = models.Constraint(
+        'unique(code, company_id)',
+        'El código debe ser único por empresa.',
+    )
 
     @api.depends('move_line_ids')
     def _compute_move_line_count(self):

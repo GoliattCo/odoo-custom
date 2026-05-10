@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Report Action -->
+    <record id="action_report_account_move" model="ir.actions.report">
+        <field name="name">Asiento Contable</field>
+        <field name="model">account.move</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">co_accounting_extended.report_account_move</field>
+        <field name="report_file">co_accounting_extended.report_account_move</field>
+        <field name="print_report_name">'Asiento_Contable_%s' % (object.name or 'Borrador').replace('/', '_')</field>
+        <field name="binding_model_id" ref="account.model_account_move"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <!-- QWeb Report Template -->
+    <template id="report_account_move">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2 class="text-center">Asiento Contable</h2>
+
+                        <div class="row mt-3 mb-3">
+                            <div class="col-6">
+                                <table class="table table-sm table-borderless">
+                                    <tr>
+                                        <td class="fw-bold" style="width: 40%;">Número:</td>
+                                        <td><t t-esc="o.name or 'Borrador'"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bold">Fecha:</td>
+                                        <td><t t-esc="o.date" t-options="{'widget': 'date'}"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bold">Diario:</td>
+                                        <td><t t-esc="o.journal_id.display_name"/></td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="col-6">
+                                <table class="table table-sm table-borderless">
+                                    <tr>
+                                        <td class="fw-bold" style="width: 40%;">Referencia:</td>
+                                        <td><t t-esc="o.ref or ''"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bold">Estado:</td>
+                                        <td>
+                                            <t t-if="o.state == 'draft'">Borrador</t>
+                                            <t t-if="o.state == 'posted'">Publicado</t>
+                                            <t t-if="o.state == 'cancel'">Cancelado</t>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bold">Empresa:</td>
+                                        <td><t t-esc="o.company_id.name"/></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Journal Items Table -->
+                        <table class="table table-sm table-bordered mt-3">
+                            <thead>
+                                <tr class="bg-200">
+                                    <th>Cuenta</th>
+                                    <th>Etiqueta</th>
+                                    <th>Tercero</th>
+                                    <th>Centro de Costo</th>
+                                    <th>Código de Ítem</th>
+                                    <th>Aux. Abierto</th>
+                                    <th>Unidad de Negocio</th>
+                                    <th class="text-end">Débito</th>
+                                    <th class="text-end">Crédito</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-set="total_debit" t-value="0"/>
+                                <t t-set="total_credit" t-value="0"/>
+                                <t t-foreach="o.line_ids.sorted(key=lambda l: l.sequence)" t-as="line">
+                                    <t t-if="line.display_type not in ('line_section', 'line_note')">
+                                        <tr>
+                                            <td>
+                                                <t t-esc="line.account_id.code"/> -
+                                                <t t-esc="line.account_id.name"/>
+                                            </td>
+                                            <td><t t-esc="line.name or ''"/></td>
+                                            <td><t t-esc="line.partner_id.name or ''"/></td>
+                                            <td><t t-esc="line.cost_center_id.display_name or ''"/></td>
+                                            <td><t t-esc="line.item_code_id.display_name or ''"/></td>
+                                            <td><t t-esc="line.auxiliar_abierto or ''"/></td>
+                                            <td>
+                                                <t t-if="line.business_unit_id">
+                                                    [<t t-esc="line.business_unit_id.code"/>] <t t-esc="line.business_unit_id.name"/>
+                                                </t>
+                                            </td>
+                                            <td class="text-end">
+                                                <t t-esc="line.debit" t-options="{'widget': 'monetary', 'display_currency': o.company_currency_id}"/>
+                                            </td>
+                                            <td class="text-end">
+                                                <t t-esc="line.credit" t-options="{'widget': 'monetary', 'display_currency': o.company_currency_id}"/>
+                                            </td>
+                                        </tr>
+                                        <t t-set="total_debit" t-value="total_debit + line.debit"/>
+                                        <t t-set="total_credit" t-value="total_credit + line.credit"/>
+                                    </t>
+                                </t>
+                            </tbody>
+                            <tfoot>
+                                <tr class="fw-bold">
+                                    <td colspan="7" class="text-end">Totales:</td>
+                                    <td class="text-end">
+                                        <t t-esc="total_debit" t-options="{'widget': 'monetary', 'display_currency': o.company_currency_id}"/>
+                                    </td>
+                                    <td class="text-end">
+                                        <t t-esc="total_credit" t-options="{'widget': 'monetary', 'display_currency': o.company_currency_id}"/>
+                                    </td>
+                                </tr>
+                                <tr class="fw-bold">
+                                    <td colspan="7" class="text-end">Diferencia:</td>
+                                    <td colspan="2" class="text-end">
+                                        <t t-esc="total_debit - total_credit" t-options="{'widget': 'monetary', 'display_currency': o.company_currency_id}"/>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>

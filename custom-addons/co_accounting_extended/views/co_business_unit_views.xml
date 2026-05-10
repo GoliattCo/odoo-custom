@@ -3,7 +3,7 @@
 
     <!-- Action for journal items stat button (must precede form that references it) -->
     <record id="action_co_business_unit_move_lines" model="ir.actions.act_window">
-        <field name="name">Journal Items</field>
+        <field name="name">Apuntes Contables</field>
         <field name="res_model">account.move.line</field>
         <field name="view_mode">list,form</field>
         <field name="domain">[('business_unit_id', '=', active_id)]</field>
@@ -15,13 +15,13 @@
         <field name="name">co.business.unit.list</field>
         <field name="model">co.business.unit</field>
         <field name="arch" type="xml">
-            <list string="Business Units">
+            <list string="Unidades de Negocio">
                 <field name="sequence" widget="handle"/>
                 <field name="code"/>
                 <field name="name"/>
                 <field name="analytic_account_id"/>
                 <field name="responsible_id" widget="many2one_avatar_user"/>
-                <field name="move_line_count" string="Items"/>
+                <field name="move_line_count" string="Apuntes"/>
                 <field name="active" column_invisible="1"/>
             </list>
         </field>
@@ -32,7 +32,7 @@
         <field name="name">co.business.unit.form</field>
         <field name="model">co.business.unit</field>
         <field name="arch" type="xml">
-            <form string="Business Unit">
+            <form string="Unidad de Negocio">
                 <sheet>
                     <div class="oe_button_box" name="button_box">
                         <button name="%(co_accounting_extended.action_co_business_unit_move_lines)d"
@@ -40,14 +40,14 @@
                                 class="oe_stat_button"
                                 icon="fa-list"
                                 invisible="move_line_count == 0">
-                            <field name="move_line_count" widget="statinfo" string="Journal Items"/>
+                            <field name="move_line_count" widget="statinfo" string="Apuntes Contables"/>
                         </button>
                     </div>
-                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger"
+                    <widget name="web_ribbon" title="Archivado" bg_color="text-bg-danger"
                             invisible="active"/>
                     <div class="oe_title">
                         <label for="name"/>
-                        <h1><field name="name" placeholder="e.g., Hotel"/></h1>
+                        <h1><field name="name" placeholder="Ej: Hotel"/></h1>
                     </div>
                     <group>
                         <group>
@@ -61,8 +61,8 @@
                         </group>
                     </group>
                     <notebook>
-                        <page string="Description" name="description">
-                            <field name="description" placeholder="Describe this business unit..."/>
+                        <page string="Descripción" name="description">
+                            <field name="description" placeholder="Describa esta unidad de negocio..."/>
                         </page>
                     </notebook>
                 </sheet>
@@ -76,15 +76,15 @@
         <field name="name">co.business.unit.search</field>
         <field name="model">co.business.unit</field>
         <field name="arch" type="xml">
-            <search string="Business Units">
-                <field name="name" string="Name or Code"
+            <search string="Unidades de Negocio">
+                <field name="name" string="Nombre o Código"
                        filter_domain="['|', ('name', 'ilike', self), ('code', 'ilike', self)]"/>
                 <field name="responsible_id"/>
                 <field name="analytic_account_id"/>
-                <filter name="archived" string="Archived"
+                <filter name="archived" string="Archivados"
                         domain="[('active', '=', False)]"/>
                 <group>
-                    <filter name="group_responsible" string="Responsible"
+                    <filter name="group_responsible" string="Responsable"
                             context="{'group_by': 'responsible_id'}"/>
                 </group>
             </search>
@@ -93,18 +93,18 @@
 
     <!-- Action -->
     <record id="action_co_business_unit" model="ir.actions.act_window">
-        <field name="name">Business Units</field>
+        <field name="name">Unidades de Negocio</field>
         <field name="res_model">co.business.unit</field>
         <field name="view_mode">list,form</field>
         <field name="search_view_id" ref="co_business_unit_view_search"/>
         <field name="path">co-business-units</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                Create your first business unit
+                Cree su primera unidad de negocio
             </p>
             <p>
-                Business units represent operational segments such as
-                Hotel, Restaurant, Spa, etc.
+                Las unidades de negocio representan segmentos operativos como
+                Hotel, Restaurante, Spa, etc.
             </p>
         </field>
     </record>

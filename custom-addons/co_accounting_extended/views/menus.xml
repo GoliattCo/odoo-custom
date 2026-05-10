@@ -2,41 +2,59 @@
 <odoo>
 
     <!-- ============================================================ -->
-    <!--  Accounting > Configuration > Colombian Extensions            -->
+    <!--  Contabilidad > Configuración > Extensiones Colombianas      -->
     <!-- ============================================================ -->
     <menuitem id="menu_co_config_root"
-              name="Colombian Extensions"
+              name="Extensiones Colombianas"
               parent="account.menu_finance_configuration"
               sequence="90"/>
 
+    <menuitem id="menu_co_cost_center"
+              name="Centros de Costo"
+              parent="menu_co_config_root"
+              action="action_co_cost_center"
+              sequence="5"/>
+
+    <menuitem id="menu_co_item_code"
+              name="Códigos de Ítem"
+              parent="menu_co_config_root"
+              action="action_co_item_code"
+              sequence="7"/>
+
     <menuitem id="menu_co_business_unit"
-              name="Business Units"
+              name="Unidades de Negocio"
               parent="menu_co_config_root"
               action="action_co_business_unit"
               sequence="10"/>
 
+    <menuitem id="menu_co_accounting_concept"
+              name="Conceptos Contables"
+              parent="menu_co_config_root"
+              action="action_co_accounting_concept"
+              sequence="15"/>
+
     <menuitem id="menu_co_auto_posting_rule"
-              name="Auto Posting Rules"
+              name="Reglas de Contabilización Automática"
               parent="menu_co_config_root"
               action="action_co_auto_posting_rule"
               sequence="20"/>
 
     <menuitem id="menu_co_formulated_concept"
-              name="Formulated Concepts"
+              name="Conceptos Formulados"
               parent="menu_co_config_root"
               action="action_co_formulated_concept"
               sequence="30"/>
 
     <!-- ============================================================ -->
-    <!--  Accounting > Operations > Year-Close                         -->
+    <!--  Contabilidad > Operaciones > Cierre de Año                   -->
     <!-- ============================================================ -->
     <menuitem id="menu_co_operations_root"
-              name="Colombian Operations"
+              name="Operaciones Colombianas"
               parent="account.menu_finance"
               sequence="90"/>
 
     <menuitem id="menu_co_year_close"
-              name="Year-Close Entry"
+              name="Asiento de Cierre Anual"
               parent="menu_co_operations_root"
               action="action_co_year_close_wizard"
               sequence="10"/>

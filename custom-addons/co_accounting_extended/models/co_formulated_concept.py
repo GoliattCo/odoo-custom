@@ -63,10 +63,10 @@ class CoFormulatedConcept(models.Model):
         store=True,
     )
 
-    _sql_constraints = [
-        ('code_company_uniq', 'unique(code, company_id)',
-         'The code must be unique per company.'),
-    ]
+    _code_company_uniq = models.Constraint(
+        'unique(code, company_id)',
+        'The code must be unique per company.',
+    )
 
     def _get_balance_by_prefix(self, prefix, date_from=None, date_to=None):
         """Return the sum of (credit - debit) for accounts starting with prefix."""

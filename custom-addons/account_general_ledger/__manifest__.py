@@ -3,7 +3,7 @@
     'version': '19.0.1.0.0',
     'summary': 'General ledger with running balance per account and PDF export',
     'category': 'Accounting',
-    'depends': ['account'],
+    'depends': ['account', 'co_accounting_extended'],
     'data': [
         'security/ir.model.access.csv',
         'views/account_general_ledger_views.xml',
