@@ -1,0 +1,27 @@
+# Railway service descriptor for the backup runner.
+#
+# Per-service config in Railway: set this file as the service's
+# RAILWAY_CONFIG_FILE in the service settings UI.
+#
+# Required env (set in Railway dashboard):
+#   BACKUP_RUNNER_TOKEN
+#   PGHOST                 = odoo-saas-postgres.railway.internal
+#   PGPORT                 = 5432
+#   PGUSER                 = postgres (or a backup-only role with pg_read_all_data)
+#   PGPASSWORD
+#   FILESTORE_BASE         = /var/lib/odoo/filestore  (matches the mounted volume)
+#   AWS_REGION
+#   AWS_ACCESS_KEY_ID      = pgbackrest_railway_access_key_id (Terraform output)
+#   AWS_SECRET_ACCESS_KEY  = pgbackrest_railway_secret_access_key (Terraform output)
+#
+# Volume mount (configure in Railway UI):
+#   /var/lib/odoo/filestore  ← read-only mount of the Odoo service's volume
+
+[build]
+dockerfilePath = "infra/backup-runner/Dockerfile"
+
+[deploy]
+healthcheckPath = "/health"
+healthcheckTimeout = 30
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 5

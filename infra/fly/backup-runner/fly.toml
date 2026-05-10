@@ -1,0 +1,60 @@
+# Fly.io app descriptor for the backup runner.
+#
+# Deploy with:
+#   fly deploy --config infra/fly/backup-runner/fly.toml --dockerfile infra/backup-runner/Dockerfile --remote-only
+#
+# Secrets (set with `fly secrets set --app odoo-saas-backup-runner KEY=VALUE`):
+#   BACKUP_RUNNER_TOKEN
+#   PGHOST                 = odoo-saas-postgres.internal
+#   PGPORT                 = 5432
+#   PGUSER                 = postgres
+#   PGPASSWORD
+#   AWS_REGION
+#   AWS_ACCESS_KEY_ID      = pgbackrest_fly_access_key_id (Terraform output)
+#   AWS_SECRET_ACCESS_KEY  = pgbackrest_fly_secret_access_key (Terraform output)
+
+app            = "odoo-saas-backup-runner"
+primary_region = "iad"
+kill_signal    = "SIGINT"
+kill_timeout   = "60s"   # let an in-flight pg_dump finish on rolling deploy
+
+[build]
+  dockerfile = "../../backup-runner/Dockerfile"
+
+[env]
+  FILESTORE_BASE = "/var/lib/odoo/filestore"
+  PORT           = "8080"
+
+# Private-only HTTP service. The control plane reaches this via 6PN; we never
+# expose it publicly because BACKUP_RUNNER_TOKEN alone shouldn't be the only
+# layer between an attacker and a pg_dump capability.
+[[services]]
+  internal_port = 8080
+  protocol      = "tcp"
+  auto_start_machines = false
+  auto_stop_machines  = false
+  min_machines_running = 1
+
+  [[services.tcp_checks]]
+    interval     = "10s"
+    timeout      = "2s"
+    grace_period = "30s"
+
+  [[services.http_checks]]
+    interval     = "15s"
+    timeout      = "3s"
+    grace_period = "60s"
+    method       = "GET"
+    path         = "/health"
+
+# Read-only mount of the same volume the Odoo app writes its filestore to.
+# Fly Volumes are zone-pinned; this runner must run in the same region as
+# the Odoo + Postgres apps.
+[[mounts]]
+  source      = "odoo_filestore"
+  destination = "/var/lib/odoo/filestore"
+  initial_size = "1gb"
+
+[[vm]]
+  size   = "shared-cpu-2x"
+  memory = "2gb"
