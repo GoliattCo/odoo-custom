@@ -67,11 +67,12 @@ module "s3_warm" {
 }
 
 module "iam_pgbackrest" {
-  source         = "../../modules/iam-pgbackrest"
-  name_prefix    = "pgbackrest"
-  platforms      = ["railway", "fly"]
-  hot_bucket_arn = module.s3_hot.bucket_arn
-  kms_key_arn    = module.kms.key_arn
+  source      = "../../modules/iam-pgbackrest"
+  name_prefix = "pgbackrest"
+  platforms   = ["railway", "fly"]
+  # HOT for pgBackRest WAL archiving; WARM for the backup-runner's dump uploads.
+  bucket_arns = [module.s3_hot.bucket_arn, module.s3_warm.bucket_arn]
+  kms_key_arn = module.kms.key_arn
 }
 
 module "iam_control_plane" {

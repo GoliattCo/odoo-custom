@@ -82,10 +82,16 @@ resource "aws_s3_bucket_lifecycle_configuration" "this" {
     status = "Enabled"
     filter {}
 
+    # S3 forbids transitioning to STANDARD_IA before day 30. So WARM-tier
+    # objects spend their first 30 days in STANDARD (where the most likely
+    # restores happen — recent dailies) and then move to the cheaper
+    # STANDARD_IA for the rest of their retention window. If you need
+    # objects in STANDARD_IA from day 0, write them with an explicit
+    # StorageClass=STANDARD_IA at PutObject time instead of via lifecycle.
     dynamic "transition" {
       for_each = var.storage_class == "STANDARD_IA" ? [1] : []
       content {
-        days          = 0
+        days          = 30
         storage_class = "STANDARD_IA"
       }
     }

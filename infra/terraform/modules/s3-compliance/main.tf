@@ -103,37 +103,39 @@ resource "aws_s3_bucket_lifecycle_configuration" "this" {
   }
 }
 
-# Cross-account write: only allow PutObject if the request includes the
-# COMPLIANCE lock parameters. Prevents accidental writes that bypass the
-# retention guarantee.
+# Grants the writer principal(s) PutObject + read on the bucket.
+#
+# No object-lock condition: the bucket's default retention config above
+# (COMPLIANCE mode, `object_lock_years` years) is applied automatically to
+# every object written without explicit lock parameters — so even a writer
+# that forgets to set lock params still gets the full retention. An earlier
+# version of this policy tried to *require* the lock params via a condition,
+# but it used invalid condition keys (`s3:x-amz-object-lock-mode` is the
+# HTTP header name, not the IAM condition key, which is `s3:object-lock-mode`;
+# and `s3:object-lock-retain-until-date` takes a Date operator, not Numeric).
+# The default-retention config makes the condition redundant anyway.
+#
+# In a single-account setup this bucket policy is technically redundant —
+# the control-plane IAM user's own policy (from the primary composition)
+# already grants s3:PutObject on this bucket ARN. It's kept here so the
+# module still works if the compliance bucket later moves to a separate
+# account (where cross-account access requires a resource-side grant too).
 resource "aws_s3_bucket_policy" "this" {
   bucket = aws_s3_bucket.this.id
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
-        Sid    = "AllowCrossAccountComplianceWrites"
-        Effect = "Allow"
-        Principal = {
-          AWS = var.writer_principal_arns
-        }
-        Action   = ["s3:PutObject", "s3:PutObjectLegalHold"]
-        Resource = "${aws_s3_bucket.this.arn}/*"
-        Condition = {
-          StringEquals = {
-            "s3:x-amz-object-lock-mode" = "COMPLIANCE"
-          }
-          NumericGreaterThan = {
-            "s3:x-amz-object-lock-retain-until-date" = "${var.object_lock_years * 365 * 86400}"
-          }
-        }
+        Sid       = "AllowWriterPut"
+        Effect    = "Allow"
+        Principal = { AWS = var.writer_principal_arns }
+        Action    = ["s3:PutObject", "s3:PutObjectLegalHold"]
+        Resource  = "${aws_s3_bucket.this.arn}/*"
       },
       {
-        Sid    = "AllowCrossAccountListAndRead"
-        Effect = "Allow"
-        Principal = {
-          AWS = var.writer_principal_arns
-        }
+        Sid       = "AllowWriterListAndRead"
+        Effect    = "Allow"
+        Principal = { AWS = var.writer_principal_arns }
         Action = [
           "s3:GetObject", "s3:GetObjectVersion",
           "s3:ListBucket", "s3:GetBucketVersioning"

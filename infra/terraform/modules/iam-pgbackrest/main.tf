@@ -1,13 +1,18 @@
-# pgBackRest principals — one per data plane platform.
+# pgBackRest / backup-runner principals — one per data plane platform.
 #
 # Each platform gets its own IAM user so credentials can be rotated per
 # platform without disturbing the other. The plan's risk register calls this
 # out explicitly: "Wire IAM roles for Vercel egress + both Railway and Fly
 # egress (separate IAM principals so credentials can be rotated per platform)."
 #
-# Both principals have identical permissions today: write/read WAL segments
-# in the HOT bucket. If the bucket structures diverge later (e.g., one
-# platform uses a different prefix), policies can fork without touching the
+# These principals are used by TWO data-plane services on each platform:
+#   - The Postgres service runs pgBackRest, writing WAL segments to the HOT
+#     bucket.
+#   - The backup-runner service writes daily dump artifacts to the WARM
+#     bucket.
+# Hence the policy grants list + read/write objects across all
+# `bucket_arns` passed in (HOT + WARM today). If the bucket structures
+# diverge later, the policy can fork per platform without touching the
 # other.
 
 variable "name_prefix" {
@@ -22,9 +27,9 @@ variable "platforms" {
   default     = ["railway", "fly"]
 }
 
-variable "hot_bucket_arn" {
-  description = "ARN of the HOT bucket the principals write WAL to."
-  type        = string
+variable "bucket_arns" {
+  description = "S3 bucket ARNs these principals may list + read/write objects in. Pass HOT (WAL archive) and WARM (backup-runner dump uploads)."
+  type        = list(string)
 }
 
 variable "kms_key_arn" {
@@ -51,10 +56,10 @@ resource "aws_iam_access_key" "this" {
 
 data "aws_iam_policy_document" "this" {
   statement {
-    sid       = "ListBucket"
+    sid       = "ListBuckets"
     effect    = "Allow"
     actions   = ["s3:ListBucket", "s3:GetBucketLocation"]
-    resources = [var.hot_bucket_arn]
+    resources = var.bucket_arns
   }
 
   statement {
@@ -66,7 +71,7 @@ data "aws_iam_policy_document" "this" {
       "s3:DeleteObject", "s3:DeleteObjectVersion",
       "s3:AbortMultipartUpload", "s3:ListMultipartUploadParts"
     ]
-    resources = ["${var.hot_bucket_arn}/*"]
+    resources = [for arn in var.bucket_arns : "${arn}/*"]
   }
 
   statement {
