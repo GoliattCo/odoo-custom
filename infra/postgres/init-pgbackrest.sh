@@ -18,7 +18,10 @@ if [ -z "${PGBACKREST_REPO1_S3_BUCKET:-}" ]; then
     exit 0
 fi
 
+# Scripts in /docker-entrypoint-initdb.d/ are already executed as the `postgres`
+# OS user by the official postgres image's entrypoint — no privilege switch
+# needed here (and `gosu postgres` would fail with EPERM since we're not root).
 echo "init-pgbackrest: creating stanza 'shared' against bucket ${PGBACKREST_REPO1_S3_BUCKET}..."
-gosu postgres pgbackrest --stanza=shared --log-level-console=info stanza-create
-gosu postgres pgbackrest --stanza=shared --log-level-console=info check
+pgbackrest --stanza=shared --log-level-console=info stanza-create
+pgbackrest --stanza=shared --log-level-console=info check
 echo "init-pgbackrest: stanza ready."
