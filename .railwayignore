@@ -20,3 +20,10 @@ node_modules/
 # Large directories — exclude from upload
 odoo/
 addons/
+# Terraform: provider plugins are huge; tfstate/tfvars hold IAM secrets — never upload
+**/.terraform/
+**/.terraform.lock.hcl
+**/terraform.tfstate
+**/terraform.tfstate.*
+**/terraform.tfvars
+infra/terraform/

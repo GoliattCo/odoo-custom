@@ -2,7 +2,9 @@
 dockerfilePath = "Dockerfile"
 
 [deploy]
-healthcheckPath = "/web/login"
+# /web/health is Odoo's built-in liveness endpoint — returns 200 without a DB,
+# unlike /web/login which needs a tenant DB resolved from the request host.
+healthcheckPath = "/web/health"
 healthcheckTimeout = 300
 restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 10

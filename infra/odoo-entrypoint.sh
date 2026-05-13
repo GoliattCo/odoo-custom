@@ -30,6 +30,19 @@
 
 set -euo pipefail
 
+# --- Privilege drop ----------------------------------------------------------
+# We start as root so we can fix ownership of the data volume (Railway / Fly
+# mount volumes root-owned, but Odoo runs as uid 1000 and must write its
+# data_dir). After the chown we re-exec ourselves as `odoo` via gosu. If
+# already non-root (e.g. local docker-compose with `user:` set, or a platform
+# that pre-chowns the mount), this block is a no-op.
+if [ "$(id -u)" = "0" ]; then
+    ODOO_DATA_DIR="${ODOO_DATA_DIR:-/var/lib/odoo}"
+    mkdir -p "$ODOO_DATA_DIR"
+    chown -R odoo:odoo "$ODOO_DATA_DIR"
+    exec gosu odoo "$0" "$@"
+fi
+
 # --- Required env validation -------------------------------------------------
 
 if [ -z "${ADMIN_PASSWORD:-}" ]; then

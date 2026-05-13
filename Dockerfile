@@ -33,6 +33,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     nodejs \
     npm \
     postgresql-client \
+    gosu \
     && rm -rf /var/lib/apt/lists/*
 
 # wkhtmltopdf — patched-Qt build from wkhtmltopdf/packaging
@@ -77,10 +78,11 @@ RUN mkdir -p /var/lib/odoo
 
 EXPOSE 8069
 
-# Run as non-root user
+# Create the unprivileged odoo user (uid 1000). We do NOT `USER odoo` here:
+# the entrypoint starts as root so it can chown a freshly-mounted (root-owned)
+# data volume, then drops to `odoo` via gosu before exec'ing Odoo. Running odoo
+# as a non-root user is still enforced — just done at runtime, not build time.
 RUN useradd --no-create-home -u 1000 odoo \
     && chown -R odoo:odoo /var/lib/odoo /mnt/custom-addons /mnt/jorels-addons
-
-USER odoo
 
 ENTRYPOINT ["/entrypoint.sh"]

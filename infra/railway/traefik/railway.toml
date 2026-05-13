@@ -5,9 +5,11 @@
 #   RAILWAY_CONFIG_FILE=infra/railway/traefik/railway.toml
 #
 # Required service env (set in Railway dashboard, not committed):
-#   CLOUDFLARE_DNS_API_TOKEN  — for DNS-01 ACME challenge against *.app.example.com
-#   REDIS_USERNAME            — Redis KV provider (dynamic routes)
-#   REDIS_PASSWORD            — Redis KV provider
+#   CLOUDFLARE_DNS_API_TOKEN          — for DNS-01 ACME challenge against *.app.goliatt.co
+#   TRAEFIK_PROVIDERS_REDIS_ENDPOINTS — <redis-service>.railway.internal:6379 (overrides
+#                                       the `redis:6379` default baked in traefik.yml)
+#   REDIS_USERNAME                    — Redis KV provider (dynamic routes)
+#   REDIS_PASSWORD                    — Redis KV provider
 #
 # Volume mount (configured in Railway service UI):
 #   /letsencrypt ← Railway Volume (1 GB is plenty; holds acme.json)
