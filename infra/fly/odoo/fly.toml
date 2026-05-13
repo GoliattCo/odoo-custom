@@ -30,7 +30,10 @@ kill_timeout   = "30s"
 
 [http_service]
   internal_port       = 8069
-  force_https         = false   # Traefik (separate Fly app) terminates TLS
+  # Phase 1 minimal Fly: Odoo sits behind Fly's edge directly (no Traefik yet),
+  # so let Fly terminate TLS + redirect HTTP→HTTPS. When Traefik comes back as
+  # the edge (Phase 2), flip back to false and route through the Traefik app.
+  force_https         = true
   auto_start_machines = true
   auto_stop_machines  = false
   min_machines_running = 1
@@ -40,12 +43,17 @@ kill_timeout   = "30s"
     timeout      = "5s"
     grace_period = "60s"
     method       = "GET"
-    path         = "/saas/health"
+    # /web/health is DB-less and always 200. /saas/health (from saas_tenant_gate)
+    # would 404 here because dbfilter resolves a hostname to a tenant DB, and
+    # there's no tenant DB for Fly's internal healthcheck hostname.
+    path         = "/web/health"
 
-[processes]
-  web = ""  # Use the image's ENTRYPOINT (infra/odoo-entrypoint.sh)
+[[mounts]]
+  source      = "odoo_data"
+  destination = "/var/lib/odoo"
+  # Phase 1: filestore + sessions live here. Phase 2 (exclusive tier) carves
+  # per-tenant subdirs; the wildcard chown in the entrypoint stays compatible.
 
 [[vm]]
-  size      = "shared-cpu-2x"
-  memory    = "2gb"
-  processes = ["web"]
+  size   = "shared-cpu-2x"
+  memory = "2gb"
