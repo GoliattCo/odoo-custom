@@ -4,11 +4,13 @@ The `.github/workflows/ci.yml` cross-platform deploy gate needs these
 repository secrets configured at **Settings → Secrets and variables →
 Actions → Repository secrets**.
 
-| Secret | Scope | Where to get it |
+| Secret | Used by | Where to get it |
 |---|---|---|
-| `RAILWAY_TOKEN` | Repo | Railway dashboard → Project → Tokens → "Create token". Use a **team/project token**, not your personal token. Limit to the staging environment. |
-| `RAILWAY_ODOO_SERVICE_ID` | Repo | Railway dashboard → Service → Settings → service ID at the top of the page. Picks up the staging Odoo pool service. |
-| `FLY_API_TOKEN` | Repo | `fly auth token` after `fly auth login` as the deploy user. Scope to the org if possible. |
+| `RAILWAY_TOKEN` | `ci.yml` deploy-railway, `pgbackrest-backup.yml` backup-railway | Railway dashboard → Project → Tokens → "Create token". Use a **team/project token**. Same token works for `railway ssh` (used by the pgBackRest workflow). |
+| `RAILWAY_ODOO_SERVICE_ID` | `ci.yml` deploy-railway | Railway dashboard → odoo service → Settings → service ID at the top of the page (`919deb8a-3ca5-4c48-8577-ea89f6c9cf90` for current pilot). |
+| `RAILWAY_PROJECT_ID` | `pgbackrest-backup.yml` backup-railway | `465dcc94-8004-4b4c-ad19-039d1b9b90c8` for the `odoo-saas` project. `railway status` shows it. |
+| `RAILWAY_ENVIRONMENT_ID` | `pgbackrest-backup.yml` backup-railway | `41fa1df4-6faa-4dae-beed-644fa6354180` for the `production` env. `railway variables --service postgres --kv` shows it. |
+| `FLY_API_TOKEN` | `ci.yml` deploy-fly, `pgbackrest-backup.yml` backup-fly | `flyctl tokens create deploy --name "ci"` (or org-scoped). Must allow `flyctl ssh console` against `odoo-saas-postgres`. |
 
 ## Environments
 

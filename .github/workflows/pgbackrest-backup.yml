@@ -1,0 +1,131 @@
+# Scheduled pgBackRest base backups for the shared-tier Postgres on both
+# Railway and Fly. WAL archiving runs continuously inside each postgres
+# container (archive_command), but a base backup is required to actually
+# restore — without one, the WAL alone is useless. This workflow makes sure
+# we always have a recent base backup in the HOT bucket.
+#
+# Schedule:
+#   Mon-Sat 03:00 UTC (22:00 COT)  → pgbackrest backup --type=diff
+#   Sunday  04:00 UTC (23:00 COT)  → pgbackrest backup --type=full
+# (Sunday's full anchors the next week; diffs reference it.)
+#
+# Retention is enforced by pgBackRest itself (repo1-retention-full=4,
+# repo1-retention-diff=7, repo1-retention-archive=30) — see
+# infra/postgres/pgbackrest.conf.
+#
+# Required GitHub Actions secrets:
+#   RAILWAY_TOKEN              project token scoped to odoo-saas
+#   RAILWAY_PROJECT_ID         465dcc94-8004-4b4c-ad19-039d1b9b90c8
+#   RAILWAY_ENVIRONMENT_ID     41fa1df4-6faa-4dae-beed-644fa6354180
+#   FLY_API_TOKEN              org-scoped Fly token with ssh access to
+#                              odoo-saas-postgres
+
+name: pgBackRest base backup
+
+on:
+  schedule:
+    # GitHub treats `0 3 * * 1-6` and `0 4 * * 0` as separate triggers; the
+    # `determine-type` job reads github.event.schedule to pick diff vs full.
+    - cron: "0 3 * * 1-6"
+    - cron: "0 4 * * 0"
+  workflow_dispatch:
+    inputs:
+      backup_type:
+        description: "Backup type for this run"
+        type: choice
+        required: true
+        default: "diff"
+        options: [diff, full, incr]
+      target:
+        description: "Which platform(s) to back up"
+        type: choice
+        required: true
+        default: "both"
+        options: [both, railway, fly]
+
+jobs:
+  determine-type:
+    runs-on: ubuntu-latest
+    outputs:
+      type: ${{ steps.t.outputs.type }}
+      target: ${{ steps.t.outputs.target }}
+    steps:
+      - id: t
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "type=${{ inputs.backup_type }}" >> "$GITHUB_OUTPUT"
+            echo "target=${{ inputs.target }}" >> "$GITHUB_OUTPUT"
+          elif [ "${{ github.event.schedule }}" = "0 4 * * 0" ]; then
+            echo "type=full" >> "$GITHUB_OUTPUT"
+            echo "target=both" >> "$GITHUB_OUTPUT"
+          else
+            echo "type=diff" >> "$GITHUB_OUTPUT"
+            echo "target=both" >> "$GITHUB_OUTPUT"
+          fi
+
+  backup-railway:
+    needs: determine-type
+    if: needs.determine-type.outputs.target == 'both' || needs.determine-type.outputs.target == 'railway'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Install Railway CLI
+        run: npm install -g @railway/cli
+      - name: pgbackrest backup (Railway)
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+          RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
+          RAILWAY_ENVIRONMENT_ID: ${{ secrets.RAILWAY_ENVIRONMENT_ID }}
+          BACKUP_TYPE: ${{ needs.determine-type.outputs.type }}
+        run: |
+          set -euo pipefail
+          if [ -z "${RAILWAY_TOKEN:-}" ]; then
+            echo "::error::RAILWAY_TOKEN is unset; configure repo secret." >&2
+            exit 1
+          fi
+          # railway ssh joins args + runs remote `sh -c`, so the SQL/CLI string
+          # has to survive the remote shell's parse — see the Railway TXT-prefix
+          # memory note. Plain alphanumerics + slashes are fine.
+          railway ssh --service postgres "gosu postgres pgbackrest --stanza=shared --pg1-path=/var/lib/postgresql/data/pgdata --log-level-console=info backup --type=$BACKUP_TYPE"
+
+  backup-fly:
+    needs: determine-type
+    if: needs.determine-type.outputs.target == 'both' || needs.determine-type.outputs.target == 'fly'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+      - name: pgbackrest backup (Fly)
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+          BACKUP_TYPE: ${{ needs.determine-type.outputs.type }}
+        run: |
+          set -euo pipefail
+          if [ -z "${FLY_API_TOKEN:-}" ]; then
+            echo "::error::FLY_API_TOKEN is unset; configure repo secret." >&2
+            exit 1
+          fi
+          flyctl ssh console --app odoo-saas-postgres -C "gosu postgres pgbackrest --stanza=shared --pg1-path=/var/lib/postgresql/data/pgdata --log-level-console=info backup --type=$BACKUP_TYPE"
+
+  report:
+    needs: [backup-railway, backup-fly, determine-type]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Summary
+        run: |
+          echo "## pgBackRest run (${{ needs.determine-type.outputs.type }})" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Platform | Result |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|---|---|" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Railway | ${{ needs.backup-railway.result }} |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Fly | ${{ needs.backup-fly.result }} |" >> "$GITHUB_STEP_SUMMARY"
+          # Surface failure: if either platform errored (and was selected for
+          # this run), fail the report job so the user gets a red X on the
+          # workflow run rather than a quietly-failed step buried in logs.
+          rr="${{ needs.backup-railway.result }}"
+          fr="${{ needs.backup-fly.result }}"
+          if [ "$rr" = "failure" ] || [ "$fr" = "failure" ]; then
+            echo "::error::At least one platform's pgBackRest run failed (railway=$rr, fly=$fr)" >&2
+            exit 1
+          fi
