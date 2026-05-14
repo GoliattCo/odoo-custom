@@ -34,11 +34,23 @@ jobs:
     steps:
       - name: Install Railway CLI
         run: npm install -g @railway/cli
-      - name: Generate runner SSH key for railway ssh
+      - name: Materialize Railway SSH key from secret
+        # See pgbackrest-backup.yml for why: CLI v4.58+ requires a
+        # pre-registered key. Same RAILWAY_SSH_PRIVATE_KEY secret as
+        # the backup workflow.
+        env:
+          RAILWAY_SSH_PRIVATE_KEY: ${{ secrets.RAILWAY_SSH_PRIVATE_KEY }}
         run: |
+          set -euo pipefail
+          if [ -z "${RAILWAY_SSH_PRIVATE_KEY:-}" ]; then
+            echo "::error::RAILWAY_SSH_PRIVATE_KEY unset; see .github/SECRETS.md." >&2
+            exit 1
+          fi
           mkdir -p "$HOME/.ssh"
           chmod 700 "$HOME/.ssh"
-          ssh-keygen -t ed25519 -N "" -f "$HOME/.ssh/id_ed25519" -q
+          printf '%s\n' "$RAILWAY_SSH_PRIVATE_KEY" > "$HOME/.ssh/id_ed25519"
+          chmod 600 "$HOME/.ssh/id_ed25519"
+          ssh-keygen -y -f "$HOME/.ssh/id_ed25519" > "$HOME/.ssh/id_ed25519.pub"
       - name: Restore drill (Railway)
         env:
           # Account-level token (RAILWAY_API_TOKEN, not project-scoped

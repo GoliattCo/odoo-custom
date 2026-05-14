@@ -71,15 +71,26 @@ jobs:
     steps:
       - name: Install Railway CLI
         run: npm install -g @railway/cli
-      - name: Generate runner SSH key for railway ssh
-        # `railway ssh` (CLI v4+) requires a local SSH key in ~/.ssh/.
-        # GH Actions runners ship without one — generate an ephemeral
-        # ed25519 key per run; the CLI auto-registers the public half
-        # with Railway on first use.
+      - name: Materialize Railway SSH key from secret
+        # `railway ssh` (CLI v4.58+) requires a key that is BOTH present
+        # locally in ~/.ssh/ AND pre-registered on the Railway account
+        # (no auto-registration anymore). A persistent dedicated keypair
+        # is checked in via the RAILWAY_SSH_PRIVATE_KEY secret; the
+        # public half is registered once via `railway ssh keys add`
+        # under the name "gh-actions-pgbackrest" — see .github/SECRETS.md.
+        env:
+          RAILWAY_SSH_PRIVATE_KEY: ${{ secrets.RAILWAY_SSH_PRIVATE_KEY }}
         run: |
+          set -euo pipefail
+          if [ -z "${RAILWAY_SSH_PRIVATE_KEY:-}" ]; then
+            echo "::error::RAILWAY_SSH_PRIVATE_KEY unset; see .github/SECRETS.md." >&2
+            exit 1
+          fi
           mkdir -p "$HOME/.ssh"
           chmod 700 "$HOME/.ssh"
-          ssh-keygen -t ed25519 -N "" -f "$HOME/.ssh/id_ed25519" -q
+          printf '%s\n' "$RAILWAY_SSH_PRIVATE_KEY" > "$HOME/.ssh/id_ed25519"
+          chmod 600 "$HOME/.ssh/id_ed25519"
+          ssh-keygen -y -f "$HOME/.ssh/id_ed25519" > "$HOME/.ssh/id_ed25519.pub"
       - name: pgbackrest backup (Railway)
         env:
           # Railway CLI v4.58+ no longer accepts project tokens for
