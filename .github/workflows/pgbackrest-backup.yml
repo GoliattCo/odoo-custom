@@ -82,12 +82,16 @@ jobs:
           ssh-keygen -t ed25519 -N "" -f "$HOME/.ssh/id_ed25519" -q
       - name: pgbackrest backup (Railway)
         env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+          # Defensive trim: `gh secret set` interactive mode keeps the
+          # paste's trailing newline in the secret value, which Railway
+          # rejects as Unauthorized. Strip any \r\n before passing.
+          RAILWAY_TOKEN_RAW: ${{ secrets.RAILWAY_TOKEN }}
           RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
           RAILWAY_ENVIRONMENT_ID: ${{ secrets.RAILWAY_ENVIRONMENT_ID }}
           BACKUP_TYPE: ${{ needs.determine-type.outputs.type }}
         run: |
           set -euo pipefail
+          export RAILWAY_TOKEN="$(printf '%s' "$RAILWAY_TOKEN_RAW" | tr -d '\r\n')"
           if [ -z "${RAILWAY_TOKEN:-}" ]; then
             echo "::error::RAILWAY_TOKEN is unset; configure repo secret." >&2
             exit 1

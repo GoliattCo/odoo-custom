@@ -41,11 +41,13 @@ jobs:
           ssh-keygen -t ed25519 -N "" -f "$HOME/.ssh/id_ed25519" -q
       - name: Restore drill (Railway)
         env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+          RAILWAY_TOKEN_RAW: ${{ secrets.RAILWAY_TOKEN }}
           RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
           RAILWAY_ENVIRONMENT_ID: ${{ secrets.RAILWAY_ENVIRONMENT_ID }}
         run: |
           set -euo pipefail
+          # Trim trailing newline that `gh secret set` interactive mode keeps.
+          export RAILWAY_TOKEN="$(printf '%s' "$RAILWAY_TOKEN_RAW" | tr -d '\r\n')"
           if [ -z "${RAILWAY_TOKEN:-}" ]; then
             echo "::error::RAILWAY_TOKEN unset"; exit 1
           fi
