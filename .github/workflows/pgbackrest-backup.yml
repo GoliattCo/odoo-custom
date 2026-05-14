@@ -126,10 +126,17 @@ jobs:
           # for symmetry with the rest of the toolchain but aren't used
           # by the CLI here. If the project gets renamed, update these
           # two values in lockstep with the Railway dashboard.
+          echo "DEBUG cwd=$(pwd)"
           railway link \
             --project odoo-saas \
             --environment production \
             --service postgres
+          echo "DEBUG after-link config.json contents:"
+          if [ -f "$HOME/.railway/config.json" ]; then
+            jq '.projects | keys' "$HOME/.railway/config.json" || cat "$HOME/.railway/config.json"
+          else
+            echo "(no $HOME/.railway/config.json file)"
+          fi
           # railway ssh joins args + runs remote `sh -c`, so the SQL/CLI string
           # has to survive the remote shell's parse — see the Railway TXT-prefix
           # memory note. Plain alphanumerics + slashes are fine.
