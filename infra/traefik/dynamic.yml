@@ -81,8 +81,13 @@ http:
     # in the `goliatt.co` zone, which the CF token has permission to manage).
     # Phase 2 cutover would either consolidate to a single domain or unify
     # both into Fly Traefik with a Railway DNS removal.
+    # HARDENING.md item 7 — host regex matches the control plane's exact
+    # slug enforcement (^[a-z0-9][a-z0-9-]{1,38}[a-z0-9]$) so non-conforming
+    # subdomain probes get a 404 from Traefik before they cost an Odoo
+    # request cycle. Same shape as packages/api/src/routers/tenants's
+    # validator.
     saas-tenants-wildcard:
-      rule: "HostRegexp(`^[a-z0-9][a-z0-9-]*\\.fly\\.app\\.goliatt\\.co$`)"
+      rule: "HostRegexp(`^[a-z0-9][a-z0-9-]{1,38}[a-z0-9]\\.fly\\.app\\.goliatt\\.co$`)"
       priority: 100
       service: saas-odoo-shared
       middlewares:
