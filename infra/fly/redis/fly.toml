@@ -1,0 +1,29 @@
+# Fly.io app descriptor for a Redis 7 instance used by the Fly Traefik app
+# as its dynamic-routes KV backend.
+#
+# Deploy:
+#   flyctl deploy --config infra/fly/redis/fly.toml --image redis:7-alpine --remote-only
+#
+# Required secrets (set with `flyctl secrets set --app odoo-saas-redis …`):
+#   REDIS_PASSWORD   long random string; same value set as
+#                    TRAEFIK_PROVIDERS_REDIS_PASSWORD on odoo-saas-traefik
+
+app            = "odoo-saas-redis"
+primary_region = "iad"
+kill_signal    = "SIGINT"
+kill_timeout   = "10s"
+
+[processes]
+  redis = "redis-server --bind :: 0.0.0.0 --port 6379"
+
+
+  [checks.redis_tcp]
+    type         = "tcp"
+    port         = 6379
+    interval     = "15s"
+    timeout      = "2s"
+    grace_period = "30s"
+
+[[vm]]
+  size   = "shared-cpu-1x"
+  memory = "256mb"

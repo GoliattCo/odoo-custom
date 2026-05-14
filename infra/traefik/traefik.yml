@@ -58,11 +58,21 @@ providers:
     filename: /etc/traefik/dynamic.yml
     watch: true
   redis:
+    # Fly's odoo-saas-redis app over 6PN. Traefik's env-var override for
+    # `[]string` slices doesn't work reliably across v3.x — see the WORKED-
+    # AROUND `TRAEFIK_PROVIDERS_REDIS_ENDPOINTS` env that gets ignored when
+    # this YAML value is present — so we bake the hostname here. Railway
+    # doesn't run a Traefik service today; this string only matters for the
+    # Fly Traefik. Override at deploy time via a custom CMD if you ever
+    # repurpose the image for a non-Fly platform.
     endpoints:
-      - "redis:6379"
+      - "odoo-saas-redis.internal:6379"
     rootKey: "traefik"
-    # Set REDIS_USERNAME / REDIS_PASSWORD via env at runtime. The WDK control
-    # plane writes routes here; this provider reads them.
+    # Username + password are set per-environment via the env-var override:
+    #   TRAEFIK_PROVIDERS_REDIS_USERNAME   default
+    #   TRAEFIK_PROVIDERS_REDIS_PASSWORD   <Fly secret>
+    # Scalar fields override fine; only slice fields (like `endpoints`) are
+    # the env-override issue we hit.
 
 certificatesResolvers:
   cloudflare:

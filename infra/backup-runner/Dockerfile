@@ -22,9 +22,14 @@ COPY --from=build /app/node_modules ./node_modules
 COPY --from=build /app/dist ./dist
 COPY --from=build /app/package.json ./
 
-# Non-root user. uid 1000 matches the Odoo image so a shared filestore
-# volume permission set up for the Odoo user is readable here.
-RUN addgroup -g 1000 odoo \
+# Non-root user. node:22-alpine ships with `node`/uid 1000 already; we
+# delete that and create our own `odoo` user at the same uid so a shared
+# filestore-volume permission set up for the Odoo image's user is readable
+# here too. (Phase 1 doesn't actually mount the filestore on Fly because of
+# the single-app-volume constraint, but keeping uid alignment costs nothing
+# and makes the Railway / docker-compose paths work uniformly.)
+RUN deluser --remove-home node 2>/dev/null || true \
+    && addgroup -g 1000 odoo \
     && adduser -D -u 1000 -G odoo odoo
 
 USER odoo
