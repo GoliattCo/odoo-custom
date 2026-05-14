@@ -87,7 +87,7 @@ jobs:
           railway ssh --service postgres "gosu postgres pgbackrest --stanza=shared info --output=json" \
             > /tmp/rw-info.json
           # Validate JSON before sending
-          jq -e '. | length > 0 and .[0].backup | length > 0' /tmp/rw-info.json >/dev/null
+          jq -e '(length > 0) and (.[0].backup | length > 0)' /tmp/rw-info.json >/dev/null
           # Capture the latest backup label for the drill-pass step below
           LATEST=$(jq -r '.[0].backup | sort_by(.timestamp.start) | last | .label' /tmp/rw-info.json)
           echo "latest-label=$LATEST" >> "$GITHUB_OUTPUT"
@@ -148,15 +148,12 @@ jobs:
           [ -z "$FLY_API_TOKEN" ] && { echo "::error::FLY_API_TOKEN unset"; exit 1; }
           [ -z "$CRON_SECRET" ] && { echo "::error::VERCEL_ADMIN_CRON_SECRET unset"; exit 1; }
           flyctl ssh console --app odoo-saas-postgres -C "gosu postgres pgbackrest --stanza=shared info --output=json" \
-            > /tmp/fly-info.json
-          # flyctl wraps its output sometimes; strip the leading "Connecting to ..." preamble.
-          # Find first '[' and slice from there.
-          OFFSET=$(grep -bo '^\[' /tmp/fly-info.json | head -1 | cut -d: -f1)
-          if [ -n "$OFFSET" ] && [ "$OFFSET" -gt 0 ]; then
-            tail -c +$((OFFSET + 1)) /tmp/fly-info.json > /tmp/fly-info.clean.json
-            mv /tmp/fly-info.clean.json /tmp/fly-info.json
-          fi
-          jq -e '. | length > 0 and .[0].backup | length > 0' /tmp/fly-info.json >/dev/null
+            > /tmp/fly-info.raw 2>&1 || true
+          # flyctl wraps stdout sometimes ("Connecting to ...") + may sprinkle
+          # warning lines. Extract just the JSON array by slicing from the
+          # first '[' to the matching last ']' via sed.
+          sed -n '/^\[/,/^\]/p' /tmp/fly-info.raw > /tmp/fly-info.json
+          jq -e '(length > 0) and (.[0].backup | length > 0)' /tmp/fly-info.json >/dev/null
           LATEST=$(jq -r '.[0].backup | sort_by(.timestamp.start) | last | .label' /tmp/fly-info.json)
           echo "FLY_LATEST_LABEL=$LATEST" >> "$GITHUB_ENV"
           curl -fsSL -X POST "$CONTROL_PLANE_URL/api/internal/cluster-backups" \
