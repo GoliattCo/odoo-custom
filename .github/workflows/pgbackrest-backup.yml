@@ -110,16 +110,22 @@ jobs:
             echo "::error::RAILWAY_API_TOKEN is unset; configure repo secret (see .github/SECRETS.md)." >&2
             exit 1
           fi
+          # v4.58 + session-token auth: `railway ssh --project ...` returns
+          # "Project not found" from CI runners — the bare project lookup
+          # fails even though the user-scope owns the project. Workaround:
+          # run `railway link` first to materialize the workspace+project
+          # context into ~/.config/railway/, which `railway ssh` then reads.
+          railway link \
+            --project "$RAILWAY_PROJECT_ID" \
+            --environment "$RAILWAY_ENVIRONMENT_ID" \
+            --service postgres
           # railway ssh joins args + runs remote `sh -c`, so the SQL/CLI string
           # has to survive the remote shell's parse — see the Railway TXT-prefix
           # memory note. Plain alphanumerics + slashes are fine.
-          # v4.58 requires --project / --environment explicitly when run
-          # outside a linked workdir; the env vars alone are no longer
-          # honoured by `railway ssh`.
-          railway ssh \
-            --project "$RAILWAY_PROJECT_ID" \
-            --environment "$RAILWAY_ENVIRONMENT_ID" \
-            --service postgres \
+          # Also pin host-key auto-accept via -o for the underlying ssh: the
+          # runner's known_hosts is empty and the proxy host fingerprint
+          # changes per session, so strict checking will reject otherwise.
+          railway ssh --service postgres \
             "gosu postgres pgbackrest --stanza=shared --pg1-path=/var/lib/postgresql/data/pgdata --log-level-console=info backup --type=$BACKUP_TYPE"
 
   backup-fly:

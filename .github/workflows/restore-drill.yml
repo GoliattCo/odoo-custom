@@ -68,11 +68,12 @@ jobs:
           # gosu down to postgres for pgbackrest so it reads its own conf.
           # Restore into /tmp/restore-drill-<ts> (not the live PGDATA), verify
           # the canonical files exist, then rm -rf with a trap.
-          railway ssh \
+          # See pgbackrest-backup.yml for why we link first.
+          railway link \
             --project "$RAILWAY_PROJECT_ID" \
             --environment "$RAILWAY_ENVIRONMENT_ID" \
-            --service postgres \
-            "
+            --service postgres
+          railway ssh --service postgres "
             set -eu
             DRILL=/tmp/restore-drill-\$(date +%s)
             trap 'rm -rf \$DRILL' EXIT
