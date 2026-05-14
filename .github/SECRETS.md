@@ -43,15 +43,58 @@ together to enforce parity.
 Quarterly:
 
 ```
-# Railway
+# Railway — RAILWAY_TOKEN (deploy)
 # Railway dashboard → Project → Tokens → revoke old token, create new one
 # Update RAILWAY_TOKEN in GitHub repo secrets
 
+# Railway — RAILWAY_API_TOKEN (ssh / non-deploy)
+# Railway dashboard → Account → Tokens → create new account token
+gh secret set RAILWAY_API_TOKEN -R remcaro-rgb/odoo-custom --body "<new-token>"
+# Or pull a fresh CLI session token (~30-day expiry) if no account token is set:
+SESS=$(jq -r '.user.token' < ~/.railway/config.json | tr -d '\r\n')
+gh secret set RAILWAY_API_TOKEN -R remcaro-rgb/odoo-custom --body "$SESS"
+
+# Railway — RAILWAY_SSH_PRIVATE_KEY
+ssh-keygen -t ed25519 -N "" -f ~/.ssh/gha_rw_ed25519_new -C "gh-actions-pgbackrest@odoo-saas"
+railway ssh keys add --key ~/.ssh/gha_rw_ed25519_new.pub --name "gh-actions-pgbackrest-$(date +%Y%m%d)"
+gh secret set RAILWAY_SSH_PRIVATE_KEY -R remcaro-rgb/odoo-custom --body "$(cat ~/.ssh/gha_rw_ed25519_new)"
+# Then remove the old registered key
+railway ssh keys remove gh-actions-pgbackrest
+
 # Fly
 fly tokens create deploy --name "ci-rotated-YYYY-MM-DD"
-# Update FLY_API_TOKEN in GitHub repo secrets, then revoke the old one:
+gh secret set FLY_API_TOKEN -R remcaro-rgb/odoo-custom --body "<deploy-token>"
+fly tokens create ssh --app odoo-saas-postgres --name "ssh-rotated-YYYY-MM-DD" --expiry 8760h
+gh secret set FLY_SSH_TOKEN_POSTGRES -R remcaro-rgb/odoo-custom --body "<ssh-token>"
 fly tokens revoke <old-token-id>
 ```
+
+## Railway CLI v4.58+ behaviour notes
+
+Hard-won lessons from the May 2026 pgBackRest backup workflow bring-up:
+
+1. **`-b -` is a footgun.** `gh secret set NAME -b -` stores the literal
+   value `-`, not stdin. Always use `--body "<value>"` or pipe to
+   `gh secret set NAME` with no flag.
+2. **Project tokens are deploy-only in v4.58+.** Anything other than
+   `railway up` needs an account-level token via `RAILWAY_API_TOKEN`.
+3. **SSH keys are no longer auto-registered.** Both halves of the
+   keypair must exist: private key in `~/.ssh/`, public key registered
+   on the account via `railway ssh keys add`.
+4. **`--project` / `--environment` expect NAMES, not UUIDs.** The CLI
+   reports UUID inputs as "not found in workspace" even when the
+   project clearly exists.
+5. **`railway ssh` needs a linked workdir** to find the project. Run
+   `railway link --project NAME --environment NAME --service NAME` in
+   the same shell and same cwd first; the link writes
+   `~/.railway/config.json` keyed by `getcwd()`.
+6. **`RAILWAY_PROJECT_ID` / `RAILWAY_ENVIRONMENT_ID` env vars override
+   the linked state.** When they're set to UUIDs (as is conventional),
+   `railway ssh` uses those UUIDs and bypasses the linked state — same
+   "Project not found" as above. `unset` them after link before ssh.
+7. **`~/.ssh/known_hosts` starts empty on CI runners.** Without
+   `StrictHostKeyChecking accept-new` in `~/.ssh/config`, ssh rejects
+   Railway's per-session proxy host fingerprint.
 
 ## Not yet in CI
 

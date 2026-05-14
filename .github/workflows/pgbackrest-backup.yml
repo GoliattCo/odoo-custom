@@ -130,11 +130,12 @@ jobs:
             --project odoo-saas \
             --environment production \
             --service postgres
-          # CRITICAL: unset RAILWAY_PROJECT_ID / RAILWAY_ENVIRONMENT_ID before
-          # ssh runs. The CLI prefers env-var UUIDs over the linked-state in
-          # config.json; with the UUID-form env vars set, ssh queries with
-          # UUIDs and fails ("Project not found") even though the link
-          # succeeded. Linked-state uses names internally.
+          # CRITICAL: unset RAILWAY_PROJECT_ID / RAILWAY_ENVIRONMENT_ID
+          # before ssh. With UUID-form env vars set the CLI bypasses the
+          # linked state in ~/.railway/config.json (keyed by cwd) and
+          # queries with UUIDs, which fail "Project not found" even
+          # though the link succeeded. See SECRETS.md "Railway CLI
+          # v4.58+ behaviour notes" for the full set of v4.58 gotchas.
           unset RAILWAY_PROJECT_ID RAILWAY_ENVIRONMENT_ID
           # railway ssh joins args + runs remote `sh -c`, so the SQL/CLI string
           # has to survive the remote shell's parse — see the Railway TXT-prefix
