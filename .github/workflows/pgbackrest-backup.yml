@@ -113,7 +113,14 @@ jobs:
           # railway ssh joins args + runs remote `sh -c`, so the SQL/CLI string
           # has to survive the remote shell's parse — see the Railway TXT-prefix
           # memory note. Plain alphanumerics + slashes are fine.
-          railway ssh --service postgres "gosu postgres pgbackrest --stanza=shared --pg1-path=/var/lib/postgresql/data/pgdata --log-level-console=info backup --type=$BACKUP_TYPE"
+          # v4.58 requires --project / --environment explicitly when run
+          # outside a linked workdir; the env vars alone are no longer
+          # honoured by `railway ssh`.
+          railway ssh \
+            --project "$RAILWAY_PROJECT_ID" \
+            --environment "$RAILWAY_ENVIRONMENT_ID" \
+            --service postgres \
+            "gosu postgres pgbackrest --stanza=shared --pg1-path=/var/lib/postgresql/data/pgdata --log-level-console=info backup --type=$BACKUP_TYPE"
 
   backup-fly:
     needs: determine-type
