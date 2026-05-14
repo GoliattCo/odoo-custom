@@ -1,0 +1,117 @@
+# Quarterly pgBackRest restore drill — proves the backups are actually
+# restorable, not just sitting in S3. The plan commits to drilling at least
+# quarterly and marking any backup older than 12 months unverified as
+# tenant_backups.state = 'untrusted'.
+#
+# Strategy: SSH into each platform's postgres container, restore the most
+# recent base backup into a side path (NOT touching the running cluster),
+# verify the canonical files exist, then clean up. Fully non-destructive.
+#
+# Required GH secrets (already set):
+#   RAILWAY_TOKEN, RAILWAY_PROJECT_ID, RAILWAY_ENVIRONMENT_ID
+#   FLY_API_TOKEN
+
+name: pgBackRest restore drill
+
+on:
+  # First day of each calendar quarter at 06:00 UTC (08:00 COT).
+  schedule:
+    - cron: "0 6 1 1,4,7,10 *"
+  workflow_dispatch:
+    inputs:
+      target:
+        description: "Which platform to drill"
+        type: choice
+        required: true
+        default: "both"
+        options: [both, railway, fly]
+
+jobs:
+  drill-railway:
+    if: github.event.schedule != '' || inputs.target == 'both' || inputs.target == 'railway'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Install Railway CLI
+        run: npm install -g @railway/cli
+      - name: Restore drill (Railway)
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+          RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
+          RAILWAY_ENVIRONMENT_ID: ${{ secrets.RAILWAY_ENVIRONMENT_ID }}
+        run: |
+          set -euo pipefail
+          if [ -z "${RAILWAY_TOKEN:-}" ]; then
+            echo "::error::RAILWAY_TOKEN unset"; exit 1
+          fi
+          # The remote command runs as root in the postgres container; we
+          # gosu down to postgres for pgbackrest so it reads its own conf.
+          # Restore into /tmp/restore-drill-<ts> (not the live PGDATA), verify
+          # the canonical files exist, then rm -rf with a trap.
+          railway ssh --service postgres "
+            set -eu
+            DRILL=/tmp/restore-drill-\$(date +%s)
+            trap 'rm -rf \$DRILL' EXIT
+            mkdir -p \$DRILL
+            chown postgres:postgres \$DRILL
+            echo '--- pgbackrest info (Railway / shared) ---'
+            gosu postgres pgbackrest --stanza=shared info
+            echo '--- restore to '\$DRILL' ---'
+            gosu postgres pgbackrest --stanza=shared --pg1-path=\$DRILL --log-level-console=info restore
+            echo '--- verify restored files ---'
+            ls -la \$DRILL/global/pg_control \$DRILL/PG_VERSION
+            cat \$DRILL/PG_VERSION
+            echo '--- drill OK (Railway / shared) ---'
+          "
+
+  drill-fly:
+    if: github.event.schedule != '' || inputs.target == 'both' || inputs.target == 'fly'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+      - name: Restore drill (Fly)
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [ -z "${FLY_API_TOKEN:-}" ]; then
+            echo "::error::FLY_API_TOKEN unset"; exit 1
+          fi
+          flyctl ssh console --app odoo-saas-postgres -C "
+            set -eu
+            DRILL=/tmp/restore-drill-\$(date +%s)
+            trap 'rm -rf \$DRILL' EXIT
+            mkdir -p \$DRILL
+            chown postgres:postgres \$DRILL
+            echo '--- pgbackrest info (Fly / shared) ---'
+            gosu postgres pgbackrest --stanza=shared info
+            echo '--- restore to '\$DRILL' ---'
+            gosu postgres pgbackrest --stanza=shared --pg1-path=\$DRILL --log-level-console=info restore
+            echo '--- verify restored files ---'
+            ls -la \$DRILL/global/pg_control \$DRILL/PG_VERSION
+            cat \$DRILL/PG_VERSION
+            echo '--- drill OK (Fly / shared) ---'
+          "
+
+  flag-untrusted:
+    # After both per-platform drills run, flag tenant_backups rows older than
+    # 12 months that haven't been touched by a successful drill as
+    # state='untrusted' (per the plan's commitment). Phase-1 stub: no rows
+    # exist with restore_tested_at populated yet because the drill doesn't
+    # write to tenant_backups — a follow-up adds catalog writes per drill run.
+    needs: [drill-railway, drill-fly]
+    if: always() && needs.drill-railway.result != 'failure' && needs.drill-fly.result != 'failure'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Note — untrusted-flagging
+        run: |
+          echo "## Restore drill summary" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Platform | Result |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|---|---|" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Railway | ${{ needs.drill-railway.result }} |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Fly | ${{ needs.drill-fly.result }} |" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "TODO Phase 2: write a row into tenant_backups.restore_tested_at" >> "$GITHUB_STEP_SUMMARY"
+          echo "for each successful drill, and a separate workflow that flags" >> "$GITHUB_STEP_SUMMARY"
+          echo "any backup row > 12 months since last drill as state='untrusted'." >> "$GITHUB_STEP_SUMMARY"

@@ -72,17 +72,17 @@ http:
       middlewares:
         - saas-database-allowlist
 
-    # Wildcard tenant router — matches `<slug>.app.goliatt.co` and forwards to
-    # the shared Odoo pool. With `tls.certResolver: cloudflare` + an explicit
-    # `tls.domains` entry, Traefik PRE-ACQUIRES the *.app.goliatt.co cert on
-    # startup (rather than lazily on first request) so the first tenant hit
-    # doesn't pay the ACME round-trip latency.
-    #
-    # `<slug>` is whatever Odoo's tenant DB is named (control plane enforces
-    # the same regex). Priority below the database-guard so /web/database
-    # still gates on IP first.
+    # Wildcard tenant router for the Fly leg — matches `<slug>.fly.app.goliatt.co`
+    # and forwards to the shared Odoo pool. Phase 1 split: Railway owns
+    # `*.app.goliatt.co` (already has the cert + the `_acme-challenge.app`
+    # CNAME delegated to Railway's railwaydns zone), Fly Traefik owns
+    # `*.fly.app.goliatt.co` (independent ACME namespace, no CNAME conflict —
+    # lego writes the TXT directly to `_acme-challenge.fly.app.goliatt.co`
+    # in the `goliatt.co` zone, which the CF token has permission to manage).
+    # Phase 2 cutover would either consolidate to a single domain or unify
+    # both into Fly Traefik with a Railway DNS removal.
     saas-tenants-wildcard:
-      rule: "HostRegexp(`^[a-z0-9][a-z0-9-]*\\.app\\.goliatt\\.co$`)"
+      rule: "HostRegexp(`^[a-z0-9][a-z0-9-]*\\.fly\\.app\\.goliatt\\.co$`)"
       priority: 100
       service: saas-odoo-shared
       middlewares:
@@ -92,7 +92,7 @@ http:
       tls:
         certResolver: cloudflare
         domains:
-          - main: "*.app.goliatt.co"
+          - main: "*.fly.app.goliatt.co"
 
     # Platform liveness probe — answers 200 OK regardless of tenant state.
     saas-liveness:

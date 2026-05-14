@@ -1,12 +1,23 @@
-# Fly.io app descriptor for Traefik v3.
+# Fly.io app descriptor for Traefik v3 as the public edge.
 #
-# Deploy with:
-#   fly deploy --config infra/fly/traefik/fly.toml --dockerfile infra/traefik/Dockerfile
+# Deploy:
+#   flyctl deploy --config infra/fly/traefik/fly.toml --remote-only
 #
-# Secrets (set with `fly secrets set --app odoo-saas-traefik KEY=VALUE`):
-#   CLOUDFLARE_DNS_API_TOKEN
-#   REDIS_USERNAME
-#   REDIS_PASSWORD
+# Required secrets (set with `flyctl secrets set --app odoo-saas-traefik …`):
+#   CLOUDFLARE_DNS_API_TOKEN  — for the DNS-01 ACME challenge on
+#                                *.app.goliatt.co (or whichever tenant root
+#                                you pick for the Fly leg)
+#
+# Phase 1 minimal Traefik: file provider only (the redis-backed dynamic
+# routes don't matter until tenants actually provision on Fly). Redis +
+# REDIS_USERNAME/REDIS_PASSWORD secrets come back when we wire dynamic
+# per-tenant routes — for now Traefik routes everything via the baked
+# dynamic.yml from the image.
+#
+# Critical: this app does NOT use Fly's [http_service] (which would have
+# Fly's proxy terminate TLS before Traefik sees the packet). Traefik does
+# its OWN TLS + ACME, so we use raw [[services]] with TCP handlers on 80
+# and 443 — Fly forwards bytes through; Traefik handles handshake.
 
 app            = "odoo-saas-traefik"
 primary_region = "iad"
@@ -18,29 +29,39 @@ kill_timeout   = "10s"
 
 [env]
   TRAEFIK_LOG_LEVEL = "INFO"
+  # Override the static config's "redis:6379" placeholder. Reset to a real
+  # endpoint when we add a Fly Redis app and start writing dynamic routes.
+  # For Phase 1 file-provider-only we just point at a noop loopback to keep
+  # the redis provider from spamming connect errors at startup. Traefik
+  # gracefully degrades to the file provider when redis is unreachable.
+  TRAEFIK_PROVIDERS_REDIS_ENDPOINTS = "[::1]:6379"
 
-[http_service]
+# Public TCP on 443 — Traefik does its own TLS termination via the
+# cloudflare cert resolver. handlers = [] means raw TCP passthrough.
+[[services]]
   internal_port       = 443
-  force_https         = true
+  protocol            = "tcp"
   auto_start_machines = true
   auto_stop_machines  = false
-  min_machines_running = 2
+  min_machines_running = 1
 
-  [[http_service.checks]]
+  [[services.ports]]
+    port     = 443
+    handlers = []   # Fly forwards raw bytes; Traefik does TLS.
+
+  [[services.tcp_checks]]
     interval     = "10s"
     timeout      = "2s"
-    grace_period = "30s"
-    method       = "GET"
-    path         = "/saas/edge/health"
+    grace_period = "60s"
 
-# Plain HTTP on 80 → redirect to 443 (handled inside Traefik via the
-# entryPoints.web.http.redirections config).
+# Public TCP on 80 — Traefik handles the HTTP→HTTPS redirect itself
+# (see entryPoints.web.http.redirections in infra/traefik/traefik.yml).
 [[services]]
-  internal_port = 80
-  protocol      = "tcp"
+  internal_port       = 80
+  protocol            = "tcp"
   auto_start_machines = true
   auto_stop_machines  = false
-  min_machines_running = 2
+  min_machines_running = 1
 
   [[services.ports]]
     port     = 80
@@ -49,7 +70,7 @@ kill_timeout   = "10s"
   [[services.tcp_checks]]
     interval     = "10s"
     timeout      = "2s"
-    grace_period = "30s"
+    grace_period = "60s"
 
 [[mounts]]
   source      = "traefik_letsencrypt"
