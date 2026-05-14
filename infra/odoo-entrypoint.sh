@@ -142,6 +142,14 @@ if [ -n "$SINGLE_DB" ]; then
     echo "odoo-entrypoint: SINGLE_DB mode — pinned to database '$SINGLE_DB'"
 else
     ARGS+=(--db-filter='^%d$')
+    # Multi-tenant pools need the saas_provisioning_gateway controller
+    # registered for nodb requests so /saas/provision works before any
+    # tenant DB exists. --load = server_wide_modules — controllers from
+    # listed modules are imported into every worker regardless of which
+    # DB the request resolves to. We keep Odoo's default base+web and
+    # append the gateway.
+    ARGS+=(--load=base,web,saas_provisioning_gateway)
+    echo "odoo-entrypoint: multi-tenant mode — saas_provisioning_gateway loaded server-wide"
 fi
 
 if [ -n "${WORKERS:-}" ]; then
