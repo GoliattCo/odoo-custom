@@ -1,0 +1,108 @@
+# GHCR image publish (Phase 3 prerequisite).
+#
+# The per-tenant exclusive-tier provisioning workflow (moveTier in the
+# control plane) creates new Postgres + Odoo deployables on Railway and Fly
+# referencing a pull-able container image. Without published images, those
+# spec.image fields point at nothing and the platform's image-pull step
+# fails immediately.
+#
+# This workflow builds the Odoo and Postgres images on every push to main
+# and on every git tag, then pushes them to GHCR under:
+#   ghcr.io/<owner>/odoo-saas-odoo
+#   ghcr.io/<owner>/odoo-saas-postgres
+#   ghcr.io/<owner>/odoo-saas-backup-runner
+#
+# Tags applied:
+#   - `latest`         — moving tag, follows main
+#   - `sha-<7chars>`   — short commit SHA, immutable
+#   - `<git-tag>`      — when triggered by a tagged release
+#
+# The control plane's TENANT_POSTGRES_IMAGE / TENANT_ODOO_IMAGE env vars
+# pin a specific tag in production — never `latest` — so moveTier
+# provisions a known good image version even if main moves forward.
+#
+# Image visibility defaults to PRIVATE for new packages on GHCR. The
+# Railway/Fly side needs read access:
+#   - Railway: paste the GHCR PAT into Project → Settings → Variables as
+#     a registry-credentials secret, or attach via the service's
+#     `registryCredentials` GraphQL input.
+#   - Fly: `flyctl secrets set DOCKER_PASSWORD=<ghcr-PAT>` on each per-
+#     tenant app, OR (cleaner) make the image public via the GHCR
+#     package settings.
+
+name: GHCR Publish
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  workflow_dispatch:
+
+concurrency:
+  group: ghcr-publish-${{ github.ref }}
+  cancel-in-progress: false   # finish in-flight pushes; don't lose tags
+
+permissions:
+  contents: read
+  packages: write   # required for ghcr.io/<owner>/* push
+
+jobs:
+  publish:
+    name: Build + push ${{ matrix.image.name }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        image:
+          - name: odoo-saas-odoo
+            dockerfile: ./Dockerfile
+            context: .
+          - name: odoo-saas-postgres
+            dockerfile: ./infra/postgres/Dockerfile
+            context: .
+          - name: odoo-saas-backup-runner
+            dockerfile: ./infra/backup-runner/Dockerfile
+            context: ./infra/backup-runner
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 1
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Compute tags
+        id: tags
+        run: |
+          OWNER="${GITHUB_REPOSITORY_OWNER,,}"
+          IMAGE="ghcr.io/${OWNER}/${{ matrix.image.name }}"
+          SHORT_SHA="${GITHUB_SHA::7}"
+          TAGS="${IMAGE}:sha-${SHORT_SHA}"
+          if [ "${GITHUB_REF_TYPE}" = "tag" ]; then
+            TAG_NAME="${GITHUB_REF_NAME}"
+            TAGS="${TAGS},${IMAGE}:${TAG_NAME}"
+          fi
+          if [ "${GITHUB_REF}" = "refs/heads/main" ]; then
+            TAGS="${TAGS},${IMAGE}:latest"
+          fi
+          echo "tags=${TAGS}" >> "$GITHUB_OUTPUT"
+
+      - name: Build + push
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ matrix.image.context }}
+          file: ${{ matrix.image.dockerfile }}
+          push: true
+          tags: ${{ steps.tags.outputs.tags }}
+          cache-from: type=gha,scope=${{ matrix.image.name }}
+          cache-to: type=gha,scope=${{ matrix.image.name }},mode=max
+          provenance: false   # keep manifest list-of-1 simple for platform pulls
