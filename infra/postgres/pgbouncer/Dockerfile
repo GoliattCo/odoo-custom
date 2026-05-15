@@ -4,8 +4,12 @@ LABEL org.opencontainers.image.title="odoo-saas-pgbouncer"
 LABEL org.opencontainers.image.description="PgBouncer transaction-pooling front for the self-managed Postgres on the SaaS data plane. Same image on Railway + Fly; per-platform manifests differ only in the env wiring."
 
 # pgbouncer + bash for the entrypoint, ca-certificates for upstream TLS,
-# postgresql16-client (psql) for the readiness probe.
-RUN apk add --no-cache pgbouncer bash ca-certificates postgresql16-client \
+# postgresql16-client (psql) for the readiness probe, su-exec for the
+# user-drop in the entrypoint. The alpine pgbouncer package doesn't
+# auto-create a pgbouncer user, so we add it ourselves with a stable uid.
+RUN apk add --no-cache pgbouncer bash ca-certificates postgresql16-client su-exec \
+    && addgroup -S -g 70 pgbouncer \
+    && adduser -S -u 70 -G pgbouncer -h /var/lib/pgbouncer -s /sbin/nologin pgbouncer \
     && mkdir -p /etc/pgbouncer /var/log/pgbouncer /var/run/pgbouncer \
     && chown -R pgbouncer:pgbouncer /etc/pgbouncer /var/log/pgbouncer /var/run/pgbouncer
 
