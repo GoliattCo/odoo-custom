@@ -1,0 +1,23 @@
+# Per-tenant exclusive-tier Postgres service config (Phase 3).
+#
+# Every Railway service named `postgres-<slug>` in the odoo-saas project
+# points at this single toml via `serviceInstanceUpdate(input:
+# { railwayConfigFile: "infra/railway/postgres-exclusive/railway.toml" })`.
+#
+# Per-tenant config (PGUSER/PGPASSWORD/POSTGRES_DB/PGBACKREST_S3_*) is set
+# via the EnvironmentVariables scalar at `serviceCreate` time. The volume
+# attachment happens in a separate `volumeCreate` call after the service
+# id is known.
+#
+# This toml is the load-bearing override: without `dockerfilePath` set
+# here, Railway's Railpack builder autodetect finds the repo-root
+# Dockerfile (Odoo's), which would fail to start postgres.
+
+[build]
+dockerfilePath = "infra/postgres/Dockerfile"
+
+[deploy]
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 5
+# No healthcheckPath: postgres doesn't speak HTTP. Railway's default TCP
+# check on the published port is sufficient.

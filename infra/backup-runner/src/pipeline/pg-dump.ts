@@ -10,10 +10,15 @@ interface PgDumpResult {
  * Shell-out to pg_dump in custom format with parallel jobs. Custom format is
  * the only format that supports parallel jobs and produces a single output
  * file (instead of a directory).
+ *
+ * `env` overrides (Phase 3 cluster routing) are merged onto `process.env`
+ * for this child only. Caller supplies the per-tenant PGHOST/PGPORT etc.;
+ * absent fields fall through to the runner's default env (shared cluster).
  */
 export async function pgDump(args: {
   dbName: string;
   outputPath: string;
+  env?: Record<string, string>;
 }): Promise<PgDumpResult> {
   // -Fc  custom format
   // -j 4 4 parallel jobs
@@ -23,7 +28,10 @@ export async function pgDump(args: {
   const proc = spawn(
     'pg_dump',
     ['-Fc', '-j', '4', '-Z', '6', '-f', args.outputPath, args.dbName],
-    { stdio: ['ignore', 'pipe', 'pipe'] },
+    {
+      stdio: ['ignore', 'pipe', 'pipe'],
+      env: { ...process.env, ...(args.env ?? {}) },
+    },
   );
 
   const stderrChunks: Buffer[] = [];
@@ -49,12 +57,17 @@ export async function pgDump(args: {
  * Single-shot psql call to retrieve the current WAL LSN. Captured pre-dump
  * so the catalog row's `lsn_end` is approximately the upper bound of what
  * the dump observed. Not LSN-precise; see backup-tenant.ts comments.
+ *
+ * `env` follows the same cluster-routing override pattern as pgDump.
  */
-export async function pgCurrentWalLsn(): Promise<string> {
+export async function pgCurrentWalLsn(env: Record<string, string> = {}): Promise<string> {
   const proc = spawn(
     'psql',
     ['-t', '-A', '-c', 'SELECT pg_current_wal_lsn();'],
-    { stdio: ['ignore', 'pipe', 'pipe'] },
+    {
+      stdio: ['ignore', 'pipe', 'pipe'],
+      env: { ...process.env, ...env },
+    },
   );
 
   const out: Buffer[] = [];
