@@ -1,6 +1,6 @@
 {
     'name': 'SaaS Filestore Backup',
-    'version': '19.0.1.0.0',
+    'version': '19.0.2.0.0',
     'category': 'Administration',
     'summary': 'Nightly tar+encrypt+upload of the tenant filestore to the WARM S3 bucket',
     'description': """
@@ -33,11 +33,20 @@ How it works (per-tenant cron, daily at 03:30 COT == 08:30 UTC):
    completed_at) back to the control plane so a row lands in
    ``tenant_backups``.
 
-Phase 1 ships the addon skeleton + the cron entry, with the per-step logic
-marked TODO. Phase 2 wires the real S3 + control-plane endpoints (the WDK
-backup pipeline is the model — `packages/workflows/src/tenant-backup-daily.ts`
-on the control-plane side already covers most of the encryption + upload
-contract).
+v2 (HARDENING.md item 5): the addon does the real flow end-to-end —
+tar → request credentials from control plane → AES-256-GCM encrypt →
+presigned-PUT to S3 → POST completion. Auth via HMAC-SHA256 over
+`${timestamp}.${body}` keyed by SAAS_PROVISIONING_SECRET (process env;
+shared with the saas_provisioning_gateway addon).
+
+Control-plane endpoints (saas.filestore_backup_endpoint base):
+  POST /issue-credentials → {s3Key, putUrl, dekHex, kmsCmkArn, expiresAt}
+  POST /complete          → {ok, backupId}
+
+Limitation: AES-GCM is one-shot in cryptography==41 (no streaming
+update()), so plaintext >256 MiB raises. Switch to a streaming AEAD
+(AES-CTR+HMAC-SHA256, or chunk-by-chunk AES-GCM with derived
+sub-keys) when a tenant gets there.
 """,
     'author': 'Goliatt',
     'license': 'LGPL-3',
