@@ -1,0 +1,24 @@
+# Per-tenant exclusive-tier Odoo service config (Phase 3).
+#
+# Every Railway service named `odoo-<slug>` in the odoo-saas project points
+# at this single toml via `serviceInstanceUpdate(input: { railwayConfigFile: "infra/railway/odoo-exclusive/railway.toml" })`.
+#
+# Per-tenant differences (db_name, secrets, region, healthcheck path tweaks)
+# flow through environment variables set atomically at `serviceCreate` time —
+# NOT through copy-pasted toml files. Keeping this static avoids a
+# "commit-per-tenant" anti-pattern in the data-plane repo.
+#
+# The dockerfilePath here is the load-bearing override: without it,
+# Railway's Railpack builder autodetect finds the repo-root Dockerfile,
+# which is correct for Odoo but the same toml-override pattern is used
+# for postgres-exclusive (where the wrong Dockerfile would be picked).
+# Consistency across the two service types keeps the provider impl
+# simple — one toml per service type, identical shape.
+
+[build]
+dockerfilePath = "Dockerfile"
+
+[deploy]
+healthcheckPath = "/saas/health"
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 5
