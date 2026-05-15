@@ -8,8 +8,8 @@ LABEL org.opencontainers.image.description="PgBouncer transaction-pooling front 
 # user-drop in the entrypoint. The alpine pgbouncer package doesn't
 # auto-create a pgbouncer user, so we add it ourselves with a stable uid.
 RUN apk add --no-cache pgbouncer bash ca-certificates postgresql16-client su-exec \
-    && addgroup -S -g 70 pgbouncer \
-    && adduser -S -u 70 -G pgbouncer -h /var/lib/pgbouncer -s /sbin/nologin pgbouncer \
+    && addgroup -S pgbouncer \
+    && adduser -S -G pgbouncer -h /var/lib/pgbouncer -s /sbin/nologin pgbouncer \
     && mkdir -p /etc/pgbouncer /var/log/pgbouncer /var/run/pgbouncer \
     && chown -R pgbouncer:pgbouncer /etc/pgbouncer /var/log/pgbouncer /var/run/pgbouncer
 
