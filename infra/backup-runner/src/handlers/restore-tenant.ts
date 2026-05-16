@@ -17,6 +17,7 @@
 // throw the tar away after writing.
 
 import { randomBytes } from 'node:crypto';
+import { spawn } from 'node:child_process';
 import { unlink } from 'node:fs/promises';
 import * as os from 'node:os';
 import * as path from 'node:path';
@@ -46,6 +47,10 @@ const requestSchema = z.object({
     user: z.string().min(1).optional(),
     password: z.string().min(1).optional(),
   }),
+  /** Phase 3.0 v0.3: when true, runs `CREATE DATABASE <dbName>` against
+   *  the cluster's `postgres` maintenance DB before pg_restore. Required
+   *  for moveTier — per-tenant clusters boot with only the default db. */
+  createDatabase: z.boolean().default(false),
 });
 
 export const restoreTenantHandler: Handler = async (c) => {
@@ -88,6 +93,15 @@ export const restoreTenantHandler: Handler = async (c) => {
       ...(input.cluster.password ? { PGPASSWORD: input.cluster.password } : {}),
     };
 
+    // Phase 3.0 v0.3: create the target DB before pg_restore. Connects
+    // to the `postgres` maintenance DB on the SAME cluster using the
+    // same credentials. Idempotent — IF NOT EXISTS would be nicer but
+    // PG doesn't support it for CREATE DATABASE; we catch the
+    // duplicate_database SQLSTATE explicitly.
+    if (input.createDatabase) {
+      await createDbIfMissing({ dbName: input.dbName, env: pgEnv });
+    }
+
     await pgRestore({
       dumpPath,
       dbName: input.dbName,
@@ -107,3 +121,40 @@ export const restoreTenantHandler: Handler = async (c) => {
     await Promise.allSettled([unlink(encPath), unlink(dumpPath), unlink(filestorePath)]);
   }
 };
+
+/** psql -d postgres -c "CREATE DATABASE <db>". On duplicate_database
+ *  (42P04), succeed silently — supports re-runs of the restore step. */
+async function createDbIfMissing(args: {
+  dbName: string;
+  env: Record<string, string>;
+}): Promise<void> {
+  // db name is locked to /^[a-z][a-z0-9_-]{1,62}$/ at the request boundary
+  // (DB_NAME regex), so no escaping bypass risk in the inlined name.
+  const proc = spawn(
+    'psql',
+    [
+      '-d', 'postgres',
+      '-v', 'ON_ERROR_STOP=1',
+      '-c', `CREATE DATABASE "${args.dbName}"`,
+    ],
+    { stdio: ['ignore', 'pipe', 'pipe'], env: { ...process.env, ...args.env } },
+  );
+  const err: Buffer[] = [];
+  proc.stderr.on('data', (b: Buffer) => err.push(b));
+  await new Promise<void>((resolve, reject) => {
+    proc.on('error', reject);
+    proc.on('exit', (code) => {
+      if (code === 0) {
+        resolve();
+        return;
+      }
+      const tail = Buffer.concat(err).toString('utf8');
+      // duplicate_database — fine, already exists from a previous attempt
+      if (/already exists|duplicate_database|42P04/i.test(tail)) {
+        resolve();
+        return;
+      }
+      reject(new Error(`createDatabase exited ${code}: ${tail.slice(0, 1000)}`));
+    });
+  });
+}
