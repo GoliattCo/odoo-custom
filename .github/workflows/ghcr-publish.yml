@@ -44,7 +44,10 @@ concurrency:
 
 permissions:
   contents: read
-  packages: write   # required for ghcr.io/<owner>/* push
+  packages: write       # ghcr.io/<owner>/* push
+  id-token: write       # cosign keyless signing — GitHub OIDC token
+                        # is what the cosign step exchanges with
+                        # Sigstore's Fulcio for an ephemeral cert.
 
 jobs:
   publish:
@@ -100,6 +103,7 @@ jobs:
           echo "tags=${TAGS}" >> "$GITHUB_OUTPUT"
 
       - name: Build + push
+        id: build
         uses: docker/build-push-action@v6
         with:
           context: ${{ matrix.image.context }}
@@ -109,3 +113,26 @@ jobs:
           cache-from: type=gha,scope=${{ matrix.image.name }}
           cache-to: type=gha,scope=${{ matrix.image.name }},mode=max
           provenance: false   # keep manifest list-of-1 simple for platform pulls
+
+      # Phase 4.1: cosign keyless signing. saas_license_gate (the
+      # enterprise self-host addon) verifies this signature on first
+      # boot, refusing to start an image that wasn't published through
+      # this workflow + signed by the org's GitHub OIDC identity.
+      # Keyless = no cosign private key to manage; the chain of trust
+      # is: GitHub OIDC token → Sigstore Fulcio short-lived cert →
+      # transparency-log entry on Rekor.
+      - name: Install cosign
+        uses: sigstore/cosign-installer@v3
+
+      - name: Sign image (keyless via GitHub OIDC)
+        env:
+          COSIGN_EXPERIMENTAL: '1'
+          DIGEST: ${{ steps.build.outputs.digest }}
+        run: |
+          OWNER="${GITHUB_REPOSITORY_OWNER,,}"
+          IMAGE="ghcr.io/${OWNER}/${{ matrix.image.name }}"
+          # Sign by digest, not by tag — tags can be retagged later, the
+          # digest can't. The signature is published as a separate
+          # OCI artifact at <image>:sha256-<digest>.sig (Rekor uploads
+          # the transparency-log entry automatically).
+          cosign sign --yes "${IMAGE}@${DIGEST}"
