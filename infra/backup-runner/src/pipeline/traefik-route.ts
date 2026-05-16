@@ -36,6 +36,49 @@ function slugFromHostname(hostname: string): string {
   return hostname.split('.')[0]!;
 }
 
+interface UnregisterRouteArgs {
+  redisUrl: string;
+  rootKey: string;
+  hostname: string;
+}
+
+/** SCAN+DEL every Redis key under the slug's router, service and
+ *  middleware prefixes. Idempotent — a missing slug just yields zero
+ *  keys to delete. Used by moveTier's cross-platform branch where the
+ *  source-platform Traefik needs to forget the tenant after the
+ *  target is verified healthy. */
+export async function unregisterRouteViaRedis(args: UnregisterRouteArgs): Promise<void> {
+  const slug = slugFromHostname(args.hostname);
+  const root = args.rootKey.replace(/\/+$/, '');
+  const prefixes = [
+    `${root}/http/routers/${slug}/`,
+    `${root}/http/services/${slug}/`,
+    `${root}/http/middlewares/saas-headers-${slug}/`,
+  ];
+
+  const redis = new Redis(args.redisUrl, {
+    maxRetriesPerRequest: 2,
+    connectTimeout: 5000,
+  });
+  try {
+    for (const prefix of prefixes) {
+      // SCAN-then-DEL pattern (KEYS is O(N) blocking, SCAN is non-blocking
+      // and safer). MATCH limits the cursor's response set; we delete in
+      // pipeline batches.
+      let cursor = '0';
+      do {
+        const [next, keys] = await redis.scan(cursor, 'MATCH', `${prefix}*`, 'COUNT', 100);
+        cursor = next;
+        if (keys.length > 0) {
+          await redis.del(...keys);
+        }
+      } while (cursor !== '0');
+    }
+  } finally {
+    redis.disconnect();
+  }
+}
+
 export async function registerRouteViaRedis(args: RegisterRouteArgs): Promise<void> {
   const slug = slugFromHostname(args.hostname);
   const root = args.rootKey.replace(/\/+$/, '');

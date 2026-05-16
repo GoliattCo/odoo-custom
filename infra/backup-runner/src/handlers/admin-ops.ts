@@ -29,7 +29,7 @@
 import type { Handler } from 'hono';
 import { z } from 'zod';
 
-import { registerRouteViaRedis } from '../pipeline/traefik-route.js';
+import { registerRouteViaRedis, unregisterRouteViaRedis } from '../pipeline/traefik-route.js';
 import { dropDatabaseViaPg } from '../pipeline/drop-db.js';
 
 const registerRouteSchema = z.object({
@@ -37,6 +37,11 @@ const registerRouteSchema = z.object({
   hostname: z.string().min(1),
   upstream: z.string().min(1),
   headers: z.record(z.string(), z.string()).optional(),
+});
+
+const unregisterRouteSchema = z.object({
+  action: z.literal('unregister-route'),
+  hostname: z.string().min(1),
 });
 
 const dropDbSchema = z.object({
@@ -52,7 +57,11 @@ const dropDbSchema = z.object({
     .optional(),
 });
 
-const bodySchema = z.discriminatedUnion('action', [registerRouteSchema, dropDbSchema]);
+const bodySchema = z.discriminatedUnion('action', [
+  registerRouteSchema,
+  unregisterRouteSchema,
+  dropDbSchema,
+]);
 
 export const adminOpsHandler: Handler = async (c) => {
   const raw = await c.req.json();
@@ -77,6 +86,20 @@ export const adminOpsHandler: Handler = async (c) => {
         headers: input.headers,
       });
       return c.json({ ok: true, action: 'register-route', hostname: input.hostname });
+    }
+
+    if (input.action === 'unregister-route') {
+      const redisUrl = process.env.FLY_TRAEFIK_REDIS_URL ?? process.env.TRAEFIK_REDIS_URL;
+      const rootKey = process.env.FLY_TRAEFIK_ROOT_KEY ?? process.env.TRAEFIK_ROOT_KEY ?? 'traefik';
+      if (!redisUrl) {
+        return c.json({ error: 'traefik-redis-url-unset' }, 503);
+      }
+      await unregisterRouteViaRedis({
+        redisUrl,
+        rootKey,
+        hostname: input.hostname,
+      });
+      return c.json({ ok: true, action: 'unregister-route', hostname: input.hostname });
     }
 
     if (input.action === 'drop-db') {
