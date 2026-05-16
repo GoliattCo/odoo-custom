@@ -61,9 +61,14 @@ export async function pgDump(args: {
  * `env` follows the same cluster-routing override pattern as pgDump.
  */
 export async function pgCurrentWalLsn(env: Record<string, string> = {}): Promise<string> {
+  // -d postgres so psql doesn't default to db=$PGUSER (Postgres convention
+  // when -d is omitted). The shared cluster's PGUSER is `odoo`, which is
+  // a ROLE name with no matching database; the default would 500 with
+  // FATAL: database "odoo" does not exist. The `postgres` maintenance
+  // DB exists on every cluster and supports pg_current_wal_lsn().
   const proc = spawn(
     'psql',
-    ['-t', '-A', '-c', 'SELECT pg_current_wal_lsn();'],
+    ['-d', 'postgres', '-t', '-A', '-c', 'SELECT pg_current_wal_lsn();'],
     {
       stdio: ['ignore', 'pipe', 'pipe'],
       env: { ...process.env, ...env },
