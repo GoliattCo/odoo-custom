@@ -37,6 +37,9 @@ const registerRouteSchema = z.object({
   hostname: z.string().min(1),
   upstream: z.string().min(1),
   headers: z.record(z.string(), z.string()).optional(),
+  /** Traefik resolver to use. 'cloudflare' (DNS-01, default) for our
+   *  wildcards; 'letsencrypt-http' for customer-supplied custom domains. */
+  certResolver: z.string().optional(),
 });
 
 const unregisterRouteSchema = z.object({
@@ -84,6 +87,7 @@ export const adminOpsHandler: Handler = async (c) => {
         hostname: input.hostname,
         upstream: input.upstream,
         headers: input.headers,
+        certResolver: input.certResolver,
       });
       return c.json({ ok: true, action: 'register-route', hostname: input.hostname });
     }

@@ -37,12 +37,13 @@ api:
 entryPoints:
   web:
     address: ":80"
-    http:
-      redirections:
-        entryPoint:
-          to: websecure
-          scheme: https
-          permanent: true
+    # NO redirection to websecure here. The HTTP-01 ACME challenge for
+    # custom-domain certs (Phase 4) needs port 80 accessible without
+    # being immediately redirected to HTTPS, otherwise Let's Encrypt
+    # follows the 308 and fails the challenge (or worse, validates
+    # against the wrong cert during issuance).
+    # Per-router redirection middlewares can still force HTTPS on
+    # non-/.well-known paths if needed.
   websecure:
     address: ":443"
     http:
@@ -76,6 +77,8 @@ providers:
 
 certificatesResolvers:
   cloudflare:
+    # Used for our wildcards: *.app.goliatt.co and *.fly.app.goliatt.co.
+    # DNS-01 because the wildcards are too broad for HTTP-01.
     acme:
       email: ops@goliatt.co
       storage: /letsencrypt/acme.json
@@ -85,6 +88,20 @@ certificatesResolvers:
         resolvers:
           - "1.1.1.1:53"
           - "1.0.0.1:53"
+  letsencrypt-http:
+    # Used for customer-supplied custom domains (Phase 4). The customer
+    # CNAMEs their hostname to <slug>.fly.app.goliatt.co, which routes
+    # to this Traefik. HTTP-01 challenge works because the request
+    # arrives at our edge with their Host header; ACME validation
+    # token is served at `/.well-known/acme-challenge/<token>`.
+    # We don't control their DNS so DNS-01 would require them to
+    # delegate `_acme-challenge.<their.com>` to us — too much friction
+    # for a self-service flow.
+    acme:
+      email: ops@goliatt.co
+      storage: /letsencrypt/acme.json
+      httpChallenge:
+        entryPoint: web
 
 metrics:
   prometheus:

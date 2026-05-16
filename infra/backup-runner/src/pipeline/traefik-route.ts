@@ -27,6 +27,10 @@ interface RegisterRouteArgs {
   hostname: string;
   upstream: string;
   headers?: Record<string, string>;
+  /** Traefik certificatesResolvers key. Default `cloudflare` (DNS-01,
+   *  our wildcard). Custom domains use `letsencrypt-http` for HTTP-01.
+   *  Phase 4 added the second resolver in traefik.yml. */
+  certResolver?: string;
 }
 
 /** Slug used as router/service name. Derived from the hostname's
@@ -98,7 +102,10 @@ export async function registerRouteViaRedis(args: RegisterRouteArgs): Promise<vo
     pipeline.set(`${routerPrefix}/rule`, `Host(\`${args.hostname}\`)`);
     pipeline.set(`${routerPrefix}/service`, slug);
     pipeline.set(`${routerPrefix}/entrypoints/0`, 'websecure');
-    pipeline.set(`${routerPrefix}/tls/certResolver`, 'letsencrypt');
+    pipeline.set(
+      `${routerPrefix}/tls/certResolver`,
+      args.certResolver ?? 'cloudflare',
+    );
     pipeline.set(`${servicePrefix}/loadbalancer/servers/0/url`, `http://${args.upstream}`);
 
     if (args.headers && Object.keys(args.headers).length > 0) {
