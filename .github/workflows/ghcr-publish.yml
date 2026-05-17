@@ -35,8 +35,17 @@ name: GHCR Publish
 on:
   push:
     branches: [main]
-    tags: ['v*']
+    tags:
+      - 'v*'                # standard image releases
+      - 'enterprise-v*'     # enterprise self-host variant — see publish-enterprise
   workflow_dispatch:
+    inputs:
+      variant:
+        description: 'Which set of images to build'
+        type: choice
+        required: true
+        default: standard
+        options: [standard, enterprise, both]
 
 concurrency:
   group: ghcr-publish-${{ github.ref }}
@@ -50,9 +59,18 @@ permissions:
                         # Sigstore's Fulcio for an ephemeral cert.
 
 jobs:
-  publish:
+  publish-standard:
     name: Build + push ${{ matrix.image.name }}
     runs-on: ubuntu-latest
+    # Standard images build on main pushes, v* tags, and explicit
+    # standard|both workflow_dispatch. enterprise-v* tag pushes
+    # intentionally do NOT rebuild these (the underlying commit was
+    # already built when it landed on main).
+    if: >-
+      ${{ github.event_name != 'workflow_dispatch' && !startsWith(github.ref, 'refs/tags/enterprise-v')
+          || (github.event_name == 'workflow_dispatch'
+              && (github.event.inputs.variant == 'standard'
+                  || github.event.inputs.variant == 'both')) }}
     strategy:
       fail-fast: false
       matrix:
@@ -136,3 +154,108 @@ jobs:
           # OCI artifact at <image>:sha256-<digest>.sig (Rekor uploads
           # the transparency-log entry automatically).
           cosign sign --yes "${IMAGE}@${DIGEST}"
+
+  # Phase 4.1: enterprise self-host image. Same Odoo Dockerfile as the
+  # standard image, but COPY'd in with the rotated production pubkey
+  # via --build-arg LICENSE_PUBKEY_FILE=infra/keys/license-signing-pubkey.pem.
+  # Published as a separate package (`odoo-saas-odoo-enterprise`) so the
+  # operator can hand a customer a single image:tag pair without it
+  # being confusable with the shared-pool image.
+  #
+  # Trigger: `enterprise-v*` git tag push (e.g. `git tag enterprise-v1`)
+  # or workflow_dispatch with variant=enterprise|both.
+  # Standard `v*` and `latest` flows do NOT rebuild this — enterprise
+  # promotion is intentionally a separate, human-driven cut.
+  publish-enterprise:
+    name: Build + push odoo-saas-odoo-enterprise
+    runs-on: ubuntu-latest
+    if: >-
+      ${{ startsWith(github.ref, 'refs/tags/enterprise-v')
+          || (github.event_name == 'workflow_dispatch'
+              && (github.event.inputs.variant == 'enterprise'
+                  || github.event.inputs.variant == 'both')) }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 1
+
+      - name: Verify production pubkey is committed
+        run: |
+          if [ ! -f infra/keys/license-signing-pubkey.pem ]; then
+            echo "::error::infra/keys/license-signing-pubkey.pem is missing." \
+                 "Step 1 of the enterprise-onboarding runbook must run before" \
+                 "the first enterprise build (rotate the Ed25519 signing key)."
+            exit 1
+          fi
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Compute tags
+        id: tags
+        run: |
+          OWNER="${GITHUB_REPOSITORY_OWNER,,}"
+          IMAGE="ghcr.io/${OWNER}/odoo-saas-odoo-enterprise"
+          SHORT_SHA="${GITHUB_SHA::7}"
+          TAGS="${IMAGE}:sha-${SHORT_SHA}"
+          if [ "${GITHUB_REF_TYPE}" = "tag" ]; then
+            # enterprise-v1, enterprise-v1.1, enterprise-<customer-slug>, ...
+            TAGS="${TAGS},${IMAGE}:${GITHUB_REF_NAME}"
+          fi
+          # No `:latest` for the enterprise package on purpose — the
+          # operator pins customers to an immutable enterprise-vN tag.
+          echo "tags=${TAGS}" >> "$GITHUB_OUTPUT"
+
+      - name: Build + push (enterprise pubkey)
+        id: build
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ steps.tags.outputs.tags }}
+          build-args: |
+            LICENSE_PUBKEY_FILE=infra/keys/license-signing-pubkey.pem
+          # Separate buildx cache scope so the enterprise build doesn't
+          # poison or get poisoned by the standard scope.
+          cache-from: type=gha,scope=odoo-saas-odoo-enterprise
+          cache-to: type=gha,scope=odoo-saas-odoo-enterprise,mode=max
+          provenance: false
+
+      - name: Install cosign
+        uses: sigstore/cosign-installer@v3
+
+      - name: Sign image (keyless via GitHub OIDC)
+        env:
+          COSIGN_EXPERIMENTAL: '1'
+          DIGEST: ${{ steps.build.outputs.digest }}
+        run: |
+          OWNER="${GITHUB_REPOSITORY_OWNER,,}"
+          IMAGE="ghcr.io/${OWNER}/odoo-saas-odoo-enterprise"
+          cosign sign --yes "${IMAGE}@${DIGEST}"
+
+      - name: Emit digest for operator
+        env:
+          DIGEST: ${{ steps.build.outputs.digest }}
+        run: |
+          OWNER="${GITHUB_REPOSITORY_OWNER,,}"
+          IMAGE="ghcr.io/${OWNER}/odoo-saas-odoo-enterprise"
+          {
+            echo "## Enterprise image published"
+            echo ""
+            echo "**Image:** \`${IMAGE}@${DIGEST}\`"
+            echo ""
+            echo "**Tags:** ${{ steps.tags.outputs.tags }}"
+            echo ""
+            echo "Use the digest above as the customer's \`image_sha256\` when"
+            echo "minting their license (\`license-cli.sh issue\`)."
+          } >> "$GITHUB_STEP_SUMMARY"

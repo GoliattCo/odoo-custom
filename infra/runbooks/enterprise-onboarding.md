@@ -36,13 +36,24 @@ console.log('wrote /tmp/license-priv.pem (KEEP SECRET) + /tmp/license-pub.pem (c
 "
 ```
 
-Replace the dev pubkey:
+Replace the dev pubkey AND flip the Dockerfile default ARG in the same commit. The shared Odoo image is rebuilt by CI on every PR; if you remove the dev pubkey without also flipping the default ARG, the next `build-odoo-image` job in `ci.yml` fails on the missing COPY source.
 
 ```bash
 cd ~/Odoo
 cp /tmp/license-pub.pem infra/keys/license-signing-pubkey.pem
 git rm infra/keys/license-signing-pubkey.dev.pem
-git add infra/keys/license-signing-pubkey.pem
+
+# Flip the Dockerfile default so the standard image picks up the
+# production pubkey too. Pubkeys are public — baking the same key into
+# both shared and enterprise images is fine, and it keeps the
+# `saas_license_gate` addon usable from either image without a rebuild.
+sed -i.bak \
+  's|infra/keys/license-signing-pubkey\.dev\.pem|infra/keys/license-signing-pubkey.pem|' \
+  Dockerfile
+rm Dockerfile.bak
+grep "ARG LICENSE_PUBKEY_FILE" Dockerfile   # sanity-check the flip
+
+git add infra/keys/license-signing-pubkey.pem Dockerfile
 git commit -m "chore(license): rotate signing key to production"
 git push
 ```
@@ -70,29 +81,42 @@ Smoke-test the live endpoint with `license-cli.sh issue` — see "Mint license" 
 
 ### Step 2 — Build the enterprise image variant
 
-The shared Odoo image at `ghcr.io/<owner>/odoo-saas-odoo` ships every customer-installable addon EXCEPT `saas_license_gate`. The enterprise variant is the same image rebuilt with the production pubkey COPY'd to `/etc/saas-license-pubkey.pem`:
+The shared Odoo image at `ghcr.io/<owner>/odoo-saas-odoo` ships every customer-installable addon EXCEPT `saas_license_gate`. The enterprise variant is the same `Dockerfile` rebuilt with `--build-arg LICENSE_PUBKEY_FILE=infra/keys/license-signing-pubkey.pem`, published as a separate package `ghcr.io/<owner>/odoo-saas-odoo-enterprise`.
+
+The build is automated in `.github/workflows/ghcr-publish.yml` (job `publish-enterprise`). It fires on:
+
+- any `enterprise-v*` git tag push, **or**
+- `workflow_dispatch` with `variant: enterprise` (or `both`).
+
+Tag-driven release (recommended):
 
 ```bash
+cd ~/Odoo
 # Tag convention: enterprise-<semver> or enterprise-<customer-slug>
 ENTERPRISE_TAG=enterprise-v1
-docker build \
-  --build-arg LICENSE_PUBKEY_FILE=infra/keys/license-signing-pubkey.pem \
-  -t ghcr.io/<owner>/odoo-saas-odoo:${ENTERPRISE_TAG} \
-  -f Dockerfile .
-docker push ghcr.io/<owner>/odoo-saas-odoo:${ENTERPRISE_TAG}
+git tag "${ENTERPRISE_TAG}"
+git push origin "${ENTERPRISE_TAG}"
+# Watch the run:
+gh run watch --workflow ghcr-publish.yml
 ```
 
-Record the resulting image digest — it's what binds the customer's license to a specific image build:
+The job's Step Summary prints the resulting image digest line — copy it for the next step. Alternatively read it from GHCR after the run finishes:
 
 ```bash
-ENTERPRISE_DIGEST=$(docker inspect --format='{{index .RepoDigests 0}}' \
-    ghcr.io/<owner>/odoo-saas-odoo:${ENTERPRISE_TAG} | sed 's/^.*@sha256://')
-echo "image_sha256 = ${ENTERPRISE_DIGEST}"
+OWNER=$(gh repo view --json owner -q '.owner.login' | tr '[:upper:]' '[:lower:]')
+ENTERPRISE_DIGEST=$(
+  gh api -H "Accept: application/vnd.github+json" \
+    "/users/${OWNER}/packages/container/odoo-saas-odoo-enterprise/versions" \
+    --jq ".[] | select(.metadata.container.tags[]? == \"${ENTERPRISE_TAG}\") | .name"
+)
+echo "image_sha256 = ${ENTERPRISE_DIGEST#sha256:}"
 ```
 
-You'll need `${ENTERPRISE_DIGEST}` for both the license-mint step AND the customer's `ODOO_IMAGE_DIGEST` env var.
+You'll need `${ENTERPRISE_DIGEST}` (with the `sha256:` prefix stripped) for both the license-mint step AND the customer's `ODOO_IMAGE_DIGEST` env var.
 
-Recommendation: tag immutably. `enterprise-v1` → `enterprise-v1.1` → `enterprise-v2` (not "latest"). Re-tagging in place breaks the digest-based license binding.
+Recommendation: tag immutably. `enterprise-v1` → `enterprise-v1.1` → `enterprise-v2` (not "latest"). The `publish-enterprise` job intentionally does **not** publish a `:latest` tag for that reason — the operator pins each customer to an immutable enterprise-vN. Re-tagging in place breaks the digest-based license binding.
+
+Failure mode: if `publish-enterprise` errors with `infra/keys/license-signing-pubkey.pem is missing`, you haven't completed Step 1 yet. Finish the rotation commit first; the workflow will succeed on retry.
 
 ---
 
