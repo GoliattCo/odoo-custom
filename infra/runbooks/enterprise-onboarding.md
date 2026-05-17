@@ -22,9 +22,37 @@ These are platform-level steps the operator does exactly once. They don't repeat
 
 The dev key shipped at `infra/keys/license-signing-pubkey.dev.pem` was generated with the private half printed to a shell scrollback; treat it as compromised.
 
-Generate a fresh keypair **on a trusted workstation** (not in CI, not in chat, not on a shared Mac):
+**Run the automated script on a trusted operator workstation** (not CI, not chat, not a shared Mac). The script generates a fresh keypair in a `chmod 700` temp dir, commits + optionally pushes the pubkey, flips the Dockerfile default ARG, sets `LICENSE_SIGNING_PRIVATE_KEY_B64` in Vercel (production), redeploys the admin app, smoke-tests `/api/internal/license/check`, and shreds the private key on exit (even on failure — via `trap`):
 
 ```bash
+cd ~/Odoo
+# Optional: feed SAAS_PROVISIONING_SECRET so the script can run the smoke test
+export SAAS_PROVISIONING_SECRET="$(grep '^SAAS_PROVISIONING_SECRET=' ~/Odoo-control-plane/apps/admin/.env.production.local | cut -d= -f2-)"
+./infra/scripts/rotate-license-key.sh
+# Type ROTATE at the prompt to proceed.
+```
+
+The script refuses to run inside CI (private keys must only exist on operator workstations) and verifies `vercel whoami` before touching env vars. It is also safe to re-run later for routine re-rotation — the Vercel env var is removed-then-added so the swap is idempotent, and the Dockerfile `sed` is a no-op once flipped.
+
+Optional env knobs:
+
+| Var | Default | Effect |
+|---|---|---|
+| `DATA_PLANE_REPO` | `$HOME/Odoo` | Where this repo lives. |
+| `CONTROL_PLANE_ADMIN` | `$HOME/Odoo-control-plane/apps/admin` | Where the admin Next.js app lives. |
+| `LICENSE_AUTHORITY_URL` | `https://odoo-saas-admin.vercel.app` | URL the smoke test hits. Use your custom domain if you've cut over. |
+| `SAAS_PROVISIONING_SECRET` | unset | When set, enables the post-redeploy smoke test. Without it, the script prints a manual smoke-test command and exits 0. |
+| `SKIP_PUSH=1` | — | Commit locally but don't `git push` (caller pushes manually). |
+| `SKIP_REDEPLOY=1` | — | Set the env var only; don't trigger Vercel redeploy. |
+| `SKIP_SMOKE=1` | — | Skip the `/api/internal/license/check` smoke test. |
+
+A `503 license-signing-key-unset` from the smoke test means the new env didn't reach the running runtime — wait 30s and re-trigger a redeploy (`vercel redeploy <latest-url> --target=production` from `~/Odoo-control-plane/apps/admin`).
+
+<details>
+<summary>Manual fallback (if the script can't run for any reason)</summary>
+
+```bash
+# 1. Generate keypair
 node -e "
 const c = require('crypto');
 const { publicKey, privateKey } = c.generateKeyPairSync('ed25519');
@@ -32,52 +60,35 @@ require('fs').writeFileSync('/tmp/license-priv.pem',
   privateKey.export({ type: 'pkcs8', format: 'pem' }));
 require('fs').writeFileSync('/tmp/license-pub.pem',
   publicKey.export({ type: 'spki', format: 'pem' }));
-console.log('wrote /tmp/license-priv.pem (KEEP SECRET) + /tmp/license-pub.pem (commit)');
 "
-```
 
-Replace the dev pubkey AND flip the Dockerfile default ARG in the same commit. The shared Odoo image is rebuilt by CI on every PR; if you remove the dev pubkey without also flipping the default ARG, the next `build-odoo-image` job in `ci.yml` fails on the missing COPY source.
-
-```bash
+# 2. Data-plane rotation commit (pubkey + Dockerfile ARG flip in one go)
 cd ~/Odoo
 cp /tmp/license-pub.pem infra/keys/license-signing-pubkey.pem
 git rm infra/keys/license-signing-pubkey.dev.pem
-
-# Flip the Dockerfile default so the standard image picks up the
-# production pubkey too. Pubkeys are public — baking the same key into
-# both shared and enterprise images is fine, and it keeps the
-# `saas_license_gate` addon usable from either image without a rebuild.
 sed -i.bak \
   's|infra/keys/license-signing-pubkey\.dev\.pem|infra/keys/license-signing-pubkey.pem|' \
   Dockerfile
 rm Dockerfile.bak
-grep "ARG LICENSE_PUBKEY_FILE" Dockerfile   # sanity-check the flip
-
 git add infra/keys/license-signing-pubkey.pem Dockerfile
 git commit -m "chore(license): rotate signing key to production"
 git push
-```
 
-Set the private half in Vercel (admin, production env only):
-
-```bash
+# 3. Set private half in Vercel
 cd ~/Odoo-control-plane/apps/admin
 base64 < /tmp/license-priv.pem | tr -d '\n' | pbcopy
-vercel env add LICENSE_SIGNING_PRIVATE_KEY_B64 production
-# Paste from clipboard when prompted.
-```
+vercel env rm LICENSE_SIGNING_PRIVATE_KEY_B64 production -y 2>/dev/null || true
+vercel env add LICENSE_SIGNING_PRIVATE_KEY_B64 production   # paste from clipboard
 
-Trigger a redeploy so the new env reaches the running runtime (`vercel redeploy <latest-url> --target=production` or push any commit).
+# 4. Redeploy
+vercel redeploy "$(vercel ls --prod | awk '/READY/ {print $2; exit}')" --target=production
 
-Securely destroy the local private key:
-
-```bash
+# 5. Shred local keys
 shred -uz /tmp/license-priv.pem /tmp/license-pub.pem  # Linux
-# or
 rm -P /tmp/license-priv.pem /tmp/license-pub.pem      # macOS
 ```
 
-Smoke-test the live endpoint with `license-cli.sh issue` — see "Mint license" below. A `503 license-signing-key-unset` response means the env var didn't reach the runtime; redeploy.
+</details>
 
 ### Step 2 — Build the enterprise image variant
 
