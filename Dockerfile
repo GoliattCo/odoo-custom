@@ -73,7 +73,7 @@ COPY custom-addons /mnt/custom-addons
 # rotated, non-leaked key — see infra/keys/README.md). When the gate
 # addon is not installed (i.e., shared SaaS pool images), this file
 # is unused but harmless.
-ARG LICENSE_PUBKEY_FILE=infra/keys/license-signing-pubkey.dev.pem
+ARG LICENSE_PUBKEY_FILE=infra/keys/license-signing-pubkey.pem
 COPY ${LICENSE_PUBKEY_FILE} /etc/saas-license-pubkey.pem
 
 # Config (currently named odoo-railway.conf for historical reasons; the contents
