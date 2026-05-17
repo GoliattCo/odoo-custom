@@ -207,7 +207,7 @@ The customer needs:
 
 | Item | Value | How |
 |---|---|---|
-| Image | `ghcr.io/<owner>/odoo-saas-odoo:${ENTERPRISE_TAG}` | Public GHCR or PAT |
+| Image | `ghcr.io/<owner>/odoo-saas-odoo-enterprise:${ENTERPRISE_TAG}` | Public GHCR or PAT |
 | `LICENSE_ID` | UUID from step 4 | Out-of-band |
 | `LICENSE_AUTHORITY_URL` | `https://odoo-saas-admin.vercel.app` | Anywhere — not secret |
 | `SAAS_PROVISIONING_SECRET` | From step 5 | Out-of-band |
@@ -220,7 +220,7 @@ Recommended docker-compose snippet to share with the customer:
 ```yaml
 services:
   odoo:
-    image: ghcr.io/<owner>/odoo-saas-odoo:enterprise-v1
+    image: ghcr.io/<owner>/odoo-saas-odoo-enterprise:enterprise-v1
     environment:
       LICENSE_ID: ${LICENSE_ID}
       LICENSE_AUTHORITY_URL: https://odoo-saas-admin.vercel.app
