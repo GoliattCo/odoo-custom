@@ -2,7 +2,7 @@
 
 **Date:** 2026-05-17
 **Author:** Manuel Caro (with Claude)
-**Status:** Accepted (implemented 2026-05-17)
+**Status:** Accepted (implemented + deployed to production 2026-05-17, PR Odoo-control-plane#1, squash commit 08f371d)
 **Spec type:** design spec (follows §2.4 of `docs/2026-05-15-spec-driven-dev-plan.md`)
 **Scope of work:** First operator-facing UI slice in `apps/admin` of the control plane. Replaces day-to-day use of `infra/scripts/license-cli.sh` with a web UI that has full CLI parity (mint, revoke, restore, list) plus a generic audit-log viewer and a `/v1/check` signing-key probe.
 
