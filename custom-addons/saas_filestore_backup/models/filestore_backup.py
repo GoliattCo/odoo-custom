@@ -37,11 +37,13 @@ Failure modes:
 """
 
 import hashlib
+import hashlib
 import hmac
 import json
 import logging
 import os
 import secrets
+import struct
 import tarfile
 import tempfile
 import time
@@ -65,6 +67,35 @@ _CHUNK = 1 << 20  # 1 MiB
 # Network timeouts — cron windows are bounded; we'd rather fail fast and
 # retry than hang for hours on a hung connection.
 _HTTP_TIMEOUT = 60
+
+# ----- Streaming AEAD v2 format (lifts the 256 MiB one-shot cap) -----
+#
+# File layout for v2:
+#
+#   bytes 0..3   : magic b"GLT2" (so the decoder can dispatch v1 vs v2)
+#   bytes 4..15  : base nonce (12 bytes random)
+#   bytes 16..19 : chunk size (uint32 big-endian); typical 1 MiB
+#   then, repeating until EOF:
+#     bytes 0..3 : plaintext chunk length (uint32 big-endian; last chunk
+#                  may be smaller than the declared chunk size)
+#     N bytes    : AES-256-GCM ciphertext for this chunk
+#     16 bytes   : GCM tag for this chunk
+#
+# Per-chunk nonce: base_nonce[:4] || uint64-big-endian(chunk_index).
+# A new counter per chunk guarantees nonce uniqueness within the file's
+# DEK lifetime; AES-GCM is safe up to 2^32 messages per key.
+#
+# v1 (legacy, ≤256 MiB): the file has NO magic prefix, just raw GCM
+# ciphertext for the WHOLE plaintext, and the single nonce + tag travel
+# out-of-band in the catalog row's storage_url fragment. Restore tooling
+# dispatches by reading the first 4 bytes and checking for b"GLT2".
+
+_V2_MAGIC = b'GLT2'
+_V2_NONCE_LEN = 12
+_V2_TAG_LEN = 16
+_V2_CHUNK_LEN_FIELD = 4  # uint32
+_V2_DEFAULT_CHUNK = 1 << 20  # 1 MiB plaintext per chunk
+_V1_ONESHOT_CAP = 256 * 1024 * 1024
 
 
 class SaasFilestoreBackup(models.AbstractModel):
@@ -176,46 +207,87 @@ class SaasFilestoreBackup(models.AbstractModel):
             tf.add(filestore_dir, arcname=db_name)
 
     def _encrypt_file(self, src_path, dest_path, dek):
-        """AES-256-GCM encrypt the whole file. Streams in chunks; the final
-        write includes the GCM tag returned by AESGCM.encrypt(). Returns
-        (nonce, tag, sha256_hex_of_ciphertext).
+        """AES-256-GCM encrypt. Dispatches by size:
 
-        Layout on disk at dest_path is the raw GCM ciphertext (no nonce
-        prefix, no tag suffix) — nonce + tag travel out-of-band in the
-        /complete payload so the catalog row carries them.
+        * ≤256 MiB → legacy v1 (raw ciphertext, single nonce+tag returned
+          out-of-band). Backward-compatible with old catalog rows.
+        * >256 MiB → v2 streaming (b"GLT2" magic + per-chunk GCM,
+          self-contained file; out-of-band tag returned EMPTY since
+          there are many tags inside the file).
+
+        Returns (nonce, tag, sha256_hex_of_ciphertext_file).
+
+        For v2, `nonce` is the base nonce (informational; the file is
+        self-describing via the magic header) and `tag` is empty bytes —
+        the restore tool checks the magic header to know which format.
         """
-        # GCM is technically a one-shot AEAD — the cryptography lib's
-        # AESGCM doesn't expose chunk-by-chunk update(). For multi-GB
-        # filestores that'd OOM on smaller VMs. Workaround: read the
-        # plaintext fully when small (<256 MiB), otherwise raise — for
-        # the larger case we'd need to switch to a streaming primitive
-        # like AES-256-CTR + HMAC-SHA256 (encrypt-then-MAC). Phase 1
-        # tenants are small enough that the one-shot path is fine.
-        max_one_shot = 256 * 1024 * 1024
-        if os.path.getsize(src_path) > max_one_shot:
-            raise RuntimeError(
-                'saas_filestore_backup: plaintext > 256 MiB; switch to '
-                'streaming AEAD (TODO) before re-running on this tenant'
-            )
+        plaintext_size = os.path.getsize(src_path)
+        if plaintext_size <= _V1_ONESHOT_CAP:
+            return self._encrypt_file_v1(src_path, dest_path, dek)
+        return self._encrypt_file_v2(src_path, dest_path, dek)
+
+    def _encrypt_file_v1(self, src_path, dest_path, dek):
+        """Legacy one-shot AES-256-GCM. Cap is 256 MiB plaintext —
+        kept for backward-compat so existing catalog rows decrypt as-is
+        and tenants below the cap don't pay the streaming overhead.
+        """
         with open(src_path, 'rb') as fh:
             plaintext = fh.read()
 
         nonce = secrets.token_bytes(12)
         aead = AESGCM(dek)
         ciphertext_and_tag = aead.encrypt(nonce, plaintext, None)
-        # cryptography returns ciphertext || tag concatenated. Split so we
-        # can store the tag separately.
         tag = ciphertext_and_tag[-16:]
         ciphertext = ciphertext_and_tag[:-16]
 
         sha = hashlib.sha256()
         with open(dest_path, 'wb') as fh:
-            # Write in chunks so we don't fault on a huge contiguous write.
             for i in range(0, len(ciphertext), _CHUNK):
                 chunk = ciphertext[i:i + _CHUNK]
                 fh.write(chunk)
                 sha.update(chunk)
         return nonce, tag, sha.hexdigest()
+
+    def _encrypt_file_v2(self, src_path, dest_path, dek,
+                        chunk_size=_V2_DEFAULT_CHUNK):
+        """Streaming AES-256-GCM with per-chunk tag + counter-derived
+        nonce. No plaintext size cap. File layout documented in the
+        module-level _V2_MAGIC comment.
+
+        Returns (base_nonce, b'', sha256_hex_of_ciphertext_file). The
+        empty tag is the sentinel for "this row is v2 — read the magic
+        in the file to dispatch".
+        """
+        aead = AESGCM(dek)
+        base_nonce = secrets.token_bytes(_V2_NONCE_LEN)
+        sha = hashlib.sha256()
+
+        with open(src_path, 'rb') as src, open(dest_path, 'wb') as dst:
+            header = _V2_MAGIC + base_nonce + struct.pack('>I', chunk_size)
+            dst.write(header)
+            sha.update(header)
+
+            chunk_index = 0
+            while True:
+                pt = src.read(chunk_size)
+                if not pt:
+                    break  # EOF; file may end on a chunk boundary
+                nonce = base_nonce[:4] + struct.pack('>Q', chunk_index)
+                ct_and_tag = aead.encrypt(nonce, pt, None)
+                # Split ciphertext from tag for explicit framing.
+                ct = ct_and_tag[:-_V2_TAG_LEN]
+                tag = ct_and_tag[-_V2_TAG_LEN:]
+                frame = struct.pack('>I', len(pt)) + ct + tag
+                dst.write(frame)
+                sha.update(frame)
+                chunk_index += 1
+                if chunk_index >= (1 << 32):
+                    # AES-GCM safe envelope; rotate DEK well before this.
+                    raise RuntimeError(
+                        'saas_filestore_backup: per-DEK chunk counter exhausted'
+                    )
+
+        return base_nonce, b'', sha.hexdigest()
 
     def _put_to_s3(self, url, src_path):
         size = os.path.getsize(src_path)

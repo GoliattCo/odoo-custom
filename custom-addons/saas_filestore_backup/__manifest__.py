@@ -1,6 +1,6 @@
 {
     'name': 'SaaS Filestore Backup',
-    'version': '19.0.2.0.0',
+    'version': '19.0.3.0.0',
     'category': 'Administration',
     'summary': 'Nightly tar+encrypt+upload of the tenant filestore to the WARM S3 bucket',
     'description': """
@@ -43,10 +43,13 @@ Control-plane endpoints (saas.filestore_backup_endpoint base):
   POST /issue-credentials → {s3Key, putUrl, dekHex, kmsCmkArn, expiresAt}
   POST /complete          → {ok, backupId}
 
-Limitation: AES-GCM is one-shot in cryptography==41 (no streaming
-update()), so plaintext >256 MiB raises. Switch to a streaming AEAD
-(AES-CTR+HMAC-SHA256, or chunk-by-chunk AES-GCM with derived
-sub-keys) when a tenant gets there.
+v3 (2026-05-18): streaming AEAD lifts the 256 MiB cap. Files ≤256 MiB
+keep the legacy v1 one-shot format (no on-disk header; nonce+tag in
+the catalog row). Files >256 MiB auto-dispatch to v2: b"GLT2" magic
+header + per-chunk AES-256-GCM with counter-derived nonces, 1 MiB
+plaintext chunks by default. The file is self-describing; the catalog
+row's tag field is empty for v2. Restore tool sniffs the magic header
+to dispatch v1 vs v2.
 """,
     'author': 'Goliatt',
     'license': 'LGPL-3',
