@@ -1,6 +1,6 @@
 {
     'name': 'SaaS License Gate (Enterprise Self-Host)',
-    'version': '19.0.1.0.0',
+    'version': '19.0.2.0.0',
     'category': 'Administration',
     'summary': 'Verifies an Ed25519-signed license response on boot + daily; refuses to run when invalid',
     'description': """
@@ -73,10 +73,14 @@ Security properties
 """,
     'author': 'Goliatt',
     'license': 'LGPL-3',
-    # Depends only on `base`; saas_tenant_gate is NOT a dep because this
-    # addon ships in a different image variant. The two should never
-    # both be installed in the same DB.
-    'depends': ['base'],
+    # `base` for the license_gate model + cron; account/sale/stock for
+    # the enforcement decorators on write-heavy models. The enterprise
+    # self-host image ships with all three (plus the Jorels DIAN
+    # localization which depends on account too).
+    # saas_tenant_gate is NOT a dep because this addon ships in a
+    # different image variant; the two should never both be installed in
+    # the same DB.
+    'depends': ['base', 'account', 'sale_management', 'stock'],
     'data': [
         'data/ir_cron_data.xml',
         'security/ir.model.access.csv',
