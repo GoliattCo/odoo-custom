@@ -119,15 +119,83 @@ Requires Clerk operator-side setup:
 8. Click `Check-ins` → empty (no addon has called home yet).
 9. Sign out. Sign in as a different Clerk user WITHOUT `publicMetadata.customerRef` → should redirect to `/not-authorized`.
 
-### Playwright e2e tests (deferred)
+### Playwright e2e tests
 
-5 e2e specs exist in `apps/admin/e2e/` but the CI job is gated on two GitHub secrets that aren't set yet:
-- `E2E_OPERATOR_CLERK_TOKEN` — a Clerk session JWT for an operator-roled user in a dev Clerk project
+**No-auth smoke (new this session — runs without Clerk tokens):**
+`apps/admin/e2e/public-surfaces.spec.ts` — 7 tests covering `/not-authorized`,
+`/sign-in`, and the 5 auth-gated routes. All pass against production:
+
+```
+E2E_BASE_URL=https://odoo-saas-admin.vercel.app \
+  pnpm --filter @odoo-saas/admin exec playwright test e2e/public-surfaces.spec.ts
+```
+
+**Auth-required specs (5 existing, gated on Clerk dev project):**
+`mint.spec.ts`, `revoke-restore.spec.ts`, `signing-key.spec.ts`,
+`operator-can-access.spec.ts`, `non-operator-bounced.spec.ts` require:
+- `E2E_OPERATOR_CLERK_TOKEN` — a Clerk session JWT for an operator-roled user
 - `E2E_NON_OPERATOR_CLERK_TOKEN` — same for a non-operator user
 
-When you provision a Clerk dev project + add those secrets, the Playwright job will auto-run on every PR.
+When you provision a Clerk dev project + add those secrets, the Playwright job
+will auto-run on every PR. Until then, the no-auth smoke spec above runs both
+locally and (if `E2E_BASE_URL` is set in CI) against any environment.
 
 ---
+
+## Testing results (executed this session)
+
+### HTTP probes — 11 production surfaces
+
+Every public + auth-gated surface exercised via direct HTTP:
+
+| Surface | Status | Behavior |
+|---|---|---|
+| admin `/` | 307 → `/licenses` | root redirect works |
+| admin `/not-authorized` | 200 | renders `<h1>Not authorized</h1>` (verified via grep on the response body) |
+| admin `/sign-in` | 200 | Clerk sign-in shell loads |
+| admin `/licenses` | 307 → `/sign-in` | auth gate works (unauthed) |
+| admin `/tenants` | 307 → `/sign-in` | auth gate works (unauthed) |
+| admin `/backups` | 307 → `/sign-in` | auth gate works (unauthed) |
+| admin `/plans` | 307 → `/sign-in` | auth gate works (unauthed) |
+| portal `/` | 200 | marketing/landing renders |
+| portal `/license` | 307 → `/sign-in` | auth gate works (unauthed) |
+| portal `/not-authorized` | 200 | renders `Access restricted` card (shadcn `CardTitle`, a `<div>` — NOT an `<h1>` like admin's variant) |
+| portal `/sign-in` | 200 | Clerk sign-in shell loads |
+
+All 11 surfaces respond as designed. The portal/admin styling divergence on
+the `/not-authorized` pages (Card vs. plain layout) is by design — the portal
+follows the shadcn Card pattern, admin uses a plain centered layout.
+
+### Playwright — 7 no-auth tests, all green
+
+```
+$ E2E_BASE_URL=https://odoo-saas-admin.vercel.app \
+    pnpm --filter @odoo-saas/admin exec playwright test e2e/public-surfaces.spec.ts
+
+✓ /not-authorized renders the admin H1                          (1.8s)
+✓ /sign-in returns 200 and loads the Clerk shell                (1.2s)
+✓ / redirects unauthenticated visitors to /sign-in via /licenses (1.8s)
+✓ /licenses gates unauthenticated visitors to /sign-in          (1.3s)
+✓ /tenants gates unauthenticated visitors to /sign-in           (1.4s)
+✓ /backups gates unauthenticated visitors to /sign-in           (1.3s)
+✓ /plans gates unauthenticated visitors to /sign-in             (1.3s)
+
+7 passed (10.5s)
+```
+
+Playwright chromium was installed via `pnpm --filter @odoo-saas/admin exec
+playwright install chromium` (92.4 MiB). The 5 auth-required specs still
+fail at `signInAsOperator` because `E2E_OPERATOR_CLERK_TOKEN` isn't set —
+those remain gated on Clerk dev-project setup (see follow-up #3 below).
+
+### Chrome plugin observations
+
+- `tabs_create_mcp` + `navigate` worked: opened production URLs successfully.
+- `get_page_text` and `read_page` timed out (45 s `document_idle` wait) on
+  every Clerk-instrumented page — Clerk's polling scripts keep the page
+  "loading" indefinitely. Substituted direct HTTP probes (above) for
+  content verification. Documented behavior: Chrome plugin's read tools are
+  unreliable on auth-instrumented pages; use them for navigation only.
 
 ## Bugs found + fixed this session
 
@@ -153,6 +221,7 @@ After PRs #3 and #4 merged to main, GitHub's "test the merge of PR #2 into main"
 
 - `docs/2026-05-18-execution-decisions-log.md` — 10 decisions (D-001 through D-010)
 - `docs/2026-05-18-session-report.md` — this file
+- `apps/admin/e2e/public-surfaces.spec.ts` (control-plane repo) — 7 no-auth Playwright smoke tests, all green against production
 
 ## Plans / specs unchanged
 
