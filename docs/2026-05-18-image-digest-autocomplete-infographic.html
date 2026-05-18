@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Image-Digest Autocomplete — Design Infographic</title>
+<style>
+  :root {
+    --bg: #0b1020; --card: #171f3d; --card-2: #1f2950; --line: #2a356a;
+    --text: #e8ecff; --muted: #9aa3c7;
+    --accent: #93c5fd; --accent-2: #c4b5fd;
+    --bad: #f87171; --good: #34d399;
+    --ghcr: #93c5fd;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: radial-gradient(1200px 600px at 20% -10%, rgba(147,197,253,0.18), transparent 60%),
+                radial-gradient(900px 500px at 90% 10%, rgba(196,181,253,0.14), transparent 60%),
+                var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif;
+    line-height: 1.5; -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1280px; margin: 0 auto; padding: 48px 24px 80px; }
+  .hero {
+    display: grid; grid-template-columns: 1.4fr 1fr; gap: 28px; align-items: center;
+    padding: 40px; border-radius: 24px; margin-bottom: 36px; position: relative; overflow: hidden;
+    background: linear-gradient(135deg, rgba(147,197,253,0.22), rgba(196,181,253,0.12));
+    border: 1px solid rgba(147,197,253,0.30);
+  }
+  .hero::after { content:""; position:absolute; right:-120px; top:-120px; width:360px; height:360px; background: radial-gradient(circle, rgba(147,197,253,0.35), transparent 60%); }
+  .eyebrow { text-transform:uppercase; letter-spacing:2px; font-size:12px; color: var(--accent); margin-bottom:12px; }
+  .v-pill { display:inline-block; margin-left:10px; padding:2px 10px; border-radius:999px;
+    background: linear-gradient(120deg, var(--accent), var(--accent-2)); color:#0b1020; font-weight:700; font-size:12px; letter-spacing:1px; }
+  h1 { font-size:42px; line-height:1.1; margin:0 0 14px; letter-spacing:-0.5px; }
+  h1 .grad { background: linear-gradient(120deg, #93c5fd, #c4b5fd 60%, #67e8f9); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .sub { color: var(--muted); font-size:17px; max-width:640px; }
+  .stats { display:grid; grid-template-columns:repeat(2, 1fr); gap:14px; }
+  .stat { background:rgba(255,255,255,0.04); border:1px solid var(--line); border-radius:14px; padding:14px 16px; }
+  .stat .n { font-size:24px; font-weight:700; background:linear-gradient(120deg, #93c5fd, #c4b5fd); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .stat .l { color:var(--muted); font-size:13px; }
+  section { margin-top: 44px; }
+  h2 { font-size:26px; margin:0 0 18px; display:flex; align-items:center; gap:12px; }
+  h2 .badge { display:inline-flex; align-items:center; justify-content:center; width:32px; height:32px; border-radius:10px; background: linear-gradient(135deg, var(--accent), var(--accent-2)); color:#0b1020; font-weight:800; font-size:14px; }
+  .lead { color: var(--muted); margin:0 0 18px; max-width:980px; }
+
+  /* MOCKUP — the field comparison */
+  .mock {
+    display: grid; grid-template-columns: 1fr 60px 1fr; gap: 18px; align-items: stretch;
+  }
+  .mock .col { background: var(--card); border:1px solid var(--line); border-radius:16px; padding:24px; }
+  .mock .col.old { border-top: 3px solid var(--bad); }
+  .mock .col.new { border-top: 3px solid var(--good); }
+  .mock .label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px; }
+  .mock h3 { margin: 0 0 14px; font-size: 18px; }
+
+  /* Input mockup styling */
+  .input-mock {
+    background: #0d1430; border: 1px solid var(--line); border-radius: 8px;
+    padding: 12px 14px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 13px; color: var(--text); margin-bottom: 8px;
+    word-break: break-all;
+  }
+  .input-mock.error { border-color: var(--bad); color: var(--bad); }
+  .err-msg { font-size: 12px; color: var(--bad); margin-bottom: 8px; }
+
+  .combobox {
+    background: #0d1430; border: 1px solid var(--accent); border-radius: 8px;
+    overflow: hidden; margin-bottom: 8px;
+  }
+  .combobox .search {
+    padding: 10px 14px; border-bottom: 1px solid var(--line);
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13px;
+    color: var(--accent);
+  }
+  .combobox .dropdown { max-height: 240px; }
+  .combobox .item {
+    padding: 10px 14px; border-bottom: 1px solid rgba(255,255,255,0.04);
+    cursor: pointer; display: flex; justify-content: space-between; align-items: center;
+    gap: 12px;
+  }
+  .combobox .item:hover, .combobox .item.selected { background: rgba(147,197,253,0.08); }
+  .combobox .item:last-child { border-bottom: none; }
+  .combobox .item .tag {
+    color: var(--accent); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13px; font-weight: 600;
+    flex-shrink: 0;
+  }
+  .combobox .item .digest {
+    color: var(--muted); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .combobox .item .date { color: var(--muted); font-size: 11px; }
+
+  .mock .arrow {
+    display:flex; align-items:center; justify-content:center; font-size: 28px; color: var(--accent-2);
+  }
+  .pros { margin-top: 14px; }
+  .pros li { font-size: 13px; color: var(--muted); margin: 4px 0; padding-left: 18px; position: relative; }
+  .pros li::before {
+    content: "✗"; position: absolute; left: 0; top: 0; color: var(--bad); font-weight: 700;
+  }
+  .new .pros li::before { content: "✓"; color: var(--good); }
+
+  /* API flow */
+  .api-flow {
+    background: var(--card-2); border:1px solid var(--line); border-radius:14px; padding:22px;
+  }
+  .api-flow h4 { margin: 0 0 12px; font-size: 16px; color: var(--accent); }
+  .api-flow ol { margin:0; padding-left: 22px; color: var(--muted); font-size: 14px; }
+  .api-flow ol li { margin: 8px 0; }
+  .api-flow code { background:rgba(255,255,255,0.07); padding:0 5px; border-radius:3px; color: var(--text); font-size:12.5px; }
+
+  /* Edge cases grid */
+  .edges { display:grid; grid-template-columns: repeat(2, 1fr); gap:14px; }
+  .edge { background: var(--card); border:1px solid var(--line); border-radius:12px; padding:14px 16px; border-left: 3px solid var(--accent); }
+  .edge .label { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--accent); margin-bottom: 4px; }
+  .edge h4 { margin: 0 0 6px; font-size: 14px; }
+  .edge p { margin: 0; color: var(--muted); font-size: 13px; }
+
+  .questions { display:grid; grid-template-columns: 1fr 1fr; gap:14px; }
+  .question { background: var(--card); border:1px solid var(--line); border-radius:12px; padding:14px 16px; }
+  .question .q { font-size: 14px; color: var(--text); font-weight:600; }
+  .question .a { font-size: 13px; color: var(--muted); margin-top:6px; }
+
+  .footer { margin-top: 60px; padding: 18px; text-align:center; color: var(--muted); font-size: 13px; border-top: 1px solid var(--line); }
+  .footer a { color: var(--accent); text-decoration: none; }
+
+  @media (max-width: 920px) {
+    .hero, .mock, .stats, .questions, .edges { grid-template-columns: 1fr; }
+    h1 { font-size: 32px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hero">
+  <div>
+    <div class="eyebrow">Spec • Draft • 2026-05-18</div>
+    <h1><span class="grad">Image-Digest</span> Autocomplete <span class="v-pill">QoL</span></h1>
+    <p class="sub">Replace the operator-mint form's free-text 64-hex <code>image_sha256</code> field with a combobox autocompleting recent <code>enterprise-v*</code> tags from GHCR. Reduces transcription error on a 64-character hash; reduces operator time per mint.</p>
+  </div>
+  <div class="stats">
+    <div class="stat"><div class="n">64</div><div class="l">hex chars currently copy-pasted by hand</div></div>
+    <div class="stat"><div class="n">10</div><div class="l">recent tags surfaced in the dropdown</div></div>
+    <div class="stat"><div class="n">60s</div><div class="l">in-memory cache → ≤1 GHCR call/min</div></div>
+    <div class="stat"><div class="n">0</div><div class="l">hard failures (manual entry fallback)</div></div>
+  </div>
+</div>
+
+<!-- BEFORE vs AFTER MOCKUP -->
+<section>
+  <h2><span class="badge">UI</span>Before vs After (mint form)</h2>
+  <div class="mock">
+    <div class="col old">
+      <div class="label">Today</div>
+      <h3>Free-text 64-hex input</h3>
+      <div class="input-mock">a3f9c2…<br>(operator copy-pastes from CI Step Summary, GHCR UI, or memory)</div>
+      <div class="input-mock error">b7e1g6c4d2a1f9e8c3b2a1f9e8c3b2a1f9e8c3b2a1f9e8c3b2a1f9e8c3b2a1f9</div>
+      <div class="err-msg">Image SHA256 must match ^[0-9a-f]&#123;64&#125;$</div>
+      <ul class="pros">
+        <li>Easy to fat-finger a 64-char hex value</li>
+        <li>No validation beyond the regex</li>
+        <li>Operator pings CI / GHCR UI in another tab</li>
+        <li>Wrong digest → license binds to nonexistent image</li>
+      </ul>
+    </div>
+    <div class="arrow">→</div>
+    <div class="col new">
+      <div class="label">After</div>
+      <h3>Combobox with GHCR-backed picker</h3>
+      <div class="combobox">
+        <div class="search">▼  Search enterprise-v* tags …</div>
+        <div class="dropdown">
+          <div class="item selected">
+            <span class="tag">enterprise-v1</span>
+            <span class="digest">7e84600695f4…</span>
+            <span class="date">1d ago</span>
+          </div>
+          <div class="item">
+            <span class="tag">enterprise-v0.9</span>
+            <span class="digest">a3f9c2d1e6b8…</span>
+            <span class="date">5d ago</span>
+          </div>
+          <div class="item">
+            <span class="tag">enterprise-acme-q2</span>
+            <span class="digest">b1c9d8e2f7a3…</span>
+            <span class="date">12d ago</span>
+          </div>
+        </div>
+      </div>
+      <ul class="pros">
+        <li>One click — no typing</li>
+        <li>Always picking a real, published digest</li>
+        <li>Tag + push date visible for context</li>
+        <li>Manual entry still works for edge cases</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- API FLOW -->
+<section>
+  <h2><span class="badge">π</span>How the dropdown gets its data</h2>
+  <div class="api-flow">
+    <h4>tRPC <code>enterpriseLicenses.recentEnterpriseImages()</code></h4>
+    <ol>
+      <li>Operator clicks the combobox on <code>/licenses/new</code>.</li>
+      <li>Client tRPC call hits the operator-gated procedure.</li>
+      <li>Server checks 60s in-memory cache. Cache miss → continue; hit → return cached list.</li>
+      <li>Server calls <code>GET https://api.github.com/users/&lt;OWNER&gt;/packages/container/odoo-saas-odoo-enterprise/versions</code> with optional <code>GITHUB_PACKAGES_TOKEN</code> (falls back to anonymous for public packages).</li>
+      <li>Filter results to versions with at least one tag matching <code>^enterprise-</code>.</li>
+      <li>Map to <code>{tag, digest, createdAt, sizeBytes}</code>; sort desc by createdAt; limit 10.</li>
+      <li>Cache + return.</li>
+      <li>Combobox renders the dropdown.</li>
+    </ol>
+  </div>
+</section>
+
+<!-- EDGE CASES -->
+<section>
+  <h2><span class="badge">⚠</span>Failure modes — graceful degrade</h2>
+  <div class="edges">
+    <div class="edge">
+      <div class="label">GHCR API 404</div>
+      <h4>Package doesn't exist (yet)</h4>
+      <p>Procedure returns empty list. Combobox renders "No recent images" — operator types manually.</p>
+    </div>
+    <div class="edge">
+      <div class="label">GHCR API 403</div>
+      <h4>Rate-limited (60 req/hr anon)</h4>
+      <p>Logs warn, returns empty. With 60s cache, this is hard to hit; with token, 5000 req/hr ceiling.</p>
+    </div>
+    <div class="edge">
+      <div class="label">Network down</div>
+      <h4>fetch throws</h4>
+      <p>Caught; empty list returned. Operator types manually. No UI broken state.</p>
+    </div>
+    <div class="edge">
+      <div class="label">GitHub returns garbage</div>
+      <h4>Schema parse fail</h4>
+      <p>Zod-validate the response; bad entries dropped from the list. Other valid entries still surface.</p>
+    </div>
+  </div>
+</section>
+
+<!-- TESTS -->
+<section>
+  <h2><span class="badge">T</span>Test coverage</h2>
+  <p class="lead">Unit tests cover the procedure end-to-end with mocked GHCR responses. No integration test required — pure HTTP wrapping with no DB.</p>
+  <div class="edges">
+    <div class="edge"><div class="label">Happy path</div><h4>3 tagged + 5 untagged versions</h4><p>Result includes only the 3 tagged.</p></div>
+    <div class="edge"><div class="label">Tag filter</div><h4><code>enterprise-v1</code> + <code>v1</code> standard tag</h4><p>Only <code>enterprise-v1</code> makes the cut.</p></div>
+    <div class="edge"><div class="label">404</div><h4>Empty list, no throw</h4><p>Combobox stays graceful.</p></div>
+    <div class="edge"><div class="label">Cache</div><h4>Hit within 60s</h4><p>Second call doesn't re-fetch.</p></div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="badge">?</span>Open questions</h2>
+  <div class="questions">
+    <div class="question">
+      <div class="q">Public vs private GHCR package?</div>
+      <div class="a">Today <code>odoo-saas-odoo-enterprise</code> is GHCR-private. Making it public is the right call. If still private when this lands, set <code>GITHUB_PACKAGES_TOKEN</code> in Vercel admin env (read:packages scope).</div>
+    </div>
+    <div class="question">
+      <div class="q">Cross-org packages?</div>
+      <div class="a">Owner could change (<code>remcaro-rgb</code> → <code>goliatt-co</code> org). Read <code>GHCR_OWNER</code> from env, fall back to <code>GITHUB_REPOSITORY_OWNER</code>.</div>
+    </div>
+    <div class="question">
+      <div class="q">Cache strategy at scale?</div>
+      <div class="a">In-memory Map cache is per-function-instance. With Vercel Fluid Compute reusing instances, hit rate should be fine. Move to Runtime Cache if it becomes a problem.</div>
+    </div>
+    <div class="question">
+      <div class="q">Tag filter strictness?</div>
+      <div class="a">Include any tag matching <code>^enterprise-</code>, not just <code>^enterprise-v*</code>. Runbook allows <code>enterprise-&lt;customer-slug&gt;</code> tags for customer-specific builds.</div>
+    </div>
+  </div>
+</section>
+
+<div class="footer">
+  Spec source: <a href="superpowers/specs/2026-05-18-image-digest-autocomplete-design.md">docs/superpowers/specs/2026-05-18-image-digest-autocomplete-design.md</a>
+  &nbsp;·&nbsp; Generated 2026-05-18
+</div>
+
+</div>
+</body>
+</html>

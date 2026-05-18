@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Customer Portal — License Self-Service — Design Infographic</title>
+<style>
+  :root {
+    --bg: #0b1020;
+    --card: #171f3d;
+    --card-2: #1f2950;
+    --line: #2a356a;
+    --text: #e8ecff;
+    --muted: #9aa3c7;
+    --accent: #22d3ee;
+    --accent-2: #7c5cff;
+    --good: #34d399;
+    --warn: #fbbf24;
+    --bad:  #f87171;
+    --customer: #22d3ee;
+    --operator: #fbbf24;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: radial-gradient(1200px 600px at 20% -10%, rgba(34,211,238,0.18), transparent 60%),
+                radial-gradient(900px 500px at 90% 10%, rgba(124,92,255,0.14), transparent 60%),
+                var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif;
+    line-height: 1.5; -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1280px; margin: 0 auto; padding: 48px 24px 80px; }
+  .hero {
+    display: grid; grid-template-columns: 1.4fr 1fr; gap: 28px; align-items: center;
+    padding: 40px; border-radius: 24px; margin-bottom: 36px; position: relative; overflow: hidden;
+    background: linear-gradient(135deg, rgba(34,211,238,0.22), rgba(124,92,255,0.12));
+    border: 1px solid rgba(34,211,238,0.30);
+  }
+  .hero::after {
+    content:""; position:absolute; right:-120px; top:-120px; width:360px; height:360px;
+    background: radial-gradient(circle, rgba(34,211,238,0.35), transparent 60%);
+  }
+  .eyebrow { text-transform:uppercase; letter-spacing:2px; font-size:12px; color: var(--customer); margin-bottom:12px; }
+  .v-pill {
+    display:inline-block; margin-left:10px; padding:2px 10px; border-radius:999px;
+    background: linear-gradient(120deg, var(--customer), var(--accent-2));
+    color:#0b1020; font-weight:700; font-size:12px; letter-spacing:1px;
+  }
+  h1 { font-size:42px; line-height:1.1; margin:0 0 14px; letter-spacing:-0.5px; }
+  h1 .grad { background: linear-gradient(120deg, #67e8f9, #c4b5fd 60%, #93c5fd); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .sub { color: var(--muted); font-size:17px; max-width:640px; }
+  .stats { display:grid; grid-template-columns:repeat(2, 1fr); gap:14px; }
+  .stat { background:rgba(255,255,255,0.04); border:1px solid var(--line); border-radius:14px; padding:14px 16px; }
+  .stat .n { font-size:24px; font-weight:700; background:linear-gradient(120deg, #67e8f9, #c4b5fd); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .stat .l { color:var(--muted); font-size:13px; }
+
+  section { margin-top: 44px; }
+  h2 { font-size:26px; margin:0 0 18px; display:flex; align-items:center; gap:12px; }
+  h2 .badge { display:inline-flex; align-items:center; justify-content:center; width:32px; height:32px; border-radius:10px; background: linear-gradient(135deg, var(--customer), var(--accent-2)); color:#0b1020; font-weight:800; font-size:14px; }
+  .lead { color: var(--muted); margin:0 0 18px; max-width:980px; }
+
+  .two-col { display:grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 22px; }
+  .card.goal { border-top: 3px solid var(--customer); }
+  .card.nongoal { border-top: 3px solid var(--operator); }
+  .card h3 { margin:0 0 10px; font-size:18px; }
+  .card ul { margin:8px 0 0; padding-left: 20px; color: var(--muted); }
+  .card li { margin: 6px 0; font-size: 14px; }
+  .strike { text-decoration: line-through; opacity:0.55; }
+
+  /* Surface split: who sees what */
+  .audience {
+    display:grid; grid-template-columns: 1fr 80px 1fr; gap: 18px; align-items: stretch;
+  }
+  .audience .col {
+    background: var(--card); border:1px solid var(--line); border-radius:16px; padding:20px;
+  }
+  .audience .col.cust { border-top: 3px solid var(--customer); }
+  .audience .col.op { border-top: 3px solid var(--operator); }
+  .audience .divider {
+    display:flex; align-items:center; justify-content:center; color: var(--muted);
+    font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px;
+    writing-mode: vertical-rl; transform: rotate(180deg);
+  }
+  .audience .role-title { font-size:14px; text-transform:uppercase; letter-spacing:1.5px; margin-bottom:6px; }
+  .audience .cust .role-title { color: var(--customer); }
+  .audience .op .role-title { color: var(--operator); }
+  .audience h3 { margin:0 0 12px; font-size:20px; }
+  .audience ul { margin:0; padding-left:20px; color:var(--muted); font-size:13.5px; }
+  .audience li { margin: 6px 0; }
+  .audience li code { color:#e8ecff; background:rgba(255,255,255,0.07); padding:0 6px; border-radius:4px; }
+
+  .auth-flow {
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .auth-step {
+    background: var(--card); border:1px solid var(--line); border-radius:12px;
+    padding: 14px 18px; display:flex; gap:14px; align-items:flex-start;
+  }
+  .auth-step .num {
+    flex-shrink:0; width:28px; height:28px; border-radius:8px;
+    background: linear-gradient(135deg, var(--customer), var(--accent-2));
+    color:#0b1020; font-weight:800; display:flex; align-items:center; justify-content:center;
+    font-size:13px;
+  }
+  .auth-step .body strong { color: var(--text); }
+  .auth-step .body { font-size: 14px; color: var(--muted); }
+  .auth-step code { background:rgba(255,255,255,0.07); padding:0 5px; border-radius:3px; font-size:12.5px; color: var(--text); }
+
+  .api-grid {
+    display:grid; grid-template-columns: repeat(2, 1fr); gap: 14px;
+  }
+  .api-item {
+    background: var(--card-2); border:1px solid var(--line); border-radius:10px; padding:14px;
+  }
+  .api-item code {
+    color: var(--customer); font-weight:600; font-size: 14px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  .api-item .desc { color: var(--muted); font-size: 13px; margin-top:4px; }
+  .api-item .gate { display:inline-block; padding:2px 8px; border-radius:6px; font-size:11px; background:rgba(34,211,238,0.12); color: var(--customer); margin-left:8px; }
+
+  .questions {
+    display:grid; grid-template-columns: 1fr 1fr; gap:14px;
+  }
+  .question {
+    background: var(--card); border:1px solid var(--line); border-radius:12px; padding:14px 16px;
+  }
+  .question .q { font-size: 14px; color: var(--text); font-weight:600; }
+  .question .a { font-size: 13px; color: var(--muted); margin-top:6px; }
+
+  .footer { margin-top: 60px; padding: 18px; text-align:center; color: var(--muted); font-size: 13px; border-top: 1px solid var(--line); }
+  .footer a { color: var(--customer); text-decoration: none; }
+
+  @media (max-width: 920px) {
+    .hero, .two-col, .audience, .api-grid, .questions, .stats { grid-template-columns: 1fr; }
+    h1 { font-size: 32px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- HERO -->
+<div class="hero">
+  <div>
+    <div class="eyebrow">Spec • Draft • 2026-05-18</div>
+    <h1><span class="grad">Customer&nbsp;Portal</span> — License Self-Service <span class="v-pill">v1</span></h1>
+    <p class="sub">Enterprise self-host customers log in, see their own license status (active / grace / expired / revoked), download their pre-filled install bundle, and watch their license-check heartbeats land. Counterpart to the operator's <code>/licenses</code> dashboard.</p>
+  </div>
+  <div class="stats">
+    <div class="stat"><div class="n">1</div><div class="l">new tRPC router (<code>customerSelf</code>)</div></div>
+    <div class="stat"><div class="n">4</div><div class="l">queries (myLicense, history, bundle, checks)</div></div>
+    <div class="stat"><div class="n">0</div><div class="l">mutations — customer is read-only</div></div>
+    <div class="stat"><div class="n">3</div><div class="l">auth layers (middleware + gate + procedure)</div></div>
+  </div>
+</div>
+
+<!-- GOAL vs NON-GOAL -->
+<section>
+  <h2><span class="badge">G</span>Goal &amp; Non-Goals</h2>
+  <div class="two-col">
+    <div class="card goal">
+      <h3>Goal</h3>
+      <p style="color:var(--muted); font-size:14.5px; margin:0;">Give enterprise self-host customers a self-service dashboard for their license: status, upcoming expiry, install bundle download, past renewals. Reduces operator handhold for post-onboarding "what's my LICENSE_ID?" / "when does this expire?" tickets, and gives the customer a place to verify their license is healthy from Goliatt's perspective without emailing support.</p>
+    </div>
+    <div class="card nongoal">
+      <h3>Non-Goals (deferred or operator-only)</h3>
+      <ul>
+        <li class="strike">Customer can mint / revoke / renew (operator-only)</li>
+        <li class="strike">Show LICENSE-SIGNING private key</li>
+        <li class="strike">Reveal per-customer HMAC secret in cleartext</li>
+        <li class="strike">Customer support chat / ticket portal</li>
+        <li class="strike">Multi-license-per-customer UI (defer until 1st such customer)</li>
+        <li class="strike">License-check telemetry beyond their own</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- WHO SEES WHAT (audience split) -->
+<section>
+  <h2><span class="badge">A</span>Audience Split: Customer vs Operator</h2>
+  <p class="lead">Same Clerk org, different <code>publicMetadata.role</code>. Customer hits portal app; operator hits admin app. Cross-routing redirects gracefully.</p>
+  <div class="audience">
+    <div class="col cust">
+      <div class="role-title">Customer · apps/portal</div>
+      <h3>What they see</h3>
+      <ul>
+        <li>Their own license card (active / grace / expired / revoked) with days-until-expiry badge</li>
+        <li>Download install bundle — docker-compose template pre-filled with their <code>LICENSE_ID</code>, <code>LICENSE_AUTHORITY_URL</code>, image digest</li>
+        <li>License-check audit feed (their addon's hourly heartbeats)</li>
+        <li>Past license history (revoked + restored entries)</li>
+        <li>Support contact addresses</li>
+      </ul>
+    </div>
+    <div class="divider">read-only</div>
+    <div class="col op">
+      <div class="role-title">Operator · apps/admin</div>
+      <h3>What they still own</h3>
+      <ul>
+        <li>Mint new license (<code>/licenses/new</code>)</li>
+        <li>Revoke / Restore (action bar on detail)</li>
+        <li>Renew (when v12 spec ships — atomic action)</li>
+        <li>Audit log across all namespaces</li>
+        <li>Per-customer HMAC secret management</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- AUTH LAYERS -->
+<section>
+  <h2><span class="badge">S</span>Tenancy Isolation: 4-Layer Auth</h2>
+  <p class="lead">Each customer can only see THEIR rows. Cross-customer leak is a security incident. Every read path pins <code>customer_ref</code> from the Clerk session into the WHERE clause; no procedure accepts <code>customer_ref</code> as an input.</p>
+  <div class="auth-flow">
+    <div class="auth-step">
+      <div class="num">1</div>
+      <div class="body">
+        <strong>Middleware (<code>proxy.ts</code>)</strong> — Clerk session required. Unauthenticated → redirect to <code>/sign-in</code>.
+      </div>
+    </div>
+    <div class="auth-step">
+      <div class="num">2</div>
+      <div class="body">
+        <strong>Layout <code>requireCustomer()</code></strong> — server-side. Reads <code>publicMetadata.role</code>. Operators get redirected to admin app; non-roled users → <code>/not-authorized</code>. Cached per-request via <code>React.cache()</code>.
+      </div>
+    </div>
+    <div class="auth-step">
+      <div class="num">3</div>
+      <div class="body">
+        <strong>tRPC <code>customerProcedure</code></strong> — same role check + extracts <code>customer_ref</code> from session. Every query appends <code>eq(enterpriseLicenses.customerRef, ctx.session.customerRef)</code> automatically; bypass is impossible.
+      </div>
+    </div>
+    <div class="auth-step">
+      <div class="num">4</div>
+      <div class="body">
+        <strong>Defense-in-depth in server actions</strong> — repeat <code>requireCustomer()</code> at the top of every action. Catches a non-roled user who knows a server-action URL directly.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- API SURFACE -->
+<section>
+  <h2><span class="badge">π</span>API Surface — <code>customerSelf</code> tRPC</h2>
+  <p class="lead">One new router; no new HTTP routes; no schema migration. The existing <code>enterpriseLicenses.*</code> operator procedures stay untouched.</p>
+  <div class="api-grid">
+    <div class="api-item">
+      <code>customerSelf.myLicense()</code><span class="gate">query · customer-only</span>
+      <div class="desc">Returns the most-recent active OR most-recent overall license bound to the authed customer's ref. Includes derived status + days-until-expiry.</div>
+    </div>
+    <div class="api-item">
+      <code>customerSelf.myLicenseHistory({ limit?, cursor? })</code><span class="gate">query · paginated</span>
+      <div class="desc">Past licenses including revoked + restored. Uses the shared <code>paginationSchema</code> helper.</div>
+    </div>
+    <div class="api-item">
+      <code>customerSelf.myInstallBundle()</code><span class="gate">query · file response</span>
+      <div class="desc">Pre-filled docker-compose + .env template + README zip. Does NOT include the HMAC secret (operator delivered out-of-band at onboarding).</div>
+    </div>
+    <div class="api-item">
+      <code>customerSelf.myLicenseChecks({ limit?, cursor? })</code><span class="gate">query · audit feed</span>
+      <div class="desc">Recent <code>audit_log</code> rows where <code>action='license.check' AND target_id IN (this customer's licenses)</code>. Lets the customer see their install is calling home.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ROLLOUT -->
+<section>
+  <h2><span class="badge">R</span>Rollout</h2>
+  <p class="lead">Canary. Portal app already has signup/onboarding routes; this adds a new authenticated section. No public traffic until you tell a customer. Five PRs, each independently revertible.</p>
+  <div class="api-grid">
+    <div class="api-item"><code>PR 1</code><div class="desc">Add <code>customerProcedure</code> + <code>customerSelf</code> router (additive backend).</div></div>
+    <div class="api-item"><code>PR 2</code><div class="desc">Route group <code>app/(customer)/</code> + layout with <code>requireCustomer()</code> + dashboard page.</div></div>
+    <div class="api-item"><code>PR 3</code><div class="desc">Install-bundle download endpoint + history + license-checks pages.</div></div>
+    <div class="api-item"><code>PR 4</code><div class="desc">Operator action: update Clerk users to have <code>publicMetadata.customerRef</code> (manual; one customer).</div></div>
+  </div>
+</section>
+
+<!-- OPEN QUESTIONS -->
+<section>
+  <h2><span class="badge">?</span>Open Questions</h2>
+  <div class="questions">
+    <div class="question">
+      <div class="q">Customer identity model</div>
+      <div class="a">Stick with <code>customer_ref</code> free text (v1), or introduce <code>customers</code> table + UUID FK on <code>enterprise_licenses</code>? Latter is more correct but adds migration scope. v2 question.</div>
+    </div>
+    <div class="question">
+      <div class="q">Multi-license per customer</div>
+      <div class="a">v1 assumes 1:1. When a customer needs 2 licenses (two Odoo installs), the dashboard needs a picker. Defer until that customer exists.</div>
+    </div>
+    <div class="question">
+      <div class="q">Bundle format</div>
+      <div class="a">Single <code>docker-compose.yml</code>? Tar with compose + README? zip recommended (compose + <code>.env.template</code> + customer install README).</div>
+    </div>
+    <div class="question">
+      <div class="q">HMAC secret recovery</div>
+      <div class="a">Customer loses their <code>SAAS_PROVISIONING_SECRET</code> — can they self-serve? Probably not (security-sensitive). Document "contact support".</div>
+    </div>
+    <div class="question">
+      <div class="q">Staleness alert to customer</div>
+      <div class="a">Customer's install fails to call home for &gt;X hours: auto-email them? Or only operator? Defer to first-paying-customer feedback.</div>
+    </div>
+  </div>
+</section>
+
+<div class="footer">
+  Spec source: <a href="superpowers/specs/2026-05-18-customer-portal-license-self-service-design.md">docs/superpowers/specs/2026-05-18-customer-portal-license-self-service-design.md</a>
+  &nbsp;·&nbsp; Generated 2026-05-18
+</div>
+
+</div>
+</body>
+</html>

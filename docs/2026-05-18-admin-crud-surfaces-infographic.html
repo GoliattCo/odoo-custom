@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Admin CRUD Surfaces — Design Infographic</title>
+<style>
+  :root {
+    --bg: #0b1020; --card: #171f3d; --card-2: #1f2950; --line: #2a356a;
+    --text: #e8ecff; --muted: #9aa3c7;
+    --tenant: #93c5fd; --plan: #7c5cff; --provision: #fbbf24; --backup: #34d399;
+    --accent: #c4b5fd;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: radial-gradient(1200px 600px at 20% -10%, rgba(124,92,255,0.18), transparent 60%),
+                radial-gradient(900px 500px at 90% 10%, rgba(147,197,253,0.14), transparent 60%),
+                var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif;
+    line-height: 1.5; -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1280px; margin: 0 auto; padding: 48px 24px 80px; }
+  .hero {
+    display: grid; grid-template-columns: 1.4fr 1fr; gap: 28px; align-items: center;
+    padding: 40px; border-radius: 24px; margin-bottom: 36px; position: relative; overflow: hidden;
+    background: linear-gradient(135deg, rgba(124,92,255,0.22), rgba(147,197,253,0.12));
+    border: 1px solid rgba(124,92,255,0.30);
+  }
+  .hero::after { content:""; position:absolute; right:-120px; top:-120px; width:360px; height:360px; background: radial-gradient(circle, rgba(124,92,255,0.35), transparent 60%); }
+  .eyebrow { text-transform:uppercase; letter-spacing:2px; font-size:12px; color: var(--accent); margin-bottom:12px; }
+  .v-pill { display:inline-block; margin-left:10px; padding:2px 10px; border-radius:999px;
+    background: linear-gradient(120deg, var(--accent), var(--tenant)); color:#0b1020; font-weight:700; font-size:12px; letter-spacing:1px; }
+  h1 { font-size:42px; line-height:1.1; margin:0 0 14px; letter-spacing:-0.5px; }
+  h1 .grad { background: linear-gradient(120deg, #c4b5fd, #93c5fd 60%, #67e8f9); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .sub { color: var(--muted); font-size:17px; max-width:640px; }
+  .stats { display:grid; grid-template-columns:repeat(2, 1fr); gap:14px; }
+  .stat { background:rgba(255,255,255,0.04); border:1px solid var(--line); border-radius:14px; padding:14px 16px; }
+  .stat .n { font-size:24px; font-weight:700; background:linear-gradient(120deg, #c4b5fd, #93c5fd); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .stat .l { color:var(--muted); font-size:13px; }
+  section { margin-top: 44px; }
+  h2 { font-size:26px; margin:0 0 18px; display:flex; align-items:center; gap:12px; }
+  h2 .badge { display:inline-flex; align-items:center; justify-content:center; width:32px; height:32px; border-radius:10px; background: linear-gradient(135deg, var(--accent), var(--tenant)); color:#0b1020; font-weight:800; font-size:14px; }
+  .lead { color: var(--muted); margin:0 0 18px; max-width:980px; }
+
+  /* SHELL diagram */
+  .shell {
+    background: var(--card); border:1px solid var(--line); border-radius:16px; padding:22px;
+    position: relative;
+  }
+  .shell-title { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 12px; }
+  .shell .layer {
+    background: var(--card-2); border:1px solid var(--line); border-radius:10px;
+    padding: 12px 16px; margin-bottom: 10px; font-size: 13.5px; color: var(--muted);
+  }
+  .shell .layer strong { color: var(--text); }
+  .shell .layer.exists { border-left: 3px solid #34d399; }
+  .shell .layer.new { border-left: 3px solid var(--accent); }
+  .shell .check { color: var(--good, #34d399); font-weight: 700; margin-right: 6px; }
+  .shell .plus { color: var(--accent); font-weight: 700; margin-right: 6px; }
+
+  /* FOUR SURFACES */
+  .surfaces { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .surface { background: var(--card); border:1px solid var(--line); border-radius:16px; padding: 22px; }
+  .surface.tenant { border-top: 3px solid var(--tenant); }
+  .surface.plan { border-top: 3px solid var(--plan); }
+  .surface.provision { border-top: 3px solid var(--provision); }
+  .surface.backup { border-top: 3px solid var(--backup); }
+  .surface .tag { display: inline-block; font-size: 10px; padding: 3px 8px; border-radius: 999px;
+    text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px; }
+  .surface.tenant .tag { background: rgba(147,197,253,0.16); color: var(--tenant); }
+  .surface.plan .tag { background: rgba(124,92,255,0.16); color: var(--plan); }
+  .surface.provision .tag { background: rgba(251,191,36,0.16); color: var(--provision); }
+  .surface.backup .tag { background: rgba(52,211,153,0.16); color: var(--backup); }
+  .surface h3 { margin: 0 0 6px; font-size: 18px; }
+  .surface .route { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13px; color: var(--muted); margin-bottom: 10px; }
+  .surface .ops { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+  .surface .op { font-size: 11px; padding: 3px 8px; border-radius: 6px; background: rgba(255,255,255,0.05); color: var(--text); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+  .surface .desc { font-size: 13.5px; color: var(--muted); }
+  .surface .pr-order {
+    margin-top: 14px; padding: 8px 12px;
+    background: rgba(255,255,255,0.03); border-radius: 8px;
+    font-size: 12px; color: var(--muted);
+  }
+  .surface .pr-order strong { color: var(--text); }
+
+  /* Rollout timeline */
+  .timeline { display: flex; gap: 14px; overflow-x: auto; padding-bottom: 8px; }
+  .timeline .step {
+    flex: 1; min-width: 230px; background: var(--card); border:1px solid var(--line); border-radius:12px; padding:16px; position: relative;
+  }
+  .timeline .step::after {
+    content: "→"; position: absolute; right: -14px; top: 50%; transform: translateY(-50%);
+    color: var(--muted); font-size: 20px;
+  }
+  .timeline .step:last-child::after { display: none; }
+  .timeline .step .n { display:inline-block; width:26px; height:26px; border-radius:6px; color:#0b1020; font-weight:800; align-items:center; justify-content:center; display:inline-flex; margin-right:8px; }
+  .timeline .step.s1 .n { background: var(--tenant); }
+  .timeline .step.s2 .n { background: var(--backup); }
+  .timeline .step.s3 .n { background: var(--plan); }
+  .timeline .step.s4 .n { background: var(--provision); }
+  .timeline .step h4 { margin:0; font-size:14px; display:inline-block; }
+  .timeline .step .desc { color:var(--muted); font-size: 12.5px; margin-top:8px; }
+
+  /* Risk highlights */
+  .risks { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  .risk { background: var(--card); border:1px solid var(--line); border-radius:12px; padding: 14px 16px; border-left: 3px solid #f87171; }
+  .risk .label { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: #f87171; margin-bottom: 4px; }
+  .risk h4 { margin: 0 0 6px; font-size: 14px; }
+  .risk p { margin: 0; color: var(--muted); font-size: 13px; }
+
+  .questions { display:grid; grid-template-columns: 1fr 1fr; gap:14px; }
+  .question { background: var(--card); border:1px solid var(--line); border-radius:12px; padding:14px 16px; }
+  .question .q { font-size: 14px; color: var(--text); font-weight:600; }
+  .question .a { font-size: 13px; color: var(--muted); margin-top:6px; }
+
+  .footer { margin-top: 60px; padding: 18px; text-align:center; color: var(--muted); font-size: 13px; border-top: 1px solid var(--line); }
+  .footer a { color: var(--accent); text-decoration: none; }
+
+  @media (max-width: 920px) {
+    .hero, .stats, .surfaces, .risks, .questions { grid-template-columns: 1fr; }
+    h1 { font-size: 32px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hero">
+  <div>
+    <div class="eyebrow">Spec • Draft • 2026-05-18</div>
+    <h1><span class="grad">Admin CRUD</span> Surfaces <span class="v-pill">v2-v5</span></h1>
+    <p class="sub">Four operator UI surfaces that the original <code>app/page.tsx</code> hello-world promised would "land in later phases": tenant CRUD, plan CRUD, manual provision dashboard, backup catalog viewer. Each ships independently atop the shell the license-management UI already built (Tailwind v4 + shadcn + Server Components + ~/* aliases).</p>
+  </div>
+  <div class="stats">
+    <div class="stat"><div class="n">4</div><div class="l">surfaces, 4 PRs (phased)</div></div>
+    <div class="stat"><div class="n">0</div><div class="l">schema migrations needed</div></div>
+    <div class="stat"><div class="n">~3</div><div class="l">new tRPC mutations</div></div>
+    <div class="stat"><div class="n">100%</div><div class="l">reuse of layout shell + auth gate</div></div>
+  </div>
+</div>
+
+<!-- SHARED SHELL -->
+<section>
+  <h2><span class="badge">⊡</span>Shared Shell (already built)</h2>
+  <p class="lead">All four surfaces drop into the operator app's existing <code>app/(operator)/</code> route group. Auth, layout, table primitives, server-action pattern — all reused from the license-management UI shipped 2026-05-17.</p>
+  <div class="shell">
+    <div class="shell-title">Stack — exists today, ready to host the new surfaces</div>
+    <div class="layer exists"><span class="check">✓</span><strong>Tailwind v4 + shadcn/ui</strong> — 15 primitives installed (table, badge, button, dialog, form, ...)</div>
+    <div class="layer exists"><span class="check">✓</span><strong>Layout shell</strong> — sidebar nav (Licenses · Audit · Signing key) ready to expand</div>
+    <div class="layer exists"><span class="check">✓</span><strong>Auth gate</strong> — <code>requireOperator()</code> in <code>app/(operator)/layout.tsx</code></div>
+    <div class="layer exists"><span class="check">✓</span><strong>Server actions pattern</strong> — <code>{ok, data} | {ok, error}</code> contract</div>
+    <div class="layer exists"><span class="check">✓</span><strong>Pagination helper</strong> — shared keyset cursor encode/decode in <code>packages/api/src/lib/pagination.ts</code></div>
+    <div class="layer exists"><span class="check">✓</span><strong>Vitest + Playwright</strong> — test infra wired in CI</div>
+    <div class="layer new"><span class="plus">+</span><strong>4 new surface PRs</strong> — phased rollout below</div>
+  </div>
+</section>
+
+<!-- FOUR SURFACES -->
+<section>
+  <h2><span class="badge">4</span>The Four Surfaces</h2>
+  <div class="surfaces">
+
+    <div class="surface tenant">
+      <span class="tag">PR 1</span>
+      <h3>Tenant CRUD</h3>
+      <div class="route">/tenants · /tenants/[id]</div>
+      <div class="ops">
+        <span class="op">tenants.list</span>
+        <span class="op">tenants.get</span>
+        <span class="op">tenants.update</span>
+        <span class="op">tenants.markUntrusted</span>
+      </div>
+      <p class="desc">Highest-value, most-needed today. Filterable table (state: active / pending / suspended / archived), detail page with subscription + plan + backups + provisioning_jobs cross-references. Read-only ships first; mutations follow in PR 1.1.</p>
+      <div class="pr-order"><strong>Order:</strong> first (highest-value)</div>
+    </div>
+
+    <div class="surface backup">
+      <span class="tag">PR 2</span>
+      <h3>Backup Catalog Viewer</h3>
+      <div class="route">/backups · /backups/[id]</div>
+      <div class="ops">
+        <span class="op">tenantBackups.list</span>
+        <span class="op">tenantBackups.get</span>
+        <span class="op">tenantBackups.markUntrusted</span>
+      </div>
+      <p class="desc">Read-mostly. Filter by tenant / type (full / wal / filestore_tar) / date range / state. <code>markUntrusted</code> is the only mutation; mostly used during quarterly restore drills. Audit-logged.</p>
+      <div class="pr-order"><strong>Order:</strong> second — independent of tenant CRUD, useful in drills</div>
+    </div>
+
+    <div class="surface plan">
+      <span class="tag">PR 3</span>
+      <h3>Plan CRUD</h3>
+      <div class="route">/plans · /plans/[code]</div>
+      <div class="ops">
+        <span class="op">plans.list</span>
+        <span class="op">plans.create</span>
+        <span class="op">plans.update</span>
+      </div>
+      <p class="desc">Lowest churn — plans rarely change. Edit price_cop_cents / price_usd_cents / seat_included / module list / feature flags. Mid-cycle price changes need a confirm-by-typing-the-code guard (blast radius warning).</p>
+      <div class="pr-order"><strong>Order:</strong> third — low priority</div>
+    </div>
+
+    <div class="surface provision">
+      <span class="tag">PR 4</span>
+      <h3>Manual Provision</h3>
+      <div class="route">/tenants/new</div>
+      <div class="ops">
+        <span class="op">tenants.provision</span>
+      </div>
+      <p class="desc">Operator-driven tenant provisioning (vs the portal's signup flow). Highest blast radius — creates real infra on Railway/Fly. v1 = simple click-to-provision. v2 = N=2 approval gate via a "pending → approved → ran" state machine (separate spec).</p>
+      <div class="pr-order"><strong>Order:</strong> fourth — depends on tenant CRUD shipping first</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ROLLOUT TIMELINE -->
+<section>
+  <h2><span class="badge">T</span>Phased Rollout</h2>
+  <div class="timeline">
+    <div class="step s1">
+      <div><span class="n">1</span><h4>Tenants</h4></div>
+      <div class="desc">Read-only first → update mutation in 1.1. Replaces direct-SQL workflow.</div>
+    </div>
+    <div class="step s2">
+      <div><span class="n">2</span><h4>Backups</h4></div>
+      <div class="desc">Catalog viewer + markUntrusted. Used during restore drills (quarterly).</div>
+    </div>
+    <div class="step s3">
+      <div><span class="n">3</span><h4>Plans</h4></div>
+      <div class="desc">Plan CRUD with confirm-by-typing guard on price changes.</div>
+    </div>
+    <div class="step s4">
+      <div><span class="n">4</span><h4>Provision</h4></div>
+      <div class="desc">Manual provision (optionally gated behind N=2 approval).</div>
+    </div>
+  </div>
+</section>
+
+<!-- RISKS -->
+<section>
+  <h2><span class="badge">⚠</span>Blast-Radius Hazards</h2>
+  <div class="risks">
+    <div class="risk">
+      <div class="label">Provision</div>
+      <h4>Creates real infra on Railway/Fly</h4>
+      <p>Hard to undo (apps, volumes, secrets, costs). v2 spec: require N=2 operator approval via state machine. v1 keeps the manual CLI escape hatch.</p>
+    </div>
+    <div class="risk">
+      <div class="label">Plan price edits</div>
+      <h4>Affects existing subscriptions?</h4>
+      <p>Mid-billing-cycle changes: retroactive vs new-signups-only? Document in UI before allowing save. Require typing the plan code to confirm.</p>
+    </div>
+    <div class="risk">
+      <div class="label">markUntrusted</div>
+      <h4>Doesn't actually delete</h4>
+      <p>Just flips a flag the restore-drill respects. Real cleanup: a janitor cron with 30-day delete_at horizon (mirrors license-expiry-reminders pattern).</p>
+    </div>
+    <div class="risk">
+      <div class="label">"drop tenant"</div>
+      <h4>Intentionally absent</h4>
+      <p>No UI button for destructive tenant teardown — CLI-only forever, with manual operator approval. Same rule as today.</p>
+    </div>
+  </div>
+</section>
+
+<!-- OPEN QUESTIONS -->
+<section>
+  <h2><span class="badge">?</span>Open Questions</h2>
+  <div class="questions">
+    <div class="question">
+      <div class="q">Provision approval gate now or later?</div>
+      <div class="a">v1 = simple click-to-provision. v2 = N=2 gate when the team grows past one operator.</div>
+    </div>
+    <div class="question">
+      <div class="q">Tenant detail page scope?</div>
+      <div class="a">Show recent license_checks, backups, provisioning_jobs inline (each ~10 entries with deep-link to /backups?tenant=…). Operator wants one-stop visibility.</div>
+    </div>
+    <div class="question">
+      <div class="q">Per-surface CODEOWNERS?</div>
+      <div class="a">Tenant + Plan CRUD → security-leads review. Backup catalog → prod-deployers-only. Update .github/CODEOWNERS when each surface ships.</div>
+    </div>
+    <div class="question">
+      <div class="q">Plan changes retroactive?</div>
+      <div class="a">Decide BEFORE letting operator save. UI must show "this change will affect N existing subscriptions" warning.</div>
+    </div>
+  </div>
+</section>
+
+<div class="footer">
+  Spec source: <a href="superpowers/specs/2026-05-18-admin-crud-surfaces-design.md">docs/superpowers/specs/2026-05-18-admin-crud-surfaces-design.md</a>
+  &nbsp;·&nbsp; Generated 2026-05-18
+</div>
+
+</div>
+</body>
+</html>

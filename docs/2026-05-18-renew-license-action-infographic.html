@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Renew License Action — Design Infographic</title>
+<style>
+  :root {
+    --bg: #0b1020; --card: #171f3d; --card-2: #1f2950; --line: #2a356a;
+    --text: #e8ecff; --muted: #9aa3c7;
+    --accent: #34d399; --accent-2: #fbbf24;
+    --before: #f87171; --after: #34d399; --neutral: #c4b5fd;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: radial-gradient(1200px 600px at 20% -10%, rgba(52,211,153,0.18), transparent 60%),
+                radial-gradient(900px 500px at 90% 10%, rgba(251,191,36,0.14), transparent 60%),
+                var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif;
+    line-height: 1.5; -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1280px; margin: 0 auto; padding: 48px 24px 80px; }
+  .hero {
+    display: grid; grid-template-columns: 1.4fr 1fr; gap: 28px; align-items: center;
+    padding: 40px; border-radius: 24px; margin-bottom: 36px; position: relative; overflow: hidden;
+    background: linear-gradient(135deg, rgba(52,211,153,0.22), rgba(251,191,36,0.12));
+    border: 1px solid rgba(52,211,153,0.30);
+  }
+  .hero::after { content:""; position:absolute; right:-120px; top:-120px; width:360px; height:360px; background: radial-gradient(circle, rgba(52,211,153,0.35), transparent 60%); }
+  .eyebrow { text-transform:uppercase; letter-spacing:2px; font-size:12px; color: var(--accent); margin-bottom:12px; }
+  .v-pill { display:inline-block; margin-left:10px; padding:2px 10px; border-radius:999px;
+    background: linear-gradient(120deg, var(--accent), var(--accent-2)); color:#0b1020; font-weight:700; font-size:12px; letter-spacing:1px; }
+  h1 { font-size:42px; line-height:1.1; margin:0 0 14px; letter-spacing:-0.5px; }
+  h1 .grad { background: linear-gradient(120deg, #6ee7b7, #fde68a 60%, #c4b5fd); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .sub { color: var(--muted); font-size:17px; max-width:640px; }
+  .stats { display:grid; grid-template-columns:repeat(2, 1fr); gap:14px; }
+  .stat { background:rgba(255,255,255,0.04); border:1px solid var(--line); border-radius:14px; padding:14px 16px; }
+  .stat .n { font-size:24px; font-weight:700; background:linear-gradient(120deg, #6ee7b7, #fde68a); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .stat .l { color:var(--muted); font-size:13px; }
+  section { margin-top: 44px; }
+  h2 { font-size:26px; margin:0 0 18px; display:flex; align-items:center; gap:12px; }
+  h2 .badge { display:inline-flex; align-items:center; justify-content:center; width:32px; height:32px; border-radius:10px; background: linear-gradient(135deg, var(--accent), var(--accent-2)); color:#0b1020; font-weight:800; font-size:14px; }
+  .lead { color: var(--muted); margin:0 0 18px; max-width:980px; }
+
+  /* BEFORE / AFTER */
+  .ba {
+    display: grid; grid-template-columns: 1fr 80px 1fr; gap: 18px; align-items: stretch;
+  }
+  .ba .col { background: var(--card); border:1px solid var(--line); border-radius:16px; padding:22px; }
+  .ba .col.before { border-top: 3px solid var(--before); }
+  .ba .col.after { border-top: 3px solid var(--after); }
+  .ba .title { font-size: 13px; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px; }
+  .ba .before .title { color: var(--before); }
+  .ba .after .title { color: var(--after); }
+  .ba h3 { margin:0 0 14px; font-size:20px; }
+  .ba ul { margin:0; padding-left:20px; color:var(--muted); font-size:14px; }
+  .ba li { margin: 6px 0; }
+  .ba .arrow {
+    display:flex; align-items:center; justify-content:center; font-size: 28px; color: var(--neutral);
+  }
+
+  /* Transaction box */
+  .tx {
+    background: var(--card-2); border:1px solid var(--line); border-radius:14px; padding:22px;
+    position: relative; overflow: hidden;
+  }
+  .tx::before {
+    content:""; position:absolute; left:0; top:0; bottom:0; width:4px;
+    background: linear-gradient(180deg, var(--accent), var(--accent-2));
+  }
+  .tx h4 { margin: 0 0 10px; font-size: 16px; color: var(--accent); }
+  .tx ol { margin:0; padding-left: 22px; color: var(--muted); font-size: 14px; }
+  .tx ol li { margin: 8px 0; }
+  .tx code { background:rgba(255,255,255,0.07); padding:0 5px; border-radius:3px; color: var(--text); font-size:12.5px; }
+  .tx .commit { margin-top:14px; padding:10px 14px; background:rgba(52,211,153,0.10); border:1px dashed var(--after); border-radius:8px; color: var(--after); font-size: 13px; }
+  .tx .rollback { margin-top:8px; padding:10px 14px; background:rgba(248,113,113,0.10); border:1px dashed var(--before); border-radius:8px; color: var(--before); font-size: 13px; }
+
+  /* TIMELINE */
+  .timeline { display: flex; gap: 14px; overflow-x: auto; padding-bottom: 8px; }
+  .timeline .step {
+    flex: 1; min-width: 220px; background: var(--card); border:1px solid var(--line); border-radius:12px; padding:14px; position: relative;
+  }
+  .timeline .step::after {
+    content: "→"; position: absolute; right: -14px; top: 50%; transform: translateY(-50%);
+    color: var(--muted); font-size: 20px;
+  }
+  .timeline .step:last-child::after { display: none; }
+  .timeline .step .n { display:inline-block; width:26px; height:26px; border-radius:6px; background: var(--accent); color:#0b1020; font-weight:800; display:inline-flex; align-items:center; justify-content:center; margin-right:8px; }
+  .timeline .step h4 { margin:0; font-size:14px; display:inline-block; }
+  .timeline .step .desc { color:var(--muted); font-size: 12.5px; margin-top:8px; }
+
+  /* Questions */
+  .questions { display:grid; grid-template-columns: 1fr 1fr; gap:14px; }
+  .question { background: var(--card); border:1px solid var(--line); border-radius:12px; padding:14px 16px; }
+  .question .q { font-size: 14px; color: var(--text); font-weight:600; }
+  .question .a { font-size: 13px; color: var(--muted); margin-top:6px; }
+
+  .footer { margin-top: 60px; padding: 18px; text-align:center; color: var(--muted); font-size: 13px; border-top: 1px solid var(--line); }
+  .footer a { color: var(--accent); text-decoration: none; }
+
+  @media (max-width: 920px) {
+    .hero, .ba, .stats, .questions { grid-template-columns: 1fr; }
+    h1 { font-size: 32px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hero">
+  <div>
+    <div class="eyebrow">Spec • Draft • 2026-05-18</div>
+    <h1><span class="grad">Renew&nbsp;License</span> — Atomic Action <span class="v-pill">v2</span></h1>
+    <p class="sub">Single mutation that revokes the old license + issues a new one in the same Drizzle transaction. Either both happen or neither does. Audit gets one <code>license.renew</code> row tying the pair via correlation.</p>
+  </div>
+  <div class="stats">
+    <div class="stat"><div class="n">1</div><div class="l">click instead of 2 (revoke → mint)</div></div>
+    <div class="stat"><div class="n">1</div><div class="l">audit row (vs 2 unlinked today)</div></div>
+    <div class="stat"><div class="n">0</div><div class="l">schema migrations</div></div>
+    <div class="stat"><div class="n">100%</div><div class="l">backward-compat — old 2-step still works</div></div>
+  </div>
+</div>
+
+<section>
+  <h2><span class="badge">G</span>Why an atomic action</h2>
+  <p class="lead">Today renewal is: (a) Revoke the old license, (b) Mint a new one with the same customer_ref + image_sha256 + a fresh term. Two clicks, two audit rows, two opportunities to leave the customer inconsistent if (b) fails after (a) succeeded.</p>
+</section>
+
+<!-- BEFORE / AFTER -->
+<section>
+  <h2><span class="badge">Δ</span>Before vs After</h2>
+  <div class="ba">
+    <div class="col before">
+      <div class="title">Today — Manual 2-step</div>
+      <h3>Brittle</h3>
+      <ul>
+        <li>Click Revoke → reason → confirm → wait</li>
+        <li>Navigate to <code>/licenses/new</code> → fill form → submit</li>
+        <li>2 unrelated audit rows; correlation only via timestamp proximity</li>
+        <li>If step 2 fails (DB blip, validation): customer locked out</li>
+        <li>Operator manually copies the new <code>LICENSE_ID</code> + emails customer</li>
+      </ul>
+    </div>
+    <div class="arrow">→</div>
+    <div class="col after">
+      <div class="title">After — Atomic Renew</div>
+      <h3>Transactional</h3>
+      <ul>
+        <li>Click <code>Renew…</code> on the detail page</li>
+        <li>One dialog: termDays (365), graceDays (14), optional reason</li>
+        <li>Confirm → single Drizzle transaction commits both ops</li>
+        <li>One <code>license.renew</code> audit row with <code>{old_id, new_id, term_days, grace_days, reason}</code> payload</li>
+        <li>Auto-redirect to NEW license's detail page</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- TRANSACTION FLOW -->
+<section>
+  <h2><span class="badge">⚛</span>Transaction Semantics</h2>
+  <p class="lead">Implementation lives inside <code>db.transaction(async tx =&gt; { ... })</code>. Postgres rolls back automatically on any throw; the audit row + UPDATE + INSERT are all-or-nothing.</p>
+  <div class="tx">
+    <h4>Transactional steps</h4>
+    <ol>
+      <li><code>SELECT</code> old license by <code>id</code>. Throw <code>NOT_FOUND</code> if missing, <code>CONFLICT</code> if already <code>revoked_at IS NOT NULL</code>.</li>
+      <li><code>UPDATE enterprise_licenses SET revoked_at = NOW(), revoked_reason = 'renewed: superseded by ' || new_id</code></li>
+      <li><code>INSERT enterprise_licenses</code> — copies <code>customer_ref</code>, <code>image_sha256</code>, <code>allowed_modules</code> from old; new <code>id</code>; new <code>expires_at</code> + <code>grace_until</code> from term/grace inputs.</li>
+      <li><code>INSERT audit_log</code> with <code>action='license.renew'</code>, payload tying both ids.</li>
+      <li>Return <code>{ oldLicenseId, newLicenseId, newExpiresAt, newGraceUntil }</code>.</li>
+    </ol>
+    <div class="commit">✅ All 4 succeed → COMMIT. Customer sees new <code>LICENSE_ID</code>; addon's next hourly check picks up the change.</div>
+    <div class="rollback">❌ Any throw → ROLLBACK. Old license stays unrevoked; no orphan new row. Operator retries.</div>
+  </div>
+</section>
+
+<!-- TIMELINE -->
+<section>
+  <h2><span class="badge">T</span>Operator Flow</h2>
+  <div class="timeline">
+    <div class="step">
+      <div><span class="n">1</span><h4>Detail page</h4></div>
+      <div class="desc">Open <code>/licenses/&lt;id&gt;</code> for the customer due for renewal.</div>
+    </div>
+    <div class="step">
+      <div><span class="n">2</span><h4>Click Renew…</h4></div>
+      <div class="desc">Action bar gets a new button alongside Revoke (only shown when not yet revoked).</div>
+    </div>
+    <div class="step">
+      <div><span class="n">3</span><h4>Dialog</h4></div>
+      <div class="desc">Inputs pre-filled: termDays=365, graceDays=14, reason optional. Operator can override.</div>
+    </div>
+    <div class="step">
+      <div><span class="n">4</span><h4>Confirm</h4></div>
+      <div class="desc">Server action calls <code>enterpriseLicenses.renew</code> tRPC mutation. Toast on success/error.</div>
+    </div>
+    <div class="step">
+      <div><span class="n">5</span><h4>Land on new</h4></div>
+      <div class="desc">Auto-redirect to <code>/licenses/&lt;new-id&gt;</code>. Operator copies the new <code>LICENSE_ID</code> for customer hand-off.</div>
+    </div>
+  </div>
+</section>
+
+<!-- OPEN QUESTIONS -->
+<section>
+  <h2><span class="badge">?</span>Open Questions</h2>
+  <div class="questions">
+    <div class="question">
+      <div class="q">Copy <code>notes</code> from old to new?</div>
+      <div class="a">No. Stale notes (e.g. "non-payment, 90 days past due") shouldn't carry to the renewal. New license starts with empty notes.</div>
+    </div>
+    <div class="question">
+      <div class="q">Change <code>allowed_modules</code> at renewal?</div>
+      <div class="a">v1: copies old → new (no surprises). If a customer renews with different modules, operator uses the manual revoke+mint escape hatch.</div>
+    </div>
+    <div class="question">
+      <div class="q">Auto-email customer the new <code>LICENSE_ID</code>?</div>
+      <div class="a">v1: manual (matches today). v2 nice-to-have: optional email checkbox in the dialog firing Resend.</div>
+    </div>
+    <div class="question">
+      <div class="q">Renew a license with future <code>expires_at</code>?</div>
+      <div class="a">Allowed; operator decides. New license starts now, overlapping the old. Dialog description warns about the overlap.</div>
+    </div>
+  </div>
+</section>
+
+<div class="footer">
+  Spec source: <a href="superpowers/specs/2026-05-18-renew-license-action-design.md">docs/superpowers/specs/2026-05-18-renew-license-action-design.md</a>
+  &nbsp;·&nbsp; Generated 2026-05-18
+</div>
+
+</div>
+</body>
+</html>
