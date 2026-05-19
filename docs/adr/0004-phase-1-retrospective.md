@@ -213,3 +213,11 @@ PR #1 served as the verification harness for the gates:
 5. Design a PR-safe dry-run version of `Cross-platform parity gate` so
    it can become a required check on `main` PRs without actually
    deploying to Railway/Fly staging on every PR.
+6. **HttpCase test suite step.** The `saas_tenant_gate test suite` job
+   currently runs with `--test-enable --test-tags '/saas_tenant_gate,-post_install'`
+   to exclude HttpCase tests, because `--stop-after-init` never starts
+   the HTTP server (`'PreforkServer' object has no attribute 'httpd'`).
+   Add a second job in `ci.yml` that starts Odoo without
+   `--stop-after-init`, runs the `post_install` HttpCase suite via
+   `url_open`, and sends `SIGTERM` after tests pass. Until then,
+   `TestTelemetry` is verified locally only.
