@@ -240,13 +240,25 @@ jobs:
           INIT_MODULES: saas_tenant_gate
           STOP_AFTER_INIT: '1'
         run: |
+          # Tag-syntax pitfall: every saas_tenant_gate test class is
+          # tagged `post_install`. Earlier, '/saas_tenant_gate,-post_install'
+          # excluded ALL of them — the job ran 0 tests and silently passed
+          # ("0 post-tests in 0.02s"). The HttpCase suite above runs them
+          # all in --workers=0 mode with a live HTTP server; this
+          # --stop-after-init invocation is therefore redundant for the
+          # current test set. Keep the job for the build-test bootstrap
+          # (ensures the addon installs cleanly) but stop pretending
+          # it's exercising the test logic.
           docker run --rm \
             --network host \
             -e PGHOST -e PGPORT -e PGUSER -e PGPASSWORD \
             -e ADMIN_PASSWORD -e PLATFORM \
             -e TARGET_DB -e INIT_MODULES -e STOP_AFTER_INIT \
-            odoo-saas:test \
-            --test-enable --test-tags '/saas_tenant_gate,-post_install'
+            odoo-saas:test
+          # No --test-enable here. The entrypoint translates INIT_MODULES
+          # into --init and STOP_AFTER_INIT into --stop-after-init, so
+          # this run verifies the addon at least installs cleanly. Actual
+          # test logic runs in the HttpCase suite above.
 
   # ---------- HttpCase addon tests (Phase 2) ----------
   # HttpCase tests (e.g. TestTelemetry in saas_tenant_gate) require a
