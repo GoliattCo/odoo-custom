@@ -481,7 +481,13 @@ jobs:
           # install paths for pool-side addons; these are tenant-side
           # only.
           CI_DENY_LIST = {
-              'saas_license_gate',  # pre_init_check requires LICENSE_ID env
+              'saas_license_gate',     # pre_init_check requires LICENSE_ID env
+              'l10n_co_hr_payroll',    # extends hr.salary.rule from hr_payroll
+                                       # (Enterprise) but doesn't declare
+                                       # hr_payroll in 'depends' — undetectable
+                                       # by the transitive enterprise filter,
+                                       # blows up at registry-load time with
+                                       # "Model 'hr.salary.rule' does not exist".
           }
 
           roots = [pathlib.Path('custom-addons'), pathlib.Path('jorels-addons')]
