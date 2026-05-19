@@ -131,7 +131,12 @@ jobs:
 
       - name: Run addon test suite
         env:
-          PGHOST: postgres
+          # `docker run --network host` shares the runner's network namespace.
+          # The `services.postgres` container is exposed on the runner via the
+          # host port (5432); the service hostname `postgres` only resolves on
+          # the implicit Docker bridge that container-based jobs use, not on
+          # the host network. Use 127.0.0.1 to hit the bound port directly.
+          PGHOST: 127.0.0.1
           PGPORT: '5432'
           PGUSER: odoo
           PGPASSWORD: odoo
