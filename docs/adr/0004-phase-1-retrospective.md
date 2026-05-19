@@ -21,11 +21,18 @@ Record the following as the Phase 1 outcome and let it inform Phase 2 onward.
 - **Templates:** `_TEMPLATE-design.md`, `_TEMPLATE-fix.md`, plans `_TEMPLATE.md`.
 - **ADRs:** 0001 trunk-based-with-waves, 0002 cross-platform parity, 0003
   Better Stack log drain — all in `Accepted` state.
-- **CODEOWNERS:** solo-operator layout pointing every path at
-  `@remcaro-rgb`, with `# future:` comments naming the eventual team slugs
+- **CODEOWNERS:** team-based layout under `@GoliattCo/*` slugs after the
+  2026-05-19 org migration. Eight teams created
   (`maintainers`, `security-leads`, `prod-deployers`, `agent-team`,
-  per-addon owner teams). Validated via
-  `gh api repos/remcaro-rgb/odoo-custom/codeowners/errors` → `{"errors":[]}`.
+  `senior-engineers`, `club-addon-owners`, `accounting-addon-owners`,
+  `colombia-localization`); each has `@remcaro-rgb` as maintainer and push
+  access to the repo (`prod-deployers`: maintain). Validated via
+  `gh api repos/GoliattCo/odoo-custom/codeowners/errors` → `{"errors":[]}`.
+- **Org migration:** `remcaro-rgb/odoo-custom` transferred to
+  `GoliattCo/odoo-custom`. Operational references in `.github/SECRETS.md`,
+  `infra/runbooks/move-tier.md`, and recent session docs updated to the new
+  path. March-dated specs/plans intentionally left referencing the old
+  owner as point-in-time records.
 - **PR template:** `.github/PULL_REQUEST_TEMPLATE.md` with the v6 5-item
   CODEOWNERS checklist including the v5 reporter-ping clause (item 4).
 - **CI gates (all parse-clean under strict pyyaml):**
@@ -47,21 +54,21 @@ Record the following as the Phase 1 outcome and let it inform Phase 2 onward.
 
 ### What did not land, and why
 
-- **GitHub team creation (`maintainers`, `security-leads`, `prod-deployers`,
-  `agent-team`, per-addon owner teams).** `odoo-custom` is owned by a
-  personal user (`remcaro-rgb`), not an org. Personal repos do not support
-  team-based CODEOWNERS slugs. CODEOWNERS therefore points at the
-  individual; the plan's team layout is preserved as documentation
-  comments. Re-evaluate when the project moves under a GitHub org.
 - **Branch protection rules** (required status checks on `main` and
   `agent/spec-*`, linear history, signed commits, ≥ 1 CODEOWNERS approval,
   restricted pushes, refuse force-push on `agent/spec-*`). These are
   GitHub UI / repo-settings operations and require repo admin in a
   browser session; tracked as a separate operator follow-up. Without them
-  the CI gates are advisory, not enforcing. **High-priority gap.**
-- **`N=1` vs `N=2` prod-deployer enforcement.** Solo operator means
-  `N=1`/`N=2` collapses to "self-approve", which contradicts the whole
-  point. Defer to first team hire.
+  the CI gates are advisory, not enforcing. **High-priority gap** —
+  especially now that team-based CODEOWNERS exists and can actually
+  enforce path-scoped review requirements once branch protection is wired.
+- **`N=2` enforcement for security-sensitive paths.** Teams exist with the
+  right structure, but `@remcaro-rgb` is currently the only member of
+  every team. Enabling "Required approving reviews: 2" in branch
+  protection (or a path-scoped Ruleset over `saas_tenant_gate/security/`
+  and `agents/charters/`) would permanently block all PRs until the
+  second human joins. Defer activation to first team hire; teams already
+  carry the right shape.
 
 ### What we learned
 
@@ -72,10 +79,18 @@ Record the following as the Phase 1 outcome and let it inform Phase 2 onward.
   scalar. Both fixed during this phase. Add a `yamllint`/`actionlint`
   pre-commit hook in Phase 2 so future drift is caught locally.
 - **CODEOWNERS placeholders aren't the only thing to grep for.** The
-  scaffold uses `@remcaro-rgb` directly with `@your-org/*` only as
-  documentation comments — the Phase 1 plan's "replace `@your-org`"
-  step is therefore a no-op and should be reworded to "audit the
-  comments when org migration happens."
+  pre-migration scaffold used `@remcaro-rgb` directly with `@your-org/*`
+  only as documentation comments — the Phase 1 plan's "replace `@your-org`"
+  step was a no-op against that file. After the GoliattCo migration the
+  comments were the only useful artifact: they encoded the intended team
+  layout, which made the rewrite a mechanical replacement rather than a
+  fresh design pass.
+- **`gh repo transfer` does not exist.** The repo-transfer subcommand
+  isn't in the gh CLI; transfer must go through
+  `gh api repos/<old>/<repo>/transfer -X POST -f new_owner=<new>`. API
+  returns `202 Accepted` with the body still showing the old owner —
+  verify the move by polling `gh api repos/<new>/<repo>` rather than
+  trusting the immediate response.
 - **Phase 1 is mostly process, but the YAML still needs to compile.**
   Two-thirds of execution time went to verifying the artefacts, not
   creating new ones. Future phases should budget time for activation
@@ -97,16 +112,25 @@ Record the following as the Phase 1 outcome and let it inform Phase 2 onward.
   `spec-required` and `agent-guardrails` checks are **non-blocking** —
   any maintainer can merge through a failed check. This is the most
   important Phase-1 follow-up.
-- Team-based ownership remains aspirational; security-sensitive paths
-  (`saas_tenant_gate/security/`, `agents/charters/`) cannot enforce the
-  intended N=2 approval rule under personal-account CODEOWNERS.
+- Team-based ownership is structurally present but functionally
+  single-member. Security-sensitive paths route to `@GoliattCo/security-leads`,
+  which has only `@remcaro-rgb` until the first hire — so the intended
+  N=2 approval rule must remain disabled in branch protection or every
+  PR blocks.
 
 ## Follow-ups (tracked separately)
 
 1. Configure branch protection on `main` and on the `agent/spec-*`
-   pattern per Phase 1 plan Tasks 7 & 8.
-2. Move the repo under a GitHub org and create the team layout.
-3. Add `yamllint` / `actionlint` as a pre-commit hook and CI step.
-4. Re-run the Phase 1 verification checklist after branch protection is
+   pattern per Phase 1 plan Tasks 7 & 8. Now unblocked: team slugs in
+   CODEOWNERS resolve to real teams, so "Require review from Code Owners"
+   becomes meaningful.
+2. Add `yamllint` / `actionlint` as a pre-commit hook and CI step.
+3. Re-run the Phase 1 verification checklist after branch protection is
    live (open a malformed PR; confirm CI blocks the merge button, not
    just shows a red check).
+4. Re-point any external systems still trusting the old GitHub repo
+   path: GHA OIDC subject claims in Vercel/Fly/Railway (sub:
+   `repo:GoliattCo/odoo-custom:*`), Vercel project Git connection,
+   webhooks. Audit during Phase 2 setup.
+5. When first hire lands, flip "Required approving reviews" to 2 (or
+   add a path-scoped Ruleset over the security paths).

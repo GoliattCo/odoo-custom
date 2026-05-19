@@ -70,7 +70,7 @@ prod-deployers and security-leads see it.
 **Files:**
 - Modify: `.github/CODEOWNERS` ✅ scaffold delivered
 
-- [x] **Step 1: Replace `@your-org/*` placeholders with real team slugs** (2026-05-19: solo-operator layout uses `@remcaro-rgb`; `@your-org/*` strings remain as `# future:` comments only — re-audit on org migration)
+- [x] **Step 1: Replace `@your-org/*` placeholders with real team slugs** (2026-05-19: rewritten to `@GoliattCo/*` after repo transfer from `remcaro-rgb` → `GoliattCo`)
 
 ```bash
 # Find every placeholder
@@ -80,7 +80,7 @@ grep -n '@your-org' .github/CODEOWNERS
 Expected: a list of lines to edit. Replace each `@your-org/<team>` with your
 real org slug and team name.
 
-- [ ] **Step 2: Create the GitHub teams if they don't exist** (deferred: personal repo, no org — see ADR 0004)
+- [x] **Step 2: Create the GitHub teams if they don't exist** (2026-05-19: 8 teams created in `GoliattCo` org with `@remcaro-rgb` as maintainer of each)
 
 ```bash
 gh api orgs/<org>/teams -X POST -f name=maintainers
@@ -96,7 +96,7 @@ gh api orgs/<org>/teams -X POST -f name=colombia-localization
 
 Expected: all teams created with 0 members (you add humans next).
 
-- [ ] **Step 3: Add team members**
+- [x] **Step 3: Add team members** (2026-05-19: `@remcaro-rgb` set as maintainer of all 8 teams; second-human N=2 deferred to first hire)
 
 For each team, add the right humans via GitHub web UI or
 `gh api orgs/<org>/teams/<team>/memberships/<user> -X PUT`.
@@ -104,7 +104,7 @@ For each team, add the right humans via GitHub web UI or
 Expected: every team has ≥ 1 member (use repo `maintainers` as a fallback
 for unstaffed teams).
 
-- [x] **Step 4: Verify CODEOWNERS parses correctly** (2026-05-19: `gh api repos/remcaro-rgb/odoo-custom/codeowners/errors` → `{"errors":[]}`)
+- [x] **Step 4: Verify CODEOWNERS parses correctly** (2026-05-19: `gh api repos/GoliattCo/odoo-custom/codeowners/errors` → `{"errors":[]}`)
 
 ```bash
 gh api repos/<org>/<repo>/codeowners/errors
