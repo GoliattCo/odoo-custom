@@ -163,7 +163,7 @@ gh pr checks <number> --watch
 
 Expected: check now passes with a notice ("PR carries spec-exempt label").
 
-- [ ] **Step 3: Add `spec-required` to required status checks on `main`**
+- [x] **Step 3: Add `spec-required` to required status checks on `main`** (2026-05-19: `Spec link present` included in classic protection on main)
 
 In GitHub repo settings → Branches → main → Branch protection rules:
 - Require status checks to pass before merging
@@ -195,7 +195,7 @@ Reset:
 gh variable set AGENTS_ENABLED --body "true"
 ```
 
-- [ ] **Step 3: Add `agent-guardrails` to required status checks**
+- [x] **Step 3: Add `agent-guardrails` to required status checks** (2026-05-19: included in main protection and agent/spec-* ruleset)
 
 Same as Step 3 of Task 5, for `Agent guardrails` check.
 
@@ -207,32 +207,32 @@ Expected: agent-branch PRs cannot merge without this check passing.
 
 ### Task 7: Configure branch protection on `main`
 
-- [ ] **Step 1: Required status checks**
+- [x] **Step 1: Required status checks** (2026-05-19: 6 checks set via classic protection, cross-platform deploy jobs excluded — push-only triggers)
 
 In settings → Branches → main:
 - Required: `Spec link present`, `Agent guardrails`, `Build Odoo image`,
   `Build Postgres image`, `Build Traefik image`, `saas_tenant_gate test suite`,
   `Cross-platform parity gate`.
 
-- [ ] **Step 2: Require linear history**
+- [x] **Step 2: Require linear history** (2026-05-19: `required_linear_history=true`)
 
-- [ ] **Step 3: Require signed commits** (optional but recommended)
+- [ ] **Step 3: Require signed commits** (deferred for `main`: local signing not set up; active on `agent/spec-*` ruleset since no commits exist there yet)
 
-- [ ] **Step 4: Require ≥ 1 CODEOWNERS approval**
+- [ ] **Step 4: Require ≥ 1 CODEOWNERS approval** (deferred: would block solo operator since CODEOWNERS auto-routes to the author. Flip when headcount >= 2)
 
-- [ ] **Step 5: Restrict pushes** (only `prod-deployers` can push directly)
+- [x] **Step 5: Restrict pushes** (2026-05-19: classic protection `restrictions.teams=[prod-deployers]`)
 
 ### Task 8: Configure branch protection on `agent/spec-*`
 
-- [ ] **Step 1: Pattern-based rule for `agent/spec-*`**
+- [x] **Step 1: Pattern-based rule for `agent/spec-*`** (2026-05-19: ruleset id 16603187, `refs/heads/agent/spec-*`)
 
-- [ ] **Step 2: Refuse force-push and history rewrite**
+- [x] **Step 2: Refuse force-push and history rewrite** (2026-05-19: ruleset rules `non_fast_forward` + `deletion`)
 
 (Required for the v5 reporter-ping policy — no force-push circumvention.)
 
-- [ ] **Step 3: Require signed commits**
+- [x] **Step 3: Require signed commits** (2026-05-19: ruleset rule `required_signatures`)
 
-- [ ] **Step 4: Require status checks**
+- [x] **Step 4: Require status checks** (2026-05-19: 7 checks via ruleset — 6 main checks + `Spec quality checks`)
 
 Same as for `main`, plus the spec-quality workflow.
 
