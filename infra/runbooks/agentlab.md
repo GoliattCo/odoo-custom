@@ -53,11 +53,13 @@ Spec: [`docs/superpowers/specs/2026-05-16-agentlab-environment-design.md`](../..
 
 ## First-time setup
 
-> **Status (2026-05-20):** steps 1–3 below are DONE — the Postgres
-> cluster, the app, the volume, and the app secrets are all provisioned
-> in the `personal` Fly org. What remains is step 4's `STAGING_PG_DSN`
-> secret and step 5's first restore. See "Daily-restore connectivity"
-> at the end before running step 5.
+> **Status (2026-05-20):** steps 1–3 are DONE — the Postgres cluster,
+> the app, the volume, and the app secrets are provisioned in the
+> `personal` Fly org, and the app boots clean (`/web/health` 200). The
+> restore workflow's proxy connectivity is wired. The ONLY remaining
+> prerequisite is step 4's `STAGING_PG_DSN` secret (and, if staging
+> Postgres is a Fly app, the `STAGING_PG_FLY_APP` repo variable — see
+> "Daily-restore connectivity"). After that, step 5 can run.
 
 ### 1. Provision the agentlab Postgres app
 
@@ -117,9 +119,9 @@ gh secret set STAGING_PG_DSN -R GoliattCo/odoo-custom \
 
 ### 5. Trigger the first restore manually
 
-> Do NOT run this until the "Daily-restore connectivity" section below
-> is resolved — the workflow as written cannot reach the agentlab or
-> staging Postgres from a GitHub-hosted runner.
+> Prerequisite: the `STAGING_PG_DSN` secret must be set (step 4). The
+> proxy connectivity is handled by the workflow itself — see
+> "Daily-restore connectivity" below.
 
 ```bash
 gh workflow run agentlab-daily-restore.yml \
@@ -132,34 +134,41 @@ Once dry-run passes, flip to `dry_run=false` for the real restore.
 
 ---
 
-## Daily-restore connectivity — KNOWN GAP
+## Daily-restore connectivity
 
-`odoo-saas-odoo-agentlab-db` (and the staging pool Postgres) live on
-Fly's private 6PN network. `*.internal` and `*.flycast` hostnames only
-resolve **inside** that network — an app-to-app path. A GitHub-hosted
-runner, where `agentlab-daily-restore.yml` executes, is outside it and
-cannot reach either Postgres directly.
+`odoo-saas-odoo-agentlab-db` lives on Fly's private 6PN network —
+`*.internal` / `*.flycast` hostnames only resolve inside Fly. A
+GitHub-hosted runner, where `agentlab-daily-restore.yml` executes, is
+outside that network.
 
-Before the daily-restore can run, the workflow needs a `flyctl proxy`
-tunnel for each Postgres it touches:
+**The workflow handles this itself** (resolved 2026-05-20). On every
+run it opens a `flyctl proxy` tunnel:
+
+- **agentlab Postgres** → `127.0.0.1:15432`, always. `AGENTLAB_DSN` is
+  rewritten to that local address via
+  `infra/scripts/dsn_rewrite_host.py`.
+- **staging Postgres** → `127.0.0.1:15433`, only when the repo variable
+  `STAGING_PG_FLY_APP` is set (= staging Postgres is itself a Fly app).
+  If staging Postgres is publicly reachable (Railway / Neon), leave
+  `STAGING_PG_FLY_APP` unset and `STAGING_PG_DSN` is used directly.
+- **control-plane Postgres** (Neon) → public, never proxied.
+
+`flyctl` is on the runner (`superfly/flyctl-actions/setup-flyctl`) and
+`FLY_API_TOKEN` is a repo secret, so no extra setup is needed. The
+tunnels are torn down by an `if: always()` cleanup step.
+
+### If staging Postgres is a Fly app
+
+Set the repo variable so the workflow proxies it too:
 
 ```bash
-# in the workflow, before pg_dump / pg_restore / masking:
-flyctl proxy 6432:5432 -a <staging-pg-app>            &
-flyctl proxy 5432:5432 -a odoo-saas-odoo-agentlab-db  &
-# then connect to 127.0.0.1:6432 (staging) / 127.0.0.1:5432 (agentlab)
+gh variable set STAGING_PG_FLY_APP -R GoliattCo/odoo-custom \
+  --body "<staging-postgres-fly-app-name>"
 ```
 
-`flyctl` is already on the runner (`superfly/flyctl-actions/setup-flyctl`)
-and `FLY_API_TOKEN` is already a repo secret, so the tunnel is free to
-add — it just isn't wired yet. The `AGENTLAB_DSN` / `STAGING_PG_DSN`
-secrets would then point at `127.0.0.1:<port>` rather than the
-`.flycast` host.
-
-**Follow-up:** rework `agentlab-daily-restore.yml` to start the proxies
-and rewrite the DSN hosts to localhost. Tracked separately; until then
-the daily-restore cron will fail at the connectivity check (by design —
-better a loud failure than a silent no-op).
+Then `STAGING_PG_DSN` should carry the *user/password/database* — its
+host:port is rewritten to the local tunnel at run time, so the host in
+the stored secret is irrelevant (use the `.flycast` form for clarity).
 
 ---
 
