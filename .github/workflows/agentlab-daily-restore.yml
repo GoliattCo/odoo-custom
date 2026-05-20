@@ -63,7 +63,12 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     env:
-      FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+      # Org-scoped token — this workflow touches THREE Fly apps
+      # (odoo-saas-odoo-agentlab, -agentlab-db, odoo-saas-postgres) and
+      # `flyctl proxy` must query each app's network. The shared
+      # FLY_API_TOKEN is a deploy token scoped to odoo-saas-odoo only,
+      # which 401s on the cross-app GraphQL query (see .github/SECRETS.md).
+      FLY_API_TOKEN: ${{ secrets.FLY_AGENTLAB_TOKEN }}
       STAGING_PG_DSN: ${{ secrets.STAGING_PG_DSN }}
       AGENTLAB_DSN: ${{ secrets.AGENTLAB_DSN }}
       CONTROL_PLANE_PG_DSN: ${{ secrets.CONTROL_PLANE_PG_DSN }}

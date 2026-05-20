@@ -14,6 +14,7 @@ Actions → Repository secrets**.
 | `RAILWAY_ENVIRONMENT_ID` | `pgbackrest-backup.yml` backup-railway | `41fa1df4-6faa-4dae-beed-644fa6354180` for the `production` env. `railway variables --service postgres --kv` shows it. |
 | `FLY_API_TOKEN` | `ci.yml` deploy-fly | `flyctl tokens create deploy --app odoo-saas-odoo --name "gh-deploy"` (deploy-only scope is fine; CI just runs `flyctl deploy`). |
 | `FLY_SSH_TOKEN_POSTGRES` | `pgbackrest-backup.yml` backup-fly, `restore-drill.yml` drill-fly | `flyctl tokens create ssh --app odoo-saas-postgres --name "gh-actions-pgbackrest-ssh"`. **Must be ssh-scoped, NOT deploy** — deploy tokens can't run the GraphQL `appcompact` query that `flyctl ssh console` needs (observed: 401 "You must be authenticated to view this."). SSH tokens additionally include the org-wireguard scope. |
+| `FLY_AGENTLAB_TOKEN` | `agentlab-daily-restore.yml` | **Org-scoped** token: `flyctl tokens create org -o personal --name "gh-agentlab-daily-restore" --expiry 8760h`. The agentlab restore touches three apps (`odoo-saas-odoo-agentlab`, `odoo-saas-odoo-agentlab-db`, `odoo-saas-postgres`) and `flyctl proxy` runs the cross-app `app { network }` GraphQL query — a per-app deploy/ssh token 401s on apps outside its scope. Org scope is the clean fit. Rotate yearly (8760h expiry). |
 
 ## Environments
 
