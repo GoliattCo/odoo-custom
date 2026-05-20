@@ -126,10 +126,17 @@ jobs:
         env:
           PG_DSN: ${{ secrets.CONTROL_PLANE_PG_DSN }}
         run: |
+          set -euo pipefail
           if [ -s /tmp/to_destroy.txt ]; then
-              psql "$PG_DSN" -c "
+              # saas_audit.event is now live in the control-plane Postgres
+              # (applied 2026-05-20 via apply-control-plane-ddl). A failed
+              # audit write must fail the workflow — a destroyed preview
+              # env with no audit trail is exactly the gap the audit log
+              # exists to close. The earlier `|| true` predated the table
+              # existing.
+              psql "$PG_DSN" --set=ON_ERROR_STOP=1 -c "
                 INSERT INTO saas_audit.event (actor_kind, actor_name, action, payload)
                 VALUES ('system', 'preview-cleanup', 'preview-env-destroyed',
                         '$(jq -Rs . </tmp/to_destroy.txt)'::jsonb)
-              " || true
+              "
           fi
