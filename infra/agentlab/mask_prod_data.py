@@ -486,6 +486,14 @@ def mask_database(
                     continue
                 if is_allowed(table, column, allowlist):
                     continue
+                if (table, column) in unique_cols:
+                    # Same reason as the type pass — a regexp_replace can
+                    # collapse two distinct values to the same redacted
+                    # string and violate a UNIQUE constraint. Observed:
+                    # ir_model_data.name (part of the (module,name) unique
+                    # index) had its numeric suffix scrubbed by a deny
+                    # pattern, colliding distinct xml-ids.
+                    continue
                 qcol = _quote_ident(column)
                 for _name, rx in deny_patterns:
                     # psycopg2 parameterizes the regex literal; the column
