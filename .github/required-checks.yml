@@ -9,10 +9,12 @@
 # When you change branch protection in the GitHub UI (or via gh CLI), update
 # this file in the SAME PR so the drift audit stays accurate.
 #
-# Apply this file to live protection with:
-#   ./infra/scripts/apply-required-checks.sh
-# (script reads protection.yml, generates the API payload, calls
-#  PUT /repos/.../branches/{branch}/protection with a personal admin token).
+# Apply this file to live protection with a personal admin token:
+#   gh api repos/GoliattCo/odoo-custom/branches/main/protection \
+#     -X PUT --input <generated-payload.json>
+# and update the agent-spec-branches Ruleset (id 16603187) similarly.
+# There is no wrapper script today; the payloads are short enough to
+# hand-build (see the Phase 1 retro ADR 0004 for the main payload shape).
 
 main:
   # Always-running checks: workflow triggers on every PR to main; if the
@@ -25,6 +27,12 @@ main:
   - Build Postgres image
   - Build Traefik image
   - saas_tenant_gate test suite
+  # Phase 2 gates (added 2026-05-20 after one passing run each on PR #2).
+  # All run on every PR to main, unconditionally.
+  - Lint custom addons (ruff)
+  - Bandit security scan (custom addons)
+  - saas_tenant_gate HttpCase suite
+  - Addon upgrade matrix
 
   # NOT included (paths-filtered workflows that only trigger on relevant
   # file changes; would never report a status on unrelated PRs):
@@ -33,18 +41,25 @@ main:
   # These workflows still run and fail loudly when relevant; they just
   # don't block PRs that don't touch their watched paths.
 
+  # NOT included (advisory job — continue-on-error: true, never blocks):
+  #   - Lint legacy + jorels addons (advisory)
+
   # NOT included (push-only triggers on main, never run on PRs):
   #   - Deploy → Railway staging
   #   - Deploy → Fly staging
   #   - Cross-platform parity gate
 
 agent_spec_pattern:
-  # Same as main plus spec-quality, applied via the agent-spec-branches Ruleset
+  # Same as main, applied via the agent-spec-branches Ruleset (id 16603187)
   # rather than classic branch protection.
   - Spec link present
   - Agent guardrails
+  - Spec quality checks
   - Build Odoo image
   - Build Postgres image
   - Build Traefik image
   - saas_tenant_gate test suite
-  - Spec quality checks
+  - Lint custom addons (ruff)
+  - Bandit security scan (custom addons)
+  - saas_tenant_gate HttpCase suite
+  - Addon upgrade matrix
