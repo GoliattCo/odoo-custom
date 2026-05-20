@@ -4,14 +4,27 @@
 # §4 (restore pipeline) and §5 (masking).
 #
 # Nightly 02:00 UTC the workflow:
-#   1. Wakes the agentlab Fly app (auto_stop is on).
-#   2. Pulls a fresh pg_dump from each staging tenant.
-#   3. Restores into the agentlab Postgres (drop + create db per tenant).
-#   4. Runs infra/agentlab/mask_prod_data.py — type-based masking +
+#   1. Opens flyctl proxy tunnels to the agentlab Postgres (and, if
+#      configured, the staging Postgres) — both live on Fly's private
+#      6PN network and are unreachable from a GitHub-hosted runner
+#      without a tunnel.
+#   2. Wakes the agentlab Fly app (auto_stop is on).
+#   3. Pulls a fresh pg_dump from each staging tenant.
+#   4. Restores into the agentlab Postgres (drop + create db per tenant).
+#   5. Runs infra/agentlab/mask_prod_data.py — type-based masking +
 #      deny-list pass + sample-row PII audit (the audit gates the run:
 #      surviving PII fails the workflow before redeploy).
 #   6. Rotates the agentlab reviewer one-time password.
 #   7. Writes a saas_audit.event row.
+#
+# Connectivity model:
+#   - agentlab Postgres (odoo-saas-odoo-agentlab-db): Fly-private, ALWAYS
+#     proxied to 127.0.0.1:15432.
+#   - staging Postgres: proxied to 127.0.0.1:15433 only when the repo
+#     variable STAGING_PG_FLY_APP is set (= the staging Postgres is also
+#     a Fly app). If it is unset, STAGING_PG_DSN is used as-is — correct
+#     when staging Postgres is publicly reachable (e.g. Railway/Neon).
+#   - control-plane Postgres (Neon): public, never proxied.
 #
 # Manual dispatch is supported for fix-up runs; pass `tenant_filter=<name>`
 # to restore just one tenant.
@@ -39,6 +52,10 @@ concurrency:
 permissions:
   contents: read
 
+env:
+  AGENTLAB_PROXY_PORT: '15432'
+  STAGING_PROXY_PORT: '15433'
+
 jobs:
 
   restore:
@@ -50,6 +67,7 @@ jobs:
       STAGING_PG_DSN: ${{ secrets.STAGING_PG_DSN }}
       AGENTLAB_DSN: ${{ secrets.AGENTLAB_DSN }}
       CONTROL_PLANE_PG_DSN: ${{ secrets.CONTROL_PLANE_PG_DSN }}
+      STAGING_PG_FLY_APP: ${{ vars.STAGING_PG_FLY_APP }}
       TENANT_FILTER: ${{ inputs.tenant_filter }}
       DRY_RUN: ${{ inputs.dry_run || 'false' }}
     steps:
@@ -59,10 +77,79 @@ jobs:
 
       - name: Preflight — check secrets
         run: |
+          set -euo pipefail
           : "${FLY_API_TOKEN:?FLY_API_TOKEN required}"
-          : "${STAGING_PG_DSN:?STAGING_PG_DSN required (read-only on staging pool)}"
-          : "${AGENTLAB_DSN:?AGENTLAB_DSN required (superuser on agentlab)}"
+          : "${AGENTLAB_DSN:?AGENTLAB_DSN required}"
           : "${CONTROL_PLANE_PG_DSN:?CONTROL_PLANE_PG_DSN required for audit-event write}"
+          if [ "${DRY_RUN}" = "false" ]; then
+            : "${STAGING_PG_DSN:?STAGING_PG_DSN required for a real restore}"
+          fi
+
+      - name: Open Fly proxy tunnels
+        run: |
+          set -euo pipefail
+          # agentlab Postgres — always needed (the masker connects to it
+          # in dry-run too). Background the proxy; it persists for the
+          # rest of the job (same runner) and is killed by the cleanup
+          # step below.
+          nohup flyctl proxy "${AGENTLAB_PROXY_PORT}:5432" \
+            -a odoo-saas-odoo-agentlab-db \
+            > /tmp/proxy-agentlab.log 2>&1 &
+          echo $! > /tmp/proxy-agentlab.pid
+
+          # staging Postgres — only when it's a Fly app (repo var set)
+          # and we're doing a real restore (dry-run never touches staging).
+          if [ "${DRY_RUN}" = "false" ] && [ -n "${STAGING_PG_FLY_APP:-}" ]; then
+            nohup flyctl proxy "${STAGING_PROXY_PORT}:5432" \
+              -a "${STAGING_PG_FLY_APP}" \
+              > /tmp/proxy-staging.log 2>&1 &
+            echo $! > /tmp/proxy-staging.pid
+          fi
+
+          # Wait for the agentlab tunnel to accept connections.
+          for _ in $(seq 1 30); do
+            if pg_isready -h 127.0.0.1 -p "${AGENTLAB_PROXY_PORT}" >/dev/null 2>&1; then
+              break
+            fi
+            sleep 1
+          done
+          if ! pg_isready -h 127.0.0.1 -p "${AGENTLAB_PROXY_PORT}" >/dev/null 2>&1; then
+            echo "::error::agentlab proxy never became reachable on 127.0.0.1:${AGENTLAB_PROXY_PORT}"
+            cat /tmp/proxy-agentlab.log
+            exit 1
+          fi
+          if [ -f /tmp/proxy-staging.pid ]; then
+            for _ in $(seq 1 30); do
+              if pg_isready -h 127.0.0.1 -p "${STAGING_PROXY_PORT}" >/dev/null 2>&1; then
+                break
+              fi
+              sleep 1
+            done
+            if ! pg_isready -h 127.0.0.1 -p "${STAGING_PROXY_PORT}" >/dev/null 2>&1; then
+              echo "::error::staging proxy never became reachable on 127.0.0.1:${STAGING_PROXY_PORT}"
+              cat /tmp/proxy-staging.log
+              exit 1
+            fi
+          fi
+          echo "::notice::Fly proxy tunnel(s) up"
+
+      - name: Resolve effective DSNs
+        run: |
+          set -euo pipefail
+          # Repoint AGENTLAB_DSN at the local tunnel. The rewritten value
+          # overrides the job-level env for every subsequent step.
+          agentlab_local=$(python3 infra/scripts/dsn_rewrite_host.py \
+            "${AGENTLAB_DSN}" "127.0.0.1:${AGENTLAB_PROXY_PORT}")
+          echo "::add-mask::${agentlab_local}"
+          echo "AGENTLAB_DSN=${agentlab_local}" >> "$GITHUB_ENV"
+
+          # staging: rewrite only if we proxied it; otherwise keep as-is.
+          if [ -f /tmp/proxy-staging.pid ]; then
+            staging_local=$(python3 infra/scripts/dsn_rewrite_host.py \
+              "${STAGING_PG_DSN}" "127.0.0.1:${STAGING_PROXY_PORT}")
+            echo "::add-mask::${staging_local}"
+            echo "STAGING_PG_DSN=${staging_local}" >> "$GITHUB_ENV"
+          fi
 
       - name: Wake agentlab machines
         if: env.DRY_RUN == 'false'
@@ -75,6 +162,7 @@ jobs:
 
       - name: Discover tenants
         id: tenants
+        if: env.DRY_RUN == 'false'
         run: |
           set -euo pipefail
           # If a filter was passed via workflow_dispatch, use it; otherwise
@@ -139,6 +227,7 @@ jobs:
           #   2  sample audit found surviving PII  → this step (and the
           #      whole restore) fails, and agentlab is NOT redeployed with
           #      unmasked data.
+          # AGENTLAB_DSN here is the proxied 127.0.0.1 form.
           python3 infra/agentlab/mask_prod_data.py \
             --allowlist infra/agentlab/mask-allowlist.yml \
             --rules infra/agentlab/masking-rules.yml \
@@ -147,8 +236,8 @@ jobs:
       - name: Masking dry-run check
         if: env.DRY_RUN == 'true'
         run: |
-          # In dry-run we only confirm the masker connects and classifies;
-          # no UPDATEs are applied.
+          # In dry-run we only confirm the masker connects (over the
+          # proxy) and classifies; no UPDATEs are applied.
           python3 infra/agentlab/mask_prod_data.py --dry-run \
             | tee /tmp/masking-dryrun.log
 
@@ -171,6 +260,7 @@ jobs:
       - name: Write audit event
         if: env.DRY_RUN == 'false' && always()
         run: |
+          # CONTROL_PLANE_PG_DSN is Neon — publicly reachable, no proxy.
           psql "$CONTROL_PLANE_PG_DSN" -c "
             INSERT INTO saas_audit.event
               (actor_kind, actor_name, action, target_kind, payload)
@@ -178,9 +268,19 @@ jobs:
               ('system', 'agentlab-daily-restore', 'agentlab-restored',
                'fly-app',
                jsonb_build_object(
-                 'tenant_count', ${{ steps.tenants.outputs.count }},
+                 'tenant_count', ${{ steps.tenants.outputs.count || 0 }},
                  'tenant_filter', '${{ inputs.tenant_filter }}',
                  'dry_run', '${{ inputs.dry_run }}',
                  'workflow_run_id', '${{ github.run_id }}'
                ))
           "
+
+      - name: Close Fly proxy tunnels
+        if: always()
+        run: |
+          for pidfile in /tmp/proxy-agentlab.pid /tmp/proxy-staging.pid; do
+            if [ -f "$pidfile" ]; then
+              kill "$(cat "$pidfile")" 2>/dev/null || true
+            fi
+          done
+          echo "::notice::Fly proxy tunnel(s) closed"
