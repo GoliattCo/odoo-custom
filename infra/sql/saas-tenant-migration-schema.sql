@@ -29,6 +29,12 @@
 -- Idempotent: ALTER ... ADD COLUMN IF NOT EXISTS shape so we can layer
 -- the Phase 4 additions onto an existing table.
 
+-- The `saas` schema must exist before any saas.tenant reference. The
+-- audit-event DDL creates its own `saas_audit` schema; this file is
+-- responsible for `saas`. Idempotent — no-op if the control plane
+-- already provisioned it.
+CREATE SCHEMA IF NOT EXISTS saas;
+
 CREATE TABLE IF NOT EXISTS saas.tenant (
     id                  bigserial PRIMARY KEY,
     name                text NOT NULL UNIQUE,         -- tenant slug (= Odoo DB name)
