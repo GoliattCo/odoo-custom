@@ -276,6 +276,57 @@ jobs:
             --verbose \
             --exit-code 1
 
+  # ---------- Schema diff (P2.6 — informational PR comment) ----------
+  # When a PR touches any `custom-addons/*/models/**.py`, walks each
+  # changed file at BASE_SHA + HEAD_SHA, extracts model `_name` /
+  # `_inherit` + `fields.<Type>(...)` declarations via `ast`, and posts
+  # a markdown diff (additions/removals only — no type changes; those
+  # are visible in the standard diff viewer). Informational — never
+  # fails the build. Driven by `infra/scripts/schema_diff.py`.
+  schema-diff:
+    name: Schema diff (informational)
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    permissions:
+      contents: read
+      pull-requests: write  # `gh pr comment` needs this
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Detect changed model files
+        id: probe
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+          HEAD: ${{ github.event.pull_request.head.sha }}
+        run: |
+          count=$(git diff --name-only --diff-filter=ACMR "$BASE..$HEAD" \
+            -- 'custom-addons/*/models/**.py' | wc -l | tr -d ' ')
+          echo "count=$count" >> "$GITHUB_OUTPUT"
+      - name: Compute schema diff
+        if: steps.probe.outputs.count != '0'
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          python3 infra/scripts/schema_diff.py > /tmp/schema-diff.md
+          cat /tmp/schema-diff.md
+      - name: Post comment
+        if: steps.probe.outputs.count != '0'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if [ -s /tmp/schema-diff.md ]; then
+            gh pr comment ${{ github.event.pull_request.number }} \
+              --repo ${{ github.repository }} \
+              --body-file /tmp/schema-diff.md
+          else
+            echo "schema_diff.py produced no output — no field-level changes."
+          fi
+
   masking-unit-tests:
     name: Agentlab masking unit tests
     runs-on: ubuntu-latest
@@ -387,6 +438,36 @@ jobs:
           tags: odoo-saas:test
           cache-from: type=gha
 
+      - name: Detect changed addons (P2.5)
+        id: changed_addons
+        env:
+          BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+          HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          # Find the addons under custom-addons/ that this PR/push range
+          # touched. Pre-Phase-2-P2.5 this job hardcoded saas_tenant_gate;
+          # now we auto-detect changed addons via git diff and always
+          # also include saas_tenant_gate (it's the base addon every
+          # tenant needs; bootstrap "does it install cleanly" stays
+          # green even on PRs that don't touch any addon).
+          base="$BASE"; head="$HEAD"
+          if [ -z "$base" ] || [ "$base" = "0000000000000000000000000000000000000000" ]; then
+            base="HEAD~1"
+          fi
+          # Extract the addon directory name from each changed path.
+          mapfile -t changed < <(git diff --name-only --diff-filter=ACMR "$base" "$head" \
+            -- 'custom-addons/*/' \
+            | awk -F/ '{ if ($2 != "") print $2 }' | sort -u)
+          # Always include saas_tenant_gate (project-base).
+          addons="saas_tenant_gate"
+          for a in "${changed[@]}"; do
+            [ -z "$a" ] && continue
+            [ "$a" = "saas_tenant_gate" ] && continue
+            addons="$addons,$a"
+          done
+          echo "addons=$addons" >> "$GITHUB_OUTPUT"
+          echo "Will install: $addons"
+
       - name: Run addon test suite
         env:
           # `docker run --network host` shares the runner's network namespace.
@@ -400,19 +481,18 @@ jobs:
           PGPASSWORD: odoo
           ADMIN_PASSWORD: ci-admin-pw-not-for-prod
           PLATFORM: compose
-          TARGET_DB: ci_saas_tenant_gate
-          INIT_MODULES: saas_tenant_gate
+          TARGET_DB: ci_test_changed
+          INIT_MODULES: ${{ steps.changed_addons.outputs.addons }}
           STOP_AFTER_INIT: '1'
         run: |
           # Tag-syntax pitfall: every saas_tenant_gate test class is
           # tagged `post_install`. Earlier, '/saas_tenant_gate,-post_install'
           # excluded ALL of them — the job ran 0 tests and silently passed
-          # ("0 post-tests in 0.02s"). The HttpCase suite above runs them
+          # ("0 post-tests in 0.02s"). The HttpCase suite below runs them
           # all in --workers=0 mode with a live HTTP server; this
           # --stop-after-init invocation is therefore redundant for the
-          # current test set. Keep the job for the build-test bootstrap
-          # (ensures the addon installs cleanly) but stop pretending
-          # it's exercising the test logic.
+          # current test set but is kept as a build-test bootstrap that
+          # verifies each changed addon at least installs cleanly.
           docker run --rm \
             --network host \
             -e PGHOST -e PGPORT -e PGUSER -e PGPASSWORD \
@@ -421,8 +501,8 @@ jobs:
             odoo-saas:test
           # No --test-enable here. The entrypoint translates INIT_MODULES
           # into --init and STOP_AFTER_INIT into --stop-after-init, so
-          # this run verifies the addon at least installs cleanly. Actual
-          # test logic runs in the HttpCase suite above.
+          # this run verifies every addon at least installs cleanly.
+          # Actual test logic runs in the HttpCase suite below.
 
   # ---------- HttpCase addon tests (Phase 2) ----------
   # HttpCase tests (e.g. TestTelemetry in saas_tenant_gate) require a
@@ -468,6 +548,34 @@ jobs:
           tags: odoo-saas:httpcase
           cache-from: type=gha
 
+      - name: Detect changed addons (P2.5)
+        id: changed_addons
+        env:
+          BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+          HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          # Same auto-detect as `test-addon`. The addon list drives both
+          # INIT_MODULES (install) AND --test-tags '/<addon1>,/<addon2>,...'
+          # (run tests). Always include saas_tenant_gate as the base.
+          base="$BASE"; head="$HEAD"
+          if [ -z "$base" ] || [ "$base" = "0000000000000000000000000000000000000000" ]; then
+            base="HEAD~1"
+          fi
+          mapfile -t changed < <(git diff --name-only --diff-filter=ACMR "$base" "$head" \
+            -- 'custom-addons/*/' \
+            | awk -F/ '{ if ($2 != "") print $2 }' | sort -u)
+          addons="saas_tenant_gate"
+          test_tags="/saas_tenant_gate"
+          for a in "${changed[@]}"; do
+            [ -z "$a" ] && continue
+            [ "$a" = "saas_tenant_gate" ] && continue
+            addons="$addons,$a"
+            test_tags="$test_tags,/$a"
+          done
+          echo "addons=$addons" >> "$GITHUB_OUTPUT"
+          echo "test_tags=$test_tags" >> "$GITHUB_OUTPUT"
+          echo "Will install + test-tag: addons=$addons tags=$test_tags"
+
       - name: Run HttpCase suite
         env:
           PGHOST: 127.0.0.1
@@ -476,8 +584,9 @@ jobs:
           PGPASSWORD: odoo
           ADMIN_PASSWORD: ci-admin-pw-not-for-prod
           PLATFORM: compose
-          TARGET_DB: ci_saas_tenant_gate_http
-          INIT_MODULES: saas_tenant_gate
+          TARGET_DB: ci_changed_http
+          INIT_MODULES: ${{ steps.changed_addons.outputs.addons }}
+          TEST_TAGS: ${{ steps.changed_addons.outputs.test_tags }}
           # NOTE: STOP_AFTER_INIT deliberately UNSET so Odoo keeps the
           # HTTP server alive; we kill the container after the test
           # marker line is observed.
@@ -498,7 +607,7 @@ jobs:
             --max-cron-threads=0 \
             --db-filter='.*' \
             --test-enable \
-            --test-tags '/saas_tenant_gate' \
+            --test-tags "$TEST_TAGS" \
             > /tmp/httpcase-cid
           # --db-filter='.*' overrides the production dbfilter=^%d$ pattern.
           # In prod, hostname must match the DB name (multi-tenant routing).
@@ -552,6 +661,122 @@ jobs:
         with:
           name: httpcase-logs
           path: /tmp/httpcase-logs/
+
+  # ---------- Migration dry-run (P2.8 — lightweight variant) ----------
+  # After fresh-install (test-addon) and HttpCase tests (test-addon-httpcase),
+  # this job runs `odoo -u all` against the same DB to exercise every
+  # installed addon's migration scripts + XML re-loading. Catches:
+  #   - Migration script syntax/import errors that only fire on `-u`
+  #   - XML reload regressions (templates that referenced a now-missing
+  #     model field; rendered fine at first install, broken on re-load)
+  #   - `_register_hook` / `_init_column` bugs that depend on a non-empty
+  #     `ir_model` table (init-time has the table empty)
+  #
+  # Roadmap (`docs/2026-05-15-spec-driven-dev-plan.md` §P2.8) describes
+  # the FULL variant: clone a representative staging tenant's DB, restore
+  # to a fresh DB, run `-u all`. That needs CI access to staging tenant
+  # credentials — deferred follow-up. This lightweight variant catches
+  # the most common migration breakage class without that dependency.
+  migration-dry-run:
+    name: Migration dry-run (-u all on changed addons)
+    runs-on: ubuntu-latest
+    needs: [build-odoo-image]
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: odoo
+          POSTGRES_PASSWORD: odoo
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U odoo"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=10
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 2
+
+      - uses: docker/setup-buildx-action@v3
+      - name: docker build Odoo (for migration dry-run)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          push: false
+          load: true
+          tags: odoo-saas:migrate
+          cache-from: type=gha
+
+      - name: Detect changed addons
+        id: changed_addons
+        env:
+          BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+          HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          base="$BASE"; head="$HEAD"
+          if [ -z "$base" ] || [ "$base" = "0000000000000000000000000000000000000000" ]; then
+            base="HEAD~1"
+          fi
+          mapfile -t changed < <(git diff --name-only --diff-filter=ACMR "$base" "$head" \
+            -- 'custom-addons/*/' \
+            | awk -F/ '{ if ($2 != "") print $2 }' | sort -u)
+          addons="saas_tenant_gate"
+          for a in "${changed[@]}"; do
+            [ -z "$a" ] && continue
+            [ "$a" = "saas_tenant_gate" ] && continue
+            addons="$addons,$a"
+          done
+          echo "addons=$addons" >> "$GITHUB_OUTPUT"
+          echo "Will install then -u: $addons"
+
+      - name: Install changed addons
+        env:
+          PGHOST: 127.0.0.1
+          PGPORT: '5432'
+          PGUSER: odoo
+          PGPASSWORD: odoo
+          ADMIN_PASSWORD: ci-admin-pw-not-for-prod
+          PLATFORM: compose
+          TARGET_DB: ci_migrate
+          INIT_MODULES: ${{ steps.changed_addons.outputs.addons }}
+          STOP_AFTER_INIT: '1'
+        run: |
+          docker run --rm \
+            --network host \
+            -e PGHOST -e PGPORT -e PGUSER -e PGPASSWORD \
+            -e ADMIN_PASSWORD -e PLATFORM \
+            -e TARGET_DB -e INIT_MODULES -e STOP_AFTER_INIT \
+            odoo-saas:migrate
+
+      - name: Re-load with -u all
+        # The Odoo entrypoint translates INIT_MODULES to `--init` for a
+        # FIRST install. For the migration dry-run we want `--update all`
+        # against the just-installed DB. The entrypoint also supports
+        # UPDATE_MODULES (translates to --update); set it to `all` and
+        # clear INIT_MODULES so the entrypoint emits the right flag.
+        env:
+          PGHOST: 127.0.0.1
+          PGPORT: '5432'
+          PGUSER: odoo
+          PGPASSWORD: odoo
+          ADMIN_PASSWORD: ci-admin-pw-not-for-prod
+          PLATFORM: compose
+          TARGET_DB: ci_migrate
+          UPDATE_MODULES: all
+          STOP_AFTER_INIT: '1'
+        run: |
+          docker run --rm \
+            --network host \
+            -e PGHOST -e PGPORT -e PGUSER -e PGPASSWORD \
+            -e ADMIN_PASSWORD -e PLATFORM \
+            -e TARGET_DB -e UPDATE_MODULES -e STOP_AFTER_INIT \
+            odoo-saas:migrate
 
   # ---------- Addon upgrade matrix (Phase 2) ----------
   # Validates that installing all custom addons in topological order from
