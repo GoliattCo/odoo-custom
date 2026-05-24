@@ -50,3 +50,6 @@ Thumbs.db
 
 # Vercel
 **/.vercel/
+
+# Migration runner virtualenv
+infra/runners/migration_runner/.venv/

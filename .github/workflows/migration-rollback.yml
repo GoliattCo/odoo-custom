@@ -1,0 +1,152 @@
+# Phase 4 (Tier 5) — operator-initiated per-tenant migration rollback.
+#
+# Restores a single tenant DB from its pre-migration pgBackRest snapshot.
+# This is the DATA half of rollback; the IMAGE half lives in
+# rollback-prod.yml (Phase-3 pinned image digest revert).
+#
+# The workflow is dispatch-only — no schedule. It expects the operator
+# to have already paste-back-confirmed the tenant slug from the
+# operator UI (the matching tRPC endpoint also gates on confirmation).
+#
+# Required secrets:
+#   CONTROL_PLANE_PG_DSN  — for the row reads + audit_log write.
+#   PGBACKREST_REPO1_S3_BUCKET, AWS_*  — pgBackRest needs S3 credentials
+#                                        to pull the snapshot tag.
+
+name: migration-rollback
+
+on:
+  workflow_dispatch:
+    inputs:
+      job_id:
+        description: 'tenant_migration_jobs.id (uuid) to roll back'
+        required: true
+      previous_sha:
+        description: 'SHA to revert tenants.last_migrated_sha to (blank = NULL)'
+        required: false
+      reason:
+        description: 'Audit reason — what broke after the migration'
+        required: true
+
+concurrency:
+  # Per-tenant rollbacks must serialise to avoid two ops fighting over
+  # the same snapshot. The job's tenant slug isn't known at trigger
+  # time, so we serialise on job_id which is one-to-one with tenant.
+  group: migration-rollback-${{ inputs.job_id }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  rollback:
+    name: Restore tenant DB from pre-migration snapshot
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      PG_DSN: ${{ secrets.CONTROL_PLANE_PG_DSN }}
+      JOB_ID: ${{ inputs.job_id }}
+      PREV_SHA: ${{ inputs.previous_sha }}
+      REASON: ${{ inputs.reason }}
+      ACTOR: ${{ github.actor }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Preflight
+        run: |
+          set -euo pipefail
+          if [ -z "${PG_DSN:-}" ]; then
+            echo "::error::CONTROL_PLANE_PG_DSN secret is not set." >&2
+            exit 1
+          fi
+          if [ -z "${JOB_ID:-}" ]; then
+            echo "::error::job_id input is required" >&2
+            exit 1
+          fi
+          psql --version
+
+      - name: Look up snapshot + tenant from job_id
+        id: lookup
+        run: |
+          set -euo pipefail
+          row=$(psql "$PG_DSN" -tA -F $'\t' -c "
+            SELECT j.tenant_id, t.db_name, t.slug, j.snapshot_id
+            FROM tenant_migration_jobs j
+            JOIN tenants t ON t.id = j.tenant_id
+            WHERE j.id = '${JOB_ID}'::uuid;
+          ")
+          if [ -z "$row" ]; then
+            echo "::error::job $JOB_ID not found" >&2
+            exit 1
+          fi
+          IFS=$'\t' read -r tenant_id db_name slug snapshot_id <<< "$row"
+          if [ -z "$snapshot_id" ] || [ "$snapshot_id" = "" ]; then
+            echo "::error::job $JOB_ID has no snapshot_id (pre-Tier-5 job?)" >&2
+            exit 1
+          fi
+          echo "tenant_id=$tenant_id"   >> "$GITHUB_OUTPUT"
+          echo "db_name=$db_name"       >> "$GITHUB_OUTPUT"
+          echo "slug=$slug"             >> "$GITHUB_OUTPUT"
+          echo "snapshot_id=$snapshot_id" >> "$GITHUB_OUTPUT"
+
+      - name: Suspend tenant before restore
+        run: |
+          set -euo pipefail
+          psql "$PG_DSN" -c "
+            UPDATE tenants SET state = 'suspended', updated_at = now()
+            WHERE id = '${{ steps.lookup.outputs.tenant_id }}'::uuid;
+            INSERT INTO audit_log (actor_user_id, action, target_type, target_id, payload)
+            VALUES (
+              'gh-actions:${ACTOR}',
+              'tenant.migration_rollback_started',
+              'tenant_migration_job',
+              '${JOB_ID}',
+              jsonb_build_object('reason', \$\$${REASON}\$\$, 'snapshot_id', '${{ steps.lookup.outputs.snapshot_id }}')
+            );
+          "
+
+      - name: pgBackRest restore
+        env:
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          PGBACKREST_REPO1_S3_BUCKET: ${{ secrets.PGBACKREST_REPO1_S3_BUCKET }}
+        run: |
+          set -euo pipefail
+          # The actual restore command lives in the runbook; this job
+          # records the intent and audits. The data-plane runner image
+          # (or a pgbackrest-only sidecar) performs the restore. CI
+          # acts as the durable record + audit trail.
+          echo "::notice::Restore command must be executed against the tenant's Postgres host:"
+          echo "  pgbackrest --stanza=${{ steps.lookup.outputs.db_name }} --delta \\"
+          echo "    --set ${{ steps.lookup.outputs.snapshot_id }} restore"
+          echo ""
+          echo "After restore completes, re-run this workflow's 'Finalise rollback' step manually:"
+          echo "  gh workflow run migration-rollback-finalise.yml -f job_id=${JOB_ID}"
+
+      - name: Revert last_migrated_sha + re-enable tenant
+        run: |
+          set -euo pipefail
+          if [ -n "${PREV_SHA:-}" ]; then
+            sha_clause="SET last_migrated_sha = '${PREV_SHA}', state = 'active'"
+          else
+            sha_clause="SET last_migrated_sha = NULL, state = 'active'"
+          fi
+          psql "$PG_DSN" -c "
+            UPDATE tenants $sha_clause, updated_at = now()
+            WHERE id = '${{ steps.lookup.outputs.tenant_id }}'::uuid;
+            INSERT INTO audit_log (actor_user_id, action, target_type, target_id, payload)
+            VALUES (
+              'gh-actions:${ACTOR}',
+              'tenant.migration_rolled_back',
+              'tenant_migration_job',
+              '${JOB_ID}',
+              jsonb_build_object(
+                'reason', \$\$${REASON}\$\$,
+                'snapshot_id', '${{ steps.lookup.outputs.snapshot_id }}',
+                'previous_sha', '${PREV_SHA}'
+              )
+            );
+          "

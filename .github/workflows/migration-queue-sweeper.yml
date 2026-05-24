@@ -1,0 +1,110 @@
+# Phase 4 (Tier 3) — heartbeat-staleness sweeper for the tenant
+# migration queue.
+#
+# A runner process that crashes mid-migration leaves its job in
+# `status='running'` with a stale heartbeat_at. Without this sweeper
+# the row would sit forever; with it, every 5 minutes we re-queue any
+# `running` row whose heartbeat is older than 2 × timeout_minutes.
+#
+# The re-queue bumps retry_count + records the stale heartbeat in
+# error_excerpt. The next runner that claims the row honours the
+# idempotency check (tenants.last_migrated_sha == job.target_sha →
+# skipped) and the snapshot-already-fresh check, so a half-succeeded
+# migration doesn't get double-run.
+#
+# Runs as a GH Actions cron (NOT Vercel cron) for the same reason as
+# outbox-tick.yml: Vercel Hobby caps cron at daily, and we need a
+# 5-min cadence.
+#
+# Required GH secrets:
+#   CONTROL_PLANE_PG_DSN  — read/write on tenant_migration_jobs.
+#                           Same DSN used by apply-control-plane-ddl.yml.
+
+name: migration-queue-sweeper
+
+on:
+  schedule:
+    # Every 5 min. The runner's heartbeat is 60s; a job at the default
+    # 30 min timeout becomes "stale" after 60 min. 5-min sweep cadence
+    # bounds the re-queue latency to under 65 min in the worst case.
+    - cron: "*/5 * * * *"
+  workflow_dispatch: {}
+
+concurrency:
+  group: migration-queue-sweeper
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  sweep:
+    name: Re-queue stale-heartbeat rows
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      PG_DSN: ${{ secrets.CONTROL_PLANE_PG_DSN }}
+    steps:
+      - name: Preflight
+        run: |
+          set -euo pipefail
+          if [ -z "${PG_DSN:-}" ]; then
+            echo "::warning::CONTROL_PLANE_PG_DSN secret not set — skipping sweep"
+            exit 0
+          fi
+          psql --version
+
+      - name: Sweep stale heartbeats
+        run: |
+          set -euo pipefail
+          # The staleness threshold is `2 × timeout_minutes` per row —
+          # we don't use a global constant because tenants with a long
+          # timeout (e.g. xl size_bucket) take longer to migrate.
+          #
+          # ON UPDATE we increment retry_count and stamp the
+          # error_excerpt so the operator can distinguish "runner
+          # crashed" from "odoo crashed mid-migration".
+          psql "$PG_DSN" <<'SQL'
+            BEGIN;
+
+            UPDATE tenant_migration_jobs
+            SET status        = 'queued',
+                started_at    = NULL,
+                heartbeat_at  = NULL,
+                finished_at   = NULL,
+                retry_count   = retry_count + 1,
+                error_excerpt = format(
+                  'sweeper: stale heartbeat (was %s, timeout=%sm); re-queueing',
+                  to_char(COALESCE(heartbeat_at, started_at), 'YYYY-MM-DD HH24:MI:SS TZ'),
+                  timeout_minutes
+                )
+            WHERE status = 'running'
+              AND heartbeat_at < now() - (timeout_minutes * 2 * interval '1 minute');
+
+            -- Audit the sweep so the operator UI surfaces it.
+            INSERT INTO audit_log (actor_user_id, action, target_type, target_id, payload)
+            SELECT 'system:sweeper',
+                   'tenant.migration_sweeper_requeued',
+                   'tenant_migration_job',
+                   id::text,
+                   jsonb_build_object('retry_count', retry_count)
+            FROM tenant_migration_jobs
+            WHERE status = 'queued'
+              AND error_excerpt LIKE 'sweeper: stale heartbeat%'
+              AND now() - COALESCE(finished_at, enqueued_at) < interval '1 minute';
+
+            COMMIT;
+          SQL
+
+      - name: Report queue health
+        run: |
+          set -euo pipefail
+          # Surface a simple breakdown so the workflow log doubles as a
+          # cheap "queue dashboard" until Tier 6 Grafana lands.
+          psql "$PG_DSN" -A -F $'\t' -c "
+            SELECT status, count(*)
+            FROM tenant_migration_jobs
+            WHERE enqueued_at > now() - interval '24 hours'
+            GROUP BY status
+            ORDER BY status;
+          "
