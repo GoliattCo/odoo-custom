@@ -62,6 +62,9 @@ jobs:
           # decisions to the dashboard. Unset = stdout-only.
           AXIOM_TOKEN: ${{ secrets.AXIOM_TOKEN }}
           AXIOM_DATASET: ${{ vars.AXIOM_DATASET }}
+          # Tier 3 state: forward DSN so the sweep can advance phase to
+          # intent_confirmed in spec_generator_runs when it auto-confirms.
+          CONTROL_PLANE_PG_DSN: ${{ secrets.CONTROL_PLANE_PG_DSN }}
         # SHADOW + dry_run both produce a no-side-effect dry-run. ACT with
         # dry_run=false is the live sweep.
         run: |
@@ -69,11 +72,16 @@ jobs:
           import os
           from agents.spec_generator.sweep import GhCliSweepClient, run_sweep
           from agents.spec_generator.axiom_sink import maybe_build_axiom_sink
+          from agents.spec_generator.run_store import (
+              PHASE_INTENT_CONFIRMED, build_run_store,
+          )
+          from agents.spec_generator.session_store import InMemorySessionStore
           from agents.implementation.observability import EventLog
           from agents.implementation.rollout import Rollout, RolloutDecision
 
           axiom_sink = maybe_build_axiom_sink()
           log = EventLog(run_id=os.environ.get('GITHUB_RUN_ID'), sink=axiom_sink)
+          run_store = build_run_store(dict(os.environ), sessions=InMemorySessionStore())
           rollout = Rollout.from_env(os.environ)
           dry_run = os.environ.get('SWEEP_DRY_RUN', 'false').lower() == 'true'
           # The sweep walks open PRs and either records decisions (dry-run /
@@ -99,6 +107,15 @@ jobs:
               log.emit('sweep-decision', pr=d.pr, branch=d.branch,
                        spec_path=d.spec_path, action=d.action, reason=d.reason,
                        elapsed_ms=d.elapsed_ms)
+              # Tier 3 state: ACT confirms also advance phase in spec_generator_runs.
+              # The sweep resolves the spec PR's issue from the branch name
+              # (agent/spec-NNNN-slug -> NNNN).
+              if act and d.action == 'confirm' and d.branch.startswith('agent/spec-'):
+                  try:
+                      issue = int(d.branch.split('-')[1])
+                      run_store.record_phase(issue, PHASE_INTENT_CONFIRMED)
+                  except (IndexError, ValueError):
+                      pass
           log.emit('sweep-summary', confirmed=len(result.confirmed),
                    total=len(result.decisions), act=act)
           # Flush the Axiom buffer last so all sweep-decision + sweep-summary
