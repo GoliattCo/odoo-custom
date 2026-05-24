@@ -1,0 +1,138 @@
+{
+  "title": "Tenant migration queue",
+  "description": "Phase 4 (Tier 6) — operational view of the per-tenant migration queue. Read against the control-plane Postgres (datasource: control-plane-pg).",
+  "tags": ["odoo-saas", "phase4", "migrations"],
+  "timezone": "browser",
+  "schemaVersion": 38,
+  "refresh": "1m",
+  "time": {
+    "from": "now-24h",
+    "to": "now"
+  },
+  "panels": [
+    {
+      "id": 1,
+      "title": "Jobs by status (5-min buckets)",
+      "type": "timeseries",
+      "datasource": "control-plane-pg",
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 0 },
+      "targets": [
+        {
+          "refId": "A",
+          "format": "time_series",
+          "rawSql": "SELECT time_bucket('5 minutes', enqueued_at) AS time, status, count(*) AS value FROM tenant_migration_jobs WHERE enqueued_at > now() - interval '24 hours' GROUP BY time, status ORDER BY time, status"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "custom": { "drawStyle": "bars", "stacking": { "mode": "normal", "group": "A" } }
+        }
+      }
+    },
+    {
+      "id": 2,
+      "title": "p95 duration per size_bucket (last 7d)",
+      "type": "table",
+      "datasource": "control-plane-pg",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 },
+      "targets": [
+        {
+          "refId": "A",
+          "format": "table",
+          "rawSql": "SELECT t.size_bucket, percentile_cont(0.5) WITHIN GROUP (ORDER BY EXTRACT(EPOCH FROM (j.finished_at - j.started_at))) AS p50_seconds, percentile_cont(0.95) WITHIN GROUP (ORDER BY EXTRACT(EPOCH FROM (j.finished_at - j.started_at))) AS p95_seconds, count(*) AS n_done FROM tenant_migration_jobs j JOIN tenants t ON t.id = j.tenant_id WHERE j.status = 'done' AND j.finished_at > now() - interval '7 days' AND j.started_at IS NOT NULL GROUP BY t.size_bucket ORDER BY t.size_bucket"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Failure rate by wave (last 7d)",
+      "type": "stat",
+      "datasource": "control-plane-pg",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 8 },
+      "targets": [
+        {
+          "refId": "A",
+          "format": "table",
+          "rawSql": "SELECT t.wave, sum(CASE WHEN j.status IN ('failed','timedout') THEN 1 ELSE 0 END)::float / NULLIF(count(*), 0) AS failure_rate, count(*) AS n_total FROM tenant_migration_jobs j JOIN tenants t ON t.id = j.tenant_id WHERE j.finished_at > now() - interval '7 days' GROUP BY t.wave ORDER BY t.wave"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit",
+          "thresholds": {
+            "steps": [
+              { "value": null, "color": "green" },
+              { "value": 0.05, "color": "yellow" },
+              { "value": 0.15, "color": "red" }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": 4,
+      "title": "Queue depth (queued + blocked, last 1h)",
+      "type": "stat",
+      "datasource": "control-plane-pg",
+      "gridPos": { "h": 4, "w": 8, "x": 0, "y": 16 },
+      "targets": [
+        {
+          "refId": "A",
+          "format": "table",
+          "rawSql": "SELECT count(*) AS depth FROM tenant_migration_jobs WHERE status IN ('queued', 'blocked')"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "steps": [
+              { "value": null, "color": "green" },
+              { "value": 100, "color": "yellow" },
+              { "value": 500, "color": "red" }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": 5,
+      "title": "Oldest queued job age (hours)",
+      "type": "stat",
+      "datasource": "control-plane-pg",
+      "gridPos": { "h": 4, "w": 8, "x": 8, "y": 16 },
+      "targets": [
+        {
+          "refId": "A",
+          "format": "table",
+          "rawSql": "SELECT COALESCE(EXTRACT(EPOCH FROM (now() - min(enqueued_at))) / 3600.0, 0) AS oldest_hours FROM tenant_migration_jobs WHERE status IN ('queued', 'blocked')"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "h",
+          "thresholds": {
+            "steps": [
+              { "value": null, "color": "green" },
+              { "value": 24, "color": "yellow" },
+              { "value": 48, "color": "red" }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": 6,
+      "title": "Currently running jobs",
+      "type": "stat",
+      "datasource": "control-plane-pg",
+      "gridPos": { "h": 4, "w": 8, "x": 16, "y": 16 },
+      "targets": [
+        {
+          "refId": "A",
+          "format": "table",
+          "rawSql": "SELECT count(*) AS running FROM tenant_migration_jobs WHERE status = 'running'"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,71 @@
+# Fly.io app descriptor for the migration runner.
+#
+# This is a long-running queue consumer with no inbound HTTP surface —
+# it polls the control-plane Postgres via the public DSN (Vercel's
+# Postgres or Neon front-end is the typical target), claims rows from
+# tenant_migration_jobs, and runs `odoo -u all` against the tenant DB.
+#
+# Cluster sizing: spec §5 recommends MAX_CONCURRENCY=3. We achieve
+# that with 3 Fly machines (one runner process per machine) — Risk #1
+# (Postgres host overwhelmed) is bounded by FOR UPDATE SKIP LOCKED on
+# the queue table.
+#
+# Deploy:
+#   flyctl deploy --config infra/fly/migration-runner/fly.toml \
+#     --dockerfile ../../runners/migration_runner/Dockerfile --remote-only
+#
+# Required secrets (set with `flyctl secrets set --app odoo-saas-migration-runner …`):
+#   CONTROL_PLANE_PG_DSN     Postgres DSN for the control plane DB (Vercel/Neon).
+#                            Must have READ on tenants + READ/WRITE on
+#                            tenant_migration_jobs.
+#   PGHOST                   tenant-DB host (the Fly Postgres app for fly
+#                            tenants, or the Railway shared Postgres for
+#                            Railway tenants — runner image carries odoo
+#                            and connects to whichever PG the tenant lives on).
+#   PGPORT                   default 5432
+#   PGUSER                   odoo (must have ALL on tenant DBs)
+#   PGPASSWORD               same as the odoo Fly app's PGPASSWORD
+#   ADMIN_PASSWORD           Odoo master password (required by odoo-entrypoint.sh)
+#   SNAPSHOT_MODE            skip|cli|http  (default skip until Tier 5 wires
+#                            pgBackRest end-to-end)
+#   PGBACKREST_STANZA        (optional, when SNAPSHOT_MODE=cli)
+#   BACKUP_SERVICE_URL       (optional, when SNAPSHOT_MODE=http)
+#   SAAS_BACKUP_HMAC_SECRET  (optional, when SNAPSHOT_MODE=http)
+#
+# Tier 3 sweeper depends on this app being deployed first; the sweeper
+# workflow assumes `odoo-saas-migration-runner.internal` resolves.
+
+app            = "odoo-saas-migration-runner"
+primary_region = "iad"
+kill_signal    = "SIGTERM"  # runner installs a SIGTERM handler for clean exit
+kill_timeout   = "120s"     # allow an in-flight odoo -u all to finish
+
+[build]
+  dockerfile = "../../runners/migration_runner/Dockerfile"
+  # The runner image extends the project's enterprise-v1 Odoo image —
+  # set BASE_IMAGE here when promoting a new Odoo build to canary.
+  # build_args = { BASE_IMAGE = "ghcr.io/goliattco/odoo-saas:enterprise-v1@sha256:…" }
+
+[env]
+  LOG_LEVEL          = "INFO"
+  RUNNER_POLL_INTERVAL = "15"  # seconds when queue empty
+  PLATFORM           = "fly"
+
+# 3 machines = cluster MAX_CONCURRENCY=3 with `MAX_CONCURRENCY=1` per
+# machine; survives a single Fly machine restart without losing capacity.
+# Do NOT use auto_start_machines/auto_stop_machines — the runner must
+# stay live to pick up jobs the second their maintenance windows open.
+[[vm]]
+  size   = "shared-cpu-2x"   # `odoo -u all` is CPU+memory intensive
+  memory = "4gb"             # bumped from backup-runner's 2gb — Odoo init
+
+[checks]
+  # No HTTP surface, but a TCP check on the heartbeat fd keeps Fly's
+  # health system happy (machine is restarted if the daemon dies and
+  # the process doesn't exit cleanly).
+  [checks.daemon_alive]
+    type         = "tcp"
+    port         = 9999    # netcat listener inside the container (NOT bound yet — TODO)
+    interval     = "30s"
+    timeout      = "5s"
+    grace_period = "120s"

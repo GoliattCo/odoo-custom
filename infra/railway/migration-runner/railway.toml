@@ -1,0 +1,34 @@
+# Railway service descriptor for the migration runner.
+#
+# Set this file's path in the Railway service settings UI as
+# RAILWAY_CONFIG_FILE. The service has no inbound HTTP — it's a
+# long-running queue consumer just like the Fly variant.
+#
+# Required env (set in Railway dashboard):
+#   CONTROL_PLANE_PG_DSN  Postgres DSN for the control plane (Vercel/Neon).
+#   PGHOST                = odoo-saas-postgres.railway.internal
+#   PGPORT                = 5432
+#   PGUSER                = odoo
+#   PGPASSWORD
+#   ADMIN_PASSWORD        Odoo master password (entrypoint requirement).
+#   SNAPSHOT_MODE         skip|cli|http
+#   PGBACKREST_STANZA     (when cli)
+#   BACKUP_SERVICE_URL    (when http) — Railway's backup-runner internal URL
+#   SAAS_BACKUP_HMAC_SECRET
+#
+# Replica count: keep at 1 in Railway. The Fly deployment carries the
+# bulk of the concurrency (3 machines); Railway's runner is the
+# safety-net consumer for Railway-resident tenants.
+
+[build]
+dockerfilePath = "infra/runners/migration_runner/Dockerfile"
+
+[deploy]
+# No HTTP healthcheck — the runner has no inbound port. Railway will
+# rely on process-level alive check (PID 1 alive == healthy).
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 5
+# Allow an in-flight migration to finish on rolling deploy. The runner
+# installs a SIGTERM handler that exits cleanly after the current job
+# completes its finalize transaction; 120s covers a typical p95.
+killTimeoutSeconds = 120
