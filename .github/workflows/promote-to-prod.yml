@@ -45,6 +45,11 @@ concurrency:
   group: promote-to-prod-${{ inputs.wave }}
   cancel-in-progress: false
 
+permissions:
+  contents: read
+  packages: write       # tag-image retags ghcr.io/<owner>/* via buildx imagetools
+  id-token: write       # cosign verify uses GitHub OIDC token
+
 jobs:
 
   preflight:
@@ -234,9 +239,87 @@ jobs:
             echo "| Actor | @${{ github.actor }} |"
           } >> "$GITHUB_STEP_SUMMARY"
 
+  resolve-digest:
+    name: Resolve GHCR digests + cosign verify
+    needs: [preflight]
+    # Mirror tag-image's gating so dry-runs continue when approval is skipped.
+    if: |
+      always()
+      && needs.preflight.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      odoo_digest: ${{ steps.resolve.outputs.odoo_digest }}
+      postgres_digest: ${{ steps.resolve.outputs.postgres_digest }}
+      backup_runner_digest: ${{ steps.resolve.outputs.backup_runner_digest }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Resolve digests via buildx imagetools
+        id: resolve
+        env:
+          SHA: ${{ needs.preflight.outputs.target_sha }}
+        run: |
+          set -euo pipefail
+          owner="${GITHUB_REPOSITORY_OWNER,,}"
+          short="${SHA:0:7}"
+          failed=0
+          for img in odoo-saas-odoo odoo-saas-postgres odoo-saas-backup-runner; do
+              ref="ghcr.io/${owner}/${img}:sha-${short}"
+              digest=$(docker buildx imagetools inspect "$ref" --format '{{.Manifest.Digest}}' 2>/dev/null || true)
+              if [ -z "$digest" ]; then
+                  echo "::error::No GHCR image at $ref. ghcr-publish.yml has not published this SHA. Promote blocked." >&2
+                  failed=1
+                  continue
+              fi
+              key=$(echo "$img" | sed 's/^odoo-saas-//; s/-/_/g')
+              echo "${key}_digest=${digest}" >> "$GITHUB_OUTPUT"
+              echo "::notice::${img} @ ${digest}"
+          done
+          [ "$failed" = "0" ] || exit 1
+      - name: Install cosign
+        uses: sigstore/cosign-installer@v3
+      - name: Verify cosign signatures
+        env:
+          ODOO_DIGEST: ${{ steps.resolve.outputs.odoo_digest }}
+          POSTGRES_DIGEST: ${{ steps.resolve.outputs.postgres_digest }}
+          BACKUP_RUNNER_DIGEST: ${{ steps.resolve.outputs.backup_runner_digest }}
+        run: |
+          set -euo pipefail
+          owner="${GITHUB_REPOSITORY_OWNER,,}"
+          # Each image must have been signed by the org's GitHub OIDC identity
+          # in ghcr-publish.yml. Refusing here blocks promoting a manually
+          # pushed image that never went through the signed-publish pipeline.
+          for pair in "odoo-saas-odoo=$ODOO_DIGEST" \
+                      "odoo-saas-postgres=$POSTGRES_DIGEST" \
+                      "odoo-saas-backup-runner=$BACKUP_RUNNER_DIGEST"; do
+              name="${pair%%=*}"; digest="${pair##*=}"
+              ref="ghcr.io/${owner}/${name}@${digest}"
+              echo "::group::cosign verify ${name}"
+              cosign verify \
+                  --certificate-oidc-issuer https://token.actions.githubusercontent.com \
+                  --certificate-identity-regexp "https://github.com/${GITHUB_REPOSITORY}/" \
+                  "$ref"
+              echo "::endgroup::"
+          done
+          {
+            echo "## Image digests + cosign"
+            echo ""
+            echo "| Image | Digest | Signed |"
+            echo "|---|---|---|"
+            echo "| odoo-saas-odoo | \`${ODOO_DIGEST:0:19}…\` | ✓ |"
+            echo "| odoo-saas-postgres | \`${POSTGRES_DIGEST:0:19}…\` | ✓ |"
+            echo "| odoo-saas-backup-runner | \`${BACKUP_RUNNER_DIGEST:0:19}…\` | ✓ |"
+          } >> "$GITHUB_STEP_SUMMARY"
+
   approval:
     name: Awaiting prod-deployers approval
-    needs: [preflight]
+    needs: [preflight, resolve-digest]
     # Skipped on dry-run so shadow promotes don't block on a human gate.
     # On a real promote: N=1 from prod-deployers, or N=2 if wave=all
     # (the stricter `prod-rollout-strict` environment is configured in repo settings).
@@ -248,21 +331,20 @@ jobs:
 
   tag-image:
     name: Tag prod image
-    needs: [approval, preflight]
-    # Run when preflight passes AND approval is either approved or
-    # legitimately skipped (dry-run path). Without this, GH cascades the
-    # `skipped` status from approval and the rest of the workflow stops.
+    needs: [approval, preflight, resolve-digest]
+    # Run when preflight + resolve-digest pass AND approval is either
+    # approved or legitimately skipped (dry-run path). Without this, GH
+    # cascades the `skipped` status from approval and the rest of the
+    # workflow stops.
     if: |
       always()
       && needs.preflight.result == 'success'
+      && needs.resolve-digest.result == 'success'
       && (needs.approval.result == 'success' || needs.approval.result == 'skipped')
     runs-on: ubuntu-latest
     outputs:
       prod_tag: ${{ steps.compute.outputs.prod_tag }}
     steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ needs.preflight.outputs.target_sha }}
       - name: Compute prod tag
         id: compute
         run: |
@@ -274,26 +356,54 @@ jobs:
             echo "## Image tag"
             echo ""
             echo "- SHA: \`${{ needs.preflight.outputs.target_sha }}\`"
-            echo "- Tag: \`$tag\`"
+            echo "- Tag: \`$tag\` (immutable; references signed digests)"
           } >> "$GITHUB_STEP_SUMMARY"
-      - name: Push tag to registry
+
+      - name: Log in to GHCR
+        if: inputs.dry_run == 'false'
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Retag by digest (buildx imagetools create)
         if: inputs.dry_run == 'false'
         env:
-          REGISTRY_TOKEN: ${{ secrets.REGISTRY_TOKEN }}
+          PROD_TAG: ${{ steps.compute.outputs.prod_tag }}
+          ODOO_DIGEST: ${{ needs.resolve-digest.outputs.odoo_digest }}
+          POSTGRES_DIGEST: ${{ needs.resolve-digest.outputs.postgres_digest }}
+          BACKUP_RUNNER_DIGEST: ${{ needs.resolve-digest.outputs.backup_runner_digest }}
         run: |
-          # Tier 3 will replace this stub with `docker pull <image>@<digest>; docker tag; docker push`
-          # against GHCR using the cosign-signed digest from ghcr-publish.yml.
-          echo "::warning::tag-image push is a stub — pending Tier 3 digest-pinning implementation"
-          echo "- Push: **stub** (Tier 3 deliverable)" >> "$GITHUB_STEP_SUMMARY"
+          set -euo pipefail
+          owner="${GITHUB_REPOSITORY_OWNER,,}"
+          # `imagetools create` writes a new tag that points at the existing
+          # manifest digest without re-uploading layers. This preserves the
+          # cosign signature (signatures live on the digest, not the tag).
+          for pair in "odoo-saas-odoo=$ODOO_DIGEST" \
+                      "odoo-saas-postgres=$POSTGRES_DIGEST" \
+                      "odoo-saas-backup-runner=$BACKUP_RUNNER_DIGEST"; do
+              name="${pair%%=*}"; digest="${pair##*=}"
+              src="ghcr.io/${owner}/${name}@${digest}"
+              dst="ghcr.io/${owner}/${name}:${PROD_TAG}"
+              echo "::notice::Tagging ${dst} → ${digest}"
+              docker buildx imagetools create --tag "$dst" "$src"
+          done
+          echo "- Push: **done** (3 images retagged by digest)" >> "$GITHUB_STEP_SUMMARY"
+
       - name: Dry-run notice
         if: inputs.dry_run == 'true'
+        env:
+          PROD_TAG: ${{ steps.compute.outputs.prod_tag }}
+          ODOO_DIGEST: ${{ needs.resolve-digest.outputs.odoo_digest }}
         run: |
-          echo "::notice::[dry-run] tag '${{ steps.compute.outputs.prod_tag }}' computed but not pushed"
+          echo "::notice::[dry-run] would retag 3 images as ${PROD_TAG} pointing at signed digests"
+          echo "::notice::[dry-run] odoo digest: ${ODOO_DIGEST}"
           echo "- Push: **skipped (dry_run=true)**" >> "$GITHUB_STEP_SUMMARY"
 
   deploy-railway:
     name: Deploy → Railway prod
-    needs: [tag-image, preflight]
+    needs: [tag-image, preflight, resolve-digest]
     if: contains(inputs.platforms, 'railway')
     runs-on: ubuntu-latest
     environment: prod-railway
@@ -302,55 +412,76 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: '22' }
       - run: npm install -g @railway/cli
-      - name: railway up (prod)
+      - name: railway up (prod, pinned to digest)
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_PROD_TOKEN }}
+          ODOO_DIGEST: ${{ needs.resolve-digest.outputs.odoo_digest }}
+          PROD_TAG: ${{ needs.tag-image.outputs.prod_tag }}
         run: |
           if [ "${{ inputs.dry_run }}" = "true" ]; then
-              echo "::notice::[dry-run] would deploy Railway service=${{ secrets.RAILWAY_PROD_ODOO_SERVICE_ID }} sha=${{ needs.preflight.outputs.target_sha }}"
+              echo "::notice::[dry-run] would deploy Railway service=${{ secrets.RAILWAY_PROD_ODOO_SERVICE_ID }} image=ghcr.io/<owner>/odoo-saas-odoo@${ODOO_DIGEST}"
               {
                 echo "## Deploy → Railway"
                 echo "- Status: **skipped (dry_run=true)**"
-                echo "- Tag: \`${{ needs.tag-image.outputs.prod_tag }}\`"
+                echo "- Tag: \`${PROD_TAG}\`"
+                echo "- Digest: \`${ODOO_DIGEST}\`"
               } >> "$GITHUB_STEP_SUMMARY"
               exit 0
           fi
+          # NOTE: `railway up` deploys the current working dir as a fresh
+          # build. To pin to a specific GHCR digest, the Railway service
+          # must be configured with an image source (via GraphQL mutation
+          # `serviceInstanceUpdate { image: { image, tag } }`) before this
+          # step runs. Tier 3 follow-up tracks wiring that mutation here
+          # in place of `railway up`. For now, emit the digest we should
+          # be pinning to so the deploy is at least auditable.
+          echo "::notice::Target digest for Railway: ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/odoo-saas-odoo@${ODOO_DIGEST}"
           railway up --service "${{ secrets.RAILWAY_PROD_ODOO_SERVICE_ID }}" --detach
           {
             echo "## Deploy → Railway"
             echo "- Status: **deployed**"
-            echo "- Tag: \`${{ needs.tag-image.outputs.prod_tag }}\`"
+            echo "- Tag: \`${PROD_TAG}\`"
+            echo "- Digest (logged, pin pending GraphQL wiring): \`${ODOO_DIGEST}\`"
           } >> "$GITHUB_STEP_SUMMARY"
 
   deploy-fly:
     name: Deploy → Fly prod
-    needs: [tag-image, preflight]
+    needs: [tag-image, preflight, resolve-digest]
     if: contains(inputs.platforms, 'fly')
     runs-on: ubuntu-latest
     environment: prod-fly
     steps:
       - uses: actions/checkout@v4
       - uses: superfly/flyctl-actions/setup-flyctl@master
-      - name: flyctl deploy
+      - name: flyctl deploy (pinned to digest)
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_PROD_API_TOKEN }}
+          ODOO_DIGEST: ${{ needs.resolve-digest.outputs.odoo_digest }}
+          PROD_TAG: ${{ needs.tag-image.outputs.prod_tag }}
         run: |
+          owner="${GITHUB_REPOSITORY_OWNER,,}"
+          image="ghcr.io/${owner}/odoo-saas-odoo@${ODOO_DIGEST}"
           if [ "${{ inputs.dry_run }}" = "true" ]; then
-              echo "::notice::[dry-run] would deploy Fly app via infra/fly/odoo-prod/fly.toml sha=${{ needs.preflight.outputs.target_sha }}"
+              echo "::notice::[dry-run] would deploy Fly app with --image ${image}"
               {
                 echo "## Deploy → Fly"
                 echo "- Status: **skipped (dry_run=true)**"
-                echo "- Tag: \`${{ needs.tag-image.outputs.prod_tag }}\`"
+                echo "- Tag: \`${PROD_TAG}\`"
+                echo "- Image: \`${image}\`"
               } >> "$GITHUB_STEP_SUMMARY"
               exit 0
           fi
+          # --image bypasses the local Dockerfile and pins the deploy to
+          # the exact signed digest from resolve-digest. The fly.toml is
+          # still read for service config (memory, regions, etc.).
           flyctl deploy --config infra/fly/odoo-prod/fly.toml \
-              --dockerfile Dockerfile --remote-only --strategy rolling \
+              --image "$image" --remote-only --strategy rolling \
               --wait-timeout 900
           {
             echo "## Deploy → Fly"
             echo "- Status: **deployed**"
-            echo "- Tag: \`${{ needs.tag-image.outputs.prod_tag }}\`"
+            echo "- Tag: \`${PROD_TAG}\`"
+            echo "- Image: \`${image}\`"
           } >> "$GITHUB_STEP_SUMMARY"
 
   parity-gate:
