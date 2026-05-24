@@ -1,4 +1,5 @@
 import ast
+
 from odoo.tests import TransactionCase, tagged
 from odoo.tools import file_open
 
