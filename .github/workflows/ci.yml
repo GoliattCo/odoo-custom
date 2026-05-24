@@ -457,11 +457,13 @@ jobs:
         with:
           submodules: recursive
           # 0 = full history. `Detect changed addons` below needs
-          # `git diff base.sha..head.sha`, and fetch-depth: 1 only
-          # brings down the merge commit on a PR event — the base SHA
-          # isn't reachable. Full history adds a few seconds to a
-          # 5–10 min job; negligible.
-          fetch-depth: 0
+          # `git diff base.sha..head.sha` (auto-detect changed addons).
+          # Full-history clone took >10 min on `odoo-custom`, exceeding
+          # the HttpCase 10-min job timeout. Depth=2 covers the
+          # most-recent-parent case; the detect step below also
+          # explicitly fetches base.sha when needed (for PRs with
+          # >1 commit ahead of base).
+          fetch-depth: 2
 
       - uses: docker/setup-buildx-action@v3
       - name: docker build Odoo (for test run)
@@ -489,6 +491,13 @@ jobs:
           base="$BASE"; head="$HEAD"
           if [ -z "$base" ] || [ "$base" = "0000000000000000000000000000000000000000" ]; then
             base="HEAD~1"
+          fi
+          # Ensure the base SHA is in the local git object store — depth=2
+          # on actions/checkout covers the most-recent-parent case, but
+          # PRs with >1 commit ahead of base, or push events from a
+          # different branch, need an explicit fetch.
+          if ! git cat-file -e "$base" 2>/dev/null; then
+            git fetch --no-tags --depth=1 origin "$base" 2>/dev/null || true
           fi
           # Extract the addon directory name from each changed path.
           mapfile -t changed < <(git diff --name-only --diff-filter=ACMR "$base" "$head" \
@@ -566,14 +575,15 @@ jobs:
           --health-interval=5s
           --health-timeout=5s
           --health-retries=10
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
-          # 0 = full history — `Detect changed addons` below needs
-          # base..head reachable; matches `test-addon` (P2.5).
-          fetch-depth: 0
+          # depth=2 + explicit base-fetch in the detect step below.
+          # See `test-addon` for the full rationale (full-history clone
+          # exceeded the 10-min job timeout on `odoo-custom`).
+          fetch-depth: 2
 
       - uses: docker/setup-buildx-action@v3
       - name: docker build Odoo (for httpcase run)
@@ -598,6 +608,13 @@ jobs:
           base="$BASE"; head="$HEAD"
           if [ -z "$base" ] || [ "$base" = "0000000000000000000000000000000000000000" ]; then
             base="HEAD~1"
+          fi
+          # Ensure the base SHA is in the local git object store — depth=2
+          # on actions/checkout covers the most-recent-parent case, but
+          # PRs with >1 commit ahead of base, or push events from a
+          # different branch, need an explicit fetch.
+          if ! git cat-file -e "$base" 2>/dev/null; then
+            git fetch --no-tags --depth=1 origin "$base" 2>/dev/null || true
           fi
           mapfile -t changed < <(git diff --name-only --diff-filter=ACMR "$base" "$head" \
             -- 'custom-addons/*/' \
@@ -738,9 +755,9 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
-          # 0 = full history — same reason as `test-addon` (P2.5):
-          # `Detect changed addons` needs base..head reachable.
-          fetch-depth: 0
+          # depth=2 + explicit base-fetch in the detect step below.
+          # See `test-addon` for the full rationale.
+          fetch-depth: 2
 
       - uses: docker/setup-buildx-action@v3
       - name: docker build Odoo (for migration dry-run)
@@ -762,6 +779,13 @@ jobs:
           base="$BASE"; head="$HEAD"
           if [ -z "$base" ] || [ "$base" = "0000000000000000000000000000000000000000" ]; then
             base="HEAD~1"
+          fi
+          # Ensure the base SHA is in the local git object store — depth=2
+          # on actions/checkout covers the most-recent-parent case, but
+          # PRs with >1 commit ahead of base, or push events from a
+          # different branch, need an explicit fetch.
+          if ! git cat-file -e "$base" 2>/dev/null; then
+            git fetch --no-tags --depth=1 origin "$base" 2>/dev/null || true
           fi
           mapfile -t changed < <(git diff --name-only --diff-filter=ACMR "$base" "$head" \
             -- 'custom-addons/*/' \
