@@ -69,12 +69,23 @@ jobs:
 
           log = EventLog(run_id=os.environ.get('GITHUB_RUN_ID'))
           rollout = Rollout.from_env(os.environ)
-          if rollout.decide('sweep') is RolloutDecision.SKIP:
-              log.emit('skipped', reason='rollout gate decided SKIP')
+          dry_run = os.environ.get('SWEEP_DRY_RUN', 'false').lower() == 'true'
+          # The sweep walks open PRs and either records decisions (dry-run /
+          # SHADOW / disabled) or applies labels + comments (ACT). The
+          # kill switch (AGENTS_ENABLED=false -> rollout.enabled=False)
+          # gates everything; otherwise the sweep ALWAYS runs at least as
+          # a decision-emitter so the dashboard sees baseline traffic.
+          if not rollout.enabled:
+              log.emit('skipped', reason='AGENTS_ENABLED=false (kill switch)')
               raise SystemExit(0)
+          # Write side-effects only when stage is DEFAULT_ON (or the
+          # legacy ACT outcome) AND not dry-run. SHADOW/FIXTURES/OPT_IN
+          # all decision-emit-only on the sweep — the per-PR rollout gate
+          # for write-back lives in the iterate / draft workflows, not
+          # the sweep itself.
           act = (
-              rollout.decide('sweep') is RolloutDecision.ACT
-              and os.environ.get('SWEEP_DRY_RUN', 'false').lower() != 'true'
+              rollout.stage.value == 'default_on'
+              and not dry_run
           )
           client = GhCliSweepClient(os.environ['DATA_PLANE_REPO'])
           result = run_sweep(client=client, act=act)
