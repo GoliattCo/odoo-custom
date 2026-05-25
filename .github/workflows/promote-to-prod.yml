@@ -171,8 +171,21 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SHA: ${{ steps.resolve.outputs.target_sha }}
+          DRY_RUN: ${{ inputs.dry_run }}
         run: |
           set -euo pipefail
+          # Soak is a real-world-risk gate (let the SHA bake on staging
+          # before promoting). Dry-runs have no real-world risk because
+          # nothing mutates, so skipping the gate on dry-runs lets us
+          # validate the workflow plumbing without waiting 24h. Gate 1+2
+          # above stays strict for everyone — that one is fundamental
+          # ("did the SHA actually pass CI?").
+          if [ "$DRY_RUN" = "true" ]; then
+              echo "::notice::[dry-run] soak time check skipped"
+              echo "## Soak" >> "$GITHUB_STEP_SUMMARY"
+              echo "- Status: **skipped (dry_run=true)**" >> "$GITHUB_STEP_SUMMARY"
+              exit 0
+          fi
           # Check risk label on the merged PR
           pr_number=$(gh api "repos/${{ github.repository }}/commits/$SHA/pulls" \
               | jq -r '.[0].number // empty')
