@@ -33,8 +33,8 @@ on:
       - '.github/workflows/build-migration-runner.yml'
   workflow_dispatch:
     inputs:
-      base_image:
-        description: 'BASE_IMAGE override (default: ghcr.io/goliattco/odoo-saas:enterprise-v1)'
+      odoo_commit:
+        description: 'ODOO_COMMIT override (default: matches root Dockerfile pin)'
         required: false
         default: ''
 
@@ -67,7 +67,7 @@ jobs:
       - name: Set up Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Compute tags + BASE_IMAGE
+      - name: Compute tags
         id: meta
         run: |
           set -euo pipefail
@@ -78,20 +78,9 @@ jobs:
           if [ "${GITHUB_REF}" = "refs/heads/main" ]; then
             TAGS="${TAGS},${IMAGE}:latest"
           fi
-          BASE_IMAGE="${{ inputs.base_image }}"
-          if [ -z "$BASE_IMAGE" ]; then
-            # Default to the standard odoo-saas-odoo image (the shared
-            # tenant pool's image). Migrating against the SAME image
-            # that's serving traffic is exactly what we want — license-
-            # gate verification is a tenant-facing concern, not a
-            # maintenance-runner one, so we deliberately do NOT use
-            # `odoo-saas-odoo-enterprise` here.
-            BASE_IMAGE="ghcr.io/${OWNER}/odoo-saas-odoo:latest"
-          fi
-          echo "tags=${TAGS}"          >> "$GITHUB_OUTPUT"
-          echo "base_image=${BASE_IMAGE}" >> "$GITHUB_OUTPUT"
-          echo "image=${IMAGE}"        >> "$GITHUB_OUTPUT"
-          echo "::notice::Building ${TAGS} FROM ${BASE_IMAGE}"
+          echo "tags=${TAGS}" >> "$GITHUB_OUTPUT"
+          echo "image=${IMAGE}" >> "$GITHUB_OUTPUT"
+          echo "::notice::Building ${TAGS} (self-contained — Odoo cloned + addons COPIED inside the Dockerfile)"
 
       - name: Build + push
         id: build
@@ -102,7 +91,7 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           build-args: |
-            BASE_IMAGE=${{ steps.meta.outputs.base_image }}
+            ${{ inputs.odoo_commit && format('ODOO_COMMIT={0}', inputs.odoo_commit) || '' }}
           cache-from: type=gha,scope=migration-runner
           cache-to: type=gha,scope=migration-runner,mode=max
           provenance: false
