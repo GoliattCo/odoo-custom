@@ -39,8 +39,14 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Install the Spec Generator + Postgres extra
-        run: pip install "git+https://github.com/remcaro-rgb/Odoo-saas-agents.git@${{ vars.AGENT_REF || 'main' }}#egg=odoo-saas-agents[postgres]"
+      - name: Install the Spec Generator + psycopg
+        # The package doesn't define an `[postgres]` extra (pyproject.toml only
+        # has the `dev` extra). Install the agent + psycopg separately —
+        # `psycopg[binary]` ships a self-contained wheel so no libpq headers
+        # are needed in the runner image.
+        run: |
+          pip install "git+https://github.com/remcaro-rgb/Odoo-saas-agents.git@${{ vars.AGENT_REF || 'main' }}"
+          pip install "psycopg[binary]>=3.2"
 
       - name: Run the ingest
         env:
