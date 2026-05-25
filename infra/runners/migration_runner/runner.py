@@ -121,7 +121,12 @@ class Runner:
 
     def run_forever(self) -> None:
         """Loop until SIGTERM. Block between iterations on POLL_INTERVAL
-        only when the queue is empty."""
+        when the queue is empty OR the only available work is a row we
+        just observed as blocked — claim_next_job re-selects
+        `status='blocked'` rows, so without a sleep here the daemon
+        hot-loops on a window-blocked job at ~70 ops/sec. Proper fix
+        would add a `blocked_until` column and filter the claim query;
+        this is the minimum-viable patch."""
         logger.info('runner started host=%s', self._runner_host)
         while True:
             try:
@@ -130,7 +135,7 @@ class Runner:
                 logger.exception('run_once raised; sleeping then retrying')
                 self._sleep(POLL_INTERVAL_SECONDS)
                 continue
-            if result.status == 'idle':
+            if result.status in ('idle', 'blocked'):
                 self._sleep(POLL_INTERVAL_SECONDS)
 
     # ── Per-job processing ──────────────────────────────────────────
