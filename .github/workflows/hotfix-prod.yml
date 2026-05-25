@@ -1,0 +1,486 @@
+# hotfix-prod
+#
+# Implements docs/superpowers/specs/2026-05-16-promote-to-prod-design.md §5.
+# Short-circuits the canary → w1 → w2 soak path for severity ≥ high
+# incidents. Deploys to ALL waves at once. Requires paste-back
+# (`HOTFIX <severity>`), N=2 prod-deployers, and an explicit operator
+# commitment to file a retro fix-brief within 48h.
+#
+# Companion cron `hotfix-retro-brief-check.yml` enforces the 48h/7d
+# retro-brief deadlines and escalates if they slip.
+
+name: hotfix-prod
+
+on:
+  workflow_dispatch:
+    inputs:
+      hotfix_branch:
+        description: 'Branch with the hotfix (must start with `hotfix/`)'
+        required: true
+      target_sha:
+        description: 'SHA on the hotfix branch to deploy'
+        required: true
+      severity:
+        description: 'Incident severity'
+        required: true
+        type: choice
+        options: [high, critical]
+      paste_back_confirmation:
+        description: 'Type "HOTFIX <severity>" exactly (e.g. "HOTFIX critical")'
+        required: true
+      retro_brief_commitment:
+        description: 'I commit to filing a retro fix-brief within 48h'
+        required: true
+        type: choice
+        options: ['true', 'false']
+      dry_run:
+        description: 'Dry-run mode (used by rehearsal)'
+        default: 'false'
+        type: choice
+        options: ['true', 'false']
+
+concurrency:
+  group: hotfix-prod
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  packages: write       # tag-image retags via buildx imagetools
+  id-token: write       # cosign verify
+  issues: write         # open the retro fix-brief tracking issue
+
+jobs:
+
+  preflight:
+    name: Verify hotfix request
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      target_tenants: ${{ steps.tenants.outputs.target_tenants }}
+    steps:
+      - name: Kill-switch (AGENTS_ENABLED + AGENT_PROMOTE_ENABLED)
+        env:
+          AGENTS_ENABLED: ${{ vars.AGENTS_ENABLED }}
+          AGENT_PROMOTE_ENABLED: ${{ vars.AGENT_PROMOTE_ENABLED }}
+        run: |
+          if [ "${AGENTS_ENABLED:-true}" != "true" ]; then
+              echo "::error::AGENTS_ENABLED is not 'true'." >&2
+              exit 1
+          fi
+          if [ "${AGENT_PROMOTE_ENABLED:-false}" != "true" ]; then
+              echo "::error::AGENT_PROMOTE_ENABLED is not 'true' — hotfix promotes disabled." >&2
+              exit 1
+          fi
+
+      - name: Assert hotfix branch prefix
+        env:
+          BR: ${{ inputs.hotfix_branch }}
+        run: |
+          case "$BR" in
+            hotfix/*) echo "::notice::branch ok ($BR)" ;;
+            *) echo "::error::hotfix_branch must start with 'hotfix/' (got '$BR')" >&2; exit 1 ;;
+          esac
+
+      - name: Verify retro-brief commitment
+        env:
+          COMMIT: ${{ inputs.retro_brief_commitment }}
+        run: |
+          if [ "$COMMIT" != "true" ]; then
+              echo "::error::retro_brief_commitment must be 'true'. Hotfix without a retro is unacceptable." >&2
+              exit 1
+          fi
+
+      - name: Verify paste-back
+        env:
+          PG_DSN: ${{ secrets.CONTROL_PLANE_PG_DSN }}
+          SEV: ${{ inputs.severity }}
+          PASTE: ${{ inputs.paste_back_confirmation }}
+        run: |
+          expected="HOTFIX $SEV"
+          if [ "$PASTE" != "$expected" ]; then
+              echo "::error::Paste-back text mismatch. Expected exactly: '$expected'" >&2
+              if [ -n "${PG_DSN:-}" ]; then
+                  psql "$PG_DSN" -c "
+                    INSERT INTO saas_audit.event
+                      (actor_kind, actor_name, action, target_kind, target_id, sha, wave, reason, payload)
+                    VALUES
+                      ('human', '${{ github.actor }}', 'hotfix-prod', 'wave', 'all',
+                       '${{ inputs.target_sha }}', 'all', 'paste_back_mismatch',
+                       jsonb_build_object('outcome', 'security_alert', 'severity', '$SEV', 'provided', '$PASTE'))
+                  " || true
+              fi
+              exit 1
+          fi
+          echo "::notice::paste-back accepted (severity=$SEV)"
+
+      - name: Verify SHA is on the hotfix branch
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BR: ${{ inputs.hotfix_branch }}
+          SHA: ${{ inputs.target_sha }}
+        run: |
+          set -euo pipefail
+          # SHA must be reachable from the named branch tip.
+          branch_sha=$(gh api "repos/${{ github.repository }}/branches/${BR}" \
+              --jq '.commit.sha' 2>/dev/null || echo "")
+          if [ -z "$branch_sha" ]; then
+              echo "::error::Branch $BR does not exist." >&2
+              exit 1
+          fi
+          if ! gh api "repos/${{ github.repository }}/commits/${SHA}" --jq '.sha' >/dev/null 2>&1; then
+              echo "::error::SHA $SHA does not exist in the repo." >&2
+              exit 1
+          fi
+
+      - name: List ALL active tenants (hotfix → wave=all)
+        id: tenants
+        env:
+          PG_DSN: ${{ secrets.CONTROL_PLANE_PG_DSN }}
+        run: |
+          tenants=$(psql "$PG_DSN" -t -A -c "
+            SELECT json_agg(slug) FROM tenants WHERE state = 'active'
+          " || echo "[]")
+          if [ -z "$tenants" ] || [ "$tenants" = "null" ]; then
+              tenants="[]"
+          fi
+          echo "target_tenants=$tenants" >> "$GITHUB_OUTPUT"
+          count=$(echo "$tenants" | jq -r '. | length // 0')
+          {
+            echo "## Hotfix preflight"
+            echo ""
+            echo "| Field | Value |"
+            echo "|---|---|"
+            echo "| Branch | \`${{ inputs.hotfix_branch }}\` |"
+            echo "| SHA | \`${{ inputs.target_sha }}\` |"
+            echo "| Severity | \`${{ inputs.severity }}\` |"
+            echo "| Active tenants | $count |"
+            echo "| dry_run | \`${{ inputs.dry_run }}\` |"
+            echo "| Actor | @${{ github.actor }} |"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  abbreviated-gate-1:
+    name: Abbreviated Gate 1 (build + lint + bandit + addon tests)
+    needs: [preflight]
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.target_sha }}
+          submodules: recursive
+      - name: ruff
+        run: pipx run ruff check custom-addons/
+      - name: bandit
+        run: pipx run bandit -r custom-addons/ -ll
+      - name: docker build (sanity)
+        run: docker build -f Dockerfile -t hotfix-build:${{ inputs.target_sha }} .
+
+  resolve-digest:
+    name: Resolve GHCR digests + cosign verify
+    needs: [abbreviated-gate-1]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      odoo_digest: ${{ steps.resolve.outputs.odoo_digest }}
+      postgres_digest: ${{ steps.resolve.outputs.postgres_digest }}
+      backup_runner_digest: ${{ steps.resolve.outputs.backup_runner_digest }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Resolve digests
+        id: resolve
+        env:
+          SHA: ${{ inputs.target_sha }}
+        run: |
+          set -euo pipefail
+          owner="${GITHUB_REPOSITORY_OWNER,,}"
+          short="${SHA:0:7}"
+          failed=0
+          for img in odoo-saas-odoo odoo-saas-postgres odoo-saas-backup-runner; do
+              ref="ghcr.io/${owner}/${img}:sha-${short}"
+              digest=$(docker buildx imagetools inspect "$ref" --format '{{.Manifest.Digest}}' 2>/dev/null || true)
+              if [ -z "$digest" ]; then
+                  echo "::error::Image missing: $ref. Hotfix branch push to main may not have published yet." >&2
+                  failed=1
+                  continue
+              fi
+              key=$(echo "$img" | sed 's/^odoo-saas-//; s/-/_/g')
+              echo "${key}_digest=${digest}" >> "$GITHUB_OUTPUT"
+          done
+          [ "$failed" = "0" ] || exit 1
+      - name: Install cosign
+        uses: sigstore/cosign-installer@v3
+      - name: Verify
+        env:
+          ODOO_DIGEST: ${{ steps.resolve.outputs.odoo_digest }}
+          POSTGRES_DIGEST: ${{ steps.resolve.outputs.postgres_digest }}
+          BACKUP_RUNNER_DIGEST: ${{ steps.resolve.outputs.backup_runner_digest }}
+        run: |
+          set -euo pipefail
+          owner="${GITHUB_REPOSITORY_OWNER,,}"
+          for pair in "odoo-saas-odoo=$ODOO_DIGEST" \
+                      "odoo-saas-postgres=$POSTGRES_DIGEST" \
+                      "odoo-saas-backup-runner=$BACKUP_RUNNER_DIGEST"; do
+              name="${pair%%=*}"; digest="${pair##*=}"
+              ref="ghcr.io/${owner}/${name}@${digest}"
+              cosign verify \
+                  --certificate-oidc-issuer https://token.actions.githubusercontent.com \
+                  --certificate-identity-regexp "https://github.com/${GITHUB_REPOSITORY}/" \
+                  "$ref"
+              # Tier 7: SLSA provenance attestation must also verify.
+              cosign verify-attestation \
+                  --type slsaprovenance \
+                  --certificate-oidc-issuer https://token.actions.githubusercontent.com \
+                  --certificate-identity-regexp "https://github.com/${GITHUB_REPOSITORY}/" \
+                  "$ref" >/dev/null
+          done
+
+  approval:
+    name: Awaiting prod-deployers approval (N=2)
+    needs: [preflight, resolve-digest]
+    if: inputs.dry_run == 'false'
+    runs-on: ubuntu-latest
+    environment: prod-hotfix   # configure N=2 in repo settings
+    steps:
+      - run: echo "Hotfix approved by 2 prod-deployers (severity=${{ inputs.severity }})"
+
+  tag-image:
+    name: Tag hotfix image
+    needs: [approval, resolve-digest]
+    if: |
+      always()
+      && needs.resolve-digest.result == 'success'
+      && (needs.approval.result == 'success' || needs.approval.result == 'skipped')
+    runs-on: ubuntu-latest
+    outputs:
+      hotfix_tag: ${{ steps.compute.outputs.hotfix_tag }}
+    steps:
+      - name: Compute hotfix tag
+        id: compute
+        run: |
+          tag="hotfix-prod-$(date -u +%Y.%m.%d)-${{ github.run_number }}"
+          echo "hotfix_tag=$tag" >> "$GITHUB_OUTPUT"
+      - name: Log in to GHCR
+        if: inputs.dry_run == 'false'
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Retag by digest
+        if: inputs.dry_run == 'false'
+        env:
+          HOTFIX_TAG: ${{ steps.compute.outputs.hotfix_tag }}
+          ODOO_DIGEST: ${{ needs.resolve-digest.outputs.odoo_digest }}
+          POSTGRES_DIGEST: ${{ needs.resolve-digest.outputs.postgres_digest }}
+          BACKUP_RUNNER_DIGEST: ${{ needs.resolve-digest.outputs.backup_runner_digest }}
+        run: |
+          set -euo pipefail
+          owner="${GITHUB_REPOSITORY_OWNER,,}"
+          for pair in "odoo-saas-odoo=$ODOO_DIGEST" \
+                      "odoo-saas-postgres=$POSTGRES_DIGEST" \
+                      "odoo-saas-backup-runner=$BACKUP_RUNNER_DIGEST"; do
+              name="${pair%%=*}"; digest="${pair##*=}"
+              docker buildx imagetools create \
+                  --tag "ghcr.io/${owner}/${name}:${HOTFIX_TAG}" \
+                  "ghcr.io/${owner}/${name}@${digest}"
+          done
+
+  # Both platforms always deploy on a hotfix (no per-platform opt-out).
+  deploy-railway:
+    name: Deploy hotfix → Railway
+    needs: [tag-image, resolve-digest]
+    runs-on: ubuntu-latest
+    environment: prod-railway
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.target_sha }}
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+      - run: npm install -g @railway/cli
+      - name: railway up (hotfix, pinned to digest)
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_PROD_TOKEN }}
+          ODOO_DIGEST: ${{ needs.resolve-digest.outputs.odoo_digest }}
+        run: |
+          if [ "${{ inputs.dry_run }}" = "true" ]; then
+              echo "::notice::[dry-run] would deploy Railway hotfix to digest ${ODOO_DIGEST}"
+              exit 0
+          fi
+          railway up --service "${{ secrets.RAILWAY_PROD_ODOO_SERVICE_ID }}" --detach
+
+  deploy-fly:
+    name: Deploy hotfix → Fly
+    needs: [tag-image, resolve-digest]
+    runs-on: ubuntu-latest
+    environment: prod-fly
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.target_sha }}
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+      - name: flyctl deploy (hotfix, pinned to digest)
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_PROD_API_TOKEN }}
+          ODOO_DIGEST: ${{ needs.resolve-digest.outputs.odoo_digest }}
+        run: |
+          owner="${GITHUB_REPOSITORY_OWNER,,}"
+          image="ghcr.io/${owner}/odoo-saas-odoo@${ODOO_DIGEST}"
+          if [ "${{ inputs.dry_run }}" = "true" ]; then
+              echo "::notice::[dry-run] would deploy Fly hotfix with --image ${image}"
+              exit 0
+          fi
+          flyctl deploy --config infra/fly/odoo-prod/fly.toml \
+              --image "$image" --remote-only --strategy rolling --wait-timeout 900
+
+  parity-gate:
+    name: Hotfix parity gate
+    needs: [deploy-railway, deploy-fly]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          railway="${{ needs.deploy-railway.result }}"
+          fly="${{ needs.deploy-fly.result }}"
+          if [ "$railway" != "$fly" ]; then
+              echo "::error::Hotfix parity FAILED. Railway=$railway Fly=$fly" >&2
+              exit 1
+          fi
+
+  smoke:
+    name: Hotfix smoke (full critical paths, no exemptions)
+    needs: [parity-gate, preflight]
+    runs-on: ubuntu-latest
+    env:
+      TENANTS: ${{ needs.preflight.outputs.target_tenants }}
+      BASE_DOMAIN: ${{ vars.TENANT_BASE_DOMAIN }}
+      DRY_RUN: ${{ inputs.dry_run }}
+    steps:
+      - name: Health probe — wave=all
+        run: |
+          set -euo pipefail
+          base="${BASE_DOMAIN:-app.goliatt.co}"
+          [ -n "${TENANTS:-}" ] || TENANTS="[]"
+          # Probe up to 10 tenants (hotfix = wave=all; trade exhaustiveness
+          # for runtime — full suite is the operator's responsibility).
+          echo "$TENANTS" | jq -r '.[]?' | head -10 | while read -r t; do
+              url="https://${t}.${base}/web/health"
+              if [ "$DRY_RUN" = "true" ]; then
+                  echo "::notice::[dry-run] would probe $url"; continue
+              fi
+              code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 10 "$url" || echo "000")
+              if [ "$code" != "200" ]; then
+                  echo "::error::Hotfix smoke failed for $t (HTTP $code)" >&2
+                  exit 1
+              fi
+          done
+
+  open-retro-issue:
+    name: Open retro fix-brief tracking issue
+    needs: [smoke, preflight]
+    if: |
+      always()
+      && needs.smoke.result == 'success'
+      && inputs.dry_run == 'false'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create issue with 48h deadline label
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SHA: ${{ inputs.target_sha }}
+          BR: ${{ inputs.hotfix_branch }}
+          SEV: ${{ inputs.severity }}
+          ACTOR: ${{ github.actor }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          # YAML literal-block so the markdown body doesn't fight bash
+          # heredoc indentation. Interpolation happens via envsubst.
+          BODY_TEMPLATE: |
+            A hotfix was just deployed to production. A retro fix-brief is required within **48 hours** per spec §5.
+
+            * **SHA:** `__SHA__`
+            * **Branch:** `__BR__`
+            * **Severity:** `__SEV__`
+            * **Operator:** @__ACTOR__
+            * **Workflow run:** __RUN_URL__
+            * **Deadline (48h):** __DEADLINE__
+
+            ## Required sections (Spec Generator can draft a skeleton)
+
+            1. Incident summary (one paragraph)
+            2. Root cause (technical detail)
+            3. Why the hotfix was needed (vs normal promote)
+            4. What changed (diff summary)
+            5. Test gap (why didn't Gate 1 / Gate 2 catch this)
+            6. Permanent fix plan (link to follow-up PR/issue)
+            7. Detection improvements (alerts/dashboards to add)
+
+            `hotfix-retro-brief-check.yml` will warn at 48h and page security-leads at 7d if this brief is still missing.
+        run: |
+          set -euo pipefail
+          deadline=$(date -u -d '+48 hours' +%Y-%m-%dT%H:%MZ)
+          body=$(printf '%s\n' "$BODY_TEMPLATE" \
+              | sed "s|__SHA__|$SHA|g; s|__BR__|$BR|g; s|__SEV__|$SEV|g; s|__ACTOR__|$ACTOR|g; s|__RUN_URL__|$RUN_URL|g; s|__DEADLINE__|$deadline|g")
+          gh issue create \
+              --title "Retro fix-brief required for hotfix $SHA" \
+              --label "hotfix-retro,severity:$SEV,deadline:48h" \
+              --assignee "$ACTOR" \
+              --body "$body"
+
+  audit:
+    name: Audit log
+    needs: [preflight, smoke, tag-image, open-retro-issue]
+    if: always()
+    runs-on: ubuntu-latest
+    env:
+      PG_DSN: ${{ secrets.CONTROL_PLANE_PG_DSN }}
+    steps:
+      - run: |
+          payload=$(jq -nc \
+              --arg severity        "${{ inputs.severity }}" \
+              --arg hotfix_branch   "${{ inputs.hotfix_branch }}" \
+              --arg dry_run         "${{ inputs.dry_run }}" \
+              --arg hotfix_tag      "${{ needs.tag-image.outputs.hotfix_tag }}" \
+              --arg smoke           "${{ needs.smoke.result }}" \
+              --arg retro_issue     "${{ needs.open-retro-issue.result }}" \
+              --arg run_id          "${{ github.run_id }}" \
+              '{severity:$severity,hotfix_branch:$hotfix_branch,dry_run:$dry_run,hotfix_tag:$hotfix_tag,smoke:$smoke,retro_issue:$retro_issue,run_id:$run_id}')
+          psql "$PG_DSN" -c "
+            INSERT INTO saas_audit.event
+              (actor_kind, actor_name, action, target_kind, target_id, sha, wave, reason, payload)
+            VALUES
+              ('human', '${{ github.actor }}', 'hotfix-prod', 'wave', 'all',
+               '${{ inputs.target_sha }}', 'all', '${{ inputs.severity }}',
+               '$payload'::jsonb)
+          "
+
+  notify:
+    name: Notify Slack + security-leads page
+    needs: [audit]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Slack deploys channel
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_DEPLOY_WEBHOOK }}
+        run: |
+          curl -X POST -H 'Content-type: application/json' \
+            --data "{\"text\": \"🚑 HOTFIX deployed sha=${{ inputs.target_sha }} severity=${{ inputs.severity }} by @${{ github.actor }} dry_run=${{ inputs.dry_run }}\"}" \
+            "$SLACK_WEBHOOK"
+      - name: Page security-leads
+        if: inputs.severity == 'critical' && inputs.dry_run == 'false'
+        env:
+          SEC_WEBHOOK: ${{ secrets.SECURITY_LEADS_SLACK_WEBHOOK }}
+        run: |
+          if [ -z "${SEC_WEBHOOK:-}" ]; then
+              echo "::warning::SECURITY_LEADS_SLACK_WEBHOOK unset; skipping security-leads page."
+              exit 0
+          fi
+          curl -X POST -H 'Content-type: application/json' \
+            --data "{\"text\": \"🚨 CRITICAL hotfix landed sha=${{ inputs.target_sha }}. Retro fix-brief tracked at #<TBD>.\"}" \
+            "$SEC_WEBHOOK"

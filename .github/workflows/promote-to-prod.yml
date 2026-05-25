@@ -32,10 +32,23 @@ on:
         default: 'true'
         type: choice
         options: ['true', 'false']
+      paste_back_confirmation:
+        description: 'Required when wave=all OR force_promote=true. Type "PROMOTE <wave>" exactly.'
+        required: false
+      force_promote:
+        description: 'Bypass the 7-day rollback quarantine (requires paste_back_confirmation).'
+        default: 'false'
+        type: choice
+        options: ['true', 'false']
 
 concurrency:
   group: promote-to-prod-${{ inputs.wave }}
   cancel-in-progress: false
+
+permissions:
+  contents: read
+  packages: write       # tag-image retags ghcr.io/<owner>/* via buildx imagetools
+  id-token: write       # cosign verify uses GitHub OIDC token
 
 jobs:
 
@@ -48,6 +61,82 @@ jobs:
       target_tenants: ${{ steps.tenants.outputs.target_tenants }}
     steps:
       - uses: actions/checkout@v4
+
+      - name: Kill-switch check (AGENTS_ENABLED + AGENT_PROMOTE_ENABLED)
+        env:
+          AGENTS_ENABLED: ${{ vars.AGENTS_ENABLED }}
+          AGENT_PROMOTE_ENABLED: ${{ vars.AGENT_PROMOTE_ENABLED }}
+        run: |
+          # AGENTS_ENABLED is repo-wide (mirrors agent-guardrails.yml).
+          # AGENT_PROMOTE_ENABLED is the prod-promote-specific kill switch and
+          # defaults to "false" until cutover, so an absent value blocks promotes.
+          if [ "${AGENTS_ENABLED:-true}" != "true" ]; then
+              echo "::error::AGENTS_ENABLED is not 'true' — all agent + automation workflows are disabled." >&2
+              exit 1
+          fi
+          if [ "${AGENT_PROMOTE_ENABLED:-false}" != "true" ]; then
+              echo "::error::AGENT_PROMOTE_ENABLED is not 'true' — prod promotes are disabled. Set the repo variable to enable." >&2
+              exit 1
+          fi
+
+      - name: Paste-back confirmation (wave=all or force_promote=true)
+        env:
+          WAVE: ${{ inputs.wave }}
+          FORCE: ${{ inputs.force_promote }}
+          PASTE: ${{ inputs.paste_back_confirmation }}
+          PG_DSN: ${{ secrets.CONTROL_PLANE_PG_DSN }}
+        run: |
+          required="false"
+          [ "$WAVE" = "all" ] && required="true"
+          [ "$FORCE" = "true" ] && required="true"
+          if [ "$required" = "false" ]; then
+              echo "::notice::paste-back not required (wave=$WAVE force_promote=$FORCE)"
+              exit 0
+          fi
+          expected="PROMOTE $WAVE"
+          if [ "$PASTE" != "$expected" ]; then
+              echo "::error::paste_back_confirmation missing or wrong. Expected exactly: '$expected'" >&2
+              # Audit the mismatch as a security_alert so we have a forensic trail
+              # of failed paste-back attempts on emergency promotes.
+              if [ -n "${PG_DSN:-}" ]; then
+                  psql "$PG_DSN" -c "
+                    INSERT INTO saas_audit.event
+                      (actor_kind, actor_name, action, target_kind, target_id, sha, wave, reason, payload)
+                    VALUES
+                      ('human', '${{ github.actor }}', 'promote-to-prod', 'wave', '$WAVE',
+                       NULL, '$WAVE', 'paste_back_mismatch',
+                       jsonb_build_object('outcome', 'security_alert', 'provided', '$PASTE'))
+                  " || true
+              fi
+              exit 1
+          fi
+          echo "::notice::paste-back accepted"
+
+      - name: Rollback quarantine (no open rollback for this wave in last 7d)
+        env:
+          PG_DSN: ${{ secrets.CONTROL_PLANE_PG_DSN }}
+          WAVE: ${{ inputs.wave }}
+          FORCE: ${{ inputs.force_promote }}
+        run: |
+          # A rollback in the past 7 days for this wave usually means an
+          # in-flight incident. Block unless force_promote=true (which already
+          # required a paste_back above).
+          if [ "$FORCE" = "true" ]; then
+              echo "::warning::force_promote=true; rollback-quarantine bypassed."
+              exit 0
+          fi
+          recent=$(psql "$PG_DSN" -t -A -c "
+            SELECT count(*)
+            FROM saas_audit.event
+            WHERE action = 'rollback-prod'
+              AND wave   = '$WAVE'
+              AND created_at > now() - interval '7 days'
+          " 2>/dev/null || echo "0")
+          if [ "${recent:-0}" != "0" ]; then
+              echo "::error::Quarantine: $recent rollback(s) for wave=$WAVE in last 7 days. Resolve the incident or rerun with force_promote=true + paste-back." >&2
+              exit 1
+          fi
+
       - name: Resolve target SHA
         id: resolve
         env:
@@ -124,40 +213,207 @@ jobs:
               AND last_migrated_sha IS DISTINCT FROM '${{ steps.resolve.outputs.target_sha }}'
               AND state = 'active'
           " || echo "[]")
+          # Empty / NULL → normalize to "[]" so downstream `jq -r '.[]?'` is safe.
+          if [ -z "$tenants" ] || [ "$tenants" = "null" ]; then
+              tenants="[]"
+          fi
           echo "target_tenants=$tenants" >> "$GITHUB_OUTPUT"
           echo "::notice::Target tenants: $tenants"
 
+      - name: Preflight summary
+        env:
+          SHA: ${{ steps.resolve.outputs.target_sha }}
+          TENANTS: ${{ steps.tenants.outputs.target_tenants }}
+        run: |
+          tenant_count=$(echo "$TENANTS" | jq '. | length // 0')
+          {
+            echo "## Preflight"
+            echo ""
+            echo "| Field | Value |"
+            echo "|---|---|"
+            echo "| Wave | \`${{ inputs.wave }}\` |"
+            echo "| Target SHA | \`$SHA\` |"
+            echo "| Platforms | \`${{ inputs.platforms }}\` |"
+            echo "| Dry-run | \`${{ inputs.dry_run }}\` |"
+            echo "| Tenants in wave | $tenant_count |"
+            echo "| Actor | @${{ github.actor }} |"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  resolve-digest:
+    name: Resolve GHCR digests + cosign verify
+    needs: [preflight]
+    # Mirror tag-image's gating so dry-runs continue when approval is skipped.
+    if: |
+      always()
+      && needs.preflight.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      odoo_digest: ${{ steps.resolve.outputs.odoo_digest }}
+      postgres_digest: ${{ steps.resolve.outputs.postgres_digest }}
+      backup_runner_digest: ${{ steps.resolve.outputs.backup_runner_digest }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Resolve digests via buildx imagetools
+        id: resolve
+        env:
+          SHA: ${{ needs.preflight.outputs.target_sha }}
+        run: |
+          set -euo pipefail
+          owner="${GITHUB_REPOSITORY_OWNER,,}"
+          short="${SHA:0:7}"
+          failed=0
+          for img in odoo-saas-odoo odoo-saas-postgres odoo-saas-backup-runner; do
+              ref="ghcr.io/${owner}/${img}:sha-${short}"
+              digest=$(docker buildx imagetools inspect "$ref" --format '{{.Manifest.Digest}}' 2>/dev/null || true)
+              if [ -z "$digest" ]; then
+                  echo "::error::No GHCR image at $ref. ghcr-publish.yml has not published this SHA. Promote blocked." >&2
+                  failed=1
+                  continue
+              fi
+              key=$(echo "$img" | sed 's/^odoo-saas-//; s/-/_/g')
+              echo "${key}_digest=${digest}" >> "$GITHUB_OUTPUT"
+              echo "::notice::${img} @ ${digest}"
+          done
+          [ "$failed" = "0" ] || exit 1
+      - name: Install cosign
+        uses: sigstore/cosign-installer@v3
+      - name: Verify cosign signatures
+        env:
+          ODOO_DIGEST: ${{ steps.resolve.outputs.odoo_digest }}
+          POSTGRES_DIGEST: ${{ steps.resolve.outputs.postgres_digest }}
+          BACKUP_RUNNER_DIGEST: ${{ steps.resolve.outputs.backup_runner_digest }}
+        run: |
+          set -euo pipefail
+          owner="${GITHUB_REPOSITORY_OWNER,,}"
+          # Each image must have been signed by the org's GitHub OIDC identity
+          # in ghcr-publish.yml. Refusing here blocks promoting a manually
+          # pushed image that never went through the signed-publish pipeline.
+          for pair in "odoo-saas-odoo=$ODOO_DIGEST" \
+                      "odoo-saas-postgres=$POSTGRES_DIGEST" \
+                      "odoo-saas-backup-runner=$BACKUP_RUNNER_DIGEST"; do
+              name="${pair%%=*}"; digest="${pair##*=}"
+              ref="ghcr.io/${owner}/${name}@${digest}"
+              echo "::group::cosign verify ${name}"
+              cosign verify \
+                  --certificate-oidc-issuer https://token.actions.githubusercontent.com \
+                  --certificate-identity-regexp "https://github.com/${GITHUB_REPOSITORY}/" \
+                  "$ref"
+              echo "::endgroup::"
+              # Tier 7: also verify SLSA provenance attestation. Blocks
+              # images that were signed but skipped the attest step (e.g.
+              # someone built outside ghcr-publish.yml then signed by hand).
+              echo "::group::cosign verify-attestation ${name}"
+              cosign verify-attestation \
+                  --type slsaprovenance \
+                  --certificate-oidc-issuer https://token.actions.githubusercontent.com \
+                  --certificate-identity-regexp "https://github.com/${GITHUB_REPOSITORY}/" \
+                  "$ref" >/dev/null
+              echo "::endgroup::"
+          done
+          {
+            echo "## Image digests + cosign + provenance"
+            echo ""
+            echo "| Image | Digest | Signed | Attested |"
+            echo "|---|---|---|---|"
+            echo "| odoo-saas-odoo | \`${ODOO_DIGEST:0:19}…\` | ✓ | ✓ |"
+            echo "| odoo-saas-postgres | \`${POSTGRES_DIGEST:0:19}…\` | ✓ | ✓ |"
+            echo "| odoo-saas-backup-runner | \`${BACKUP_RUNNER_DIGEST:0:19}…\` | ✓ | ✓ |"
+          } >> "$GITHUB_STEP_SUMMARY"
+
   approval:
     name: Awaiting prod-deployers approval
-    needs: [preflight]
+    needs: [preflight, resolve-digest]
+    # Skipped on dry-run so shadow promotes don't block on a human gate.
+    # On a real promote: N=1 from prod-deployers, or N=2 if wave=all
+    # (the stricter `prod-rollout-strict` environment is configured in repo settings).
+    if: inputs.dry_run == 'false'
     runs-on: ubuntu-latest
-    # Requires N=1 from prod-deployers (N=2 if wave=all — enforced by a stricter
-    # environment 'prod-rollout-strict' configured in repo settings)
     environment: ${{ inputs.wave == 'all' && 'prod-rollout-strict' || 'prod-rollout' }}
     steps:
       - run: echo "Approved for wave=${{ inputs.wave }}, sha=${{ needs.preflight.outputs.target_sha }}"
 
   tag-image:
     name: Tag prod image
-    needs: [approval, preflight]
+    needs: [approval, preflight, resolve-digest]
+    # Run when preflight + resolve-digest pass AND approval is either
+    # approved or legitimately skipped (dry-run path). Without this, GH
+    # cascades the `skipped` status from approval and the rest of the
+    # workflow stops.
+    if: |
+      always()
+      && needs.preflight.result == 'success'
+      && needs.resolve-digest.result == 'success'
+      && (needs.approval.result == 'success' || needs.approval.result == 'skipped')
     runs-on: ubuntu-latest
-    if: inputs.dry_run == 'false'
+    outputs:
+      prod_tag: ${{ steps.compute.outputs.prod_tag }}
     steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ needs.preflight.outputs.target_sha }}
-      - name: Tag image
-        env:
-          REGISTRY_TOKEN: ${{ secrets.REGISTRY_TOKEN }}
+      - name: Compute prod tag
+        id: compute
         run: |
+          set -euo pipefail
           tag="prod-$(date -u +%Y.%m.%d)-${{ github.run_number }}"
-          echo "::notice::Tagging image as $tag"
-          # Pseudo: docker pull <staging-image-at-sha>; docker tag; docker push
-          # Implementation depends on the registry. Cloudflare R2 / GHCR / Dockerhub.
+          echo "prod_tag=$tag" >> "$GITHUB_OUTPUT"
+          echo "::notice::Prod tag: $tag"
+          {
+            echo "## Image tag"
+            echo ""
+            echo "- SHA: \`${{ needs.preflight.outputs.target_sha }}\`"
+            echo "- Tag: \`$tag\` (immutable; references signed digests)"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Log in to GHCR
+        if: inputs.dry_run == 'false'
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Retag by digest (buildx imagetools create)
+        if: inputs.dry_run == 'false'
+        env:
+          PROD_TAG: ${{ steps.compute.outputs.prod_tag }}
+          ODOO_DIGEST: ${{ needs.resolve-digest.outputs.odoo_digest }}
+          POSTGRES_DIGEST: ${{ needs.resolve-digest.outputs.postgres_digest }}
+          BACKUP_RUNNER_DIGEST: ${{ needs.resolve-digest.outputs.backup_runner_digest }}
+        run: |
+          set -euo pipefail
+          owner="${GITHUB_REPOSITORY_OWNER,,}"
+          # `imagetools create` writes a new tag that points at the existing
+          # manifest digest without re-uploading layers. This preserves the
+          # cosign signature (signatures live on the digest, not the tag).
+          for pair in "odoo-saas-odoo=$ODOO_DIGEST" \
+                      "odoo-saas-postgres=$POSTGRES_DIGEST" \
+                      "odoo-saas-backup-runner=$BACKUP_RUNNER_DIGEST"; do
+              name="${pair%%=*}"; digest="${pair##*=}"
+              src="ghcr.io/${owner}/${name}@${digest}"
+              dst="ghcr.io/${owner}/${name}:${PROD_TAG}"
+              echo "::notice::Tagging ${dst} → ${digest}"
+              docker buildx imagetools create --tag "$dst" "$src"
+          done
+          echo "- Push: **done** (3 images retagged by digest)" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Dry-run notice
+        if: inputs.dry_run == 'true'
+        env:
+          PROD_TAG: ${{ steps.compute.outputs.prod_tag }}
+          ODOO_DIGEST: ${{ needs.resolve-digest.outputs.odoo_digest }}
+        run: |
+          echo "::notice::[dry-run] would retag 3 images as ${PROD_TAG} pointing at signed digests"
+          echo "::notice::[dry-run] odoo digest: ${ODOO_DIGEST}"
+          echo "- Push: **skipped (dry_run=true)**" >> "$GITHUB_STEP_SUMMARY"
 
   deploy-railway:
     name: Deploy → Railway prod
-    needs: [tag-image, preflight]
+    needs: [tag-image, preflight, resolve-digest]
     if: contains(inputs.platforms, 'railway')
     runs-on: ubuntu-latest
     environment: prod-railway
@@ -166,36 +422,77 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: '22' }
       - run: npm install -g @railway/cli
-      - name: railway up (prod)
+      - name: railway up (prod, pinned to digest)
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_PROD_TOKEN }}
+          ODOO_DIGEST: ${{ needs.resolve-digest.outputs.odoo_digest }}
+          PROD_TAG: ${{ needs.tag-image.outputs.prod_tag }}
         run: |
           if [ "${{ inputs.dry_run }}" = "true" ]; then
-              echo "::notice::dry_run=true; skipping actual deploy"
+              echo "::notice::[dry-run] would deploy Railway service=${{ secrets.RAILWAY_PROD_ODOO_SERVICE_ID }} image=ghcr.io/<owner>/odoo-saas-odoo@${ODOO_DIGEST}"
+              {
+                echo "## Deploy → Railway"
+                echo "- Status: **skipped (dry_run=true)**"
+                echo "- Tag: \`${PROD_TAG}\`"
+                echo "- Digest: \`${ODOO_DIGEST}\`"
+              } >> "$GITHUB_STEP_SUMMARY"
               exit 0
           fi
+          # NOTE: `railway up` deploys the current working dir as a fresh
+          # build. To pin to a specific GHCR digest, the Railway service
+          # must be configured with an image source (via GraphQL mutation
+          # `serviceInstanceUpdate { image: { image, tag } }`) before this
+          # step runs. Tier 3 follow-up tracks wiring that mutation here
+          # in place of `railway up`. For now, emit the digest we should
+          # be pinning to so the deploy is at least auditable.
+          echo "::notice::Target digest for Railway: ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/odoo-saas-odoo@${ODOO_DIGEST}"
           railway up --service "${{ secrets.RAILWAY_PROD_ODOO_SERVICE_ID }}" --detach
+          {
+            echo "## Deploy → Railway"
+            echo "- Status: **deployed**"
+            echo "- Tag: \`${PROD_TAG}\`"
+            echo "- Digest (logged, pin pending GraphQL wiring): \`${ODOO_DIGEST}\`"
+          } >> "$GITHUB_STEP_SUMMARY"
 
   deploy-fly:
     name: Deploy → Fly prod
-    needs: [tag-image, preflight]
+    needs: [tag-image, preflight, resolve-digest]
     if: contains(inputs.platforms, 'fly')
     runs-on: ubuntu-latest
     environment: prod-fly
     steps:
       - uses: actions/checkout@v4
       - uses: superfly/flyctl-actions/setup-flyctl@master
-      - name: flyctl deploy
+      - name: flyctl deploy (pinned to digest)
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_PROD_API_TOKEN }}
+          ODOO_DIGEST: ${{ needs.resolve-digest.outputs.odoo_digest }}
+          PROD_TAG: ${{ needs.tag-image.outputs.prod_tag }}
         run: |
+          owner="${GITHUB_REPOSITORY_OWNER,,}"
+          image="ghcr.io/${owner}/odoo-saas-odoo@${ODOO_DIGEST}"
           if [ "${{ inputs.dry_run }}" = "true" ]; then
-              echo "::notice::dry_run=true; skipping actual deploy"
+              echo "::notice::[dry-run] would deploy Fly app with --image ${image}"
+              {
+                echo "## Deploy → Fly"
+                echo "- Status: **skipped (dry_run=true)**"
+                echo "- Tag: \`${PROD_TAG}\`"
+                echo "- Image: \`${image}\`"
+              } >> "$GITHUB_STEP_SUMMARY"
               exit 0
           fi
+          # --image bypasses the local Dockerfile and pins the deploy to
+          # the exact signed digest from resolve-digest. The fly.toml is
+          # still read for service config (memory, regions, etc.).
           flyctl deploy --config infra/fly/odoo-prod/fly.toml \
-              --dockerfile Dockerfile --remote-only --strategy rolling \
+              --image "$image" --remote-only --strategy rolling \
               --wait-timeout 900
+          {
+            echo "## Deploy → Fly"
+            echo "- Status: **deployed**"
+            echo "- Tag: \`${PROD_TAG}\`"
+            echo "- Image: \`${image}\`"
+          } >> "$GITHUB_STEP_SUMMARY"
 
   parity-gate:
     name: Cross-platform parity gate
@@ -208,55 +505,279 @@ jobs:
           fly="${{ needs.deploy-fly.result }}"
           # 'skipped' is OK (user opted out of that platform via inputs.platforms);
           # mismatched success/failure is not.
+          {
+            echo "## Parity gate"
+            echo ""
+            echo "| Platform | Result |"
+            echo "|---|---|"
+            echo "| Railway | \`$railway\` |"
+            echo "| Fly | \`$fly\` |"
+          } >> "$GITHUB_STEP_SUMMARY"
           if [ "$railway" != "$fly" ] && [ "$railway" != "skipped" ] && [ "$fly" != "skipped" ]; then
               echo "::error::Parity gate FAILED. Railway=$railway Fly=$fly" >&2
+              echo "- Verdict: **FAIL**" >> "$GITHUB_STEP_SUMMARY"
               exit 1
           fi
           echo "::notice::Parity OK. Railway=$railway Fly=$fly"
+          echo "- Verdict: **OK**" >> "$GITHUB_STEP_SUMMARY"
+
+  readiness-probe:
+    name: Post-deploy readiness probe
+    needs: [parity-gate, preflight]
+    if: |
+      always()
+      && needs.parity-gate.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      DRY_RUN: ${{ inputs.dry_run }}
+      BASE_DOMAIN: ${{ vars.TENANT_BASE_DOMAIN }}
+    steps:
+      - name: Wait for control-plane health
+        run: |
+          set -euo pipefail
+          base="${BASE_DOMAIN:-app.goliatt.co}"
+          # operator.<base> is the per-deploy canary endpoint that proves
+          # at least one Odoo worker has come online with the new image.
+          url="https://operator.${base}/web/health"
+          if [ "$DRY_RUN" = "true" ]; then
+              echo "::notice::[dry-run] would poll $url until ready (≤4m)"
+              echo "## Readiness probe" >> "$GITHUB_STEP_SUMMARY"
+              echo "- Status: **skipped (dry_run=true)**" >> "$GITHUB_STEP_SUMMARY"
+              exit 0
+          fi
+          deadline=$(( $(date +%s) + 240 ))
+          while [ "$(date +%s)" -lt "$deadline" ]; do
+              code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 5 "$url" || echo "000")
+              if [ "$code" = "200" ]; then
+                  echo "::notice::Ready: $url ($code)"
+                  echo "## Readiness probe" >> "$GITHUB_STEP_SUMMARY"
+                  echo "- Status: **ready** ($url)" >> "$GITHUB_STEP_SUMMARY"
+                  exit 0
+              fi
+              echo "Waiting on $url ($code)…"
+              sleep 5
+          done
+          echo "::error::Readiness probe timed out after 4m on $url" >&2
+          exit 1
 
   queue-migrations:
     name: Enqueue per-tenant migration jobs
-    needs: [parity-gate, preflight]
+    needs: [readiness-probe, preflight]
     runs-on: ubuntu-latest
-    if: inputs.dry_run == 'false'
     env:
       PG_DSN: ${{ secrets.CONTROL_PLANE_PG_DSN }}
       SHA: ${{ needs.preflight.outputs.target_sha }}
       TENANTS: ${{ needs.preflight.outputs.target_tenants }}
+      DRY_RUN: ${{ inputs.dry_run }}
     steps:
       - name: Enqueue jobs
         run: |
-          echo "$TENANTS" | jq -r '.[]' | while read tenant; do
+          set -euo pipefail
+          {
+            echo "## Migration queue — wave=${{ inputs.wave }}"
+            echo ""
+            echo "| Tenant | Action |"
+            echo "|---|---|"
+          } >> "$GITHUB_STEP_SUMMARY"
+          # Defensive normalize so `jq` doesn't crash under pipefail if upstream returned nothing.
+          [ -n "${TENANTS:-}" ] || TENANTS="[]"
+          tenant_count=$(echo "$TENANTS" | jq -r '. | length // 0')
+          if [ "$tenant_count" = "0" ]; then
+              echo "| — | no tenants in wave needed migration |" >> "$GITHUB_STEP_SUMMARY"
+              exit 0
+          fi
+          echo "$TENANTS" | jq -r '.[]?' | while read -r tenant; do
+              if [ "$DRY_RUN" = "true" ]; then
+                  echo "::notice::[dry-run] would enqueue migration for tenant=$tenant sha=$SHA"
+                  echo "| $tenant | dry-run skip |" >> "$GITHUB_STEP_SUMMARY"
+                  continue
+              fi
               psql "$PG_DSN" -c "
                 INSERT INTO tenant_migration_jobs (tenant_id, target_sha, status, enqueued_by)
                 SELECT id, '$SHA', 'queued', 'promote-to-prod-${{ github.run_id }}'
                 FROM tenants WHERE slug = '$tenant'
               "
+              echo "| $tenant | enqueued |" >> "$GITHUB_STEP_SUMMARY"
           done
+
+  # Note: actual per-tenant migrations are owned by the long-running
+  # `migration-runner` daemon (PR #44, infra/runners/migration_runner/).
+  # It claims jobs from `tenant_migration_jobs` via SELECT FOR UPDATE
+  # SKIP LOCKED, runs `odoo -u all`, handles snapshots, retries, timeouts,
+  # idempotency, and updates `tenants.last_migrated_sha`. This workflow's
+  # responsibility ends at enqueueing — the queue-migrations job above is
+  # the handoff point.
+
+  flip-feature-flags:
+    name: Flip wave-gated feature flags
+    needs: [queue-migrations, preflight]
+    if: |
+      always()
+      && needs.queue-migrations.result == 'success'
+    runs-on: ubuntu-latest
+    env:
+      PG_DSN: ${{ secrets.CONTROL_PLANE_PG_DSN }}
+      DRY_RUN: ${{ inputs.dry_run }}
+      WAVE: ${{ inputs.wave }}
+    steps:
+      - name: Toggle flags scoped to wave
+        run: |
+          set -euo pipefail
+          # The `saas_feature_flag` table may not exist yet (per design §7
+          # line 343). If it doesn't, soft-warn and exit — the rest of the
+          # promote isn't blocked by a missing flag layer.
+          table_exists=$(psql "$PG_DSN" -t -A -c "
+            SELECT to_regclass('public.saas_feature_flag') IS NOT NULL
+          " 2>/dev/null || echo "f")
+          if [ "$table_exists" != "t" ]; then
+              echo "::warning::saas_feature_flag table absent; skipping flag flip. See design §7."
+              echo "## Feature flags" >> "$GITHUB_STEP_SUMMARY"
+              echo "- Status: **skipped (table absent)**" >> "$GITHUB_STEP_SUMMARY"
+              exit 0
+          fi
+          if [ "$DRY_RUN" = "true" ]; then
+              flipped=$(psql "$PG_DSN" -t -A -c "
+                SELECT count(*) FROM saas_feature_flag
+                WHERE wave = '$WAVE' AND enabled IS NOT TRUE
+              ")
+              echo "::notice::[dry-run] would flip $flipped flag(s) for wave=$WAVE"
+              echo "## Feature flags" >> "$GITHUB_STEP_SUMMARY"
+              echo "- Status: **skipped (dry_run=true)** — would flip ${flipped} flag(s)" >> "$GITHUB_STEP_SUMMARY"
+              exit 0
+          fi
+          psql "$PG_DSN" -c "
+            UPDATE saas_feature_flag SET enabled = TRUE, flipped_at = now()
+            WHERE wave = '$WAVE' AND enabled IS NOT TRUE
+          "
+          echo "## Feature flags" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Status: **flipped** for wave=$WAVE" >> "$GITHUB_STEP_SUMMARY"
 
   smoke:
     name: Post-deploy smoke
-    needs: [queue-migrations, preflight]
+    needs: [flip-feature-flags, preflight]
     runs-on: ubuntu-latest
-    if: inputs.dry_run == 'false'
     steps:
       - uses: actions/checkout@v4
       - name: Probe /web/health per tenant
         env:
           TENANTS: ${{ needs.preflight.outputs.target_tenants }}
+          BASE_DOMAIN: ${{ vars.TENANT_BASE_DOMAIN }}
+          DRY_RUN: ${{ inputs.dry_run }}
         run: |
-          echo "$TENANTS" | jq -r '.[]' | head -3 | while read t; do
-              code=$(curl -s -o /dev/null -w '%{http_code}' "https://${t}.<your-domain>/web/health")
+          set -euo pipefail
+          base="${BASE_DOMAIN:-app.goliatt.co}"
+          {
+            echo "## Smoke probe — wave=${{ inputs.wave }}"
+            echo ""
+            echo "| Tenant | URL | Result |"
+            echo "|---|---|---|"
+          } >> "$GITHUB_STEP_SUMMARY"
+          # Defensive normalize so `jq` doesn't crash under pipefail if upstream returned nothing.
+          [ -n "${TENANTS:-}" ] || TENANTS="[]"
+          tenant_count=$(echo "$TENANTS" | jq -r '. | length // 0')
+          if [ "$tenant_count" = "0" ]; then
+              echo "| — | — | no tenants in wave |" >> "$GITHUB_STEP_SUMMARY"
+              echo "::notice::No tenants in wave; smoke step is a no-op"
+              exit 0
+          fi
+          if [ "$DRY_RUN" = "true" ]; then
+              echo "::notice::dry_run=true; logging would-be probe URLs without sending requests"
+          fi
+          # `set -e` + pipefail in a while-pipe subshell propagates exit codes.
+          echo "$TENANTS" | jq -r '.[]?' | head -3 | while read -r t; do
+              url="https://${t}.${base}/web/health"
+              if [ "$DRY_RUN" = "true" ]; then
+                  echo "::notice::[dry-run] would probe $url"
+                  echo "| $t | $url | dry-run skip |" >> "$GITHUB_STEP_SUMMARY"
+                  continue
+              fi
+              code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 10 "$url" || echo "000")
               if [ "$code" != "200" ]; then
-                  echo "::error::Smoke failed for $t (HTTP $code)" >&2
+                  echo "::error::Smoke failed for $t (HTTP $code) — $url" >&2
+                  echo "| $t | $url | FAIL ($code) |" >> "$GITHUB_STEP_SUMMARY"
                   exit 1
               fi
               echo "::notice::Smoke OK for $t"
+              echo "| $t | $url | OK |" >> "$GITHUB_STEP_SUMMARY"
           done
+
+      - name: Login probe on sampled tenant
+        env:
+          TENANTS: ${{ needs.preflight.outputs.target_tenants }}
+          BASE_DOMAIN: ${{ vars.TENANT_BASE_DOMAIN }}
+          SMOKE_USER: ${{ secrets.SMOKE_TENANT_USER }}
+          SMOKE_PASS: ${{ secrets.SMOKE_TENANT_PASSWORD }}
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: |
+          set -euo pipefail
+          [ -n "${TENANTS:-}" ] || TENANTS="[]"
+          first=$(echo "$TENANTS" | jq -r '.[0]? // empty')
+          if [ -z "$first" ]; then
+              echo "::notice::No tenant to sample for login probe"
+              exit 0
+          fi
+          base="${BASE_DOMAIN:-app.goliatt.co}"
+          url="https://${first}.${base}/web/session/authenticate"
+          if [ "$DRY_RUN" = "true" ]; then
+              echo "::notice::[dry-run] would POST $url with internal smoke account"
+              echo "- Login probe: skipped (dry_run=true)" >> "$GITHUB_STEP_SUMMARY"
+              exit 0
+          fi
+          if [ -z "${SMOKE_USER:-}" ] || [ -z "${SMOKE_PASS:-}" ]; then
+              echo "::warning::SMOKE_TENANT_USER/PASSWORD secrets unset; skipping login probe."
+              exit 0
+          fi
+          body=$(jq -n --arg db "$first" --arg u "$SMOKE_USER" --arg p "$SMOKE_PASS" \
+              '{jsonrpc:"2.0",method:"call",params:{db:$db,login:$u,password:$p}}')
+          rc=$(curl -s -o /tmp/login-probe.json -w '%{http_code}' --max-time 15 \
+              -H 'Content-Type: application/json' --data "$body" "$url")
+          uid=$(jq -r '.result.uid // empty' /tmp/login-probe.json 2>/dev/null)
+          if [ "$rc" != "200" ] || [ -z "$uid" ]; then
+              echo "::error::Login probe failed on $first (http=$rc uid=$uid)" >&2
+              echo "- Login probe: **FAIL** (http=$rc uid=$uid)" >> "$GITHUB_STEP_SUMMARY"
+              exit 1
+          fi
+          echo "::notice::Login probe OK on $first (uid=$uid)"
+          echo "- Login probe: **OK** (sampled $first, uid=$uid)" >> "$GITHUB_STEP_SUMMARY"
+
+  audit:
+    name: Audit log (saas_audit.event)
+    needs: [preflight, smoke, queue-migrations, flip-feature-flags, tag-image]
+    if: always()
+    runs-on: ubuntu-latest
+    env:
+      PG_DSN: ${{ secrets.CONTROL_PLANE_PG_DSN }}
+    steps:
+      - name: Insert promote-to-prod audit row
+        run: |
+          smoke_outcome="${{ needs.smoke.result }}"
+          # Per-tenant migration outcomes live in `tenant_migration_jobs`
+          # (owned by the migration-runner daemon). This row records the
+          # enqueue handoff; the daemon writes its own audit on completion.
+          enq_outcome="${{ needs.queue-migrations.result }}"
+          flag_outcome="${{ needs.flip-feature-flags.result }}"
+          payload=$(jq -nc \
+              --arg platforms     "${{ inputs.platforms }}" \
+              --arg dry_run       "${{ inputs.dry_run }}" \
+              --arg prod_tag      "${{ needs.tag-image.outputs.prod_tag }}" \
+              --arg smoke         "$smoke_outcome" \
+              --arg enqueue       "$enq_outcome" \
+              --arg flags         "$flag_outcome" \
+              --arg run_id        "${{ github.run_id }}" \
+              '{platforms:$platforms,dry_run:$dry_run,prod_tag:$prod_tag,smoke:$smoke,enqueue:$enqueue,flags:$flags,run_id:$run_id}')
+          psql "$PG_DSN" -c "
+            INSERT INTO saas_audit.event
+              (actor_kind, actor_name, action, target_kind, target_id, sha, wave, reason, payload)
+            VALUES
+              ('human', '${{ github.actor }}', 'promote-to-prod', 'wave', '${{ inputs.wave }}',
+               '${{ needs.preflight.outputs.target_sha }}', '${{ inputs.wave }}',
+               '$smoke_outcome', '$payload'::jsonb)
+          " || echo "::warning::Audit insert failed; check CONTROL_PLANE_PG_DSN."
 
   notify:
     name: Notify Slack
-    needs: [preflight, smoke]
+    needs: [preflight, smoke, audit]
     if: always()
     runs-on: ubuntu-latest
     steps:

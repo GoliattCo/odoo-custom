@@ -1,0 +1,118 @@
+# hotfix-retro-brief-check
+#
+# Implements docs/superpowers/specs/2026-05-16-promote-to-prod-design.md §5
+# lines 307–321. Daily cron that watches for hotfixes shipped in the last
+# 7 days and escalates if the operator hasn't filed a retro fix-brief
+# within 48h (warn) or 7d (page security-leads + propose revert).
+#
+# A "retro fix-brief" is an issue or PR with the label `hotfix-retro` AND
+# either a `closing-issue` link to the original tracking issue OR the
+# hotfix SHA in its body/title.
+
+name: hotfix-retro-brief-check
+
+on:
+  schedule:
+    - cron: '0 14 * * *'   # daily at 14:00 UTC
+  workflow_dispatch:        # also runnable on demand
+
+permissions:
+  contents: read
+  issues: write             # open escalation issues + leave warning comments
+
+jobs:
+  scan:
+    name: Scan recent hotfixes for missing retro briefs
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      PG_DSN: ${{ secrets.CONTROL_PLANE_PG_DSN }}
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      SEC_WEBHOOK: ${{ secrets.SECURITY_LEADS_SLACK_WEBHOOK }}
+    steps:
+      - name: Query hotfix-prod audits from last 7d
+        id: list
+        run: |
+          set -euo pipefail
+          # Each row: sha|created_at|severity (ISO timestamp)
+          rows=$(psql "$PG_DSN" -t -A -F '|' -c "
+            SELECT sha,
+                   to_char(created_at AT TIME ZONE 'UTC', 'YYYY-MM-DD\"T\"HH24:MI:SS\"Z\"'),
+                   reason
+            FROM saas_audit.event
+            WHERE action = 'hotfix-prod'
+              AND created_at > now() - interval '7 days'
+              AND target_kind = 'wave'
+              AND coalesce((payload->>'dry_run')::boolean, false) = false
+            ORDER BY created_at DESC
+          ")
+          if [ -z "$rows" ]; then
+              echo "::notice::No hotfixes in the last 7 days."
+              echo "rows=" >> "$GITHUB_OUTPUT"
+              exit 0
+          fi
+          # Stash into the step output as base64 to survive newlines.
+          printf '%s' "$rows" | base64 -w0 > /tmp/rows.b64
+          echo "rows_b64=$(cat /tmp/rows.b64)" >> "$GITHUB_OUTPUT"
+
+      - name: Walk each hotfix and escalate as needed
+        if: steps.list.outputs.rows_b64 != ''
+        env:
+          ROWS_B64: ${{ steps.list.outputs.rows_b64 }}
+        run: |
+          set -euo pipefail
+          summary_file="$GITHUB_STEP_SUMMARY"
+          {
+            echo "## Hotfix retro-brief check"
+            echo ""
+            echo "| SHA | Age | Brief? | Action |"
+            echo "|---|---|---|---|"
+          } >> "$summary_file"
+          echo "$ROWS_B64" | base64 -d | while IFS='|' read -r sha created sev; do
+              [ -z "$sha" ] && continue
+              # Age in hours
+              age_h=$(( ( $(date +%s) - $(date -u -d "$created" +%s) ) / 3600 ))
+              # Look for a brief: any issue OR PR with label hotfix-retro AND
+              # the SHA in body/title — gh search returns the union.
+              brief_count=$(gh search issues \
+                  --repo "${{ github.repository }}" \
+                  --label hotfix-retro \
+                  "$sha in:body,title" \
+                  --json number --limit 1 \
+                  --jq '. | length' 2>/dev/null || echo "0")
+              action="ok"
+              if [ "$brief_count" = "0" ]; then
+                  if [ "$age_h" -ge 168 ]; then
+                      # 7d — page + propose revert
+                      title="Hotfix $sha at 7d without retro — propose revert"
+                      body="Hotfix \`$sha\` (severity=$sev) shipped at $created has no retro fix-brief after 7d. Per spec §5, this triggers a propose-revert escalation. Security-leads paged."
+                      gh issue create --title "$title" --label "hotfix-retro-overdue,propose-revert,severity:$sev" --body "$body" || true
+                      if [ -n "${SEC_WEBHOOK:-}" ]; then
+                          curl -X POST -H 'Content-type: application/json' \
+                              --data "{\"text\": \"🚨 hotfix $sha at 7d without retro brief — escalation issue opened. Revert proposal needed.\"}" \
+                              "$SEC_WEBHOOK" || true
+                      fi
+                      action="7d-page+revert"
+                  elif [ "$age_h" -ge 48 ]; then
+                      title="Hotfix $sha missing retro fix-brief (48h+)"
+                      body="Hotfix \`$sha\` (severity=$sev) shipped at $created still lacks a retro fix-brief after 48h."
+                      body+=" Please file one promptly. Spec §5 escalates to security-leads + revert proposal at 7d."
+                      # Avoid duplicates — only open if no prior `hotfix-retro-overdue` issue mentions this SHA.
+                      prior=$(gh search issues --repo "${{ github.repository }}" \
+                          --label hotfix-retro-overdue \
+                          "$sha in:body,title" --json number --limit 1 --jq '. | length' 2>/dev/null || echo "0")
+                      if [ "$prior" = "0" ]; then
+                          gh issue create --title "$title" --label "hotfix-retro-overdue,severity:$sev" --body "$body" || true
+                          if [ -n "${SEC_WEBHOOK:-}" ]; then
+                              curl -X POST -H 'Content-type: application/json' \
+                                  --data "{\"text\": \"⚠️ hotfix $sha at 48h without retro brief — warning issue opened.\"}" \
+                                  "$SEC_WEBHOOK" || true
+                          fi
+                      fi
+                      action="48h-warn"
+                  else
+                      action="watching (<48h)"
+                  fi
+              fi
+              echo "| \`$sha\` | ${age_h}h | $brief_count | $action |" >> "$summary_file"
+          done
