@@ -21,6 +21,8 @@ import pytest
 
 from migration_runner.db import JobRow
 from migration_runner.runner import (
+    POLL_INTERVAL_SECONDS,
+    RunResult,
     Runner,
     classify_exit,
     compute_backoff_seconds,
@@ -246,6 +248,47 @@ class TestBackoff:
     )
     def test_5_20_45_minutes(self, retry_count: int, expected: int) -> None:
         assert compute_backoff_seconds(retry_count) == expected
+
+
+class TestRunForeverSleepCases:
+    """Regression: blocked-status hot-loop. Pre-fix, run_forever() only
+    slept on 'idle' so the daemon re-claimed the same window-blocked
+    job ~70 ops/sec. After the fix, 'blocked' also triggers a sleep."""
+
+    def _make_runner_returning(self, statuses: list[str]) -> tuple[Runner, list[float]]:
+        sleeps: list[float] = []
+        results = iter([RunResult(job_id=f'job-{i}', status=s) for i, s in enumerate(statuses)])
+        store = FakeStore(job=None)
+        runner = Runner(store, snapshot_fn=_fake_snapshot, sleep_fn=sleeps.append)
+
+        def stop_after_n_iterations(_self) -> RunResult:
+            try:
+                return next(results)
+            except StopIteration:
+                raise KeyboardInterrupt  # bail out of run_forever cleanly
+
+        runner.run_once = stop_after_n_iterations.__get__(runner)
+        return runner, sleeps
+
+    def test_blocked_status_triggers_sleep(self) -> None:
+        runner, sleeps = self._make_runner_returning(['blocked'])
+        with pytest.raises(KeyboardInterrupt):
+            runner.run_forever()
+        assert sleeps == [POLL_INTERVAL_SECONDS], \
+            f'blocked outcome should sleep POLL_INTERVAL once, got {sleeps}'
+
+    def test_idle_status_triggers_sleep(self) -> None:
+        runner, sleeps = self._make_runner_returning(['idle'])
+        with pytest.raises(KeyboardInterrupt):
+            runner.run_forever()
+        assert sleeps == [POLL_INTERVAL_SECONDS]
+
+    def test_done_status_does_not_sleep(self) -> None:
+        # Terminal happy-path: keep draining the queue, don't sleep.
+        runner, sleeps = self._make_runner_returning(['done'])
+        with pytest.raises(KeyboardInterrupt):
+            runner.run_forever()
+        assert sleeps == [], f'done outcome should not sleep, got {sleeps}'
 
 
 class TestRetryPath:
