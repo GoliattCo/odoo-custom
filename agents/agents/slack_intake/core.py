@@ -44,16 +44,19 @@ _TEMPLATES_DIR = Path(__file__).parent.parent / "templates"
 # =========================================================================
 
 def run(runtime, payload: dict) -> None:
-    """Start the FastAPI service so Slack and GitHub webhooks can be received."""
+    """Start the FastAPI service so Slack and GitHub webhooks can be received.
+
+    Handler registration happens inside `slack_intake_http.build_app()` where
+    both EventBus instances (slack + github) are available — they can't be
+    derived from `runtime.events` alone because that field is a SINGLE bus,
+    while this agent listens on TWO independent webhook surfaces.
+    """
     log = runtime.logger.bind(agent="slack_intake")
     log.info("slack_intake.start", payload=payload)
 
     # Lazy import — fastapi/uvicorn are optional install extras.
     from ..services import slack_intake_http
 
-    # Wire handlers BEFORE starting the HTTP listener so we never lose an
-    # in-flight webhook.
-    _register_handlers(runtime)
     slack_intake_http.serve(
         runtime=runtime,
         host=payload.get("host", "0.0.0.0"),  # noqa: S104  # nosec B104 — Fly proxy fronts this
@@ -65,8 +68,16 @@ def run(runtime, payload: dict) -> None:
 # Handler registration — subscribes to the EventBus
 # =========================================================================
 
-def _register_handlers(runtime) -> None:
-    events = runtime.events
+def _register_handlers(runtime, *, slack_bus=None, github_bus=None) -> None:
+    """Subscribe agent handlers to the appropriate EventBus instances.
+
+    `slack_bus` and `github_bus` are passed explicitly because the bot listens
+    on two independent buses (Slack v0 HMAC vs GitHub HMAC-SHA256), and
+    `runtime.events` only holds ONE adapter at a time per the runtime's
+    binding model. If either is None, the caller probably meant to reuse
+    `runtime.events`; we fall back to that.
+    """
+    events = slack_bus if slack_bus is not None else runtime.events
     events.subscribe("slack.slash_command",
                      lambda e: on_slash_command(runtime, e.payload))
     events.subscribe("slack.modal_submitted",
@@ -75,10 +86,16 @@ def _register_handlers(runtime) -> None:
                      lambda e: on_block_action(runtime, e.payload))
     events.subscribe("slack.message",
                      lambda e: on_slack_message(runtime, e.payload))
-    # GitHub side — wired through a separate EventBus on the same agent; the
-    # HTTP service registers this independently because the runtime's
-    # `events` port is bound to the Slack EventBus.
-    runtime.logger.info("slack_intake.handlers_registered")
+    if github_bus is not None:
+        github_bus.subscribe(
+            "github.issue_comment.created",
+            lambda e: on_github_issue_comment(runtime, e.payload),
+        )
+    runtime.logger.info(
+        "slack_intake.handlers_registered",
+        slack_bus=type(events).__name__,
+        github_bus=type(github_bus).__name__ if github_bus else None,
+    )
 
 
 # =========================================================================
