@@ -104,8 +104,13 @@ def build_app(*, runtime: Runtime) -> Any:
     return app
 
 
-def serve(*, runtime: Runtime, host: str = "0.0.0.0", port: int = 8080) -> None:  # noqa: S104
-    """Bind the FastAPI app to a port and serve forever."""
+def serve(*, runtime: Runtime, host: str = "0.0.0.0", port: int = 8080) -> None:  # noqa: S104  # nosec B104
+    """Bind the FastAPI app to a port and serve forever.
+
+    Binding to 0.0.0.0 is intentional and safe: the Fly Firecracker microVM
+    is fronted by Fly's edge proxy, and Fly assigns the VM's IP at runtime
+    so we cannot bind to a specific address.
+    """
     import uvicorn  # type: ignore[import-untyped]
     app = build_app(runtime=runtime)
     uvicorn.run(app, host=host, port=port, log_level=runtime.config.runtime.log_level)

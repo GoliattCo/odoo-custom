@@ -56,7 +56,7 @@ def run(runtime, payload: dict) -> None:
     _register_handlers(runtime)
     slack_intake_http.serve(
         runtime=runtime,
-        host=payload.get("host", "0.0.0.0"),  # noqa: S104 — Fly proxy fronts this
+        host=payload.get("host", "0.0.0.0"),  # noqa: S104  # nosec B104 — Fly proxy fronts this
         port=int(payload.get("port", 8080)),
     )
 
