@@ -141,3 +141,169 @@ def run(
         snapshot_id=plan.snapshot_id,
         status='ok',
     )
+
+
+# ── CLI entrypoint (used by rollback-prod.yml `tenant-restore` step) ───
+
+def _lookup_plan(cur, job_id: str, previous_sha: str, actor: str) -> RollbackPlan:
+    """Build a RollbackPlan from the job row + tenant row.
+
+    Raises RollbackError if the job is unknown or the snapshot wasn't
+    recorded (pre-Tier-7 jobs without snapshot_id can't be rolled back
+    this way)."""
+    cur.execute(
+        """
+        SELECT j.id::text, j.tenant_id::text, t.db_name, t.slug, j.snapshot_id
+        FROM tenant_migration_jobs j
+        JOIN tenants t ON t.id = j.tenant_id
+        WHERE j.id = %s
+        """,
+        (job_id,),
+    )
+    row = cur.fetchone()
+    if row is None:
+        raise RollbackError(f'job {job_id} not found')
+    _, tenant_id, db_name, slug, snapshot_id = row
+    if not snapshot_id:
+        raise RollbackError(
+            f'job {job_id} has no snapshot_id — cannot restore from pgbackrest'
+        )
+    return RollbackPlan(
+        job_id=job_id,
+        tenant_id=tenant_id,
+        tenant_db_name=db_name,
+        snapshot_id=snapshot_id,
+        previous_sha=previous_sha,
+        reason=f'operator rollback to {previous_sha[:7]}',
+        actor=actor,
+    )
+
+
+def _finalize_ok(cur, plan: RollbackPlan) -> None:
+    """Revert tenants.last_migrated_sha, flip the job to 'rolled_back',
+    and write the audit row. Single transaction so partial failures
+    don't leave inconsistent state."""
+    cur.execute(
+        """
+        UPDATE tenants
+        SET last_migrated_sha = %s, updated_at = now()
+        WHERE id = %s
+        """,
+        (plan.previous_sha, plan.tenant_id),
+    )
+    cur.execute(
+        """
+        UPDATE tenant_migration_jobs
+        SET status = 'cancelled',
+            finished_at = now(),
+            error_excerpt = %s
+        WHERE id = %s
+        """,
+        (f'rolled back to {plan.previous_sha[:7]} by {plan.actor}', plan.job_id),
+    )
+    cur.execute(
+        """
+        INSERT INTO saas_audit.event
+            (actor_kind, actor_name, action, target_kind, target_id, sha, reason, payload)
+        VALUES
+            ('human', %s, 'tenant.migration_rolled_back', 'tenant', %s, %s, %s,
+             jsonb_build_object(
+                'job_id', %s,
+                'snapshot_id', %s,
+                'previous_sha', %s,
+                'outcome', 'ok'
+             ))
+        """,
+        (
+            plan.actor,
+            plan.tenant_id,
+            plan.previous_sha,
+            plan.reason,
+            plan.job_id,
+            plan.snapshot_id,
+            plan.previous_sha,
+        ),
+    )
+
+
+def cli(argv: Optional[list[str]] = None) -> int:
+    """`python -m migration_runner.rollback <job_id> <previous_sha>`
+
+    Reads CONTROL_PLANE_PG_DSN from env, opens a single connection,
+    looks up the migration job + tenant, runs the pgBackRest restore
+    via `run()`, and on success reverts tenants.last_migrated_sha +
+    writes a saas_audit.event row. All DB writes are committed in one
+    transaction so the audit row + sha revert are atomic.
+
+    Exit codes:
+      0  — restore + finalize succeeded.
+      1  — usage error (missing args).
+      2  — RollbackError raised (job missing, snapshot missing, etc).
+      3  — pgbackrest restore returned status='restore_failed'.
+      4  — pgbackrest snapshot tag absent (status='snapshot_missing').
+    """
+    import sys
+
+    if argv is None:
+        argv = sys.argv[1:]
+    if len(argv) != 2:
+        print(
+            'usage: python -m migration_runner.rollback <job_id> <previous_sha>',
+            file=sys.stderr,
+        )
+        return 1
+    job_id, previous_sha = argv
+    actor = os.environ.get('ROLLBACK_ACTOR') or os.environ.get('GITHUB_ACTOR', 'unknown')
+
+    logging.basicConfig(
+        level=logging.INFO, format='%(asctime)s %(levelname)s %(name)s %(message)s'
+    )
+
+    dsn = os.environ.get('CONTROL_PLANE_PG_DSN')
+    if not dsn:
+        print('CONTROL_PLANE_PG_DSN not set', file=sys.stderr)
+        return 1
+
+    # Local import so unit tests can stub the module without pulling
+    # psycopg. Matches the same import pattern as JobStore._connect.
+    import psycopg
+
+    conn = psycopg.connect(dsn, autocommit=False)
+    try:
+        with conn.cursor() as cur:
+            try:
+                plan = _lookup_plan(cur, job_id, previous_sha, actor)
+            except RollbackError as exc:
+                logger.error('%s', exc)
+                conn.rollback()
+                return 2
+        # Snapshot restore happens OUTSIDE the DB transaction — it
+        # shells out to pgbackrest and can take minutes/hours. We
+        # also commit the lookup-side read-txn first so the pgbackrest
+        # subprocess doesn't hold a transaction open against Neon.
+        conn.commit()
+        result = run(plan)
+        if result.status == 'snapshot_missing':
+            logger.error('snapshot %s missing — aborting', plan.snapshot_id)
+            return 4
+        if result.status == 'restore_failed':
+            logger.error('pgbackrest restore failed for snapshot %s', plan.snapshot_id)
+            return 3
+        with conn.cursor() as cur:
+            _finalize_ok(cur, plan)
+        conn.commit()
+    finally:
+        conn.close()
+    logger.info(
+        'rollback OK job=%s tenant=%s previous_sha=%s',
+        plan.job_id,
+        plan.tenant_db_name,
+        plan.previous_sha,
+    )
+    return 0
+
+
+if __name__ == '__main__':
+    import sys
+
+    sys.exit(cli())
