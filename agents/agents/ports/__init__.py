@@ -13,7 +13,7 @@ from .compute_env import ComputeEnv, Deployment, Status
 from .event_bus import Event, EventBus, Subscription
 from .issue_tracker import Comment, Issue, IssueTracker
 from .knowledge_base import KbChunk, KnowledgeBase
-from .llm_provider import ChatResponse, LLMProvider, Message, Tool, Vector
+from .llm_provider import ChatResponse, LLMProvider, Message, Tool, ToolCall, Vector
 from .logger import Logger
 from .notifier import Notifier, Severity
 from .repo import GitIdentity, PullRequest, Repo
@@ -22,7 +22,7 @@ from .state import StateStore, ThreadIssueLink
 
 __all__ = [
     # llm
-    "LLMProvider", "Message", "ChatResponse", "Tool", "Vector",
+    "LLMProvider", "Message", "ChatResponse", "Tool", "ToolCall", "Vector",
     # repo
     "Repo", "PullRequest", "GitIdentity",
     # issues
