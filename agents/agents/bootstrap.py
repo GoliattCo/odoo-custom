@@ -11,10 +11,12 @@ production-safety lock from the portable-runtime spec §12.
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import Any
 
 from .config import Config
 from .ports import (
     ArtifactStore,
+    ChatOps,
     ComputeEnv,
     EventBus,
     IssueTracker,
@@ -24,6 +26,7 @@ from .ports import (
     Notifier,
     Repo,
     SecretStore,
+    StateStore,
 )
 
 
@@ -35,11 +38,13 @@ class Runtime:
     repo: Repo
     issues: IssueTracker
     notifier: Notifier
+    chat: ChatOps
     secrets: SecretStore
     artifacts: ArtifactStore
     compute: ComputeEnv
     kb: KnowledgeBase
     events: EventBus
+    state: StateStore
     logger: Logger
     config: Config
 
@@ -50,17 +55,21 @@ def bootstrap(config: Config) -> Runtime:
     # Production-safety: refuse non-allow-listed adapters
     _enforce_allowlist(config)
 
-    # Each adapter import is lazy so optional deps don't break dev installs
+    notifier = _make_notifier(config)
     return Runtime(
         llm=_make_llm(config),
         repo=_make_repo(config),
         issues=_make_issues(config),
-        notifier=_make_notifier(config),
+        notifier=notifier,
+        # When the notifier is Slack, the same instance also implements ChatOps.
+        # Otherwise spin up a dedicated Slack ChatOps adapter.
+        chat=_make_chat(config, fallback=notifier),
         secrets=_make_secrets(config),
         artifacts=_make_artifacts(config),
         compute=_make_compute(config),
         kb=_make_kb(config),
         events=_make_events(config),
+        state=_make_state(config),
         logger=_make_logger(config),
         config=config,
     )
@@ -186,10 +195,44 @@ def _make_events(config: Config) -> EventBus:
     if name == "github_webhook":
         from .adapters.events_github_webhook import GitHubWebhookEventBus
         return GitHubWebhookEventBus.from_config(config)
+    if name == "slack_webhook":
+        from .adapters.events_slack_webhook import SlackWebhookEventBus
+        return SlackWebhookEventBus.from_config(config)
     if name == "local_cron":
         from .adapters.events_local_cron import LocalCronEventBus
         return LocalCronEventBus.from_config(config)
     raise ValueError(f"Unknown events adapter: {name}")
+
+
+def _make_state(config: Config) -> StateStore:
+    name = config.bindings.state
+    if name == "sqlite":
+        from .adapters.state_sqlite import SqliteStateStore
+        return SqliteStateStore.from_config(config)
+    if name == "memory":
+        from .adapters.state_memory import InMemoryStateStore
+        return InMemoryStateStore()
+    raise ValueError(f"Unknown state adapter: {name}")
+
+
+def _make_chat(config: Config, *, fallback: Any) -> ChatOps:
+    """Resolve the ChatOps adapter.
+
+    If a `chat` binding is set, instantiate that. Otherwise: if the notifier
+    is the SlackAdapter (which implements both ports), reuse it; if not,
+    instantiate a fresh SlackAdapter for chat ops alone.
+    """
+    name = getattr(config.bindings, "chat", None)
+    if name == "slack":
+        from .adapters.notifier_slack import SlackAdapter
+        return SlackAdapter.from_config(config)
+    if name in (None, ""):
+        # Implicit binding: prefer the existing notifier if it is Slack.
+        from .adapters.notifier_slack import SlackAdapter
+        if isinstance(fallback, SlackAdapter):
+            return fallback
+        return SlackAdapter.from_config(config)
+    raise ValueError(f"Unknown chat adapter: {name}")
 
 
 def _make_logger(config: Config) -> Logger:

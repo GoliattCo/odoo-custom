@@ -26,11 +26,13 @@ class Bindings(BaseModel):
     repo: str = "github"
     issues: str = "github"
     notifier: str = "slack"
+    chat: str = ""              # empty => derive from notifier when it's slack
     secrets: str = "envvar"
     artifacts: str = "s3"
     compute: str = "fly"
     kb: str = "pgvector"
     events: str = "github_webhook"
+    state: str = "sqlite"
     logger: str = "stdjson"
 
 

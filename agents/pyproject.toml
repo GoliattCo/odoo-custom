@@ -28,11 +28,20 @@ llm-ollama     = ["ollama>=0.2"]
 repo-github    = ["PyGithub>=2.3"]
 repo-gitlab    = ["python-gitlab>=4.0"]
 
+issues-github  = ["PyGithub>=2.3"]
 issues-linear  = ["gql>=3.5"]
 issues-jira    = ["atlassian-python-api>=3.41"]
 
 notifier-slack    = ["slack_sdk>=3.27"]
 notifier-discord  = ["discord-webhook>=1.3"]
+
+# Slack Intake agent — receives Slack + GitHub webhooks via FastAPI.
+slack-intake = [
+    "slack_sdk>=3.27",
+    "PyGithub>=2.3",
+    "fastapi>=0.110",
+    "uvicorn[standard]>=0.27",
+]
 
 secret-vault   = ["hvac>=2.0"]
 secret-k8s     = ["kubernetes>=29.0"]
@@ -51,12 +60,13 @@ logger-betterstack  = ["httpx>=0.27"]
 
 # Bundles
 all = [
-    "odoo-saas-agents[llm-litellm,repo-github,notifier-slack,secret-vault,artifact-s3,compute-fly,kb-pgvector,logger-betterstack]",
+    "odoo-saas-agents[llm-litellm,repo-github,issues-github,notifier-slack,slack-intake,secret-vault,artifact-s3,compute-fly,kb-pgvector,logger-betterstack]",
 ]
 
 dev = [
     "pytest>=8.0",
     "pytest-asyncio>=0.23",
+    "httpx>=0.27",
     "ruff>=0.5",
     "black>=24.0",
     "mypy>=1.10",

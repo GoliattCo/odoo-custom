@@ -13,11 +13,13 @@ bindings:
   repo:       github
   issues:     github
   notifier:   slack
+  chat:       ""             # blank => same instance as notifier when notifier=slack
   secrets:    envvar
   artifacts:  s3
   compute:    fly
   kb:         pgvector
   events:     github_webhook
+  state:      sqlite
   logger:     stdjson
 
 # --- LLM ---
@@ -38,6 +40,7 @@ github:
 # --- Notifier ---
 slack:
   workspace_secret: SLACK_BOT_TOKEN
+  signing_secret_name: SLACK_SIGNING_SECRET    # used by events_slack_webhook adapter
   default_channel: "#devops-agents"
   channels_per_agent:
     spec_generator:  "#devops-intake"
@@ -46,6 +49,12 @@ slack:
     security:        "#devops-security"
     optimization:    "#devops-agents"
     support_triage:  "#support-quality"
+    slack_intake:    "#devops-intake"
+
+# --- State store (slack_intake) ---
+state_sqlite:
+  path: /data/slack_intake.db          # Fly volume mount; for local dev use ./tmp/state.db
+  dedupe_ttl_hours: 24
 
 # --- Compute (preview envs, agentlab) ---
 fly:
@@ -96,6 +105,21 @@ agents:
     spend_cap_monthly_usd: 300
     issues_per_tenant_per_day: 5
     messages_per_user_per_hour: 30
+  slack_intake:
+    # Channels where /intake is allowed. Empty list = bot ignores /intake.
+    # Use channel IDs (Cxxxx). "*" allows any channel.
+    allowed_channels: []
+    # GitHub login(s) whose issue comments get relayed back to Slack.
+    relay_authors:
+      - spec-generator-bot
+    # Optional regex list overriding the sensitive-topic default. Matching
+    # descriptions are refused and pointed at the support inbox.
+    sensitive_patterns: []
+    # Slack option list (max 100) populated into the addon select.
+    addon_choices: []
+    # Rate limits (mirrors Support Triage Agent §5.10).
+    issues_per_user_per_hour: 5
+    issues_per_workspace_per_hour: 30
 
 # --- Adapter allow-list (production safety) ---
 # In production config, set strict allow-list so a PR can't silently swap a vendor.
@@ -104,9 +128,11 @@ allowed_adapters:
   repo:       [github]
   issues:     [github]
   notifier:   [slack, email, webhook]
+  chat:       [slack, ""]
   secrets:    [envvar, vault]
   artifacts:  [s3]
   compute:    [fly, railway]
   kb:         [pgvector]
-  events:     [github_webhook]
+  events:     [github_webhook, slack_webhook]
+  state:      [sqlite]
   logger:     [stdjson]
