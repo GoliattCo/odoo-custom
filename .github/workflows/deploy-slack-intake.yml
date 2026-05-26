@@ -1,0 +1,108 @@
+# Build + deploy the slack_intake agent service to Fly.io.
+#
+# The slack_intake agent ships in the existing odoo-saas-agents OCI image
+# but runs as its own Fly app (odoo-saas-slack-intake) so it can own the
+# webhook endpoints with no contention from the other agents' CI runs.
+#
+# Trigger paths:
+#   - push to main touching agents/** or infra/fly/slack-intake/**
+#   - workflow_dispatch (manual deploys, e.g. after secret rotation)
+#
+# Required Fly app + secrets (set out-of-band before first run):
+#   fly app:     odoo-saas-slack-intake
+#   secrets:     SLACK_BOT_TOKEN, SLACK_SIGNING_SECRET,
+#                GITHUB_TOKEN (PAT scoped to issues:write + issue_comments:write),
+#                GITHUB_WEBHOOK_SECRET
+#   volume:      slack_intake_data (1 GB) mounted at /data
+#
+# Kill switch:
+#   The workflow refuses to deploy if AGENTS_ENABLED repo variable is set
+#   to anything other than "true". This mirrors agent-guardrails.yml.
+
+name: Deploy slack-intake
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'agents/**'
+      - 'infra/fly/slack-intake/**'
+      - '.github/workflows/deploy-slack-intake.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-slack-intake
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Test agents package
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install agents (with dev + slack-intake extras)
+        working-directory: agents
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev,slack-intake]"
+      - name: Lint
+        working-directory: agents
+        run: ruff check .
+      - name: Test
+        working-directory: agents
+        run: pytest tests/ -q
+
+  deploy:
+    name: Deploy to Fly
+    needs: test
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN_SLACK_INTAKE }}
+      AGENTS_ENABLED: ${{ vars.AGENTS_ENABLED }}
+    steps:
+      - name: Kill-switch check
+        run: |
+          if [ "${AGENTS_ENABLED:-true}" != "true" ]; then
+              echo "::error::AGENTS_ENABLED is not 'true' — refusing to deploy slack-intake." >&2
+              exit 1
+          fi
+
+      - uses: actions/checkout@v4
+
+      - name: Install flyctl
+        uses: superfly/flyctl-actions/setup-flyctl@master
+
+      - name: Deploy
+        working-directory: infra/fly/slack-intake
+        run: |
+          flyctl deploy \
+            --app odoo-saas-slack-intake \
+            --config fly.toml \
+            --remote-only \
+            --strategy rolling
+
+      - name: Smoke check /healthz
+        run: |
+          # Fly's status endpoint is /healthz; the deploy is "rolling" so
+          # the new machine takes the routing before the old one is gone.
+          for i in 1 2 3 4 5; do
+              sleep 6
+              code=$(curl -s -o /dev/null -w '%{http_code}' \
+                  https://odoo-saas-slack-intake.fly.dev/healthz || echo 000)
+              if [ "$code" = "200" ]; then
+                  echo "healthz OK after $((i * 6))s"
+                  exit 0
+              fi
+              echo "healthz attempt $i returned $code"
+          done
+          echo "::error::healthz never returned 200 — investigate the deploy" >&2
+          exit 1

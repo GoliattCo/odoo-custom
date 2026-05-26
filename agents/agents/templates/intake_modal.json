@@ -1,0 +1,89 @@
+{
+  "type": "modal",
+  "callback_id": "intake_submit",
+  "title": { "type": "plain_text", "text": "File intake" },
+  "submit": { "type": "plain_text", "text": "File issue" },
+  "close":  { "type": "plain_text", "text": "Cancel" },
+  "private_metadata": "{}",
+  "blocks": [
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": "*Tell us what's broken or what you'd like to see.* The Spec Generator will pick this up and ask follow-ups right here in the thread."
+      }
+    },
+    {
+      "type": "input",
+      "block_id": "title",
+      "label": { "type": "plain_text", "text": "Title" },
+      "element": {
+        "type": "plain_text_input",
+        "action_id": "title_input",
+        "max_length": 120,
+        "placeholder": { "type": "plain_text", "text": "e.g. Search returns no results when filtering by partner" }
+      }
+    },
+    {
+      "type": "input",
+      "block_id": "description",
+      "label": { "type": "plain_text", "text": "Description" },
+      "element": {
+        "type": "plain_text_input",
+        "action_id": "description_input",
+        "multiline": true,
+        "max_length": 3000,
+        "placeholder": { "type": "plain_text", "text": "What happened, what you expected, steps to reproduce. Don't paste passwords or PII." }
+      }
+    },
+    {
+      "type": "input",
+      "block_id": "kind",
+      "label": { "type": "plain_text", "text": "Kind" },
+      "element": {
+        "type": "radio_buttons",
+        "action_id": "kind_select",
+        "initial_option": {
+          "text": { "type": "plain_text", "text": "Bug" },
+          "value": "bug"
+        },
+        "options": [
+          { "text": { "type": "plain_text", "text": "Bug" },     "value": "bug" },
+          { "text": { "type": "plain_text", "text": "Feature request" }, "value": "feature" }
+        ]
+      }
+    },
+    {
+      "type": "input",
+      "block_id": "severity",
+      "label": { "type": "plain_text", "text": "Severity" },
+      "element": {
+        "type": "static_select",
+        "action_id": "severity_select",
+        "initial_option": {
+          "text": { "type": "plain_text", "text": "Medium" },
+          "value": "medium"
+        },
+        "options": [
+          { "text": { "type": "plain_text", "text": "Low" },    "value": "low" },
+          { "text": { "type": "plain_text", "text": "Medium" }, "value": "medium" },
+          { "text": { "type": "plain_text", "text": "High" },   "value": "high" }
+        ]
+      }
+    },
+    {
+      "type": "input",
+      "block_id": "addon",
+      "label": { "type": "plain_text", "text": "Addon (optional)" },
+      "optional": true,
+      "element": {
+        "type": "static_select",
+        "action_id": "addon_select",
+        "placeholder": { "type": "plain_text", "text": "Select an addon" },
+        "options": [
+          { "text": { "type": "plain_text", "text": "unknown" }, "value": "unknown" }
+        ]
+      }
+    }
+  ]
+}

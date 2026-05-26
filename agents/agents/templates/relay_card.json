@@ -1,0 +1,28 @@
+[
+  {
+    "type": "section",
+    "text": {
+      "type": "mrkdwn",
+      "text": "*@{{author}}* commented on <{{issue_url}}|#{{issue_number}}>:\n\n{{body}}"
+    }
+  },
+  {
+    "type": "actions",
+    "block_id": "intake_actions",
+    "elements": [
+      {
+        "type": "button",
+        "action_id": "intake_confirm",
+        "text": { "type": "plain_text", "text": "Confirm intent ✓" },
+        "style": "primary",
+        "value": "{{action_value_json}}"
+      },
+      {
+        "type": "button",
+        "action_id": "intake_open_on_github",
+        "text": { "type": "plain_text", "text": "Open on GitHub ↗" },
+        "url": "{{issue_url}}"
+      }
+    ]
+  }
+]

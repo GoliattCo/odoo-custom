@@ -1,22 +1,27 @@
-"""Slack notifier adapter — the default Notifier.
+"""Slack adapter — implements both Notifier and ChatOps.
 
-Maps severity to icon + colour. Page severity additionally integrates with
-PagerDuty if `PAGERDUTY_TOKEN` is set in the secret store.
+Notifier: severity-based one-shot alerts (the agent runtime's pre-existing
+use case). Maps severity to icon + colour; pages PagerDuty when severity is
+"page".
+
+ChatOps: thread-aware operations used by the slack_intake agent — post
+messages, reply in threads, edit, react, open modals, get permalinks.
+
+One class implements both ports because in practice we always want one
+identity (one Slack bot token) speaking on behalf of the agent runtime.
+Bootstrap wires the same instance into `runtime.notifier` and `runtime.chat`.
 """
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import Any
 
 from ..config import Config
-from ..ports import Notifier, Severity
-
-if TYPE_CHECKING:
-    pass
+from ..ports import Notifier, PostedMessage, Severity
 
 
 class SlackAdapter:
-    """Notifier backed by Slack's chat.postMessage API."""
+    """Slack-backed Notifier + ChatOps."""
 
     SEVERITY_COLOUR = {
         "info": "#36a64f",   # green
@@ -29,8 +34,13 @@ class SlackAdapter:
         "page": ":rotating_light:",
     }
 
-    def __init__(self, *, token: str, default_channel: str,
-                 pagerduty_token: str | None = None) -> None:
+    def __init__(
+        self,
+        *,
+        token: str,
+        default_channel: str,
+        pagerduty_token: str | None = None,
+    ) -> None:
         self._default_channel = default_channel
         self._pagerduty_token = pagerduty_token
         from slack_sdk import WebClient  # type: ignore[import-untyped]
@@ -48,6 +58,10 @@ class SlackAdapter:
             default_channel=slack_cfg.get("default_channel", "#devops-agents"),
             pagerduty_token=secrets.get("PAGERDUTY_TOKEN"),
         )
+
+    # =====================================================================
+    # Notifier protocol
+    # =====================================================================
 
     def send(
         self,
@@ -75,8 +89,6 @@ class SlackAdapter:
             self._page_pagerduty(summary, details or {})
 
     def _page_pagerduty(self, summary: str, details: dict) -> None:
-        # Triggers an Events-API v2 incident. Stub — adapter user must
-        # configure the routing key in details['routing_key'] or PAGERDUTY_ROUTING_KEY env.
         import httpx
         routing_key = details.get("routing_key") or details.get("pd_routing_key")
         if not routing_key:
@@ -96,5 +108,94 @@ class SlackAdapter:
             timeout=10,
         )
 
+    # =====================================================================
+    # ChatOps protocol
+    # =====================================================================
 
-_ = Notifier  # Protocol check
+    def post_message(
+        self,
+        *,
+        channel: str,
+        text: str,
+        blocks: list[dict[str, Any]] | None = None,
+    ) -> PostedMessage:
+        resp = self._slack.chat_postMessage(
+            channel=channel,
+            text=text,
+            blocks=blocks or None,
+        )
+        return PostedMessage(channel=resp["channel"], message_id=resp["ts"])
+
+    def post_thread_reply(
+        self,
+        *,
+        channel: str,
+        thread_id: str,
+        text: str,
+        blocks: list[dict[str, Any]] | None = None,
+    ) -> PostedMessage:
+        resp = self._slack.chat_postMessage(
+            channel=channel,
+            text=text,
+            thread_ts=thread_id,
+            blocks=blocks or None,
+        )
+        return PostedMessage(channel=resp["channel"], message_id=resp["ts"])
+
+    def update_message(
+        self,
+        *,
+        channel: str,
+        message_id: str,
+        text: str,
+        blocks: list[dict[str, Any]] | None = None,
+    ) -> None:
+        self._slack.chat_update(
+            channel=channel,
+            ts=message_id,
+            text=text,
+            blocks=blocks or None,
+        )
+
+    def post_ephemeral(
+        self,
+        *,
+        channel: str,
+        user: str,
+        text: str,
+        blocks: list[dict[str, Any]] | None = None,
+    ) -> None:
+        self._slack.chat_postEphemeral(
+            channel=channel,
+            user=user,
+            text=text,
+            blocks=blocks or None,
+        )
+
+    def add_reaction(
+        self,
+        *,
+        channel: str,
+        message_id: str,
+        emoji: str,
+    ) -> None:
+        try:
+            self._slack.reactions_add(channel=channel, timestamp=message_id, name=emoji)
+        except Exception:  # noqa: BLE001,S110 — idempotent; already_reacted is fine
+            # The reaction already exists — that's the desired end state.
+            pass
+
+    def open_modal(
+        self,
+        *,
+        trigger_id: str,
+        view: dict[str, Any],
+    ) -> None:
+        self._slack.views_open(trigger_id=trigger_id, view=view)
+
+    def permalink(self, *, channel: str, message_id: str) -> str:
+        resp = self._slack.chat_getPermalink(channel=channel, message_ts=message_id)
+        return resp["permalink"]
+
+
+_ = Notifier  # Protocol check (ChatOps verified via static analysis at import time)

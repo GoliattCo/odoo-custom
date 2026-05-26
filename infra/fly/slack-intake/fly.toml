@@ -1,0 +1,70 @@
+# Fly.io app descriptor for the slack_intake agent service.
+#
+# Exposes four HTTP endpoints behind Fly's HTTPS edge:
+#   POST /slack/events         Slack Events API + URL handshake
+#   POST /slack/commands       /intake slash command
+#   POST /slack/interactivity  modal submit + button clicks
+#   POST /github/webhook       issue_comment.created from GitHub
+#   GET  /healthz              Fly probe
+#
+# Single machine is sufficient — webhook traffic is bursty but tiny. Auto-
+# stop is OFF because Slack and GitHub expect <3 s responses and a cold
+# start would blow that budget.
+#
+# Deploy:
+#   flyctl deploy --config infra/fly/slack-intake/fly.toml --remote-only
+#
+# Required secrets (set with `flyctl secrets set --app odoo-saas-slack-intake …`):
+#   SLACK_BOT_TOKEN          xoxb-… token for the bot user
+#   SLACK_SIGNING_SECRET     used by events_slack_webhook adapter
+#   GITHUB_TOKEN             PAT scoped issues:write + issue_comments:write
+#                            + metadata:read
+#   GITHUB_WEBHOOK_SECRET    shared secret on the org-level webhook
+#
+# Volume (created out-of-band; see volume.sh):
+#   slack_intake_data        1 GB, mounted at /data — SQLite state lives here.
+#
+# Kill switch:
+#   Set AGENTS_ENABLED=false on the GitHub repo variable to refuse new
+#   deploys, OR set the same env var in Fly secrets to make the running
+#   service return 503 on every webhook.
+
+app            = "odoo-saas-slack-intake"
+primary_region = "iad"
+kill_signal    = "SIGTERM"
+kill_timeout   = "20s"
+
+[build]
+  dockerfile = "../../../agents/Dockerfile"
+
+[env]
+  PLATFORM       = "fly"
+  PORT           = "8080"
+  AGENTS_ENV     = "prod"
+  # Shadow mode (Phase B): bot creates issues but does NOT relay GH comments
+  # back to Slack. Flip to "false" to enable bidirectional relay (Phase C).
+  AGENTS_AGENTS_SLACK_INTAKE_SHADOW_MODE = "true"
+
+[http_service]
+  internal_port       = 8080
+  force_https         = true
+  auto_start_machines = true
+  auto_stop_machines  = false       # webhooks demand sub-3s; keep warm
+  min_machines_running = 1
+
+  [[http_service.checks]]
+    interval     = "15s"
+    timeout      = "3s"
+    grace_period = "20s"
+    method       = "GET"
+    path         = "/healthz"
+
+# Persistent SQLite database. Survives machine restarts and Fly's
+# rolling-strategy deploys.
+[[mounts]]
+  source      = "slack_intake_data"
+  destination = "/data"
+
+[[vm]]
+  size   = "shared-cpu-1x"
+  memory = "1gb"

@@ -38,7 +38,7 @@ def main(ctx: click.Context, config: Path) -> None:
 @main.command()
 @click.argument("agent_name", type=click.Choice([
     "spec-generator", "implementation", "code", "security", "optimization",
-    "support-triage",
+    "support-triage", "slack-intake",
 ]))
 @click.option("--input", "input_json", default="{}",
               help="JSON input passed to the agent's entry point")
@@ -113,8 +113,8 @@ def config_show(ctx: click.Context) -> None:
 
 @main.command("test-adapter")
 @click.argument("port", type=click.Choice([
-    "llm", "repo", "issues", "notifier", "secrets", "artifacts",
-    "compute", "kb", "events", "logger",
+    "llm", "repo", "issues", "notifier", "chat", "secrets", "artifacts",
+    "compute", "kb", "events", "state", "logger",
 ]))
 @click.argument("adapter_name")
 @click.pass_context

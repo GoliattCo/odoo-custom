@@ -8,6 +8,7 @@ require a major bump of the agents package.
 """
 
 from .artifact_store import ArtifactStore
+from .chat_ops import ChatOps, PostedMessage
 from .compute_env import ComputeEnv, Deployment, Status
 from .event_bus import Event, EventBus, Subscription
 from .issue_tracker import Comment, Issue, IssueTracker
@@ -17,6 +18,7 @@ from .logger import Logger
 from .notifier import Notifier, Severity
 from .repo import GitIdentity, PullRequest, Repo
 from .secret_store import SecretStore
+from .state import StateStore, ThreadIssueLink
 
 __all__ = [
     # llm
@@ -27,6 +29,8 @@ __all__ = [
     "IssueTracker", "Issue", "Comment",
     # notifier
     "Notifier", "Severity",
+    # chat ops
+    "ChatOps", "PostedMessage",
     # secrets
     "SecretStore",
     # artifacts
@@ -37,6 +41,8 @@ __all__ = [
     "KnowledgeBase", "KbChunk",
     # events
     "EventBus", "Event", "Subscription",
+    # state
+    "StateStore", "ThreadIssueLink",
     # logger
     "Logger",
 ]
