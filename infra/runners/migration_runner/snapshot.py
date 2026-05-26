@@ -1,21 +1,30 @@
 """Snapshot helper — wraps pgBackRest for the pre-migration safety net.
 
-Two implementation strategies, selected via env:
+Three implementation strategies, selected via SNAPSHOT_MODE env:
 
-- SNAPSHOT_MODE=cli — call `pgbackrest --stanza=<stanza> backup --type=incr`
+- ``cli`` — call ``pgbackrest --stanza=<stanza> backup --type=incr``
   directly. Used when the runner has direct shell access to a node where
   pgbackrest is configured (Railway: backups run inside the postgres
   service; Fly: a sidecar).
-- SNAPSHOT_MODE=http — POST to the existing `saas_filestore_backup` HTTP
-  endpoint (HMAC-signed). Used when the runner runs on a separate
-  machine from the backup service.
+- ``ssh`` — flyctl-ssh into ``odoo-saas-postgres`` and run the same
+  ``pgbackrest backup`` command there. Used when the runner runs on a
+  *different* Fly app than Postgres (the common prod case — the
+  migration-runner image does NOT bundle pgbackrest or the stanza
+  config; SSH-delegation keeps that surface on Postgres alone).
+  Requires ``flyctl`` on PATH and ``FLY_API_TOKEN`` with ssh
+  permission on ``odoo-saas-postgres``.
+- ``http`` — POST to the existing ``saas_filestore_backup`` HTTP
+  endpoint (HMAC-signed). Used when there's a dedicated backup
+  service.
 
-Both return a `snapshot_id` (the pgBackRest tag) that the rollback
-path (Tier 5) consumes.
+All three return a ``snapshot_id`` (the pgBackRest tag) that the
+rollback path (Tier 5) consumes.
 
-If `SNAPSHOT_MODE=skip` the call is a no-op returning a sentinel
-'no-snapshot-<timestamp>' string — used in tests and in CI smokes
-where pgBackRest isn't wired up yet.
+If ``SNAPSHOT_MODE=skip`` the call is a no-op returning a sentinel
+``no-snapshot-<timestamp>`` string — used in tests and in CI smokes
+where pgBackRest isn't wired up yet. The sentinel signals to the
+rollback path that point-in-time-recovery (``--target-time``) must
+substitute for ``--set=<tag>``.
 """
 
 from __future__ import annotations
@@ -67,6 +76,14 @@ def take_snapshot(
         stanza = pgbackrest_stanza or os.environ.get('PGBACKREST_STANZA', db_name)
         snapshot_id = _snapshot_via_cli(stanza)
         return SnapshotResult(snapshot_id=snapshot_id, elapsed_seconds=time.monotonic() - started)
+    if mode == 'ssh':
+        # SSH into the Postgres machine (where pgbackrest is installed
+        # + configured) and run the backup there. Matches the existing
+        # pattern in pgbackrest-backup.yml — keeps stanza/config/S3
+        # creds on the Postgres node, not duplicated to the runner.
+        stanza = pgbackrest_stanza or os.environ.get('PGBACKREST_STANZA', 'shared')
+        snapshot_id = _snapshot_via_ssh(stanza)
+        return SnapshotResult(snapshot_id=snapshot_id, elapsed_seconds=time.monotonic() - started)
     if mode == 'http':
         url = backup_service_url or os.environ.get('BACKUP_SERVICE_URL')
         secret = hmac_secret or os.environ.get('SAAS_BACKUP_HMAC_SECRET')
@@ -101,6 +118,43 @@ def _snapshot_via_cli(stanza: str) -> str:
         ) from exc
     except subprocess.TimeoutExpired as exc:
         raise SnapshotError('pgbackrest timed out after 15 min') from exc
+    label = _parse_backup_label(result.stdout)
+    if not label:
+        raise SnapshotError(
+            f'pgbackrest produced no backup label in stdout; tail={result.stdout[-2000:]}'
+        )
+    return label
+
+
+def _snapshot_via_ssh(stanza: str) -> str:
+    """Run pgbackrest backup over flyctl-ssh into odoo-saas-postgres.
+
+    flyctl is invoked with ``--app`` so we don't depend on the runner's
+    cwd being linked. Auth comes from ``FLY_API_TOKEN`` in env.
+    """
+    pg_app = os.environ.get('PGBACKREST_SSH_APP', 'odoo-saas-postgres')
+    remote_cmd = (
+        f'gosu postgres pgbackrest --stanza={stanza} '
+        '--log-level-console=info backup --type=incr'
+    )
+    try:
+        result = subprocess.run(  # noqa: S603 — args are controlled
+            ['flyctl', 'ssh', 'console', '--app', pg_app, '--command', remote_cmd],
+            check=True,
+            capture_output=True,
+            text=True,
+            timeout=15 * 60,
+        )
+    except subprocess.CalledProcessError as exc:
+        raise SnapshotError(
+            f'flyctl ssh pgbackrest exit {exc.returncode}: {(exc.stderr or "")[-2000:]}'
+        ) from exc
+    except subprocess.TimeoutExpired as exc:
+        raise SnapshotError('flyctl ssh pgbackrest timed out after 15 min') from exc
+    except FileNotFoundError as exc:  # flyctl binary missing in the image
+        raise SnapshotError(
+            'flyctl not on PATH — install in migration-runner Dockerfile'
+        ) from exc
     label = _parse_backup_label(result.stdout)
     if not label:
         raise SnapshotError(

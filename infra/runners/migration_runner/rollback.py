@@ -62,6 +62,25 @@ class RollbackResult:
     status: str  # 'ok' | 'snapshot_missing' | 'restore_failed'
 
 
+def _pgbackrest_argv(*args: str) -> list[str]:
+    """Wrap a pgbackrest command in flyctl-ssh to odoo-saas-postgres.
+
+    The migration-runner image does NOT bundle pgbackrest itself —
+    the stanza config + S3 creds + Postgres data dir all live on the
+    odoo-saas-postgres machine. We SSH-delegate the pgbackrest call
+    so it runs where the data + creds are.
+
+    Env knobs:
+      - ``PGBACKREST_SSH_APP`` overrides the target app name
+        (default: odoo-saas-postgres). Useful for staging.
+      - ``FLY_API_TOKEN`` must be set with ssh permission on the
+        target app (provisioned via FLY_SSH_TOKEN_POSTGRES secret).
+    """
+    pg_app = os.environ.get('PGBACKREST_SSH_APP', 'odoo-saas-postgres')
+    remote_cmd = 'gosu postgres pgbackrest ' + ' '.join(args)
+    return ['flyctl', 'ssh', 'console', '--app', pg_app, '--command', remote_cmd]
+
+
 def run(
     plan: RollbackPlan,
     *,
@@ -70,52 +89,98 @@ def run(
 ) -> RollbackResult:
     """Restore the tenant DB from its pre-migration snapshot tag.
 
+    Restore is SSH-delegated to the Postgres machine (see
+    ``_pgbackrest_argv``) so we don't need pgbackrest + stanza config
+    + S3 creds duplicated on the runner.
+
+    Two recovery strategies, picked by snapshot_id shape:
+      - real tag (e.g. ``20260525-220000F``): ``--set=<tag> restore``.
+      - sentinel ``no-snapshot-<ts>`` (SNAPSHOT_MODE=skip path): fall
+        back to point-in-time recovery via ``--target-time``. The
+        target time isn't known here — caller can pass it via
+        ``ROLLBACK_TARGET_TIME`` env (ISO 8601) or omit, in which
+        case we return ``status='snapshot_missing'`` because there's
+        no safe default.
+
+    Set ``PGBACKREST_DRY_RUN=true`` to add ``--dry-run`` to the
+    restore command — pgbackrest will log what it WOULD do without
+    actually touching the data dir. Critical for drilling the chain
+    against a live Postgres without disruption.
+
     Assumes a separate process / step has already suspended the tenant
     (this module shouldn't decide tenant lifecycle on its own).
     """
-    stanza = pgbackrest_stanza or os.environ.get('PGBACKREST_STANZA', plan.tenant_db_name)
+    stanza = pgbackrest_stanza or os.environ.get('PGBACKREST_STANZA', 'shared')
+    dry_run = os.environ.get('PGBACKREST_DRY_RUN', '').lower() in ('1', 'true', 'yes')
 
     logger.info(
-        'rollback start job=%s tenant=%s snapshot=%s',
+        'rollback start job=%s tenant=%s snapshot=%s dry_run=%s',
         plan.job_id,
         plan.tenant_db_name,
         plan.snapshot_id,
+        dry_run,
     )
 
-    # Step 1: verify the snapshot still exists. pgBackRest's `info`
-    # command returns JSON we can grep for the tag.
-    try:
-        info = subprocess_runner(
-            ['pgbackrest', f'--stanza={stanza}', 'info', '--output=json'],
-            check=True,
-            capture_output=True,
-            text=True,
-            timeout=60,
+    # Detect the sentinel-snapshot case (SNAPSHOT_MODE was 'skip' when
+    # the migration ran). Need a target-time fallback or we can't
+    # restore.
+    is_sentinel = plan.snapshot_id.startswith('no-snapshot-')
+    target_time = os.environ.get('ROLLBACK_TARGET_TIME') if is_sentinel else None
+    if is_sentinel and not target_time:
+        logger.error(
+            'job %s has sentinel snapshot_id=%s and no ROLLBACK_TARGET_TIME — cannot restore',
+            plan.job_id,
+            plan.snapshot_id,
         )
-    except subprocess.CalledProcessError as exc:
-        raise RollbackError(
-            f'pgbackrest info exit {exc.returncode}: {(exc.stderr or "")[-2000:]}'
-        ) from exc
-    if plan.snapshot_id not in (info.stdout or ''):
         return RollbackResult(
             job_id=plan.job_id,
             snapshot_id=plan.snapshot_id,
             status='snapshot_missing',
         )
 
-    # Step 2: restore. pgBackRest restore requires the Postgres
-    # service to be stopped — Tier 5 runbook covers the orchestration;
-    # here we run the command and let the operator handle the rest.
+    # Step 1: verify pgbackrest is reachable AND the snapshot tag exists
+    # (only meaningful for the non-sentinel path; sentinel uses
+    # target-time and trusts WAL archival).
+    try:
+        info = subprocess_runner(
+            _pgbackrest_argv(f'--stanza={stanza}', 'info', '--output=json'),
+            check=True,
+            capture_output=True,
+            text=True,
+            timeout=120,
+        )
+    except subprocess.CalledProcessError as exc:
+        raise RollbackError(
+            f'pgbackrest info exit {exc.returncode}: {(exc.stderr or "")[-2000:]}'
+        ) from exc
+    except FileNotFoundError as exc:  # flyctl missing
+        raise RollbackError(
+            'flyctl not on PATH — install in migration-runner Dockerfile'
+        ) from exc
+    if not is_sentinel and plan.snapshot_id not in (info.stdout or ''):
+        return RollbackResult(
+            job_id=plan.job_id,
+            snapshot_id=plan.snapshot_id,
+            status='snapshot_missing',
+        )
+
+    # Step 2: restore. pgBackRest restore is destructive — it stops
+    # Postgres and replays from S3 into the data dir. Tier 5 runbook
+    # covers tenant suspension + Postgres restart; here we issue the
+    # command. PGBACKREST_DRY_RUN=true short-circuits to a log-only
+    # path for drill validation.
+    restore_args: list[str] = [f'--stanza={stanza}', '--delta']
+    if is_sentinel:
+        restore_args.extend(['--type=time', f'--target={target_time}'])
+    else:
+        restore_args.extend(['--set', plan.snapshot_id])
+    if dry_run:
+        restore_args.append('--dry-run')
+    restore_args.append('restore')
+
     try:
         subprocess_runner(
-            [
-                'pgbackrest',
-                f'--stanza={stanza}',
-                '--delta',
-                '--set',
-                plan.snapshot_id,
-                'restore',
-            ],
+            _pgbackrest_argv(*restore_args),
             check=True,
             capture_output=True,
             text=True,
@@ -135,7 +200,7 @@ def run(
     except subprocess.TimeoutExpired as exc:
         raise RollbackError(f'pgbackrest restore timed out after 2h: {exc}') from exc
 
-    logger.info('rollback complete job=%s', plan.job_id)
+    logger.info('rollback complete job=%s dry_run=%s', plan.job_id, dry_run)
     return RollbackResult(
         job_id=plan.job_id,
         snapshot_id=plan.snapshot_id,
