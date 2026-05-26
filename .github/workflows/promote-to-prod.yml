@@ -393,6 +393,36 @@ jobs:
             echo "- Tag: \`$tag\` (immutable; references signed digests)"
           } >> "$GITHUB_STEP_SUMMARY"
 
+      - name: Checkout (for git-tag push)
+        if: inputs.dry_run == 'false'
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.preflight.outputs.target_sha }}
+          # Need write access to push the tag back.
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 1
+
+      - name: Push git tag pointing at the promoted SHA
+        if: inputs.dry_run == 'false'
+        env:
+          PROD_TAG: ${{ steps.compute.outputs.prod_tag }}
+          SHA: ${{ needs.preflight.outputs.target_sha }}
+        # rollback-prod.yml's preflight checks for a `prod-*` git tag
+        # pointing at target_sha; without this step the tag only exists
+        # in GHCR and rollback can never find a SHA it could roll back
+        # to. Idempotent: re-running with the same date+run_number would
+        # collide, but the date suffix changes per run so collisions
+        # only happen on workflow reruns of the SAME run, which can't
+        # happen because rerun shares github.run_number.
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git tag -a "$PROD_TAG" "$SHA" \
+              -m "Promote $SHA to prod (workflow run ${{ github.run_id }} by @${{ github.actor }})"
+          git push origin "refs/tags/${PROD_TAG}"
+          echo "- Git tag: \`$PROD_TAG\` pushed → \`$SHA\`" >> "$GITHUB_STEP_SUMMARY"
+
       - name: Log in to GHCR
         if: inputs.dry_run == 'false'
         uses: docker/login-action@v3

@@ -85,8 +85,12 @@ jobs:
           SHA: ${{ inputs.target_sha }}
         run: |
           set -euo pipefail
+          # Accept either short (≥7 chars) or full 40-char SHAs by
+          # comparing prefixes — the GitHub API always returns full
+          # 40-char SHAs in `.commit.sha`, so we'd never match a
+          # short input via `==`.
           tags=$(gh api "repos/${{ github.repository }}/tags" --paginate \
-              | jq -r ".[] | select(.commit.sha == \"$SHA\") | .name")
+              | jq -r --arg sha "$SHA" '.[] | select(.commit.sha | startswith($sha)) | .name')
           if ! echo "$tags" | grep -q "^prod-"; then
               echo "::error::SHA $SHA was never deployed to prod (no prod-* tag)." >&2
               exit 1
@@ -400,21 +404,23 @@ jobs:
             echo "|---|---|---|"
           } >> "$GITHUB_STEP_SUMMARY"
           # For each tenant in the wave, find the most recent migration
-          # job whose applied_at is AFTER our rollback target_sha was last
-          # applied — that's the job we need to undo. Pass its uuid to
-          # the daemon's rollback module.
+          # job whose finished_at is AFTER our rollback target_sha was
+          # last finished — that's the job we need to undo. Pass its
+          # uuid + the rollback target_sha to the daemon's rollback
+          # module, which reverts tenants.last_migrated_sha and writes
+          # an audit row inside the same transaction.
           rows=$(psql "$PG_DSN" -t -A -F '|' -c "
             SELECT j.id, t.slug
             FROM tenant_migration_jobs j
             JOIN tenants t ON t.id = j.tenant_id
             WHERE t.wave = '$WAVE' AND t.state = 'active'
               AND j.status = 'done'
-              AND j.applied_at > coalesce(
-                (SELECT max(applied_at) FROM tenant_migration_jobs
+              AND j.finished_at > coalesce(
+                (SELECT max(finished_at) FROM tenant_migration_jobs
                  WHERE tenant_id = j.tenant_id AND target_sha = '$TARGET_SHA'),
                 '-infinity'::timestamptz
               )
-            ORDER BY j.applied_at DESC
+            ORDER BY j.finished_at DESC
           " || echo "")
           if [ -z "$rows" ]; then
               echo "::notice::No tenants in $WAVE need data rollback (no forward migrations since $TARGET_SHA)."
@@ -428,7 +434,10 @@ jobs:
                   echo "| $slug | \`$job_id\` | dry-run skip |" >> "$GITHUB_STEP_SUMMARY"
                   continue
               fi
-              if python -m migration_runner.rollback "$job_id"; then
+              # CLI signature: `python -m migration_runner.rollback <job_id> <previous_sha>`
+              # Defined in infra/runners/migration_runner/rollback.py (cli()).
+              if ROLLBACK_ACTOR="${{ github.actor }}" \
+                 python -m migration_runner.rollback "$job_id" "$TARGET_SHA"; then
                   echo "| $slug | \`$job_id\` | rolled back |" >> "$GITHUB_STEP_SUMMARY"
               else
                   echo "::error::migration_runner.rollback failed for $slug job=$job_id" >&2
