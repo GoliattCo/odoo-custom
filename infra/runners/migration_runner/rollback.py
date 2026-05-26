@@ -102,10 +102,13 @@ def run(
         case we return ``status='snapshot_missing'`` because there's
         no safe default.
 
-    Set ``PGBACKREST_DRY_RUN=true`` to add ``--dry-run`` to the
-    restore command — pgbackrest will log what it WOULD do without
-    actually touching the data dir. Critical for drilling the chain
-    against a live Postgres without disruption.
+    Set ``PGBACKREST_DRY_RUN=true`` to short-circuit AFTER the
+    pgbackrest reachability check (`info`) but BEFORE the restore
+    invocation. Returns ``status='ok'`` and logs the would-be
+    restore argv. Critical for drilling the chain against a live
+    Postgres without disruption — pgbackrest itself does NOT
+    support ``--dry-run`` on the restore command (it's a backup-only
+    flag), so we have to gate at the orchestration layer.
 
     Assumes a separate process / step has already suspended the tenant
     (this module shouldn't decide tenant lifecycle on its own).
@@ -167,16 +170,27 @@ def run(
     # Step 2: restore. pgBackRest restore is destructive — it stops
     # Postgres and replays from S3 into the data dir. Tier 5 runbook
     # covers tenant suspension + Postgres restart; here we issue the
-    # command. PGBACKREST_DRY_RUN=true short-circuits to a log-only
-    # path for drill validation.
+    # command. PGBACKREST_DRY_RUN=true short-circuits AFTER info but
+    # BEFORE restore — pgbackrest's `--dry-run` flag is backup-only,
+    # so we gate at the orchestration layer.
     restore_args: list[str] = [f'--stanza={stanza}', '--delta']
     if is_sentinel:
         restore_args.extend(['--type=time', f'--target={target_time}'])
     else:
         restore_args.extend(['--set', plan.snapshot_id])
-    if dry_run:
-        restore_args.append('--dry-run')
     restore_args.append('restore')
+
+    if dry_run:
+        logger.info(
+            'PGBACKREST_DRY_RUN=true; skipping destructive restore. '
+            'Would have run: %s',
+            ' '.join(_pgbackrest_argv(*restore_args)),
+        )
+        return RollbackResult(
+            job_id=plan.job_id,
+            snapshot_id=plan.snapshot_id,
+            status='ok',
+        )
 
     try:
         subprocess_runner(
