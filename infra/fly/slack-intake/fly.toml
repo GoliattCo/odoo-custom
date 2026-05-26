@@ -37,6 +37,14 @@ kill_timeout   = "20s"
 [build]
   dockerfile = "../../../agents/Dockerfile"
 
+# Override the agents image's default CMD (which is "--help"). ENTRYPOINT
+# stays "agents", so the full command becomes:
+#   agents --config /app/config.yml run slack-intake
+# The Dockerfile drops config.example.yml at /app/config.yml; without
+# --config the CLI looks inside site-packages and fails.
+[processes]
+  app = "--config /app/config.yml run slack-intake"
+
 [env]
   PLATFORM       = "fly"
   PORT           = "8080"
@@ -51,6 +59,7 @@ kill_timeout   = "20s"
   auto_start_machines = true
   auto_stop_machines  = false       # webhooks demand sub-3s; keep warm
   min_machines_running = 1
+  processes           = ["app"]
 
   [[http_service.checks]]
     interval     = "15s"
