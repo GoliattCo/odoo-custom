@@ -232,6 +232,14 @@ def on_modal_submitted(runtime, payload: dict) -> dict[str, Any] | None:
 def on_github_issue_comment(runtime, payload: dict) -> None:
     """Forward a Spec-Generator comment back into the originating Slack thread."""
     log = runtime.logger.bind(agent="slack_intake", path="B")
+
+    # Phase-B shadow mode: do not relay GH -> Slack. Issues still get filed
+    # (Path A is unaffected) so the team can sanity-check issue body quality
+    # without a noisy round trip.
+    if _shadow_mode(runtime):
+        log.info("slack_intake.shadow_mode_skip_relay")
+        return
+
     delivery_id = payload.get("delivery_id") or payload.get("X-GitHub-Delivery", "")
     if delivery_id and runtime.state.seen_event(key=f"gh:{delivery_id}"):
         log.debug("slack_intake.duplicate_delivery", delivery_id=delivery_id)
@@ -416,6 +424,19 @@ def on_block_action(runtime, payload: dict) -> None:
 def iterate(runtime, payload: dict) -> None:
     """No-op for now — slack_intake has no iteration phase distinct from `run`."""
     runtime.logger.info("slack_intake.iterate.noop", payload=payload)
+
+
+def _shadow_mode(runtime) -> bool:
+    """Phase B flag — when True, the bot files issues but does not relay.
+
+    Sourced from `agents.slack_intake.shadow_mode` in config, overridable
+    via the AGENTS_AGENTS_SLACK_INTAKE_SHADOW_MODE env var (set by Fly).
+    """
+    cfg = (runtime.config.agents or {}).get("slack_intake", {})
+    value = cfg.get("shadow_mode", False)
+    if isinstance(value, str):
+        return value.lower() in ("1", "true", "yes")
+    return bool(value)
 
 
 def _channel_allowed(runtime, channel_id: str) -> bool:

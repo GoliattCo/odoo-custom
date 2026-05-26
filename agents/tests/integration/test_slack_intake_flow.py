@@ -257,6 +257,19 @@ def test_spec_generator_comment_relays_to_thread(runtime: FakeRuntime) -> None:
     assert relay["thread_id"] == "t.1"
 
 
+def test_shadow_mode_blocks_github_to_slack_relay(runtime: FakeRuntime) -> None:
+    """Phase B: when shadow_mode=true, no relay even if everything else matches."""
+    runtime.config.agents["slack_intake"]["shadow_mode"] = True
+    _seed_link(runtime, channel="C1", thread_ts="t.1", issue_number=100)
+    intake.on_github_issue_comment(runtime, _gh_comment_payload(
+        issue_number=100,
+        comment_body="What addon is this in?",
+        author="spec-generator-bot",
+        delivery_id="d-shadow",
+    ))
+    assert runtime.chat.threaded == []
+
+
 def test_relay_skipped_after_intent_confirmed(runtime: FakeRuntime) -> None:
     _seed_link(runtime, channel="C1", thread_ts="t.1", issue_number=100)
     runtime.state.mark_intent_confirmed(

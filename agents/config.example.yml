@@ -106,6 +106,10 @@ agents:
     issues_per_tenant_per_day: 5
     messages_per_user_per_hour: 30
   slack_intake:
+    # Phase rollout flag — when true, /intake still files GH issues but the
+    # bot does NOT relay GH -> Slack. Flip off at the end of Phase B's
+    # one-week soak.
+    shadow_mode: true
     # Channels where /intake is allowed. Empty list = bot ignores /intake.
     # Use channel IDs (Cxxxx). "*" allows any channel.
     allowed_channels: []
