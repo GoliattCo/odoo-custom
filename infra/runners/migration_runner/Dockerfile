@@ -89,6 +89,16 @@ RUN mkdir -p /var/lib/odoo
 RUN useradd --no-create-home -u 1000 odoo \
     && chown -R odoo:odoo /var/lib/odoo /mnt/custom-addons /mnt/jorels-addons
 
+# --- flyctl (for pgbackrest SSH-delegation in snapshot.py + rollback.py) ---
+# rollback.py and SNAPSHOT_MODE=ssh both shell out via
+# `flyctl ssh console --app odoo-saas-postgres -C "..."` so the
+# pgbackrest binary + stanza config + S3 creds stay on the Postgres
+# machine. Install the official Fly install script; pinned to a
+# known-good version for reproducibility.
+ENV FLYCTL_INSTALL=/opt/flyctl
+ENV PATH=$FLYCTL_INSTALL/bin:$PATH
+RUN curl -L https://fly.io/install.sh | sh -s 0.3.197
+
 # --- migration_runner package ---
 # psycopg binary wheel + croniter as runtime deps for the runner itself.
 RUN pip install --no-cache-dir \
