@@ -44,12 +44,12 @@ def build_app(*, runtime: Runtime) -> Any:
     slack_bus = _ensure_slack_bus(runtime)
     github_bus = _ensure_github_bus(runtime)
 
-    # Register handlers ONCE before serving.
-    intake_core._register_handlers(runtime)
-    # The GitHub bus is a separate adapter; subscribe its handler explicitly.
-    github_bus.subscribe(
-        "github.issue_comment.created",
-        lambda event: intake_core.on_github_issue_comment(runtime, event.payload),
+    # Subscribe handlers to the actual buses serving each platform — we own
+    # two independent EventBus instances (Slack v0 HMAC + GitHub
+    # HMAC-SHA256), so passing only `runtime` would subscribe to the wrong
+    # one. See _register_handlers in agents.slack_intake.core.
+    intake_core._register_handlers(
+        runtime, slack_bus=slack_bus, github_bus=github_bus,
     )
 
     @app.get("/healthz")
