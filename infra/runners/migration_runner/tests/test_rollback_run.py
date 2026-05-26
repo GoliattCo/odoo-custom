@@ -138,19 +138,26 @@ class TestRunSentinelSnapshot:
 
 
 class TestRunDryRun:
-    def test_pgbackrest_dry_run_env_adds_flag(
+    def test_pgbackrest_dry_run_skips_destructive_restore(
         self, monkeypatch: pytest.MonkeyPatch
     ) -> None:
+        # pgbackrest's --dry-run flag is backup-only; rollback.py
+        # gates at the orchestration layer instead. With
+        # PGBACKREST_DRY_RUN=true:
+        #   1. info call still runs (pgbackrest reachability + tag check).
+        #   2. restore call is SKIPPED — we early-return ok.
         monkeypatch.setenv('PGBACKREST_DRY_RUN', 'true')
         monkeypatch.delenv('ROLLBACK_TARGET_TIME', raising=False)
         plan = _plan(snapshot_id='20260525-220000F')
-        runner = _ScriptedRunner(
-            scripted=[_ok(stdout='... 20260525-220000F ...'), _ok()]
-        )
+        # Only ONE scripted result needed — info. restore must not run.
+        runner = _ScriptedRunner(scripted=[_ok(stdout='... 20260525-220000F ...')])
         result = run(plan, subprocess_runner=runner)
         assert result.status == 'ok'
-        restore_remote = runner.seen[1][6]
-        assert '--dry-run' in restore_remote
+        # Exactly one subprocess call: the info probe. NO restore.
+        assert len(runner.seen) == 1
+        info_remote = runner.seen[0][6]
+        assert ' info ' in info_remote
+        assert 'restore' not in info_remote
 
 
 class TestRunMissingFlyctl:
