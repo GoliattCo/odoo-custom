@@ -164,13 +164,21 @@ def _snapshot_via_ssh(stanza: str) -> str:
 
 
 def _parse_backup_label(stdout: str) -> Optional[str]:
+    # pgbackrest's INFO line announcing the new backup. Two formats are
+    # in the wild; we recognize both:
+    #   pre-2.50:  "INFO: full backup: label = 20260523-220000F"
+    #   2.50+ :    "INFO: new backup label = 20260524-065900F_20260527-065322I"
+    # We scan bottom-up and prefer "new backup label" — that's the line
+    # for THIS run; "last backup label" (also present in the log) is
+    # the prior backup we're incremental-ing on top of, which would
+    # produce a stale snapshot_id rollback can't find via `info` for
+    # this job.
+    markers = ('new backup label = ', 'backup: label = ')
     for line in reversed(stdout.splitlines()):
-        # pgbackrest's INFO line:
-        # "INFO: full backup: label = 20260523-220000F"
-        marker = 'backup: label = '
-        idx = line.find(marker)
-        if idx >= 0:
-            return line[idx + len(marker) :].strip()
+        for marker in markers:
+            idx = line.find(marker)
+            if idx >= 0:
+                return line[idx + len(marker) :].strip()
     return None
 
 
