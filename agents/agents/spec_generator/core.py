@@ -14,7 +14,7 @@ Design spec: docs/superpowers/specs/2026-05-16-spec-generator-agent-design.md
 from __future__ import annotations
 
 import re
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from typing import Any
 
 from ..ports import GitIdentity, Issue, PullRequest
@@ -297,11 +297,131 @@ def _mark_intent_confirmed(
              issue=issue_number, pr=pr_number)
 
 
-def sweep(runtime, payload: dict[str, Any]) -> None:
-    """Auto-confirm sweep handler. Implemented in a follow-up PR."""
-    runtime.logger.info(
-        "spec_generator.sweep.pending", spec=_DESIGN_SPEC, payload=payload,
-    )
+_AUTO_CONFIRM_AFTER = timedelta(hours=24)
+_NEEDS_CLARIFICATION_MARKER = "[NEEDS CLARIFICATION]"
+
+
+def sweep(runtime, payload: dict[str, Any]) -> dict[str, Any]:
+    """Walk the candidate PR list and auto-confirm those past the 24h window.
+
+    Payload contract (resolved by the spec-generator-sweep workflow via
+    ``gh pr list --json number,headRefName,labels,updatedAt,body``):
+
+    .. code-block:: json
+
+        {
+          "now": "2026-05-27T09:00:00+00:00",   // optional; defaults to UTC now
+          "dry_run": false,
+          "candidates": [
+            {
+              "pr_number": 901,
+              "issue_number": 126,
+              "branch": "agent/spec-126",
+              "spec_path": "docs/superpowers/specs/...md",
+              "updated_at": "2026-05-25T08:30:00+00:00",
+              "labels": ["spec-drafted", "awaiting-reporter-confirm"]
+            }
+          ]
+        }
+
+    Returns a summary ``{"decisions": [...], "confirmed": [...]}`` so the
+    workflow can pipe it to Axiom for the dashboard.
+    """
+    log = runtime.logger.bind(agent="spec_generator", path="sweep")
+    candidates = payload.get("candidates") or []
+    now = _parse_iso(payload.get("now")) or datetime.now(UTC)
+    dry_run = bool(payload.get("dry_run", False))
+    cfg = _agent_cfg(runtime)
+    act = not (dry_run or cfg.get("shadow_mode"))
+
+    decisions: list[dict[str, Any]] = []
+    confirmed: list[int] = []
+
+    for cand in candidates:
+        decision = _decide_sweep(cand, now=now)
+        decisions.append(decision)
+        if decision["action"] != "confirm":
+            log.debug("spec_generator.sweep.skip",
+                      pr=decision["pr"], reason=decision["reason"])
+            continue
+        if not act:
+            log.info("spec_generator.sweep.dry_run",
+                     pr=decision["pr"], reason=decision["reason"])
+            continue
+        if runtime.issues is None:
+            log.error("spec_generator.sweep.no_issues_port")
+            continue
+        target = Issue(
+            number=int(cand.get("pr_number") or cand.get("issue_number") or 0),
+            title="", body="", labels=tuple(cand.get("labels", [])),
+            state="open", author="", url="",
+        )
+        runtime.issues.add_label(target, "intent-confirmed")
+        for stale in ("awaiting-reporter-confirm", "awaiting-reporter-reconfirm"):
+            if stale in cand.get("labels", []):
+                try:
+                    runtime.issues.remove_label(target, stale)
+                except Exception as exc:  # noqa: BLE001
+                    log.debug("spec_generator.sweep.remove_label_failed",
+                              error=str(exc))
+        issue_target = Issue(
+            number=int(cand.get("issue_number") or 0), title="", body="",
+            labels=(), state="open", author="", url="",
+        )
+        if issue_target.number:
+            runtime.issues.comment(issue_target, (
+                ":hourglass_flowing_sand: No further input received within "
+                "24h; treating the spec as confirmed. Comment `/reopen` "
+                "within 7 days to halt implementation."
+            ))
+        confirmed.append(target.number)
+        log.info("spec_generator.sweep.confirmed",
+                 pr=target.number, issue=issue_target.number)
+
+    summary = {"decisions": decisions, "confirmed": confirmed,
+               "act": act, "total": len(decisions)}
+    log.info("spec_generator.sweep.summary", **{k: summary[k]
+             for k in ("confirmed", "act", "total")})
+    return summary
+
+
+def _decide_sweep(cand: dict[str, Any], *, now: datetime) -> dict[str, Any]:
+    pr_number = int(cand.get("pr_number") or 0)
+    branch = str(cand.get("branch") or "")
+    spec_path = str(cand.get("spec_path") or "")
+    labels = list(cand.get("labels", []))
+    updated_at = _parse_iso(cand.get("updated_at"))
+
+    if "intent-confirmed" in labels:
+        return _decision(pr_number, branch, spec_path, "skip", "already_confirmed")
+    if updated_at is None:
+        return _decision(pr_number, branch, spec_path, "skip", "no_updated_at")
+    age = now - updated_at
+    if age < _AUTO_CONFIRM_AFTER:
+        return _decision(pr_number, branch, spec_path, "skip",
+                         f"too_young:{int(age.total_seconds())}s")
+    body = cand.get("spec_body") or ""
+    if _NEEDS_CLARIFICATION_MARKER in body:
+        return _decision(pr_number, branch, spec_path, "skip",
+                         "needs_clarification_marker")
+    return _decision(pr_number, branch, spec_path, "confirm",
+                     f"silent_for:{int(age.total_seconds() / 3600)}h")
+
+
+def _decision(
+    pr: int, branch: str, spec_path: str, action: str, reason: str,
+) -> dict[str, Any]:
+    return {"pr": pr, "branch": branch, "spec_path": spec_path,
+            "action": action, "reason": reason}
+
+
+def _parse_iso(value: Any) -> datetime | None:
+    if not isinstance(value, str) or not value:
+        return None
+    try:
+        return datetime.fromisoformat(value.replace("Z", "+00:00"))
+    except ValueError:
+        return None
 
 
 # ---------------------------------------------------------------------------
