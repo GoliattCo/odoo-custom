@@ -39,6 +39,60 @@ def test_is_allowed_empty_allowlist():
 
 
 # --------------------------------------------------------------------------
+# is_structural_table — ORM framework metadata must never be masked (#140)
+# --------------------------------------------------------------------------
+
+@pytest.mark.parametrize("table", [
+    "ir_model_data",
+    "ir_model",
+    "ir_model_fields",
+    "ir_model_fields_selection",
+    "ir_model_relation",
+    "ir_model_constraint",
+    "ir_module_module",
+    "ir_module_module_dependency",
+])
+def test_is_structural_table_true(table):
+    assert m.is_structural_table(table) is True
+
+
+def test_is_structural_table_ir_model_data_specifically():
+    # The exact table whose masked `model` column produced
+    # `KeyError: 'MASKED:...'` during `odoo -u all` (#140).
+    assert m.is_structural_table("ir_model_data") is True
+
+
+@pytest.mark.parametrize("table", [
+    # Other ir_ tables CAN carry PII / secrets and MUST stay masked —
+    # the structural skip is an explicit list, not a blanket ir_* match.
+    "ir_attachment",
+    "ir_mail_server",
+    "ir_config_parameter",
+    "ir_logging",
+    # Ordinary tenant tables.
+    "res_partner",
+    "res_users",
+    "account_move",
+    "sale_order",
+])
+def test_is_structural_table_false(table):
+    assert m.is_structural_table(table) is False
+
+
+def test_structural_table_short_string_would_otherwise_be_masked():
+    # Guard the root cause: ir_model_data.model is a Char field, so
+    # classify_column would route it to the hashing "string" strategy.
+    # The structural-table skip in mask_database is what spares it; this
+    # asserts the classifier itself still treats it as maskable so the
+    # skip remains load-bearing.
+    assert m.classify_column(
+        "ir_model_data", "model",
+        odoo_ttype="char", data_type="character varying", char_max_len=64,
+    ) == "string"
+    assert m.is_structural_table("ir_model_data") is True
+
+
+# --------------------------------------------------------------------------
 # classify_column — name hints win first
 # --------------------------------------------------------------------------
 

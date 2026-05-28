@@ -10,7 +10,9 @@ Pipeline, per database in the agentlab Postgres cluster:
      far more reliable than guessing from information_schema data types
      (it distinguishes selection from char, monetary from float, etc.).
   2. Enumerate every column via information_schema.
-  3. For each column NOT in mask-allowlist.yml:
+  3. For each column NOT in a structural ORM-metadata table (see
+     _STRUCTURAL_TABLES — masking those corrupts the ORM) and NOT in
+     mask-allowlist.yml:
        - classify it to a masking-rules semantic type
        - apply the strategy as a single SQL UPDATE (set-based, fast)
   4. Run the universal deny-list regexp pass over non-allowlisted
@@ -20,8 +22,9 @@ Pipeline, per database in the agentlab Postgres cluster:
 
 Masking is done with set-based SQL UPDATEs (not row-by-row in Python)
 so a 5 GB database completes in minutes, not hours. The pure helper
-functions — classify_column, strategy_sql, is_allowed, scan_for_pii —
-carry no DB dependency and are unit-tested in tests/test_masking.py.
+functions — classify_column, strategy_sql, is_allowed, is_structural_table,
+scan_for_pii — carry no DB dependency and are unit-tested in
+tests/test_masking.py.
 
 Exit codes:
   0  masking applied, sample audit clean
@@ -102,6 +105,30 @@ _MONETARY_HINTS = (
     "cost", "subtotal", "tax", "salary", "wage", "payment",
 )
 
+# Odoo ORM-structural metadata tables. These hold framework definitions —
+# model names, field names/ttypes, xml-id → model/res_id mappings, module
+# manifests, relation + constraint names — never tenant PII. Masking any of
+# them corrupts the ORM: hashing ir_model_data.model turns an xml-id's target
+# model into "MASKED:<hash>", so the next `odoo -u all` (module upgrade) dies
+# re-resolving xml-ids with `KeyError: 'MASKED:...'` (see issue #140). The
+# (module, name) columns are spared only because they sit in a UNIQUE index;
+# `model` and others are not, so an explicit table-level skip is needed.
+#
+# Deliberately an explicit allow-list of structural tables, NOT a blanket
+# `ir_*` skip: other ir_ tables DO carry PII or secrets and must stay masked
+# (ir_attachment file blobs/names, ir_mail_server smtp_user/smtp_pass,
+# ir_config_parameter values, ir_logging messages, ...).
+_STRUCTURAL_TABLES = frozenset({
+    "ir_model_data",
+    "ir_model",
+    "ir_model_fields",
+    "ir_model_fields_selection",
+    "ir_model_relation",
+    "ir_model_constraint",
+    "ir_module_module",
+    "ir_module_module_dependency",
+})
+
 
 # --------------------------------------------------------------------------
 # Pure helpers — no DB, unit-tested in tests/test_masking.py
@@ -124,6 +151,16 @@ def load_config(allowlist_path: str, rules_path: str) -> tuple[dict, dict]:
 def is_allowed(table: str, column: str, allowlist: dict) -> bool:
     """True if (table, column) is explicitly cleared to remain unmasked."""
     return column in (allowlist.get(table) or [])
+
+
+def is_structural_table(table: str) -> bool:
+    """True for Odoo ORM-framework metadata tables that must never be masked.
+
+    Masking these corrupts model / field / xml-id / module resolution, which
+    breaks any subsequent `odoo -u all` (module upgrade). See `_STRUCTURAL_TABLES`
+    and issue #140.
+    """
+    return table in _STRUCTURAL_TABLES
 
 
 def classify_column(
@@ -494,6 +531,7 @@ def mask_database(
     passthrough_cols = 0
     allowed_cols = 0
     unique_skipped = 0
+    structural_skipped = 0
     deny_scrubbed = 0
     try:
         ttypes = _load_odoo_ttypes(conn)
@@ -528,6 +566,11 @@ def mask_database(
 
         with conn.cursor() as cur:
             for table, column, data_type, char_len in columns:
+                if is_structural_table(table):
+                    # Odoo ORM framework metadata — masking it corrupts
+                    # model/xml-id resolution and breaks `-u all` (#140).
+                    structural_skipped += 1
+                    continue
                 if is_allowed(table, column, allowlist):
                     allowed_cols += 1
                     continue
@@ -569,6 +612,9 @@ def mask_database(
             # type pass, but catches anything the classifier passed through.
             for table, column, data_type, _char_len in columns:
                 if data_type not in _TEXT_DATA_TYPES:
+                    continue
+                if is_structural_table(table):
+                    # Same as the type pass — never touch ORM metadata (#140).
                     continue
                 if is_allowed(table, column, allowlist):
                     continue
@@ -619,6 +665,7 @@ def mask_database(
         "passthrough_columns": passthrough_cols,
         "allowed_columns": allowed_cols,
         "unique_skipped_columns": unique_skipped,
+        "structural_skipped_columns": structural_skipped,
         "deny_list_rows_scrubbed": deny_scrubbed,
     }
 
@@ -640,7 +687,7 @@ def sample_audit(
     try:
         columns = [
             (t, c) for (t, c, dt, _l) in _list_columns(conn)
-            if dt in _TEXT_DATA_TYPES
+            if dt in _TEXT_DATA_TYPES and not is_structural_table(t)
         ]
         with conn.cursor() as cur:
             for table, column in columns:
