@@ -182,10 +182,31 @@ jobs:
           # --no-owner / --no-privileges avoid pg_restore complaints
           # against the job-local odoo role. --no-tablespaces too —
           # tablespaces are platform-specific (agentlab uses Fly volumes).
-          pg_dump --no-owner --no-privileges --no-tablespaces \
-            --format=plain \
-            --dbname="$tenant" \
-            --file=/tmp/snapshot.sql
+          #
+          # The dump streams over the flyctl proxy to agentlab, which has
+          # been observed to drop mid-COPY ("server closed the connection
+          # unexpectedly"). Add libpq TCP keepalives via a conninfo string
+          # (host/user/password still come from the PG* env vars, so no
+          # secret lands in argv) and retry up to 3x on a transient drop —
+          # the same resilience the masker got in #143.
+          dump_conn="dbname=$tenant keepalives=1 keepalives_idle=30 keepalives_interval=10 keepalives_count=5"
+          attempt=1
+          max=3
+          while true; do
+            if pg_dump --no-owner --no-privileges --no-tablespaces \
+                --format=plain \
+                --dbname="$dump_conn" \
+                --file=/tmp/snapshot.sql; then
+              break
+            fi
+            if [ "$attempt" -ge "$max" ]; then
+              echo "::error::pg_dump failed after ${max} attempts (agentlab proxy drops)" >&2
+              exit 1
+            fi
+            echo "pg_dump attempt ${attempt}/${max} failed (transient proxy drop?); retrying…"
+            attempt=$((attempt + 1))
+            sleep $((attempt * 5))
+          done
           echo "Snapshot size: $(wc -c < /tmp/snapshot.sql) bytes"
 
       - uses: docker/setup-buildx-action@v3
@@ -235,12 +256,27 @@ jobs:
           UPDATE_MODULES: all
           STOP_AFTER_INIT: '1'
         run: |
-          docker run --rm \
+          # `if !` keeps the default errexit from aborting before we can
+          # capture the failure tail. pipefail makes the `if` see docker's
+          # status, not tee's.
+          set -o pipefail
+          if ! docker run --rm \
             --network host \
             -e PGHOST -e PGPORT -e PGUSER -e PGPASSWORD \
             -e ADMIN_PASSWORD -e PLATFORM \
             -e TARGET_DB -e UPDATE_MODULES -e STOP_AFTER_INIT \
-            odoo-saas:migrate-staging
+            odoo-saas:migrate-staging 2>&1 | tee /tmp/odoo-uall.log; then
+            # Log-archive download is blocked on some runners; mirror the
+            # failure tail into an annotation so it's readable via the API.
+            # Use the raw last-N lines (not a grep) so the actual exception at
+            # the bottom of the traceback is always captured.
+            sub=$(tail -n 30 /tmp/odoo-uall.log || true)
+            echo "::error title=odoo -u all failed::${sub//$'\n'/%0A}"
+            echo "::group::odoo -u all — last 60 lines"
+            tail -n 60 /tmp/odoo-uall.log || true
+            echo "::endgroup::"
+            exit 1
+          fi
 
       - name: Cleanup flyctl proxy
         if: always()
