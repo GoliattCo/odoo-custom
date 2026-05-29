@@ -257,6 +257,23 @@ def test_spec_generator_comment_relays_to_thread(runtime: FakeRuntime) -> None:
     assert relay["thread_id"] == "t.1"
 
 
+def test_relay_normalises_bot_login_suffix(runtime: FakeRuntime) -> None:
+    """GitHub Apps author comments as "<slug>[bot]"; the relay allowlist holds
+    the bare slug, so the suffix must be normalised or the relay silently
+    drops every spec-generator comment (the prod gap behind issue #126)."""
+    _seed_link(runtime, channel="C1", thread_ts="t.1", issue_number=100)
+
+    intake.on_github_issue_comment(runtime, _gh_comment_payload(
+        issue_number=100,
+        comment_body="I've drafted a design spec for this issue.",
+        author="spec-generator-bot[bot]",
+        delivery_id="d-bot-suffix",
+    ))
+
+    assert len(runtime.chat.threaded) == 1
+    assert runtime.chat.threaded[0]["thread_id"] == "t.1"
+
+
 def test_shadow_mode_blocks_github_to_slack_relay(runtime: FakeRuntime) -> None:
     """Phase B: when shadow_mode=true, no relay even if everything else matches."""
     runtime.config.agents["slack_intake"]["shadow_mode"] = True
