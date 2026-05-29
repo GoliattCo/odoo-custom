@@ -268,10 +268,12 @@ jobs:
             odoo-saas:migrate-staging 2>&1 | tee /tmp/odoo-uall.log; then
             # Log-archive download is blocked on some runners; mirror the
             # failure tail into an annotation so it's readable via the API.
-            sub=$(grep -iE "Wrong value|ir\.ui\.menu|ValueError|ParseError|psycopg2|relation .* does not exist|CRITICAL|Traceback" /tmp/odoo-uall.log | tail -n 25 || true)
+            # Use the raw last-N lines (not a grep) so the actual exception at
+            # the bottom of the traceback is always captured.
+            sub=$(tail -n 30 /tmp/odoo-uall.log || true)
             echo "::error title=odoo -u all failed::${sub//$'\n'/%0A}"
-            echo "::group::odoo -u all — last 40 lines"
-            tail -n 40 /tmp/odoo-uall.log || true
+            echo "::group::odoo -u all — last 60 lines"
+            tail -n 60 /tmp/odoo-uall.log || true
             echo "::endgroup::"
             exit 1
           fi
