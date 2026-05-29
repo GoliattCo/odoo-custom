@@ -281,7 +281,11 @@ def on_github_issue_comment(runtime, payload: dict) -> None:
         log.info("slack_intake.relay_skipped_post_confirm", issue=issue_number)
         return  # Impl Agent owns the conversation from here.
 
-    author = (comment.get("user") or {}).get("login", "")
+    # GitHub reports App-authored comments with a "[bot]" login suffix
+    # (e.g. "spec-generator-bot[bot]"); the relay allowlist holds the bare
+    # App slug, so normalise before the membership check — same convention
+    # as the spec-generator self-comment guard.
+    author = (comment.get("user") or {}).get("login", "").removesuffix("[bot]")
     relay_authors = tuple(
         (runtime.config.agents or {})
         .get("slack_intake", {})
