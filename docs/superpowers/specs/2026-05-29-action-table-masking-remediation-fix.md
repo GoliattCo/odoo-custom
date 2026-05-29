@@ -67,10 +67,25 @@ resets the constant-valued columns in place:
   `confirm` gate (must equal the target name to apply). Credentials stay in
   `PG*` env (never argv); psql uses keepalives (per #149).
 - `infra/agentlab/sql/discover_action_masking.sql` — read-only; reports every
-  polluted `ir_act_*` / `ir_actions` text column with counts.
-- `infra/agentlab/sql/clean_action_masking.sql` — resets `type` to the fixed
-  per-table constant (`ir.actions.act_window`, …), `binding_type` /
-  `binding_view_types` to Odoo-18 defaults; only masked rows.
+  polluted `ir_act_*` / `ir_actions` text column with counts, plus an
+  `ir_actions` id-mapping integrity check (masked/unique/unmapped/multi) that
+  proves the base-table reconstruction below is safe before any write.
+- `infra/agentlab/sql/clean_action_masking.sql` — resets the concrete
+  `ir_act_*` tables' `type` to the fixed per-table constant
+  (`ir.actions.act_window`, …) and `binding_type` / `binding_view_types` to
+  Odoo-18 defaults; then reconstructs the **base `ir_actions`** row's `type`
+  by joining each masked row to the concrete table sharing its `id` (this is
+  the column `ir.ui.menu.action` is built from — the real `-u all` breaker).
+  Masked rows only.
+
+Discovery on agentlab confirmed the approach: `acmesas2` and `demo` each had
+534 masked cells (incl. `ir_actions`: 89 in each of type/binding_type/
+binding_view_types), the id-mapping was a clean 1:1 (`masked=89 unique=89
+unmapped=0 multi=0`), and the post-apply verify read 0 across all three DBs.
+
+The workflow also mirrors each DB's discovery/verify output into a `::notice::`
+annotation, so results are retrievable via the checks API on runners where the
+log archive can't be downloaded.
 
 ## 5. Regression test
 
@@ -80,16 +95,18 @@ validated by the dispatch run itself (no live PG in unit tests).
 
 ## 6. Rollout / usage
 
-1. **agentlab, dry-run** (discovery): dispatch `target=agentlab` → see the
-   polluted columns.
-2. **agentlab, apply**: `dry_run=false confirm=agentlab` → re-run
-   `migration-dry-run-staging` to validate `-u all` clears (closes #142's
-   code/validation aspect).
-3. **staging, apply**: `dry_run=false confirm=staging` → permanent source fix.
-4. **Caveat:** if discovery reports masked **per-row** columns
-   (`ir_actions.type`, `*.res_model`, `*.name`) that a constant can't
-   reconstruct, run `odoo -u base --stop-after-init` on the source (rebuilds
-   framework records from module XML) or re-seed staging from clean prod.
+1. **agentlab, dry-run** (discovery) → confirm polluted columns + id-mapping.
+   **DONE** — 3 DBs, two polluted (534 cells each), mapping clean.
+2. **agentlab, apply**: `dry_run=false confirm=agentlab`. **DONE** — verify
+   reads 0 on all three DBs.
+3. **staging, apply**: `dry_run=false confirm=staging` → permanent source fix,
+   then re-run `migration-dry-run-staging` to validate `-u all` clears
+   (closes #142's validation aspect).
+4. **Caveat:** masked **per-row** columns the reset can't reconstruct
+   (`*.res_model`, `*.name`, or any `ir_actions` row with `unmapped>0` in the
+   diagnostic) need `odoo -u base --stop-after-init` on the source or a
+   re-seed from clean prod. The agentlab run showed `unmapped=0`, so none
+   applied there.
 - Security-adjacent (writes to shared DBs) → security/ops review; the
   dry-run default + confirm gate keep accidental mutation out.
 - Verification caveat: not runnable from the automation sandbox (no Fly);
